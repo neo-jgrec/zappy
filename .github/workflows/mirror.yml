@@ -1,0 +1,23 @@
+name: mirror
+
+on:
+  push:
+
+env:
+  MIRROR_URL: git@github.com:EpitechPromo2027/B-YEP-400-REN-4-1-zappy-jean-yanis.jeffroy.git
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+      - uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url:
+            ${{ env.MIRROR_URL }}
+          ssh_private_key:
+            ${{ secrets.GIT_SSH_PRIVATE_KEY }}
