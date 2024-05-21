@@ -1,0 +1,10 @@
+* text=lf
+* eol=lf
+
+*.pdf text=auto
+
+*.png binary
+*.jpg binary
+
+assets.tek/ linguist-vendored
+docs/ linguist-vendored
