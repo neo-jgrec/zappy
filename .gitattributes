@@ -2,6 +2,7 @@
 * eol=lf
 
 *.pdf text=auto
+*.tgz text=auto
 
 *.png binary
 *.jpg binary
