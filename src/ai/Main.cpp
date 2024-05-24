@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2024
-** zappy
+** zappy/ai
 ** File description:
-** main
+** Main
 */
 
 #include <iostream>
