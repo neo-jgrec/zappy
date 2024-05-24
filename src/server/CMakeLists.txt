@@ -41,7 +41,7 @@ else()
 endif()
 
 file(GLOB_RECURSE SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/*.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/**/*.c
 )
 
 target_sources(zappy_server
