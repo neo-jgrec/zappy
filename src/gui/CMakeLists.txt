@@ -64,6 +64,8 @@ target_include_directories(zappy_gui
         ${CMAKE_SOURCE_DIR}/includes
 )
 
+find_package(SFML REQUIRED COMPONENTS network window graphics system)
+
 target_link_libraries(zappy_gui
 	PRIVATE
 		sfml-graphics
