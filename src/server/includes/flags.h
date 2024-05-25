@@ -18,6 +18,15 @@ enum {
     FREQ
 };
 
+typedef struct flags_s {
+     int port;
+     int width;
+     int height;
+     char **names;
+     int nb_clients;
+     int frequency;
+} flags_t;
+
 /**
  *
  * @param args arguments to get the flags

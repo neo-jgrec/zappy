@@ -16,7 +16,7 @@
  * @param status
  * @return
  */
-int helper(char **av, int status);
+int helper(int status);
 
 /**
  * @param str string to check if it's numeric or not

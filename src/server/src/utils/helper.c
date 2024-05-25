@@ -7,11 +7,9 @@
 
 #include "server.h"
 
-int helper(char **av, int status)
+int helper(int status)
 {
-    if (av[1] && (strcmp("-help", av[1]) == 0 || strcmp("-h", av[1]) == 0)) {
-        printf("USAGE: ./zappy_server -p port -x width -y ");
-        printf("height -n name1 name2 ... -c clientsNb -f freq\n");
-    }
+    printf("USAGE: ./zappy_server -p port -x width -y ");
+    printf("height -n name1 name2 ... -c clientsNb -f freq\n");
     return status;
 }
