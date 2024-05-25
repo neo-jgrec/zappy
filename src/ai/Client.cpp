@@ -16,7 +16,6 @@ Client::Client(const std::string &host, const std::string &teamName, int port)
 Client::~Client()
 {
     close(_sockfd);
-    delete _bot;
 }
 
 void Client::run()
@@ -62,8 +61,9 @@ void Client::authenticate()
 {
     std::string buffer;
 
-    recvMessage(buffer);                // to handle Welcome message
-    _bot = new Bot(_sockfd, _teamName); // to verify: don't do new
+    recvMessage(buffer);    
+    //code            // to handle Welcome message
+    _bot = std::make_unique<Bot>(_sockfd, _teamName);
 }
 
 void Client::loop()

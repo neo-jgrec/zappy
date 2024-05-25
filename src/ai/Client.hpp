@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <cstring>
 #include "Bot.hpp"
+#include <memory>
 
 class Client
 {
@@ -30,7 +31,7 @@ private:
     int _sockfd;
     fd_set _readfds;
     struct timeval _tv;
-    Bot *_bot;
+    std::unique_ptr<Bot> _bot;
 
     void setupConnection();
     void authenticate();
