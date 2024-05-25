@@ -6,12 +6,12 @@
 */
 
 #include <stdbool.h>
-#include <stdio.h>
+#include <ctype.h>
 
 bool str_is_num(const char *str)
 {
     for (size_t i = 0; str[i]; i++) {
-        if (str[i] < '0' || str[i] > '9')
+        if (!isdigit(str[i]))
             return false;
     }
     return true;
