@@ -7,6 +7,7 @@
 
 #include <stdbool.h>
 #include <ctype.h>
+#include <stddef.h>
 
 bool str_is_num(const char *str)
 {

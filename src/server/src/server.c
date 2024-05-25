@@ -11,7 +11,10 @@ int server(char **args)
 {
     flags_t flags = {0};
 
-    if (!check_number_flags(args))
+    if (!init_flags(&flags, args)) {
+        destroy_flags(&flags);
         return helper(ERROR_STATUS);
+    }
+    destroy_flags(&flags);
     return OK_STATUS;
 }

@@ -8,6 +8,7 @@
 #ifndef ZAPPY_FLAGS_H
     #define ZAPPY_FLAGS_H
     #define NB_FLAGS 6
+    #define INCORRECT_FLAG_VALUE -1
 
 enum {
     PORT,
@@ -19,19 +20,25 @@ enum {
 };
 
 typedef struct flags_s {
-     int port;
-     int width;
-     int height;
-     char **names;
-     int nb_clients;
-     int frequency;
+    int port;
+    int width;
+    int height;
+    char **names;
+    int nb_clients;
+    int frequency;
 } flags_t;
 
 /**
- *
+ * @param flags flags to fill
  * @param args arguments to get the flags
  * @return boolean if there are the 6 required flags
  */
-bool check_number_flags(char **args);
+bool init_flags(flags_t *flags, char **args);
+
+/**
+ *
+ * @param flags destroy essentially the names
+ */
+void destroy_flags(flags_t *flags);
 
 #endif //ZAPPY_FLAGS_H
