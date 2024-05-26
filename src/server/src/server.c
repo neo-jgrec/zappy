@@ -9,7 +9,12 @@
 
 int server(char **args)
 {
-    if (!check_number_flags(args))
-        return ERROR_STATUS;
+    flags_t flags = {0};
+
+    if (!init_flags(&flags, args)) {
+        destroy_flags(&flags);
+        return helper(ERROR_STATUS);
+    }
+    destroy_flags(&flags);
     return OK_STATUS;
 }
