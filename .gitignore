@@ -51,6 +51,7 @@ zappy_gui
 .idea/*.xml
 
 build/**/*
+binaries/**/*
 
 include/*
 /bin/*
