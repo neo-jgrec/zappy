@@ -15,28 +15,53 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
+#include "actions/Actions.hpp"
+#include "environement/Environement.hpp"
 
-// to verify: make a map with actions name and durability
-//  food -= action name.
-enum actions
+class LastAction
 {
-    DEFAULT,
-    FORWARD,
-    RIGHT,
-    LEFT,
+public:
+    LastAction(actions action, std::string parameter) : action(action), parameter(parameter) {}
+    ~LastAction() {}
 
-    LOOK,
-    INVENTORY,
-    BROADCAST,
-
-    CONNECT_NBR,
-    FORK,
-    EJECT,
-
-    TAKE,
-    SET,
-    INCANT
+    actions action;
+    std::string parameter;
 };
+
+/* INVENTORY */
+// to verify: factorise code with Environement
+class Inventory
+{
+public:
+    Inventory() : food(9), linemate(0), deraumere(0), sibur(0), mendiane(0), phiras(0), thystame(0) {}
+    ~Inventory() {}
+
+    size_t food;
+    size_t linemate;
+    size_t deraumere;
+    size_t sibur;
+    size_t mendiane;
+    size_t phiras;
+    size_t thystame;
+
+    // void setFood(int food);
+    // void setLinemate(int linemate);
+    // void setDeraumere(int deraumere);
+    // void setSibur(int sibur);
+    // void setMendiane(int mendiane);
+    // void setPhiras(int phiras);
+    // void setThystame(int thystame);
+
+    // int getFood() const;
+    // int getLinemate() const;
+    // int getDeraumere() const;
+    // int getSibur() const;
+    // int getMendiane() const;
+    // int getPhiras() const;
+    // int getThystame() const;
+};
+
+/************/
 
 class Bot
 {
@@ -68,9 +93,24 @@ private:
     // Client
     int _sockfd;
     std::string _teamName;
-    actions _lastAction;
-    std::string _nextMove; // to verify: we want to do that anotherway ? Like don't make a listen & react but run or takedecision function
-    // inventory map food: 0, linemate: 0, deraumere: 0, sibur: 0, mendiane: 0, phiras: 0, thystame: 0
+    LastAction _lastAction;
+    Inventory _inventory;
+    Environement _environement;
+
+    // Game
+    int _timeUnit;
+    bool _shouldListen;
+    void takeFirstDecision(std::string response);
+    void searchAndTake(std::string response, const std::string &item);
+
+    // listen
+    void listenLookResponse(const std::string &response);
+
+    // Utils
+    void doAction(actions action, const std::string &parameter);
+
+    // Behaviors
+    void survive(std::string response);
 };
 
 #endif // BOT_HPP_

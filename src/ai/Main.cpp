@@ -28,3 +28,5 @@ int main(int ac, char **av)
 
     return 0;
 }
+
+// to verify: makeThemSegfault: parse message ennemie, if there is a number, change number to 9999999999 to make them segfault

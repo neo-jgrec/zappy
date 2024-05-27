@@ -5,6 +5,9 @@
 ** Client.hpp
 */
 
+#ifndef CLIENT_HPP_
+#define CLIENT_HPP_
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -38,3 +41,5 @@ private:
     void loop();
     void recvMessage(std::string &buffer);
 };
+
+#endif /* !CLIENT_HPP_ */
