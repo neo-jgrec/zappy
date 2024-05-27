@@ -29,7 +29,13 @@
             serverConnect();
             ~serverConnect();
     };
-        
+
+    /**
+     * @brief connect to the given ip on the given port
+     * @param port the port to use
+     * @param ip the ip adress to connect to
+     * @return void
+    */
     void serverConnect::connectToServer(int port, const char *ip)
     {
         this->fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -50,6 +56,9 @@
         }
     }
 
+    /**
+     * @brief ecanpsulation of the C socket functions
+    */
     serverConnect::serverConnect()
     {
     }
@@ -60,6 +69,10 @@
             close(this->fd);
     }
 
+    /**
+     * @brief read the message sent by the server
+     * @return the message received from the server
+    */
     std::string serverConnect::readFromServer()
     {
         std::vector<char> buffer(2048);
