@@ -19,16 +19,18 @@
     class serverConnect
     {
         private:
-            int fd;
+            int fd = -1;
 
         public:
             std::string readFromServer();
+
+            void connectToServer(int port, const char *ip);
     
-            serverConnect(int port, const char *ip);
+            serverConnect();
             ~serverConnect();
     };
         
-    serverConnect::serverConnect(int port, const char *ip)
+    void serverConnect::connectToServer(int port, const char *ip)
     {
         this->fd = socket(AF_INET, SOCK_STREAM, 0);
         if (this->fd < 0) {
@@ -47,10 +49,15 @@
             throw std::runtime_error("Failed to connect to the server");
         }
     }
-    
+
+    serverConnect::serverConnect()
+    {
+    }
+
     serverConnect::~serverConnect()
     {
-        close(this->fd);
+        if (this->fd >= 0)
+            close(this->fd);
     }
 
     std::string serverConnect::readFromServer()
