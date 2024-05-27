@@ -6,7 +6,6 @@
 */
 
 #include <iostream>
-#include <raylib.h>
 
 #include "serverConnect.hpp"
 
