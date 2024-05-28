@@ -5,8 +5,27 @@
 ** arrays.c
 */
 
-#include <stdio.h>
+#include "utils.h"
 
+size_t array_len(void **array)
+{
+    size_t len = 0;
+
+    if (!array)
+        return 0;
+    for (; array[len]; len++);
+    return len;
+}
+
+void free_array(void **array)
+{
+    if (!array)
+        return;
+    for (size_t i = 0; array[i]; i++)
+        secure_free(array[i]);
+    free(array);
+    array = NULL;
+}
 void print_string_array(char **array)
 {
     if (array == NULL) {

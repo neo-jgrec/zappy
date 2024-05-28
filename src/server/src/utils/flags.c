@@ -27,7 +27,7 @@ static void get_int(size_t *flag_count, int *flag, const char *next_line)
     }
 }
 
-static size_t count_nb_names(char **args, size_t *idx)
+static size_t count_nb_names(const char **args, size_t *idx)
 {
     size_t nb_names = 0;
 
@@ -40,7 +40,7 @@ static size_t count_nb_names(char **args, size_t *idx)
     return nb_names;
 }
 
-static void get_names(size_t *flag_count, flags_t *flags, char **args,
+static void get_names(size_t *flag_count, flags_t *flags, const char **args,
     size_t *idx)
 {
     size_t nb_names = count_nb_names(args, idx);
@@ -64,7 +64,7 @@ static void get_names(size_t *flag_count, flags_t *flags, char **args,
 }
 
 static void fill_flags(size_t f_count[NB_FLAGS], flags_t *f,
-    char **av, size_t i)
+    const char **av, size_t i)
 {
     switch (av[i][1]) {
         case 'p':
@@ -88,7 +88,7 @@ static void fill_flags(size_t f_count[NB_FLAGS], flags_t *f,
     }
 }
 
-static bool check_number_flags(flags_t *flags, char **args)
+static bool check_number_flags(flags_t *flags, const char **args)
 {
     size_t flags_counter[NB_FLAGS] = {0};
 
@@ -115,6 +115,8 @@ void print_flags(flags_t *flags)
 
 void destroy_flags(flags_t *flags)
 {
+    if (flags == NULL)
+        return;
     if (flags->names == NULL)
         return;
     for (size_t i = 0; flags->names[i] != NULL; i++) {
@@ -123,7 +125,7 @@ void destroy_flags(flags_t *flags)
     free(flags->names);
 }
 
-bool init_flags(flags_t *flags, char **args)
+bool init_flags(flags_t *flags, const char **args)
 {
     flags->names = NULL;
     if (!check_number_flags(flags, args))
@@ -131,6 +133,5 @@ bool init_flags(flags_t *flags, char **args)
     if (flags->port < 0 || flags->names == NULL || flags->frequency < 0
         || flags->width < 0 || flags->height < 0 || flags->nb_clients < 0)
         return false;
-    print_flags(flags);
     return true;
 }
