@@ -15,8 +15,18 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
+#include <functional>
+#include <memory>
 #include "actions/Actions.hpp"
 #include "environement/Environement.hpp"
+
+struct DecisionNode {
+    std::function<bool()> condition;
+    actions actionIfTrue;
+    actions actionIfFalse;
+    std::shared_ptr<DecisionNode> trueBranch;
+    std::shared_ptr<DecisionNode> falseBranch;
+};
 
 class LastAction
 {
@@ -71,7 +81,7 @@ public:
 
     // Behaviors
     // void listen(); Tom
-    // void group(); Quentin
+    void group();
     // void search(); Tom
     // void incant(); Quentin
     // void fork(); Tom
@@ -102,6 +112,10 @@ private:
     bool _shouldListen;
     void takeFirstDecision(std::string response);
     void searchAndTake(std::string response, const std::string &item);
+    std::shared_ptr<DecisionNode> decisionTreeRoot;
+    std::shared_ptr<DecisionNode> currentDecisionNode; 
+    void buildDecisionTree();
+    void makeDecision();
 
     // listen
     void listenLookResponse(const std::string &response);

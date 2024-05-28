@@ -21,6 +21,7 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
     std::cout << std::endl;
 
     sendMessage(teamName);
+    buildDecisionTree();
 }
 
 Bot::~Bot()
@@ -35,14 +36,64 @@ void Bot::sendMessage(const std::string &message)
     send(_sockfd, messageToSend.c_str(), messageToSend.size(), 0);
 }
 
+void Bot::group()
+{
+    sendMessage("Group");
+}
+
+void Bot::buildDecisionTree()
+{
+    auto forkNode = std::make_shared<DecisionNode>();
+    forkNode->condition = [this]() { 
+        return true; 
+    };
+    forkNode->actionIfTrue = actions::FORK;
+    forkNode->trueBranch = nullptr;
+    forkNode->falseBranch = nullptr;
+
+    auto lookNode = std::make_shared<DecisionNode>();
+    lookNode->condition = [this]() { 
+        return _inventory.food < 10;
+    };
+    lookNode->actionIfTrue = actions::LOOK;
+    lookNode->trueBranch = nullptr;
+    lookNode->falseBranch = nullptr;
+
+    auto root = std::make_shared<DecisionNode>();
+    root->condition = [this]() {
+        return _lastAction.action == DEFAULT;
+    };
+    root->actionIfTrue = actions::LOOK;
+    root->trueBranch = lookNode;
+    root->falseBranch = forkNode;
+
+    decisionTreeRoot = root;
+    currentDecisionNode = decisionTreeRoot;
+}
+
+void Bot::makeDecision()
+{
+    while (currentDecisionNode) {
+        if (currentDecisionNode->condition()) {
+            doAction(currentDecisionNode->actionIfTrue, "");
+            currentDecisionNode = currentDecisionNode->trueBranch;
+        } else {
+            doAction(currentDecisionNode->actionIfFalse, "");
+            currentDecisionNode = currentDecisionNode->falseBranch;
+        }
+    }
+    currentDecisionNode = decisionTreeRoot;
+}
+
 void Bot::run(std::string response)
 {
     printColor("Bot listens: " + response, GREEN);
 
-    if (_lastAction.action == DEFAULT)
+    /*if (_lastAction.action == DEFAULT)
         takeFirstDecision(response);
     else
-        survive(response);
+        survive(response);*/    
+    makeDecision();
 }
 
 void Bot::takeFirstDecision(std::string response)
@@ -93,29 +144,28 @@ void Bot::listenLookResponse(const std::string &response)
     _environement.thystame = 0;
     _environement.players = 0;
 
+    std::map<std::string, size_t&> itemMap = {
+        {"food", _environement.food},
+        {"linemate", _environement.linemate},
+        {"deraumere", _environement.deraumere},
+        {"sibur", _environement.sibur},
+        {"mendiane", _environement.mendiane},
+        {"phiras", _environement.phiras},
+        {"thystame", _environement.thystame},
+        {"player", _environement.players}
+    };
+
     std::istringstream tileStream(firstTile);
     std::string item;
 
     while (tileStream >> item)
     {
-        if (item == "food")
-            _environement.food += 1;
-        else if (item == "linemate")
-            _environement.linemate += 1;
-        else if (item == "deraumere")
-            _environement.deraumere += 1;
-        else if (item == "sibur")
-            _environement.sibur += 1;
-        else if (item == "mendiane")
-            _environement.mendiane += 1;
-        else if (item == "phiras")
-            _environement.phiras += 1;
-        else if (item == "thystame")
-            _environement.thystame += 1;
-        else if (item == "player")
-            _environement.players += 1;
+        auto it = itemMap.find(item);
+        if (it != itemMap.end())
+        {
+            it->second += 1;
+        }
     }
-
     _shouldListen = false;
 }
 
