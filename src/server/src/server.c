@@ -44,6 +44,7 @@ static int start_server(server_t *server)
 
 int server(const char **args)
 {
+    int status = OK_STATUS;
     server_t server = {0};
 
     if (!init_server(&server, args)) {
@@ -51,15 +52,13 @@ int server(const char **args)
         return helper(ERROR_STATUS);
     }
     if (bind(server.fd, (struct sockaddr *)&server.info, server.addrlen) < 0)
-        goto error;
+        status = ERROR_STATUS;
     if (listen(server.fd, FD_SETSIZE) < 0)
-        goto error;
+        status = ERROR_STATUS;
     if (start_server(&server) == ERROR_STATUS)
-        goto error;
-    destroy_server(server);
-    return OK_STATUS;
-    error:
+        status = ERROR_STATUS;
+    if (status == ERROR_STATUS)
         close(server.fd);
-        destroy_server(server);
-        return ERROR_STATUS;
+    destroy_server(server);
+    return status;
 }

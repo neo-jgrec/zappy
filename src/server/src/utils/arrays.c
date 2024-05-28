@@ -26,6 +26,7 @@ void free_array(void **array)
     free(array);
     array = NULL;
 }
+
 void print_string_array(char **array)
 {
     if (array == NULL) {

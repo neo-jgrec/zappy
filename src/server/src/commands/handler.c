@@ -8,18 +8,18 @@
 #include "server.h"
 
 const commands_t commands[NB_COMMANDS] = {
-        {"Forward", forward},
-        {"Right", right},
-        {"Left", left},
-        {"Look", look},
-        {"Inventory", inventory},
-        {"Broadcast", broadcast},
-        {"Connect_nbr", connect_nbr},
-        {"Fork", fork_z},
-        {"Eject", eject},
-        {"Take", take},
-        {"Set", set},
-        {"Incantation", incantation},
+    {"Forward", forward},
+    {"Right", right},
+    {"Left", left},
+    {"Look", look},
+    {"Inventory", inventory},
+    {"Broadcast", broadcast},
+    {"Connect_nbr", connect_nbr},
+    {"Fork", fork_z},
+    {"Eject", eject},
+    {"Take", take},
+    {"Set", set},
+    {"Incantation", incantation},
 };
 
 void handle_client_message(server_t *server)

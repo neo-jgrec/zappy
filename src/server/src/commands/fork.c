@@ -9,5 +9,5 @@
 
 void fork_z(client_t *client, server_t *server)
 {
-
+    return;
 }

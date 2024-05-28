@@ -9,5 +9,5 @@
 
 void connect_nbr(client_t *client, server_t *server)
 {
-
+    return;
 }
