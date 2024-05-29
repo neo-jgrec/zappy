@@ -19,7 +19,6 @@
 #include <memory>
 #include "actions/Actions.hpp"
 #include "environement/Environement.hpp"
-#include "decisionTree/DecisionTree.hpp"
 #include "ressources/Ressources.hpp"
 
 class LastAction
@@ -30,6 +29,29 @@ public:
 
     actions action;
     std::string parameter;
+};
+
+class Behavior
+{
+public:
+    Behavior();
+    ~Behavior();
+
+    double probability;
+    std::function<void(void)> act;
+};
+
+class Listenener
+{
+public:
+    Listenener();
+    ~Listenener();
+
+    std::vector<Behavior> behaviors;
+    void listen(std::string response);
+    void updateProbabilities();
+    Behavior &getWorthBehavior();
+    void act();
 };
 
 class Bot
@@ -73,8 +95,6 @@ private:
     void searchAndTake(std::string response, const std::string &item);
     // std::shared_ptr<Node> decisionTreeRoot;
     std::shared_ptr<Node> currentDecisionNode;
-    void buildDecisionTree();
-    void makeDecision();
 
     // listen
     void listenLookResponse(const std::string &response);

@@ -19,7 +19,7 @@ class Environement
 public:
     Environement();
     ~Environement();
-    std::vector<std::vector<Ressources>> map;
+    std::vector<Ressources> ressources;
 
 private:
 };

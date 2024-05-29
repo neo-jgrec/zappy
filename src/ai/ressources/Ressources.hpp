@@ -16,13 +16,13 @@ public:
     Ressources();
     ~Ressources();
 
-    size_t _food;
-    size_t _linemate;
-    size_t _deraumere;
-    size_t _sibur;
-    size_t _mendiane;
-    size_t _phiras;
-    size_t _thystame;
+    size_t food;
+    size_t linemate;
+    size_t deraumere;
+    size_t sibur;
+    size_t mendiane;
+    size_t phiras;
+    size_t thystame;
 
     // void setFood(int food);
     // void setLinemate(int linemate);

@@ -41,50 +41,6 @@ void Bot::group()
     sendMessage("Group");
 }
 
-void Bot::buildDecisionTree()
-{
-    auto forkNode = std::make_shared<DecisionNode>();
-    forkNode->condition = [this]() { 
-        return true; 
-    };
-    forkNode->actionIfTrue = actions::FORK;
-    forkNode->trueBranch = nullptr;
-    forkNode->falseBranch = nullptr;
-
-    auto lookNode = std::make_shared<DecisionNode>();
-    lookNode->condition = [this]() { 
-        return _inventory.food < 10;
-    };
-    lookNode->actionIfTrue = actions::LOOK;
-    lookNode->trueBranch = nullptr;
-    lookNode->falseBranch = nullptr;
-
-    auto root = std::make_shared<DecisionNode>();
-    root->condition = [this]() {
-        return _lastAction.action == DEFAULT;
-    };
-    root->actionIfTrue = actions::LOOK;
-    root->trueBranch = lookNode;
-    root->falseBranch = forkNode;
-
-    decisionTreeRoot = root;
-    currentDecisionNode = decisionTreeRoot;
-}
-
-void Bot::makeDecision()
-{
-    while (currentDecisionNode) {
-        if (currentDecisionNode->condition()) {
-            doAction(currentDecisionNode->actionIfTrue, "");
-            currentDecisionNode = currentDecisionNode->trueBranch;
-        } else {
-            doAction(currentDecisionNode->actionIfFalse, "");
-            currentDecisionNode = currentDecisionNode->falseBranch;
-        }
-    }
-    currentDecisionNode = decisionTreeRoot;
-}
-
 void Bot::run(std::string response)
 {
     printColor("Bot listens: " + response, GREEN);
@@ -92,7 +48,7 @@ void Bot::run(std::string response)
     /*if (_lastAction.action == DEFAULT)
         takeFirstDecision(response);
     else
-        survive(response);*/    
+        survive(response);*/
     makeDecision();
 }
 
@@ -135,38 +91,38 @@ void Bot::listenLookResponse(const std::string &response)
     std::string firstTile;
     std::getline(iss, firstTile, ',');
 
-    _environement.food = 0;
-    _environement.linemate = 0;
-    _environement.deraumere = 0;
-    _environement.sibur = 0;
-    _environement.mendiane = 0;
-    _environement.phiras = 0;
-    _environement.thystame = 0;
-    _environement.players = 0;
+    // TODO: fix that
+    // _environement.food = 0;
+    // _environement.linemate = 0;
+    // _environement.deraumere = 0;
+    // _environement.sibur = 0;
+    // _environement.mendiane = 0;
+    // _environement.phiras = 0;
+    // _environement.thystame = 0;
+    // _environement.players = 0;
 
-    std::map<std::string, size_t&> itemMap = {
-        {"food", _environement.food},
-        {"linemate", _environement.linemate},
-        {"deraumere", _environement.deraumere},
-        {"sibur", _environement.sibur},
-        {"mendiane", _environement.mendiane},
-        {"phiras", _environement.phiras},
-        {"thystame", _environement.thystame},
-        {"player", _environement.players}
-    };
+    // std::map<std::string, size_t &> itemMap = {
+    //     {"food", _environement.food},
+    //     {"linemate", _environement.linemate},
+    //     {"deraumere", _environement.deraumere},
+    //     {"sibur", _environement.sibur},
+    //     {"mendiane", _environement.mendiane},
+    //     {"phiras", _environement.phiras},
+    //     {"thystame", _environement.thystame},
+    //     {"player", _environement.players}};
 
     std::istringstream tileStream(firstTile);
     std::string item;
 
-    while (tileStream >> item)
-    {
-        auto it = itemMap.find(item);
-        if (it != itemMap.end())
-        {
-            it->second += 1;
-        }
-    }
-    _shouldListen = false;
+    // while (tileStream >> item)
+    // {
+    //     auto it = itemMap.find(item);
+    //     if (it != itemMap.end())
+    //     {
+    //         it->second += 1;
+    //     }
+    // }
+    // _shouldListen = false;
 }
 
 // to verify:: do listenTakeResponse
@@ -176,11 +132,11 @@ void Bot::searchAndTake(std::string response, const std::string &item)
 {
     if (_shouldListen)
         listenLookResponse(response);
-    if (item == "food" && _environement.food >= 1)
+    if (item == "food" && _environement.ressources.at(0).food >= 1)
     {
         doAction(TAKE, "food");
     }
-    else if (item == "linemate" && _environement.linemate >= 1)
+    else if (item == "linemate" && _environement.ressources.at(0).linemate >= 1)
     {
         doAction(TAKE, "linemate");
     }
