@@ -21,7 +21,6 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
     std::cout << std::endl;
 
     sendMessage(teamName);
-    buildDecisionTree();
 }
 
 Bot::~Bot()
@@ -49,7 +48,6 @@ void Bot::run(std::string response)
         takeFirstDecision(response);
     else
         survive(response);*/
-    makeDecision();
 }
 
 void Bot::takeFirstDecision(std::string response)
