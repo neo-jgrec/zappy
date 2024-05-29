@@ -24,7 +24,7 @@ jobs:
               error_code=$(echo "$line" | cut -d: -f4)
               type=$(echo "$line" | cut -d: -f3 | cut -d- -f4)
               has_errors=true
-              echo "::error title=${type}:${error_code} in ${path} at line ${line_number}::"
+              echo "::warning title=${type}:${error_code} in ${path} at line ${line_number}::"
           done < coding-style-reports.log
           if $has_errors; then
               exit 1
