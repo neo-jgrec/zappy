@@ -8,7 +8,10 @@
 #ifndef ENVIRONEMENT_HPP_
 #define ENVIRONEMENT_HPP_
 
+#include "ressources/Ressources.hpp"
+
 #include <iostream>
+#include <vector>
 
 // to verify: must have x y, should be an array
 class Environement
@@ -16,14 +19,7 @@ class Environement
 public:
     Environement();
     ~Environement();
-    size_t food;
-    size_t linemate;
-    size_t deraumere;
-    size_t sibur;
-    size_t mendiane;
-    size_t phiras;
-    size_t thystame;
-    size_t players;
+    std::vector<std::vector<Ressources>> map;
 
 private:
 };

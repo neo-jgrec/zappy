@@ -19,14 +19,8 @@
 #include <memory>
 #include "actions/Actions.hpp"
 #include "environement/Environement.hpp"
-
-struct DecisionNode {
-    std::function<bool()> condition;
-    actions actionIfTrue;
-    actions actionIfFalse;
-    std::shared_ptr<DecisionNode> trueBranch;
-    std::shared_ptr<DecisionNode> falseBranch;
-};
+#include "decisionTree/DecisionTree.hpp"
+#include "ressources/Ressources.hpp"
 
 class LastAction
 {
@@ -37,41 +31,6 @@ public:
     actions action;
     std::string parameter;
 };
-
-/* INVENTORY */
-// to verify: factorise code with Environement
-class Inventory
-{
-public:
-    Inventory() : food(9), linemate(0), deraumere(0), sibur(0), mendiane(0), phiras(0), thystame(0) {}
-    ~Inventory() {}
-
-    size_t food;
-    size_t linemate;
-    size_t deraumere;
-    size_t sibur;
-    size_t mendiane;
-    size_t phiras;
-    size_t thystame;
-
-    // void setFood(int food);
-    // void setLinemate(int linemate);
-    // void setDeraumere(int deraumere);
-    // void setSibur(int sibur);
-    // void setMendiane(int mendiane);
-    // void setPhiras(int phiras);
-    // void setThystame(int thystame);
-
-    // int getFood() const;
-    // int getLinemate() const;
-    // int getDeraumere() const;
-    // int getSibur() const;
-    // int getMendiane() const;
-    // int getPhiras() const;
-    // int getThystame() const;
-};
-
-/************/
 
 class Bot
 {
@@ -104,7 +63,7 @@ private:
     int _sockfd;
     std::string _teamName;
     LastAction _lastAction;
-    Inventory _inventory;
+    Ressources _inventory;
     Environement _environement;
 
     // Game
@@ -112,8 +71,8 @@ private:
     bool _shouldListen;
     void takeFirstDecision(std::string response);
     void searchAndTake(std::string response, const std::string &item);
-    std::shared_ptr<DecisionNode> decisionTreeRoot;
-    std::shared_ptr<DecisionNode> currentDecisionNode; 
+    // std::shared_ptr<Node> decisionTreeRoot;
+    std::shared_ptr<Node> currentDecisionNode;
     void buildDecisionTree();
     void makeDecision();
 
