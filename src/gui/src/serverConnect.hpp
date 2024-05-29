@@ -16,6 +16,8 @@
     #include <iostream>
     #include <vector>
 
+    #include "guiException.hpp"
+
     class serverConnect
     {
         private:
@@ -23,6 +25,7 @@
 
         public:
             std::string readFromServer();
+            void sendToServer(std::string message);
 
             void connectToServer(int port, const char *ip);
     
@@ -40,7 +43,7 @@
     {
         this->fd = socket(AF_INET, SOCK_STREAM, 0);
         if (this->fd < 0) {
-            throw std::runtime_error("Failed to create a socket");
+            throw guiException("Failed to create a socket");
         }
 
         struct sockaddr_in server_addr;
@@ -49,10 +52,10 @@
         server_addr.sin_port = htons(port);
 
         if (inet_pton(AF_INET, ip, &server_addr.sin_addr) <= 0) {
-            throw std::runtime_error("Invalid address");
+            throw guiException("Invalid address");
         }
         if (connect(this->fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
-            throw std::runtime_error("Failed to connect to the server");
+            throw guiException("Failed to connect to the server");
         }
     }
 
@@ -75,14 +78,28 @@
     */
     std::string serverConnect::readFromServer()
     {
-        std::vector<char> buffer(2048);
+        std::cout << "Reading from the server" << std::endl;
+        std::vector<char> buffer(4096);
         ssize_t bytesRead = read(this->fd, buffer.data(), buffer.size() - 1);
 
         if (bytesRead < 0) {
-            throw std::runtime_error("Failed to read from the server");
+            throw guiException("Failed to read from the server");
         }
         buffer[bytesRead] = '\0';
+        std::cout << "Received: " << buffer.data();
         return std::string(buffer.data());
+    }
+
+    /**
+     * @brief send a message to the server
+     * @param message the message to send
+    */
+    void serverConnect::sendToServer(std::string message)
+    {
+        if (write(this->fd, message.c_str(), message.size()) < 0) {
+            throw guiException("Failed to send message to the server");
+        }
+        std::cout << "Sent: " << message << std::endl;
     }
 
 #endif

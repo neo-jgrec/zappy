@@ -6,8 +6,12 @@
 */
 
 #include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 #include "serverConnect.hpp"
+#include "guiException.hpp"
 
 #include "raylib-cpp.hpp"
 
@@ -32,19 +36,28 @@ int main() {
     serverConnect server;
     try {
         server.connectToServer(3000, "127.0.0.1");
+    } catch (const guiException& e) {
+        std::cerr <<  e.what() << std::endl;
+        return 1;
     } catch (const std::exception& e) {
-        std::cerr << "Failed to connect to the server\n";
+        std::cerr << e.what() << std::endl;
         return 1;
     }
     while (1) {
         std::string data;
         try {
             data = server.readFromServer();
+        } catch (const guiException& e) {
+            std::cerr << e.what() << std::endl;
+            return 1;
         } catch (const std::exception& e) {
-            std::cerr << "Failed to read from the server\n";
+            std::cerr << e.what() << std::endl;
             return 1;
         }
-        std::cout << data << std::endl;
+        if (data.compare(std::string("WELCOME\n")) == 0) {
+            server.sendToServer("GRAPHIC\n");
+            continue;
+        }
     }
     return 0;
 }
