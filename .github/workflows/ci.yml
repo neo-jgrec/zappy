@@ -29,7 +29,7 @@ jobs:
           if $has_errors; then
               exit 1
           fi
-  check_exexecutables:
+  check_executables:
     runs-on: ubuntu-latest
     container:
       image: epitechcontent/epitest-docker:latest
