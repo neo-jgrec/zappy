@@ -18,9 +18,12 @@
 #include <functional>
 #include <memory>
 #include <numeric>
+#include <queue>
 #include "actions/Actions.hpp"
 #include "environement/Environement.hpp"
 #include "ressources/Ressources.hpp"
+
+class Listener;
 
 class LastAction
 {
@@ -61,6 +64,8 @@ public:
     bool canLvlUp(int); // Quentin
     Ressources _inventory;
     unsigned int _lvl;
+    std::queue<ActionInfo> actionQueue;
+    void executeNextAction();
 
 private:
     unsigned int _messageId;
@@ -163,7 +168,7 @@ public:
             });
     }
 
-    void act();
+    void act(Bot &bot);
 };
 
 
