@@ -36,6 +36,8 @@ public:
 
     std::string getName() const;
     int getValue() const;
+    actions getAction() const;
+    std::string parameter;
 
 private:
     std::string name;
