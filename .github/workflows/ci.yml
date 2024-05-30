@@ -35,9 +35,11 @@ jobs:
       image: epitechcontent/epitest-docker:latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: recursive
       - name: Execute the project with make cmd
         run: |
-          git submodule update --init --recursive 
           make
           SPLIT_EXECUTABLES=$(echo $EXECUTABLES | tr "," "\n")
           for EXECUTABLE in $SPLIT_EXECUTABLES; do
