@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <functional>
 #include <memory>
+#include <numeric>
 #include "actions/Actions.hpp"
 #include "environement/Environement.hpp"
 #include "ressources/Ressources.hpp"
@@ -29,29 +30,6 @@ public:
 
     actions action;
     std::string parameter;
-};
-
-class Behavior
-{
-public:
-    Behavior();
-    ~Behavior();
-
-    double probability;
-    std::function<void(void)> act;
-};
-
-class Listenener
-{
-public:
-    Listenener();
-    ~Listenener();
-
-    std::vector<Behavior> behaviors;
-    void listen(std::string response);
-    void updateProbabilities();
-    Behavior &getWorthBehavior();
-    void act();
 };
 
 class Bot
@@ -75,26 +53,30 @@ public:
     // void listen(std::string response);
     // void act(); // to override
     void run(std::string response);
+    Environement _environement;
+    LastAction _lastAction;
+    void searchAndTake();
+    void LevelUp();
+    void survive();
+    bool canLvlUp(int); // Quentin
+    Ressources _inventory;
+    unsigned int _lvl;
 
 private:
     unsigned int _messageId;
     unsigned int _id;
     std::string _lastMessageGuard;
+    std::vector<std::string> params;
 
     // Client
     int _sockfd;
     std::string _teamName;
-    LastAction _lastAction;
-    Ressources _inventory;
-    Environement _environement;
 
     // Game
     int _timeUnit;
     bool _shouldListen;
     void takeFirstDecision(std::string response);
-    void searchAndTake(std::string response, const std::string &item);
     // std::shared_ptr<Node> decisionTreeRoot;
-    std::shared_ptr<Node> currentDecisionNode;
 
     // listen
     void listenLookResponse(const std::string &response);
@@ -103,8 +85,87 @@ private:
     void doAction(actions action, const std::string &parameter);
 
     // Behaviors
-    void survive(std::string response);
+
+    const std::array<std::array<int, 6>, 9> levelRequirements = {{
+        {0, 0, 0, 0, 0, 0},  // Level 0
+        {0, 0, 0, 0, 0, 0},  // Level 1
+        {1, 0, 0, 0, 0, 0},  // Level 2
+        {1, 1, 1, 0, 0, 0},  // Level 3
+        {2, 0, 1, 0, 2, 0},  // Level 4
+        {1, 1, 2, 0, 1, 0},  // Level 5
+        {1, 2, 1, 3, 0, 0},  // Level 6
+        {1, 2, 3, 0, 1, 0},  // Level 7
+        {2, 2, 2, 2, 2, 1}   // Level 8
+    }};
 };
+
+class Behavior
+{
+public:
+    Behavior(double probability, std::function<void()> act, std::string name) : probability(probability), act(act), name(name) {};
+    Behavior() {};
+    ~Behavior() {};
+
+    double probability;
+    std::function<void()> act;
+    std::string name;
+};
+
+class Rule {
+public:
+    using Condition = std::function<bool()>;
+    using Action = std::function<void()>;
+
+    Rule(Condition condition, Action action) : condition(condition), action(action) {}
+
+    bool checkCondition() const { return condition(); }
+    void performAction() const { action(); }
+
+private:
+    Condition condition;
+    Action action;
+};
+
+
+class Listener
+{
+public:
+    Listener(Bot &bot);
+    ~Listener() {}
+
+    std::vector<Behavior> behaviors;
+    LastAction _lastAction = LastAction(DEFAULT, "");
+
+    void listen(std::string response, Bot &bot);
+
+    void updateProbabilities(Bot &bot);
+
+    void printEnvironment(Environement &_environement) {
+        int i = 0;
+
+        for (auto &tile : _environement.ressources) {
+            std::cout << "-----------------------tile: " << i << "-----------------------------" << std::endl;
+            std::cout << "food: " << tile.food << std::endl;
+            std::cout << "linemate: " << tile.linemate << std::endl;
+            std::cout << "deraumere: " << tile.deraumere << std::endl;
+            std::cout << "sibur: " << tile.sibur << std::endl;
+            std::cout << "mendiane: " << tile.mendiane << std::endl;
+            std::cout << "phiras: " << tile.phiras << std::endl;
+            std::cout << "thystame: " << tile.thystame << std::endl;
+            std::cout << "-----------------------tile: " << i << "-----------------------------" << std::endl;
+            i++;
+        }
+    }
+    Behavior& getWorthBehavior() {
+        return *std::max_element(behaviors.begin(), behaviors.end(),
+            [](const Behavior& a, const Behavior& b) {
+                return a.probability < b.probability;
+            });
+    }
+
+    void act();
+};
+
 
 #endif // BOT_HPP_
 

@@ -21,13 +21,20 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
     std::cout << std::endl;
 
     sendMessage(teamName);
+    _inventory.food = 9;
+}
+
+Listener::Listener(Bot &bot)
+{
+    behaviors.emplace_back(0.5, [&]() { bot.searchAndTake(); }, "searchRessource");
+    behaviors.emplace_back(0.3, [&]() { bot.LevelUp(); }, "levelUp");
+    behaviors.emplace_back(0.2, [&]() { bot.survive(); }, "survive");
 }
 
 Bot::~Bot()
 {
 }
 
-// to verify: implement strategy
 void Bot::sendMessage(const std::string &message)
 {
     std::string messageToSend = message + "\n";
@@ -44,10 +51,124 @@ void Bot::run(std::string response)
 {
     printColor("Bot listens: " + response, GREEN);
 
-    /*if (_lastAction.action == DEFAULT)
-        takeFirstDecision(response);
-    else
-        survive(response);*/
+    Listener listener(*this);
+
+    doAction(LOOK, "");
+
+    listener.listen(response, *this);
+}
+
+void Listener::listen(std::string response, Bot &bot)
+{
+    if (bot._lastAction.action == LOOK) {
+        bot._environement.ressources.clear();
+        std::string cleanedResponse = response.substr(1, response.size() - 2);
+
+        std::istringstream iss(cleanedResponse);
+        std::string tile;
+
+        while (std::getline(iss, tile, ',')) {
+            Ressources tileResources;
+            std::istringstream tileStream(tile);
+            std::string resource;
+
+            while (tileStream >> resource) {
+                tileResources.addRessource(resource);
+            }
+            bot._environement.ressources.push_back(tileResources);
+        }
+
+        //printEnvironment(bot._environement);
+    }
+    this->updateProbabilities(bot);
+    this->act();
+}
+
+void Listener::updateProbabilities(Bot &bot)
+{
+    auto accumulateResource = [&](auto member) {
+        return std::accumulate(bot._environement.ressources.begin(), bot._environement.ressources.end(), 0,
+            [&](int sum, const Ressources& tile) {
+                return sum + tile.*member;
+            });
+    };
+
+    int totalFood = accumulateResource(&Ressources::food);
+    int totalLinemate = accumulateResource(&Ressources::linemate);
+    int totalDeraumere = accumulateResource(&Ressources::deraumere);
+    int totalSibur = accumulateResource(&Ressources::sibur);
+    int totalMendiane = accumulateResource(&Ressources::mendiane);
+    int totalPhiras = accumulateResource(&Ressources::phiras);
+    int totalThystame = accumulateResource(&Ressources::thystame);
+
+    for (auto& behavior : behaviors) {
+        behavior.probability = 0.0;
+    }
+
+    std::vector<Rule> rules = {
+        { 
+            [&] { return totalFood < 5; },
+            [&] {
+                for (auto& behavior : behaviors) {
+                    if (behavior.name == "survive") {
+                        behavior.probability += 0.5;
+                    }
+                }
+            }
+        },
+        { 
+            [&] { return bot.canLvlUp(bot._lvl + 1); },
+            [&] {
+                for (auto& behavior : behaviors) {
+                    if (behavior.name == "levelUp") {
+                        behavior.probability += 0.7;
+                    }
+                }
+            }
+        },
+        { 
+            [&] { return totalLinemate >= 1; },
+            [&] {
+                for (auto& behavior : behaviors) {
+                    if (behavior.name == "searchRessource") {
+                        behavior.probability += 0.9;
+                    }
+                }
+            }
+        }
+    };
+
+    for (const auto& rule : rules) {
+        if (rule.checkCondition()) {
+            rule.performAction();
+        }
+    }
+
+    double totalProbability = std::accumulate(behaviors.begin(), behaviors.end(), 0.0,
+        [](double sum, const Behavior& behavior) {
+            return sum + behavior.probability;
+        });
+
+    if (totalProbability > 0) {
+        for (auto& behavior : behaviors) {
+            behavior.probability /= totalProbability;
+        }
+    }
+}
+
+void Listener::act()
+{
+    // Ici j'utilise la distribution cumulative
+    double randomValue = static_cast<double>(rand()) / RAND_MAX;
+    double cumulativeProbability = 0.0;
+
+    for (auto& behavior : behaviors) {
+        cumulativeProbability += behavior.probability;
+        if (randomValue <= cumulativeProbability) {
+            behavior.act();
+            break;
+        }
+    }
 }
 
 void Bot::takeFirstDecision(std::string response)
@@ -67,81 +188,60 @@ void Bot::takeFirstDecision(std::string response)
         doAction(LOOK, "");
 }
 
-void Bot::survive(std::string response)
+void Bot::survive()
 {
-    if (_lastAction.action == FORWARD)
-    {
-        doAction(LOOK, "");
-        return;
+    printf("Survive\n");
+    doAction(FORWARD, "");
+    /*params[0] = "food";
+    printf("Bot is surviving\n");
+    searchAndTake();*/
+}
+
+bool Bot::canLvlUp(int lvl)
+{
+    if (lvl < 2 || lvl > 8)
+        return false;
+
+    const auto requirements = levelRequirements[lvl];
+
+    bool hasRequiredResources = 
+        _inventory.linemate >= requirements[0] &&
+        _inventory.deraumere >= requirements[1] &&
+        _inventory.sibur >= requirements[2] &&
+        _inventory.mendiane >= requirements[3] &&
+        _inventory.phiras >= requirements[4] &&
+        _inventory.thystame >= requirements[5];
+
+    if (hasRequiredResources) {
+        return true;
     }
-    if (_inventory.food < 10)
-        searchAndTake(response, "food");
-    else
-        searchAndTake(response, "linemate");
+    return false;
 }
 
-void Bot::listenLookResponse(const std::string &response)
+void Bot::searchAndTake()
 {
-    // Remove brackets
-    std::string cleanedResponse = response.substr(1, response.size() - 2);
-
-    std::istringstream iss(cleanedResponse);
-    std::string firstTile;
-    std::getline(iss, firstTile, ',');
-
-    // TODO: fix that
-    // _environement.food = 0;
-    // _environement.linemate = 0;
-    // _environement.deraumere = 0;
-    // _environement.sibur = 0;
-    // _environement.mendiane = 0;
-    // _environement.phiras = 0;
-    // _environement.thystame = 0;
-    // _environement.players = 0;
-
-    // std::map<std::string, size_t &> itemMap = {
-    //     {"food", _environement.food},
-    //     {"linemate", _environement.linemate},
-    //     {"deraumere", _environement.deraumere},
-    //     {"sibur", _environement.sibur},
-    //     {"mendiane", _environement.mendiane},
-    //     {"phiras", _environement.phiras},
-    //     {"thystame", _environement.thystame},
-    //     {"player", _environement.players}};
-
-    std::istringstream tileStream(firstTile);
-    std::string item;
-
-    // while (tileStream >> item)
-    // {
-    //     auto it = itemMap.find(item);
-    //     if (it != itemMap.end())
-    //     {
-    //         it->second += 1;
-    //     }
-    // }
-    // _shouldListen = false;
-}
-
-// to verify:: do listenTakeResponse
-//  to verify: do fonction listen where _shoudlListen = false;
-// to verify: do forwardAction that actualise environement
-void Bot::searchAndTake(std::string response, const std::string &item)
-{
-    if (_shouldListen)
-        listenLookResponse(response);
-    if (item == "food" && _environement.ressources.at(0).food >= 1)
+    /*if (params[0] == "food" && _environement.ressources[0].food >= 1)
     {
         doAction(TAKE, "food");
     }
-    else if (item == "linemate" && _environement.ressources.at(0).linemate >= 1)
+    else if (params[0] == "linemate" && _environement.ressources[0].linemate >= 1)
     {
         doAction(TAKE, "linemate");
     }
     else
     {
         doAction(FORWARD, "");
-    }
+    }*/
+    printf("SearchAndTake\n");
+    doAction(FORWARD, "");
+}
+
+void Bot::LevelUp()
+{
+    /*if (canLvlUp(_lvl + 1)) {
+        doAction(INCANTATION, "");
+    }*/
+    printf("LevelUp\n");
 }
 
 void Bot::doAction(actions action, const std::string &parameter)
@@ -156,7 +256,6 @@ void Bot::doAction(actions action, const std::string &parameter)
     sendMessage(finalAction);
     _lastAction.action = action;
     _lastAction.parameter = parameter;
-    // to verify: store a paramter, TAKE LINEMATE -> ok -> +1 linemate
     _timeUnit -= actionInfo.getValue();
     if (_timeUnit % 126 == 0)
         _inventory.food -= 1;
