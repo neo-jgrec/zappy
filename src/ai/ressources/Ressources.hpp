@@ -9,12 +9,16 @@
 #define RESSOURCES_HPP_
 
 #include <iostream>
+#include <unordered_map>
 
 class Ressources
 {
 public:
     Ressources();
     ~Ressources();
+
+    void addRessource(std::string ressource);
+    size_t getRessource(const std::string &ressource) const;
 
     size_t food;
     size_t linemate;
@@ -39,6 +43,8 @@ public:
     // int getMendiane() const;
     // int getPhiras() const;
     // int getThystame() const;
+private:
+    std::unordered_map<std::string, size_t*> ressourcesMap;
 };
 
-#endif
+#endif // RESSOURCES_HPP_
