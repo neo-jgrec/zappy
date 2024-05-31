@@ -7,29 +7,37 @@
 
 #include "Bot.hpp"
 
-Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName), _id(0), _messageId(0), _lastMessageGuard(""), _lastAction(DEFAULT, ""), _timeUnit(126), _shouldListen(false)
+Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName), _messageId(0), _timeUnit(126), _shouldListen(false)
 {
     printColor("===== [Bot initiation] =====", GREEN);
     printColor("sockfd: " + std::to_string(_sockfd), YELLOW);
     printColor("teamName: " + _teamName, YELLOW);
-    printColor("id: " + std::to_string(_id), YELLOW);
     printColor("messageId: " + std::to_string(_messageId), YELLOW);
-    printColor("lastMessageGuard: " + _lastMessageGuard, YELLOW);
-    printColor("lastAction: " + std::to_string(_lastAction.action), YELLOW);
     printColor("timeUnit: " + std::to_string(_timeUnit), YELLOW);
     printColor("===== [!Bot initiation] =====", GREEN);
     std::cout << std::endl;
 
     sendMessage(teamName);
-    _inventory.food = 9;
+    state.ressources.food = 9;
+    // ACTIONS WITH THEIR PROBABILITIES
+    // LOOK IS ONE BECAUSE IT IS THE FIRST ACTION WE WANT TO DO AFTER FIRST DECISION
+    Behavior look = Behavior(1, [&]()
+                             { doAction(LOOK, ""); }, "look");
+    Behavior take = Behavior(0.0, [&]()
+                             { doAction(TAKE, "food"); }, "take");
+    behaviors.push_back(look);
+    behaviors.push_back(take);
 }
 
-Listener::Listener(Bot &bot)
-{
-    behaviors.emplace_back(0.5, [&]() { bot.searchAndTake(); }, "searchRessource");
-    behaviors.emplace_back(0.3, [&]() { bot.LevelUp(); }, "levelUp");
-    behaviors.emplace_back(0.2, [&]() { bot.survive(); }, "survive");
-}
+// Listener::Listener(Bot &bot)
+// {
+//     behaviors.emplace_back(0.5, [&]()
+//                            { bot.searchAndTake(); }, "searchRessource");
+//     behaviors.emplace_back(0.3, [&]()
+//                            { bot.LevelUp(); }, "levelUp");
+//     behaviors.emplace_back(0.2, [&]()
+//                            { bot.survive(); }, "survive");
+// }
 
 Bot::~Bot()
 {
@@ -51,131 +59,27 @@ void Bot::run(std::string response)
 {
     printColor("Bot listens: " + response, GREEN);
 
-    Listener listener(*this);
-
-    listener.listen(response, *this);
-    listener.updateProbabilities(*this);
-    listener.act(*this);
+    listen(response);      // -> change le state
+    updateProbabilities(); // -> update les probabilités avec le state
+    act();                 // -> fait l'action la plus rentable
 }
 
-void Listener::listen(std::string response, Bot &bot)
+void Bot::updateProbabilities()
 {
-    if (bot._lastAction.action == LOOK) {
-        bot._environement.ressources.clear();
-        std::string cleanedResponse = response.substr(1, response.size() - 2);
-
-        std::istringstream iss(cleanedResponse);
-        std::string tile;
-
-        while (std::getline(iss, tile, ',')) {
-            Ressources tileResources;
-            std::istringstream tileStream(tile);
-            std::string resource;
-
-            while (tileStream >> resource) {
-                tileResources.addRessource(resource);
-            }
-            bot._environement.ressources.push_back(tileResources);
-        }
-    }
-    if (bot._lastAction.action == FORWARD) {
-
-    }
+    behaviors[0].probability = // has forwaded && is rock searched found etc
+        behaviors[1].probability = state.ressources.food * 0.2;
 }
 
-void Listener::updateProbabilities(Bot &bot)
+void Bot::act()
 {
-    auto accumulateResource = [&](auto member) {
-        return std::accumulate(bot._environement.ressources.begin(), bot._environement.ressources.end(), 0, [&](int sum, const Ressources& tile) {
-            return sum + tile.*member;
-        });
-    };
-
-    int totalFood = accumulateResource(&Ressources::food);
-    int totalLinemate = accumulateResource(&Ressources::linemate);
-    int totalDeraumere = accumulateResource(&Ressources::deraumere);
-    int totalSibur = accumulateResource(&Ressources::sibur);
-    int totalMendiane = accumulateResource(&Ressources::mendiane);
-    int totalPhiras = accumulateResource(&Ressources::phiras);
-    int totalThystame = accumulateResource(&Ressources::thystame);
-
-    for (auto& behavior : behaviors) {
-        behavior.probability = 0.0;
-    }
-
-    std::vector<Rule> rules = {
-        { 
-            [&] { 
-                return totalFood < 5;
-            },
-            [&] {
-                for (auto& behavior : behaviors) {
-                    if (behavior.name == "survive") {
-                        behavior.probability += 0.5;
-                    }
-                }
-            }
-        },
-        { 
-            [&] {
-                return bot.canLvlUp(bot._lvl + 1);
-            },
-            [&] {
-                for (auto& behavior : behaviors) {
-                    if (behavior.name == "levelUp") {
-                        behavior.probability += 0.7;
-                    }
-                }
-            }
-        },
-        { 
-            [&] {
-                return totalLinemate >= 1;
-            },
-            [&] {
-                for (auto& behavior : behaviors) {
-                    if (behavior.name == "searchRessource") {
-                        behavior.probability += 0.9;
-                    }
-                }
-            }
-        }
-    };
-
-    for (const auto& rule : rules) {
-        if (rule.checkCondition()) {
-            rule.performAction();
-        }
-    }
-
-    double totalProbability = std::accumulate(behaviors.begin(), behaviors.end(), 0.0, [](double sum, const Behavior& behavior) {
-        return sum + behavior.probability;
-    });
-
-    if (totalProbability > 0) {
-        for (auto& behavior : behaviors) {
-            behavior.probability /= totalProbability;
-        }
-    }
+    // behavior more worth.act();
 }
 
-void Listener::act(Bot &bot)
+void Bot::listen(std::string response)
 {
-    if (!bot.actionQueue.empty()) {
-        bot.executeNextAction();
-    } else {
-        double randomValue = static_cast<double>(rand()) / RAND_MAX;
-        std::cout << "Random value: " << randomValue << std::endl;
-        double cumulativeProbability = 0.0;
-
-        for (auto& behavior : behaviors) {
-            cumulativeProbability += behavior.probability;
-            std::cout << "Behavior: " << behavior.name << " - Probability: " << behavior.probability << std::endl;
-            if (randomValue <= cumulativeProbability) {
-                behavior.act();
-                break;
-            }
-        }
+    if (state.lastAction.action == LOOK)
+    {
+        listenLookResponse(response);
     }
 }
 
@@ -212,15 +116,16 @@ bool Bot::canLvlUp(int lvl)
 
     const auto requirements = levelRequirements[lvl];
 
-    bool hasRequiredResources = 
-        _inventory.linemate >= requirements[0] &&
-        _inventory.deraumere >= requirements[1] &&
-        _inventory.sibur >= requirements[2] &&
-        _inventory.mendiane >= requirements[3] &&
-        _inventory.phiras >= requirements[4] &&
-        _inventory.thystame >= requirements[5];
+    bool hasRequiredResources =
+        state.ressources.linemate >= requirements[0] &&
+        state.ressources.deraumere >= requirements[1] &&
+        state.ressources.sibur >= requirements[2] &&
+        state.ressources.mendiane >= requirements[3] &&
+        state.ressources.phiras >= requirements[4] &&
+        state.ressources.thystame >= requirements[5];
 
-    if (hasRequiredResources) {
+    if (hasRequiredResources)
+    {
         return true;
     }
     return false;
@@ -255,29 +160,17 @@ void Bot::LevelUp()
 void Bot::doAction(actions action, const std::string &parameter)
 {
     ActionInfo actionInfo = getActionInfo(action);
-    actionInfo.parameter = parameter;
-    actionQueue.push(actionInfo);
-}
 
-void Bot::executeNextAction()
-{
-    if (!actionQueue.empty()) {
-        ActionInfo actionInfo = actionQueue.front();
-        actionQueue.pop();
+    std::string finalAction = actionInfo.getName();
 
-        std::string finalAction = actionInfo.getName();
-        if (!actionInfo.parameter.empty()) {
-            finalAction += " " + actionInfo.parameter;
-        }
-
-        printColor("Bot does: " + finalAction, YELLOW);
-        sendMessage(finalAction);
-
-        _lastAction.action = actionInfo.getAction();
-        _lastAction.parameter = actionInfo.parameter;
-        _timeUnit -= actionInfo.getValue();
-        if (_timeUnit % 126 == 0) {
-            _inventory.food -= 1;
-        }
-    }
+    if (parameter != "")
+        finalAction += " " + parameter;
+    printColor("Bot does: " + finalAction, YELLOW);
+    sendMessage(finalAction);
+    state.lastAction.action = action;
+    state.lastAction.parameter = parameter;
+    _timeUnit -= actionInfo.getValue();
+    if (_timeUnit % 126 == 0)
+        state.ressources.food -= 1;
+    _shouldListen = true;
 }
