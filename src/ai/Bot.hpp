@@ -32,6 +32,7 @@ public:
     void sendMessage(const std::string &message);
     void run(std::string response);
     void searchAndTake();
+    // Paterns
     void LevelUp();
     void survive();
     bool canLvlUp(int);

@@ -10,8 +10,7 @@
 
 #include "../environement/Environement.hpp"
 #include "../ressources/Ressources.hpp"
-#include "../actions/Actions.hpp"
-
+#include "../actions/LastAction.hpp"
 class BotState
 {
 public:

@@ -7,7 +7,7 @@
 
 #include "BotState.hpp"
 
-BotState::BotState()
+BotState::BotState() : lastAction(actions::DEFAULT, "")
 {
 }
 
