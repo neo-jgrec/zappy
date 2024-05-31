@@ -28,17 +28,20 @@ public:
     Bot(int sockfd, std::string teamName);
     ~Bot();
 
-    void group();
     void sendMessage(const std::string &message);
     void run(std::string response);
-    void searchAndTake();
     // Paterns
     void LevelUp();
     void survive();
+    void group();
+
+    // Conditions
     bool canLvlUp(int);
 
     std::queue<ActionInfo> actionQueue;
     void executeNextAction();
+
+    void searchAndTake();
 
     // NEW WAY WITH ACTIONS AND PROBABILITIES
     BotState state;

@@ -59,9 +59,9 @@ void Bot::run(std::string response)
 {
     printColor("Bot listens: " + response, GREEN);
 
-    listen(response);
-    updateProbabilities();
-    act();
+    listen(response);      // -> change le state
+    updateProbabilities(); // -> update les probabilités avec le state
+    act();                 // -> fait l'action la plus rentable
 }
 
 void Bot::updateProbabilities()
@@ -81,7 +81,6 @@ void Bot::listen(std::string response)
     {
         listenLookResponse(response);
     }
-    // update probabilities here ?
 }
 
 void Bot::takeFirstDecision(std::string response)

@@ -10,6 +10,9 @@ We use a probability graph to take the worther actions.
 
 * **V2**: We train a model that calculates probabilities.
 
+## ideas to do patterns 📄
+We can build paterns by create a set of behaviors by their names like so:
+`paterns("look", "take", "broadcast group")`
 
 ## Protocol of messages
 * **V1:**
