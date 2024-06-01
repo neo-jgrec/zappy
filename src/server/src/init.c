@@ -25,11 +25,11 @@ bool init_server(server_t *server, const char **args)
     server->clients = NULL;
     server->info = init_socket_address((size_t)server->proprieties.port);
     server->fd = socket(AF_INET, SOCK_STREAM, 0);
+    server->addrlen = sizeof(struct sockaddr_in);
     if (server->fd < 0) {
         return false;
     }
     FD_ZERO(&server->current_sockets);
     FD_SET(server->fd, &server->current_sockets);
-    server->addrlen = sizeof(struct sockaddr_in);
     return true;
 }

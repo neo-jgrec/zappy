@@ -26,12 +26,14 @@ void handle_client_message(server_t *server)
 {
     client_t *client = server->clients;
 
-    printf("RECEIVED: %s\n", client->message);
+    if (strlen(client->message) == 0)
+        return;
     client->commands = str_to_array_separator(client->message, " \r\n\t");
+    memset(client->message, '\0', BUFFER_SIZE);
     if (client->commands == NULL || client->commands[0] == NULL)
         return;
     for (size_t i = 0; i < NB_COMMANDS; i++) {
-        if (strcasecmp(client->commands[0], commands[i].name) == 0) {
+        if (strcmp(client->commands[0], commands[i].name) == 0) {
             commands[i].command(client, server);
             free_array((void **)client->commands);
             return;
