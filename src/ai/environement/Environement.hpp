@@ -20,6 +20,7 @@ public:
     Environement();
     ~Environement();
     std::vector<Ressources> ressources;
+    void clear();
 
 private:
 };

@@ -14,3 +14,8 @@ Environement::Environement()
 Environement::~Environement()
 {
 }
+
+void Environement::clear()
+{
+    ressources.clear();
+}
