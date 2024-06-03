@@ -9,29 +9,27 @@
 
 Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName), _messageId(0), _timeUnit(126)
 {
+    srand(static_cast<unsigned int>(time(nullptr)));
     printColor("===== [Bot initiation] =====", GREEN);
     printColor("sockfd: " + std::to_string(_sockfd), YELLOW);
     printColor("teamName: " + _teamName, YELLOW);
     printColor("messageId: " + std::to_string(_messageId), YELLOW);
     printColor("timeUnit: " + std::to_string(_timeUnit), YELLOW);
-    printColor("===== [!Bot initiation] =====", GREEN);
     std::cout << std::endl;
 
     sendMessage(teamName);
     state.ressources.food = 9;
-    Behavior look = Behavior(0, [&]()
-                             { doAction(LOOK, ""); }, "look");
-    Behavior take = Behavior(0, [&]()
-                             { doAction(TAKE, "food"); }, "take");
-    Behavior fork = Behavior(0, [&]()
-                             { doAction(FORK, ""); }, "fork");
-    behaviors.push_back(look);
-    behaviors.push_back(take);
-    behaviors.push_back(fork);
-    for (auto behavior : behaviors)
+    behaviors.push_back(std::make_unique<Behavior>(0, [&]()
+                                                   { doAction(LOOK, ""); }, "look"));
+    behaviors.push_back(std::make_unique<Behavior>(0, [&]()
+                                                   { doAction(TAKE, "food"); }, "take"));
+    behaviors.push_back(std::make_unique<Behavior>(0, [&]()
+                                                   { doAction(FORK, ""); }, "fork"));
+    for (auto &behavior : behaviors)
     {
-        behavior.probability = rand() % 100;
+        behavior->probability = rand() % 100;
     }
+    printColor("===== [!Bot initiation] =====", GREEN);
 }
 
 Bot::~Bot()
@@ -60,12 +58,14 @@ void Bot::act()
 
     for (auto &behavior : behaviors)
     {
-        if (behavior.probability > maxProbability)
+        std::cout << "name: " << behavior->name << " probability: " << behavior->probability << std::endl;
+        if (behavior->probability > maxProbability)
         {
-            maxProbability = behavior.probability;
-            bestBehavior = &behavior;
+            maxProbability = behavior->probability;
+            bestBehavior = behavior.get();
         }
     }
+    std::cout << "bestBehavior: " << bestBehavior->name << std::endl;
 
     if (bestBehavior)
     {
@@ -78,6 +78,10 @@ void Bot::listen(std::string response)
     if (state.lastAction.action == LOOK)
     {
         listenLookResponse(response);
+    }
+    else if (state.lastAction.action == FORK)
+    {
+        listenForkResponse(response);
     }
 }
 

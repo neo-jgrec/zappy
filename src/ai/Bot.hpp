@@ -11,7 +11,6 @@
 #include <iostream>
 #include <vector>
 #include <sys/socket.h>
-#include "utils/PrintColor.hpp"
 #include <sstream>
 #include <string>
 #include <algorithm>
@@ -19,9 +18,13 @@
 #include <memory>
 #include <numeric>
 #include <queue>
+#include <cstdlib>
+#include <ctime>
 
 #include "state/BotState.hpp"
 #include "behaviors/Behavior.hpp"
+#include "utils/PrintColor.hpp"
+
 class Bot
 {
 public:
@@ -34,7 +37,7 @@ public:
 
     // It is what ia observe to adjust behaviors probabilities
     BotState state;
-    std::vector<Behavior> behaviors;
+    std::vector<std::unique_ptr<Behavior>> behaviors;
 
     void listen(std::string response);
     void act();
@@ -55,18 +58,6 @@ private:
     // listeners
     void listenLookResponse(const std::string &response);
     void listenForkResponse(const std::string &response);
-
-    const std::array<std::array<int, 6>, 9> levelRequirements = {{
-        {0, 0, 0, 0, 0, 0}, // Level 0
-        {0, 0, 0, 0, 0, 0}, // Level 1
-        {1, 0, 0, 0, 0, 0}, // Level 2
-        {1, 1, 1, 0, 0, 0}, // Level 3
-        {2, 0, 1, 0, 2, 0}, // Level 4
-        {1, 1, 2, 0, 1, 0}, // Level 5
-        {1, 2, 1, 3, 0, 0}, // Level 6
-        {1, 2, 3, 0, 1, 0}, // Level 7
-        {2, 2, 2, 2, 2, 1}  // Level 8
-    }};
 };
 
 #endif // BOT_HPP_
