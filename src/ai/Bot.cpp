@@ -20,11 +20,11 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
     sendMessage(teamName);
     state.ressources.food = 9;
     behaviors.push_back(std::make_unique<Behavior>(0, [&]()
-                                                   { doAction(LOOK, ""); }, "look"));
+                                                   { doAction(LOOK, "", "look"); }, "look"));
     behaviors.push_back(std::make_unique<Behavior>(0, [&]()
-                                                   { doAction(TAKE, "food"); }, "take"));
+                                                   { doAction(TAKE, "food", "take_food"); }, "take_food"));
     behaviors.push_back(std::make_unique<Behavior>(0, [&]()
-                                                   { doAction(FORK, ""); }, "fork"));
+                                                   { doAction(FORK, "", "fork"); }, "fork"));
     for (auto &behavior : behaviors)
     {
         behavior->probability = rand() % 100;
@@ -56,21 +56,23 @@ void Bot::act()
     Behavior *bestBehavior = nullptr;
     int maxProbability = -1;
 
+    std::cout << "----- [Behaviors] -----\n";
     for (auto &behavior : behaviors)
     {
-        std::cout << "name: " << behavior->name << " probability: " << behavior->probability << std::endl;
+        std::cout << "behavior name: " << behavior->name << " probability: " << behavior->probability << std::endl;
         if (behavior->probability > maxProbability)
         {
             maxProbability = behavior->probability;
             bestBehavior = behavior.get();
         }
     }
-    std::cout << "bestBehavior: " << bestBehavior->name << std::endl;
+    printColor("bestBehavior: " + bestBehavior->name, GREEN);
 
     if (bestBehavior)
     {
         bestBehavior->act();
     }
+    applyReward();
 }
 
 void Bot::listen(std::string response)
@@ -85,6 +87,37 @@ void Bot::listen(std::string response)
     }
 }
 
+void Bot::applyReward()
+{
+    float reward = state.reward;
+    std::string rewardStr = "Reward: " + std::to_string(reward);
+
+    if (reward < 0)
+        printColor(rewardStr, RED);
+    else if (reward == 0)
+        printColor(rewardStr, YELLOW);
+    else
+        printColor(rewardStr, GREEN);
+
+    for (auto &behavior : behaviors)
+    {
+        if (behavior->name == state.lastBehavior)
+        {
+            behavior->probability += reward;
+        }
+        else
+        {
+            behavior->probability -= reward;
+        }
+
+        if (behavior->probability > 100)
+            behavior->probability = 100;
+        else if (behavior->probability < 0)
+            behavior->probability = 0;
+    }
+    reward = 0;
+}
+
 void Bot::takeFirstDecision(std::string response)
 {
     int slot;
@@ -97,12 +130,13 @@ void Bot::takeFirstDecision(std::string response)
     iss >> slot >> x >> y;
 
     if (slot == 0)
-        doAction(FORK, "");
+        doAction(FORK, "", "");
     else
-        doAction(LOOK, "");
+        doAction(LOOK, "", "");
 }
 
-void Bot::doAction(actions action, const std::string &parameter)
+// to verify: this action could only take a behavior in parameter ?
+void Bot::doAction(actions action, const std::string &parameter, const std::string &behaviorName)
 {
     ActionInfo actionInfo = getActionInfo(action);
 
@@ -112,6 +146,7 @@ void Bot::doAction(actions action, const std::string &parameter)
         finalAction += " " + parameter;
     printColor("Bot does: " + finalAction, YELLOW);
     sendMessage(finalAction);
+    state.lastBehavior = behaviorName;
     state.lastAction.action = action;
     state.lastAction.parameter = parameter;
     _timeUnit -= actionInfo.getValue();

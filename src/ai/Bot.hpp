@@ -41,6 +41,7 @@ public:
 
     void listen(std::string response);
     void act();
+    void applyReward();
 
 private:
     unsigned int _messageId;
@@ -53,11 +54,12 @@ private:
     int _timeUnit;
 
     void takeFirstDecision(std::string response);
-    void doAction(actions action, const std::string &parameter);
+    void doAction(actions action, const std::string &parameter, const std::string &behaviorName);
 
     // listeners
     void listenLookResponse(const std::string &response);
     void listenForkResponse(const std::string &response);
+    void listenTakeResponse(const std::string &response);
 };
 
 #endif // BOT_HPP_

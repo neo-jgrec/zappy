@@ -4,7 +4,7 @@
 ** File description:
 ** LastActions.hpp
 */
-
+// to verify: remove this file.
 #ifndef LASTACTION_HPP_
 #define LASTACTION_HPP_
 

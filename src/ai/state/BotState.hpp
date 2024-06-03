@@ -20,7 +20,11 @@ public:
     Environement environment;
     Ressources ressources;
     LastAction lastAction;
+    std::string lastBehavior;
     unsigned int level;
+
+    // to verify: test reward
+    double reward;
 };
 
 #endif // BOTSTATE_HPP_
