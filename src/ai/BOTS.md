@@ -10,11 +10,19 @@ We use a probability graph to take the worther actions.
 
 * **V2**: We train a model that calculates probabilities.
 
+## Integration
+* An **ia** is an informatic programm that got:
+    * Perception: Interaction with an environment or datas
+    * Decision: Execute actions or solve problems.
+
+Our bot do actions depending on the worth rate of an action. We calculate each turn which actions is worther.
+
+Our models is ML.
 ## Ideas to do patterns 📄
 We can build paterns by create a set of behaviors by their names like so:
 `paterns("look", "take", "broadcast group")`
 
-## Ideas to remove multiple if else if listen 🧽
+## Ideas to remove multiple if else in listen 🧽
 `
 We can store a currentBehavior that contains act and listen functions.
 currentBehavior.listen(response)
