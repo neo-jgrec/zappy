@@ -118,14 +118,22 @@ void Bot::doAction(actions action, const std::string &parameter)
 /* [ML] */
 /* [AddObservation]
 What bot will change
-behaviors[0].probability;
-behaviors[1].probability;
-etc...
+last behavior.probability
+
+and
+
+Botstate
+
+will modify the last behavior.probability
 */
 
 /* [Rewards]
+An action occured
 food * 0.1;
 linemate * 0.2;
 deraumere * 0.3;
-reached a lvl = lvl * 0.3
+reached a lvl = nb_lvl * 0.3
+
+die = -1
+get ko response ? (not sure)
 */
