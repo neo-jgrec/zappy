@@ -9,14 +9,31 @@
     #define SERVER_H_
     #define ERROR_STATUS 84
     #define OK_STATUS 0
+    #define FOOD_DENSITY 0.5f
+    #define LINEMATE_DENSITY 0.3f
+    #define DERAUMERE_DENSITY 0.15f
+    #define SIBUR_DENSITY 0.1f
+    #define MENDIANE_DENSITY 0.1f
+    #define PHIRAS_DENSITY 0.08f
+    #define THYSTAME_DENSITY 0.05f
     #define NB_COMMANDS 12
+    #define MAX_CAPACITY_TEAM 200
     #include <stdlib.h>
     #include <stdio.h>
     #include <netinet/in.h>
+    #include <uuid/uuid.h>
     #include <unistd.h>
     #include "flags.h"
     #include "utils.h"
     #include "client.h"
+
+typedef struct team_s {
+    char *client_ids[MAX_CAPACITY_TEAM];
+    bool is_available;
+    unsigned char capacity;
+    struct team_s *next;
+    struct team_s *prev;
+} team_t;
 
 typedef struct server_s {
     struct sockaddr_in info;
@@ -26,6 +43,7 @@ typedef struct server_s {
     flags_t proprieties;
     socklen_t addrlen;
     client_t *clients;
+    team_t *teams;
 } server_t;
 
 typedef struct commands_s {

@@ -27,7 +27,7 @@ int create_new_client(server_t *server)
 
     if (client_fd == -1)
         return ERROR_STATUS;
-    printf("New client created\n");
+    dprintf(client_fd, "WELCOME\n");
     if (server->clients == NULL)
         server->clients = init_client(client_fd);
     else if (push_client(server->clients, client_fd) == false)

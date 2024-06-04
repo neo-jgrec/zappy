@@ -12,12 +12,29 @@
     #include <stdio.h>
     #include "utils.h"
 
+enum Orientation{
+    NORTH,
+    SOUTH,
+    WEST,
+    EAST
+};
+
+typedef struct inventory_s {
+
+} inventory_t;
+
 typedef struct client_s {
+    char uuid[37];
     int fd;
     char **commands;
     char message[BUFFER_SIZE];
     struct client_s *next;
     struct client_s *prev;
+    signed char x;
+    signed char y;
+    char *team_name;
+    unsigned char orientation;
+    inventory_t inventory;
 } client_t;
 
 /* LISTS */

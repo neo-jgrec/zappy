@@ -9,10 +9,13 @@
 
 client_t *init_client(int client_fd)
 {
+    uuid_t binuuid;
     client_t *client = malloc(sizeof(client_t));
 
     if (client == NULL)
         return NULL;
+    uuid_generate_random(binuuid);
+    uuid_unparse_lower(binuuid, client->uuid);
     client->next = NULL;
     client->prev = NULL;
     client->commands = NULL;
