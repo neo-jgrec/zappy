@@ -8,20 +8,23 @@
 #ifndef ENVIRONEMENT_HPP_
 #define ENVIRONEMENT_HPP_
 
-#include "ressources/Ressources.hpp"
+#include "Tile.hpp"
 
 #include <iostream>
 #include <vector>
 
 // to verify: must have x y, should be an array
+
 class Environement
 {
 public:
     Environement();
     ~Environement();
-    std::vector<Ressources> ressources;
-
-private:
+    std::vector<Tile> tiles;
+    void clear();
+    bool contains(std::string ressource);
+    unsigned int getDistance(std::string ressource);
+    // get coord (ressources)
 };
 
 #endif // ENVIRONEMENT_HPP_

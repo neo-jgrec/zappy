@@ -61,8 +61,8 @@ void Client::authenticate()
 {
     std::string buffer;
 
-    recvMessage(buffer);    
-    //code            // to handle Welcome message
+    recvMessage(buffer);
+    // code            // to handle Welcome message
     _bot = std::make_unique<Bot>(_sockfd, _teamName);
 }
 

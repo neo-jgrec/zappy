@@ -4,30 +4,54 @@
 ** File description:
 ** Bot.cpp
 */
-
+// to verify: test reward
+//  Implementation of epsilon-greedy: Cette approche permet au bot de choisir aléatoirement une action
+// avec une certaine probabilité (epsilon) afin d'explorer de nouvelles actions et comportements.
 #include "Bot.hpp"
 
-Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName), _id(0), _messageId(0), _lastMessageGuard(""), _lastAction(DEFAULT, ""), _timeUnit(126), _shouldListen(false)
+Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName), _messageId(0), _timeUnit(126)
 {
+    srand(static_cast<unsigned int>(time(nullptr)));
     printColor("===== [Bot initiation] =====", GREEN);
     printColor("sockfd: " + std::to_string(_sockfd), YELLOW);
     printColor("teamName: " + _teamName, YELLOW);
-    printColor("id: " + std::to_string(_id), YELLOW);
     printColor("messageId: " + std::to_string(_messageId), YELLOW);
-    printColor("lastMessageGuard: " + _lastMessageGuard, YELLOW);
-    printColor("lastAction: " + std::to_string(_lastAction.action), YELLOW);
     printColor("timeUnit: " + std::to_string(_timeUnit), YELLOW);
-    printColor("===== [!Bot initiation] =====", GREEN);
     std::cout << std::endl;
 
     sendMessage(teamName);
+    state.ressources.food = 9;
+    behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
+                                                   { doAction(LOOK, "", "look"); }, "look"));
+    behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
+                                                   { doAction(TAKE, "food", "take_food"); }, "take_food"));
+    behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
+                                                   { doAction(FORK, "", "fork"); }, "fork"));
+    behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
+                                                   { doAction(FORWARD, "", "forward"); }, "forward"));
+
+    for (auto &behavior : behaviors)
+    {
+        behavior->probability = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+    }
+    printColor("===== [!Bot initiation] =====", GREEN);
 }
 
+// to verify: print it atend
 Bot::~Bot()
 {
+    printColor("===== [Bot destruction] =====", RED);
+    printColor("lvl: " + std::to_string(state.level), RED);
+    printColor("food: " + std::to_string(state.ressources.food), RED);
+    printColor("linemate: " + std::to_string(state.ressources.linemate), RED);
+    printColor("deraumere: " + std::to_string(state.ressources.deraumere), RED);
+    printColor("sibur: " + std::to_string(state.ressources.sibur), RED);
+    printColor("mendiane: " + std::to_string(state.ressources.mendiane), RED);
+    printColor("phiras: " + std::to_string(state.ressources.phiras), RED);
+    printColor("thystame: " + std::to_string(state.ressources.thystame), RED);
+    printColor("===== [!Bot destruction] =====", RED);
 }
 
-// to verify: implement strategy
 void Bot::sendMessage(const std::string &message)
 {
     std::string messageToSend = message + "\n";
@@ -35,19 +59,108 @@ void Bot::sendMessage(const std::string &message)
     send(_sockfd, messageToSend.c_str(), messageToSend.size(), 0);
 }
 
-void Bot::group()
-{
-    sendMessage("Group");
-}
-
 void Bot::run(std::string response)
 {
+    if (!response.empty() && response.back() == '\n')
+    {
+        response.pop_back();
+    }
+
     printColor("Bot listens: " + response, GREEN);
 
-    /*if (_lastAction.action == DEFAULT)
-        takeFirstDecision(response);
+    listen(response); // -> change le state
+    // if (state.reward != 0)
+    //   applyReward();
+    updateProbabilities();
+    act(); // -> fait l'action la plus rentable
+}
+
+/*
+epsilon is chance to explore, max it to make a bot more ambitious (0.1 == 10 % chance to explore)
+*/
+void Bot::act()
+{
+    Behavior *bestBehavior = nullptr;
+    float epsilon = 0.4;
+
+    // Exploration
+    if ((rand() / (float)RAND_MAX) < epsilon)
+    {
+        int randomIndex = rand() % behaviors.size();
+        bestBehavior = behaviors[randomIndex].get();
+        printColor("behavior (random): " + bestBehavior->name, GREEN);
+    }
+    else // Exploitation
+    {
+        int maxProbability = -1;
+
+        for (auto &behavior : behaviors)
+        {
+            if (behavior->probability > maxProbability)
+            {
+                maxProbability = behavior->probability;
+                bestBehavior = behavior.get();
+            }
+        }
+        printColor("behavior (best): " + bestBehavior->name, GREEN);
+    }
+    if (bestBehavior)
+    {
+        bestBehavior->act();
+        state.lastBehaviors.push_back(std::make_unique<Behavior>(*bestBehavior));
+    }
+}
+
+// Landmark: 1. It doest two calls take but take in acount reward at second call. Fix it. Good
+void Bot::listen(std::string response)
+{
+    if (state.lastAction.action == LOOK)
+    {
+        listenLookResponse(response);
+    }
+    else if (state.lastAction.action == FORK)
+    {
+        listenForkResponse(response);
+    }
+    else if (state.lastAction.action == TAKE)
+    {
+        listenTakeResponse(response);
+    }
+    else if (state.lastAction.action == FORWARD)
+    {
+        listenForwardResponse(response);
+    }
+}
+
+// depecrated
+void Bot::applyReward()
+{
+    double reward = state.reward;
+    std::string rewardStr = "Reward: " + std::to_string(reward);
+
+    if (reward < 0)
+        printColor(rewardStr, RED);
     else
-        survive(response);*/
+        printColor(rewardStr, GREEN);
+    std::cout << "----- [Behaviors] -----\n";
+    for (auto &behavior : state.lastBehaviors)
+    {
+        auto it = std::find_if(behaviors.begin(), behaviors.end(), [&behavior](const std::unique_ptr<Behavior> &b)
+                               { return b->name == behavior->name; });
+
+        if (it != behaviors.end())
+        {
+            (*it)->probability += reward;
+            std::cout << "behavior name: " << (*it)->name << " probability: " << (*it)->probability << std::endl;
+            if ((*it)->probability > 1)
+                (*it)->probability = 1;
+            else if ((*it)->probability < 0)
+                (*it)->probability = 0;
+        }
+    }
+    std::cout << "----- [!Behaviors] -----\n";
+    state.lastBehaviors.clear();
+    state.reward = 0;
 }
 
 void Bot::takeFirstDecision(std::string response)
@@ -62,89 +175,13 @@ void Bot::takeFirstDecision(std::string response)
     iss >> slot >> x >> y;
 
     if (slot == 0)
-        doAction(FORK, "");
+        doAction(FORK, "", "");
     else
-        doAction(LOOK, "");
+        doAction(LOOK, "", "");
 }
 
-void Bot::survive(std::string response)
-{
-    if (_lastAction.action == FORWARD)
-    {
-        doAction(LOOK, "");
-        return;
-    }
-    if (_inventory.food < 10)
-        searchAndTake(response, "food");
-    else
-        searchAndTake(response, "linemate");
-}
-
-void Bot::listenLookResponse(const std::string &response)
-{
-    // Remove brackets
-    std::string cleanedResponse = response.substr(1, response.size() - 2);
-
-    std::istringstream iss(cleanedResponse);
-    std::string firstTile;
-    std::getline(iss, firstTile, ',');
-
-    // TODO: fix that
-    // _environement.food = 0;
-    // _environement.linemate = 0;
-    // _environement.deraumere = 0;
-    // _environement.sibur = 0;
-    // _environement.mendiane = 0;
-    // _environement.phiras = 0;
-    // _environement.thystame = 0;
-    // _environement.players = 0;
-
-    // std::map<std::string, size_t &> itemMap = {
-    //     {"food", _environement.food},
-    //     {"linemate", _environement.linemate},
-    //     {"deraumere", _environement.deraumere},
-    //     {"sibur", _environement.sibur},
-    //     {"mendiane", _environement.mendiane},
-    //     {"phiras", _environement.phiras},
-    //     {"thystame", _environement.thystame},
-    //     {"player", _environement.players}};
-
-    std::istringstream tileStream(firstTile);
-    std::string item;
-
-    // while (tileStream >> item)
-    // {
-    //     auto it = itemMap.find(item);
-    //     if (it != itemMap.end())
-    //     {
-    //         it->second += 1;
-    //     }
-    // }
-    // _shouldListen = false;
-}
-
-// to verify:: do listenTakeResponse
-//  to verify: do fonction listen where _shoudlListen = false;
-// to verify: do forwardAction that actualise environement
-void Bot::searchAndTake(std::string response, const std::string &item)
-{
-    if (_shouldListen)
-        listenLookResponse(response);
-    if (item == "food" && _environement.ressources.at(0).food >= 1)
-    {
-        doAction(TAKE, "food");
-    }
-    else if (item == "linemate" && _environement.ressources.at(0).linemate >= 1)
-    {
-        doAction(TAKE, "linemate");
-    }
-    else
-    {
-        doAction(FORWARD, "");
-    }
-}
-
-void Bot::doAction(actions action, const std::string &parameter)
+// to verify: this action could only take a behavior in parameter ?
+void Bot::doAction(actions action, const std::string &parameter, const std::string &behaviorName)
 {
     ActionInfo actionInfo = getActionInfo(action);
 
@@ -154,11 +191,33 @@ void Bot::doAction(actions action, const std::string &parameter)
         finalAction += " " + parameter;
     printColor("Bot does: " + finalAction, YELLOW);
     sendMessage(finalAction);
-    _lastAction.action = action;
-    _lastAction.parameter = parameter;
-    // to verify: store a paramter, TAKE LINEMATE -> ok -> +1 linemate
+    state.lastBehavior = behaviorName;
+    state.lastAction.action = action;
+    state.lastAction.parameter = parameter;
     _timeUnit -= actionInfo.getValue();
     if (_timeUnit % 126 == 0)
-        _inventory.food -= 1;
-    _shouldListen = true;
+        state.ressources.food -= 1;
 }
+
+/* [ML] */
+/* [AddObservation]
+What bot will change
+last behavior.probability
+
+and
+
+Botstate
+
+will modify the last behavior.probability
+*/
+
+/* [Rewards]
+An action occured
+food * 0.1;
+linemate * 0.2;
+deraumere * 0.3;
+reached a lvl = nb_lvl * 0.3
+
+die = -1
+get ko response ? (not sure)
+*/
