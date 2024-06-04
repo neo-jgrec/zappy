@@ -54,6 +54,7 @@ private:
 
     // Game
     int _timeUnit;
+    unsigned int actionsCount;
 
     void takeFirstDecision(std::string response);
     void doAction(actions action, const std::string &parameter, const std::string &behaviorName);
@@ -63,6 +64,9 @@ private:
     void listenForkResponse(const std::string &response);
     void listenTakeResponse(const std::string &response);
     void listenForwardResponse(const std::string &response);
+
+    // paterns
+    void testPatern();
 };
 
 #endif // BOT_HPP_

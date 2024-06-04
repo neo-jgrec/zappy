@@ -22,13 +22,7 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
     sendMessage(teamName);
     state.ressources.food = 9;
     behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
-                                                   { doAction(LOOK, "", "look"); }, "look"));
-    behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
-                                                   { doAction(TAKE, "food", "take_food"); }, "take_food"));
-    behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
-                                                   { doAction(FORK, "", "fork"); }, "fork"));
-    behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
-                                                   { doAction(FORWARD, "", "forward"); }, "forward"));
+                                                   { testPatern(); }, "testPatern"));
 
     for (auto &behavior : behaviors)
     {
@@ -37,7 +31,7 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
     printColor("===== [!Bot initiation] =====", GREEN);
 }
 
-// to verify: print it atend
+// to verify: print it at end, it will with this that we will know which bot is better
 Bot::~Bot()
 {
     printColor("===== [Bot destruction] =====", RED);
@@ -69,10 +63,13 @@ void Bot::run(std::string response)
     printColor("Bot listens: " + response, GREEN);
 
     listen(response); // -> change le state
+    if (actionsCount > 0)
+        actionsCount--;
     // if (state.reward != 0)
     //   applyReward();
     updateProbabilities();
-    act(); // -> fait l'action la plus rentable
+    if (actionsCount == 0)
+        act(); // -> fait l'action la plus rentable
 }
 
 /*
@@ -111,7 +108,6 @@ void Bot::act()
     }
 }
 
-// Landmark: 1. It doest two calls take but take in acount reward at second call. Fix it. Good
 void Bot::listen(std::string response)
 {
     if (state.lastAction.action == LOOK)
