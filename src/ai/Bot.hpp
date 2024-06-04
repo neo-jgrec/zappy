@@ -60,6 +60,7 @@ private:
     void listenLookResponse(const std::string &response);
     void listenForkResponse(const std::string &response);
     void listenTakeResponse(const std::string &response);
+    void listenForwardResponse(const std::string &response);
 };
 
 #endif // BOT_HPP_

@@ -11,6 +11,10 @@
 #include "../environement/Environement.hpp"
 #include "../ressources/Ressources.hpp"
 #include "../actions/LastAction.hpp"
+#include "../behaviors/Behavior.hpp"
+
+#include <vector>
+#include <memory>
 class BotState
 {
 public:
@@ -25,6 +29,7 @@ public:
 
     // to verify: test reward
     double reward;
+    std::vector<std::unique_ptr<Behavior>> lastBehaviors;
 };
 
 #endif // BOTSTATE_HPP_

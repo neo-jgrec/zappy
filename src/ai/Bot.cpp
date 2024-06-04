@@ -4,7 +4,9 @@
 ** File description:
 ** Bot.cpp
 */
-
+// to verify: test reward
+//  Implementation of epsilon-greedy: Cette approche permet au bot de choisir aléatoirement une action
+// avec une certaine probabilité (epsilon) afin d'explorer de nouvelles actions et comportements.
 #include "Bot.hpp"
 
 Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName), _messageId(0), _timeUnit(126)
@@ -19,21 +21,35 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
 
     sendMessage(teamName);
     state.ressources.food = 9;
-    behaviors.push_back(std::make_unique<Behavior>(0, [&]()
+    behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
                                                    { doAction(LOOK, "", "look"); }, "look"));
-    behaviors.push_back(std::make_unique<Behavior>(0, [&]()
+    behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
                                                    { doAction(TAKE, "food", "take_food"); }, "take_food"));
-    behaviors.push_back(std::make_unique<Behavior>(0, [&]()
+    behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
                                                    { doAction(FORK, "", "fork"); }, "fork"));
+    behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
+                                                   { doAction(FORWARD, "", "forward"); }, "forward"));
+
     for (auto &behavior : behaviors)
     {
-        behavior->probability = rand() % 100;
+        behavior->probability = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
     }
     printColor("===== [!Bot initiation] =====", GREEN);
 }
 
+// to verify: print it atend
 Bot::~Bot()
 {
+    printColor("===== [Bot destruction] =====", RED);
+    printColor("lvl: " + std::to_string(state.level), RED);
+    printColor("food: " + std::to_string(state.ressources.food), RED);
+    printColor("linemate: " + std::to_string(state.ressources.linemate), RED);
+    printColor("deraumere: " + std::to_string(state.ressources.deraumere), RED);
+    printColor("sibur: " + std::to_string(state.ressources.sibur), RED);
+    printColor("mendiane: " + std::to_string(state.ressources.mendiane), RED);
+    printColor("phiras: " + std::to_string(state.ressources.phiras), RED);
+    printColor("thystame: " + std::to_string(state.ressources.thystame), RED);
+    printColor("===== [!Bot destruction] =====", RED);
 }
 
 void Bot::sendMessage(const std::string &message)
@@ -45,36 +61,56 @@ void Bot::sendMessage(const std::string &message)
 
 void Bot::run(std::string response)
 {
+    if (!response.empty() && response.back() == '\n')
+    {
+        response.pop_back();
+    }
+
     printColor("Bot listens: " + response, GREEN);
 
     listen(response); // -> change le state
-    act();            // -> fait l'action la plus rentable
+    if (state.reward != 0)
+        applyReward();
+    act(); // -> fait l'action la plus rentable
 }
 
+/*
+epsilon is chance to explore, max it to make a bot more ambitious (0.1 == 10 % chance to explore)
+*/
 void Bot::act()
 {
     Behavior *bestBehavior = nullptr;
-    int maxProbability = -1;
+    float epsilon = 0.4;
 
-    std::cout << "----- [Behaviors] -----\n";
-    for (auto &behavior : behaviors)
+    // Exploration
+    if ((rand() / (float)RAND_MAX) < epsilon)
     {
-        std::cout << "behavior name: " << behavior->name << " probability: " << behavior->probability << std::endl;
-        if (behavior->probability > maxProbability)
-        {
-            maxProbability = behavior->probability;
-            bestBehavior = behavior.get();
-        }
+        int randomIndex = rand() % behaviors.size();
+        bestBehavior = behaviors[randomIndex].get();
+        printColor("behavior (random): " + bestBehavior->name, GREEN);
     }
-    printColor("bestBehavior: " + bestBehavior->name, GREEN);
+    else // Exploitation
+    {
+        int maxProbability = -1;
 
+        for (auto &behavior : behaviors)
+        {
+            if (behavior->probability > maxProbability)
+            {
+                maxProbability = behavior->probability;
+                bestBehavior = behavior.get();
+            }
+        }
+        printColor("behavior (best): " + bestBehavior->name, GREEN);
+    }
     if (bestBehavior)
     {
         bestBehavior->act();
+        state.lastBehaviors.push_back(std::make_unique<Behavior>(*bestBehavior));
     }
-    applyReward();
 }
 
+// Landmark: 1. It doest two calls take but take in acount reward at second call. Fix it. Good
 void Bot::listen(std::string response)
 {
     if (state.lastAction.action == LOOK)
@@ -85,37 +121,44 @@ void Bot::listen(std::string response)
     {
         listenForkResponse(response);
     }
+    else if (state.lastAction.action == TAKE)
+    {
+        listenTakeResponse(response);
+    }
+    else if (state.lastAction.action == FORWARD)
+    {
+        listenForwardResponse(response);
+    }
 }
 
 void Bot::applyReward()
 {
-    float reward = state.reward;
+    double reward = state.reward;
     std::string rewardStr = "Reward: " + std::to_string(reward);
 
     if (reward < 0)
         printColor(rewardStr, RED);
-    else if (reward == 0)
-        printColor(rewardStr, YELLOW);
     else
         printColor(rewardStr, GREEN);
-
-    for (auto &behavior : behaviors)
+    std::cout << "----- [Behaviors] -----\n";
+    for (auto &behavior : state.lastBehaviors)
     {
-        if (behavior->name == state.lastBehavior)
-        {
-            behavior->probability += reward;
-        }
-        else
-        {
-            behavior->probability -= reward;
-        }
+        auto it = std::find_if(behaviors.begin(), behaviors.end(), [&behavior](const std::unique_ptr<Behavior> &b)
+                               { return b->name == behavior->name; });
 
-        if (behavior->probability > 100)
-            behavior->probability = 100;
-        else if (behavior->probability < 0)
-            behavior->probability = 0;
+        if (it != behaviors.end())
+        {
+            (*it)->probability += reward;
+            std::cout << "behavior name: " << (*it)->name << " probability: " << (*it)->probability << std::endl;
+            if ((*it)->probability > 1)
+                (*it)->probability = 1;
+            else if ((*it)->probability < 0)
+                (*it)->probability = 0;
+        }
     }
-    reward = 0;
+    std::cout << "----- [!Behaviors] -----\n";
+    state.lastBehaviors.clear();
+    state.reward = 0;
 }
 
 void Bot::takeFirstDecision(std::string response)

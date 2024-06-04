@@ -14,10 +14,10 @@
 class Behavior
 {
 public:
-    Behavior(int probability, std::function<void()> act, std::string name);
+    Behavior(double probability, std::function<void()> act, std::string name);
     ~Behavior();
 
-    int probability;
+    double probability;
     std::function<void()> act;
     std::string name;
 };

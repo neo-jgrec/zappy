@@ -21,8 +21,9 @@ void Bot::listenLookResponse(const std::string &response)
     std::istringstream tileStream(firstTile);
     std::string item;
 
-    while (tileStream >> item)
-    {
-        std::cout << "first tile: " << item << std::endl;
-    }
+    // print first tile result
+    // while (tileStream >> item)
+    // {
+    //     std::cout << "first tile: " << item << std::endl;
+    // }
 }

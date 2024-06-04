@@ -16,7 +16,11 @@ void Bot::listenTakeResponse(const std::string &response)
         if (response == "ok")
         {
             state.ressources.food += 1;
-            state.reward = state.ressources.food * 0.5;
+            state.reward = state.ressources.food * 0.05;
+        }
+        else
+        {
+            state.reward = -0.05;
         }
     }
 }
