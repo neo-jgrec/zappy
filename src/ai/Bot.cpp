@@ -69,8 +69,9 @@ void Bot::run(std::string response)
     printColor("Bot listens: " + response, GREEN);
 
     listen(response); // -> change le state
-    if (state.reward != 0)
-        applyReward();
+    // if (state.reward != 0)
+    //   applyReward();
+    updateProbabilities();
     act(); // -> fait l'action la plus rentable
 }
 
@@ -131,6 +132,7 @@ void Bot::listen(std::string response)
     }
 }
 
+// depecrated
 void Bot::applyReward()
 {
     double reward = state.reward;

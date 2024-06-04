@@ -40,8 +40,10 @@ public:
     std::vector<std::unique_ptr<Behavior>> behaviors;
 
     void listen(std::string response);
-    void act();
+    void updateProbabilities();
+    void normalizeProbabilities();
     void applyReward();
+    void act();
 
 private:
     unsigned int _messageId;

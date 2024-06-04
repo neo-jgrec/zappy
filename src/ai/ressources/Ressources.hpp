@@ -27,6 +27,7 @@ public:
     size_t mendiane;
     size_t phiras;
     size_t thystame;
+    size_t player;
 
     // void setFood(int food);
     // void setLinemate(int linemate);
@@ -44,7 +45,7 @@ public:
     // int getPhiras() const;
     // int getThystame() const;
 private:
-    std::unordered_map<std::string, size_t*> ressourcesMap;
+    std::unordered_map<std::string, size_t *> ressourcesMap;
 };
 
 #endif // RESSOURCES_HPP_

@@ -16,6 +16,7 @@ Ressources::Ressources()
     ressourcesMap["mendiane"] = &mendiane;
     ressourcesMap["phiras"] = &phiras;
     ressourcesMap["thystame"] = &thystame;
+    ressourcesMap["player"] = &player;
 
     food = 0;
     linemate = 0;
@@ -24,6 +25,7 @@ Ressources::Ressources()
     mendiane = 0;
     phiras = 0;
     thystame = 0;
+    player = 0;
 }
 
 Ressources::~Ressources()
