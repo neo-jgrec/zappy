@@ -9,12 +9,4 @@
 
 void Bot::listenForwardResponse(const std::string &response)
 {
-    if (response == "ok")
-    {
-        state.reward = 0.05;
-    }
-    else
-    {
-        state.reward = -0.05;
-    }
 }

@@ -45,8 +45,13 @@ public:
     void applyReward();
     void act();
 
+    // Debug
+    void debugInitialisation();
+    void debugProbabilities();
+
 private:
     unsigned int _messageId;
+    unsigned int _iteration;
 
     // Client
     int _sockfd;
@@ -57,7 +62,7 @@ private:
     unsigned int actionsCount;
 
     void takeFirstDecision(std::string response);
-    void doAction(actions action, const std::string &parameter, const std::string &behaviorName);
+    void doAction(actions action, const std::string &parameter);
 
     // listeners
     void listenLookResponse(const std::string &response);
@@ -67,6 +72,7 @@ private:
 
     // paterns
     void testPatern();
+    void testPatern2();
 };
 
 #endif // BOT_HPP_

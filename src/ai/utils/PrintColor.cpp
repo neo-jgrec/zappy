@@ -9,5 +9,11 @@
 
 void printColor(const std::string &message, const std::string &color)
 {
-    std::cout << color << message << COLOR_RESET << std::endl;
+    std::cout << color << message << COLOR_RESET;
+}
+
+void printKeyValueColored(const std::string &key, const std::string &value)
+{
+    printColor(key + ": ", YELLOW);
+    printColor(value + "\n", GREEN);
 }

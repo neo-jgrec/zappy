@@ -20,7 +20,7 @@ Client::~Client()
 
 void Client::run()
 {
-    std::cout << "Run client\n";
+    std::cout << "Run client\n\n";
 
     authenticate();
     loop();

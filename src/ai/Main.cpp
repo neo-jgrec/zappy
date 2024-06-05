@@ -12,8 +12,6 @@
 // to verify: make a parser with flags
 int main(int ac, char **av)
 {
-    std::cout << "AI" << std::endl;
-
     if (ac != 4)
     {
         displayHelp();
