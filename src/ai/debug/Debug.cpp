@@ -19,8 +19,8 @@ void Bot::debugInitialisation()
 
 void Bot::debugProbabilities()
 {
-    for (auto &behavior : behaviors)
+    for (auto &probability : probabilities)
     {
-        printKeyValueColored(behavior->name, std::to_string(behavior->probability));
+        printKeyValueColored(probability->name, std::to_string(probability->condition) + " " + std::to_string(probability->probability));
     }
 }

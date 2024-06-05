@@ -20,6 +20,9 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
         behavior->probability = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
     }
     debugInitialisation();
+    /* probabilities */
+    probabilities.push_back(std::make_unique<Probability>(5, 0.5, "food_importance"));
+    debugProbabilities();
 }
 
 // to verify: print it at end, it will with this that we will know which bot is better
@@ -56,50 +59,42 @@ void Bot::run(std::string response)
     printKeyValueColored("Bot listens", response);
 
     listen(response); // -> change le state
-    if (actionsCount > 0)
-        actionsCount--;
     if (state.reward != 0)
         applyReward();
     updateProbabilities();
-    if (actionsCount == 0)
+    if (queue.empty())
         act(); // -> fait l'action la plus rentable
+    if (!queue.empty())
+    {
+        queue.front()();
+        queue.erase(queue.begin());
+    }
     _iteration++;
 }
 
 /*
 epsilon is chance to explore, max it to make a bot more ambitious (0.1 == 10 % chance to explore)
 */
-// still depcrecated, it has to be modified on updateProbabilities. Will see how to do it.
+// depecrated epsilon greedy should not be there
 void Bot::act()
 {
+    exploreProbabilities();
     Behavior *bestBehavior = nullptr;
-    float epsilon = 0.4;
 
-    // Exploration
-    if ((rand() / (float)RAND_MAX) < epsilon)
-    {
-        int randomIndex = rand() % behaviors.size();
-        bestBehavior = behaviors[randomIndex].get();
-        printKeyValueColored("Explore", bestBehavior->name);
-    }
-    else // Exploitation
-    {
-        int maxProbability = -1;
+    int maxProbability = -1;
 
-        for (auto &behavior : behaviors)
+    for (auto &behavior : behaviors)
+    {
+        if (behavior->probability > maxProbability)
         {
-            if (behavior->probability > maxProbability)
-            {
-                maxProbability = behavior->probability;
-                bestBehavior = behavior.get();
-            }
+            maxProbability = behavior->probability;
+            bestBehavior = behavior.get();
         }
-        printKeyValueColored("Exploit", bestBehavior->name);
     }
+    printKeyValueColored("Behavior", bestBehavior->name);
     if (bestBehavior)
     {
         bestBehavior->act();
-        state.lastBehaviors.push_back(std::make_unique<Behavior>(*bestBehavior));
     }
 }
 
@@ -126,25 +121,26 @@ void Bot::listen(std::string response)
 void Bot::applyReward()
 {
     double reward = state.reward;
-    std::string rewardStr = "Reward: " + std::to_string(reward);
 
     printKeyValueColored("Reward", std::to_string(reward));
-    for (auto &behavior : state.lastBehaviors)
-    {
-        auto it = std::find_if(behaviors.begin(), behaviors.end(), [&behavior](const std::unique_ptr<Behavior> &b)
-                               { return b->name == behavior->name; });
 
-        if (it != behaviors.end())
+    // Mettre à jour la probabilité basée sur la récompense uniquement pour les comportements explorés
+    for (auto &probability : probabilities)
+    {
+        if (std::find(state.exploredProbabilities.begin(), state.exploredProbabilities.end(), probability->name) != state.exploredProbabilities.end())
         {
-            (*it)->probability += reward;
-            if ((*it)->probability > 1)
-                (*it)->probability = 1;
-            else if ((*it)->probability < 0)
-                (*it)->probability = 0;
+            probability->probability += reward;
+
+            // Clamp the probability values between 0 and 1
+            if (probability->probability > 1)
+                probability->probability = 1;
+            else if (probability->probability < 0)
+                probability->probability = 0;
         }
     }
-    state.lastBehaviors.clear();
+
     state.reward = 0;
+    debugProbabilities();
 }
 
 void Bot::takeFirstDecision(std::string response)
@@ -203,3 +199,5 @@ reached a lvl = nb_lvl * 0.3
 die = -1
 get ko response ? (not sure)
 */
+
+// Landmark: should do exploring probability after a reward!

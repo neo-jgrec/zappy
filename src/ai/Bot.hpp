@@ -35,19 +35,26 @@ public:
 
     void run(std::string response);
 
+    std::vector<std::function<void()>> queue;
+
     // It is what ia observe to adjust behaviors probabilities
     BotState state;
     std::vector<std::unique_ptr<Behavior>> behaviors;
+    std::vector<std::unique_ptr<Probability>> probabilities;
 
     void listen(std::string response);
-    void updateProbabilities();
-    void normalizeProbabilities();
     void applyReward();
     void act();
+
+    // Traning
+    void updateProbabilities();
+    void normalizeProbabilities();
+    void exploreProbabilities();
 
     // Debug
     void debugInitialisation();
     void debugProbabilities();
+    Probability &getProbabilityByName(const std::string &name);
 
 private:
     unsigned int _messageId;
@@ -59,7 +66,6 @@ private:
 
     // Game
     int _timeUnit;
-    unsigned int actionsCount;
 
     void takeFirstDecision(std::string response);
     void doAction(actions action, const std::string &parameter);

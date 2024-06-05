@@ -9,19 +9,20 @@
 
 void Bot::testPatern()
 {
-    doAction(LOOK, "");
-    doAction(TAKE, "food");
-    doAction(FORK, "");
-    doAction(FORWARD, "");
-    actionsCount = 4;
+    queue.push_back([&]()
+                    { doAction(LOOK, ""); });
+    queue.push_back([&]()
+                    { doAction(FORWARD, ""); });
+    queue.push_back([&]()
+                    { doAction(TAKE, "food"); });
+    queue.push_back([&]()
+                    { doAction(RIGHT, ""); });
 }
 
 void Bot::testPatern2()
 {
-    doAction(FORWARD, "");
-    doAction(TAKE, "food");
-    doAction(RIGHT, "");
-    doAction(FORWARD, "");
-    doAction(TAKE, "food");
-    actionsCount = 4;
+    queue.push_back([&]()
+                    { doAction(FORWARD, ""); });
+    queue.push_back([&]()
+                    { doAction(TAKE, "food"); });
 }

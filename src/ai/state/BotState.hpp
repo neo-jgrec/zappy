@@ -12,6 +12,7 @@
 #include "../ressources/Ressources.hpp"
 #include "../actions/LastAction.hpp"
 #include "../behaviors/Behavior.hpp"
+#include "../training/Probability.hpp"
 
 #include <vector>
 #include <memory>
@@ -29,7 +30,7 @@ public:
 
     // to verify: test reward
     double reward;
-    std::vector<std::unique_ptr<Behavior>> lastBehaviors;
+    std::vector<std::string> exploredProbabilities;
 };
 
 #endif // BOTSTATE_HPP_
