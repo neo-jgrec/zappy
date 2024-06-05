@@ -78,16 +78,20 @@
     */
     std::string serverConnect::readFromServer()
     {
-        // std::cout << "Reading from the server" << std::endl;
-        std::vector<char> buffer(4096);
-        ssize_t bytesRead = read(this->fd, buffer.data(), buffer.size() - 1);
+        std::string message;
+        std::vector<char> buffer(1024);
+        int valread;
 
-        if (bytesRead < 0) {
+        while ((valread = read(this->fd, buffer.data(), buffer.size())) > 0) {
+            message += std::string(buffer.data(), valread);
+            if (message.find('\n') == message.size() - 1)
+                break;
+        }
+
+        if (valread < 0) {
             throw guiException("Failed to read from the server");
         }
-        buffer[bytesRead] = '\0';
-        // std::cout << "Received: " << buffer.data();
-        return std::string(buffer.data());
+        return message;
     }
 
     /**
