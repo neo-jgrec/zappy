@@ -57,13 +57,13 @@ int main() {
             boost::tokenizer<> tok(line);
             std::vector<std::string> tokens(tok.begin(), tok.end());
             if (tokens.at(0).compare("msz") == 0) {
-                if (gameData.getMapRef().getSize() > 0)
+                if (gameData.getMap().getSize() > 0)
                     continue;
-                gameData.getMapRef().fillMap(std::stoi(tokens.at(1)), std::stoi(tokens.at(2)));
+                gameData.getMap().fillMap(std::stoi(tokens.at(1)), std::stoi(tokens.at(2)));
                 continue;
             }
             if (tokens.at(0).compare("bct") == 0) {
-                gameData.getMapRef().updateTile(tokens);
+                gameData.getMap().updateTile(tokens);
                 continue;
             }
             if (tokens.at(0).compare("enw") == 0) {
