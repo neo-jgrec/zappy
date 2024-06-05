@@ -10,12 +10,11 @@ class Data
         bool isRunning = false;
         std::vector<Egg> eggs;
         std::vector<Player> players;
+        Map map;
 
     public:
         Data();
         ~Data();
-
-        Map map;
 
         void setTickRate(int rate) { this->tickRate = rate; };
         int getTickRate() { return this->tickRate; };
@@ -24,10 +23,13 @@ class Data
         void addTeam(std::string team) { this->teamNames.push_back(team); };
         void addPlayer(Player player) { this->players.push_back(player); };
 
-        Player getPlayer(int n) { return this->players[n]; };
+        Player &getPlayerRef(int n) { return this->players[n]; };
+        Player getPlayerCopy(int n) { return this->players[n]; };
+        Map &getMapRef() { return this->map; };
+        Map getMapCopy() { return this->map; };
 };
 
-Data::Data(/* args */)
+Data::Data()
 {
 }
 

@@ -96,6 +96,7 @@
     /**
      * @brief send a message to the server
      * @param message the message to send
+     * @return void
     */
     void serverConnect::sendToServer(std::string message)
     {

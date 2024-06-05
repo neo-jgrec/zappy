@@ -95,6 +95,10 @@ void Map::updateTile(std::vector<std::string> values)
 {
     int x = std::stoi(values.at(1));
     int y = std::stoi(values.at(2));
+
+    if (x >= this->map.size() || y >= this->map.at(0).size()) {
+        throw std::invalid_argument("Invalid tile position");
+    }
     map[x][y].update(values);
 }
 
