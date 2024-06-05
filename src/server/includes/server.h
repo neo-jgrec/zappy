@@ -27,6 +27,13 @@
     #include "utils.h"
     #include "client.h"
 
+typedef struct eggs_s {
+    unsigned char x;
+    unsigned char y;
+    struct eggs_s *next;
+    struct eggs_s *prev;
+} eggs_t;
+
 typedef struct team_s {
     char *client_ids[MAX_CAPACITY_TEAM];
     bool is_available;

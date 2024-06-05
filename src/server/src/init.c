@@ -20,7 +20,9 @@ static struct sockaddr_in init_socket_address(size_t port)
 
 bool init_server(server_t *server, const char **args)
 {
-    if (!init_flags(&server->proprieties, args))
+    if (init_flags(&server->proprieties, args) == false)
+        return false;
+    if (init_eggs(&server->eggs, server->proprieties) == false)
         return false;
     server->clients = NULL;
     server->info = init_socket_address((size_t)server->proprieties.port);

@@ -17,7 +17,7 @@ team_t *init_team(const char *team_name)
     team->prev = NULL;
     team->capacity = 0;
     team->is_available = true;
-    for (signed char i = 0; i < MAX_CAPACITY_TEAM; i++) {
+    for (unsigned char i = 0; i < MAX_CAPACITY_TEAM; i++) {
         team->client_ids[i] = NULL;
     }
     return team;
