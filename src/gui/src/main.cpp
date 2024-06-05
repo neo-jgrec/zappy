@@ -52,9 +52,8 @@ int main() {
 
         std::istringstream dataStream(data);
         std::string line;
-        int i = 0;
+
         while (std::getline(dataStream, line)) {
-            i++;
             boost::tokenizer<> tok(line);
             std::vector<std::string> tokens(tok.begin(), tok.end());
             if (tokens.at(0).compare("msz") == 0) {

@@ -84,13 +84,12 @@
 
         while ((valread = read(this->fd, buffer.data(), buffer.size())) > 0) {
             message += std::string(buffer.data(), valread);
-            if (message.find('\n') == message.size() - 1)
+            if (message.back() == '\n' && valread != buffer.size())
                 break;
         }
 
-        if (valread < 0) {
+        if (valread < 0)
             throw guiException("Failed to read from the server");
-        }
         return message;
     }
 
