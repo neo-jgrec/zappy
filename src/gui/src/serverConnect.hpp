@@ -78,7 +78,7 @@
     */
     std::string serverConnect::readFromServer()
     {
-        std::cout << "Reading from the server" << std::endl;
+        // std::cout << "Reading from the server" << std::endl;
         std::vector<char> buffer(4096);
         ssize_t bytesRead = read(this->fd, buffer.data(), buffer.size() - 1);
 
@@ -86,7 +86,7 @@
             throw guiException("Failed to read from the server");
         }
         buffer[bytesRead] = '\0';
-        std::cout << "Received: " << buffer.data();
+        // std::cout << "Received: " << buffer.data();
         return std::string(buffer.data());
     }
 
