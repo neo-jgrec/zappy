@@ -67,9 +67,10 @@ void Bot::run(std::string response)
     updateProbabilities();
     if (queue.empty())
         act(); // -> fait l'action la plus rentable
-    if (!queue.empty())
+    if (!queue.empty()) {
         queue.front().first();
         queue.erase(queue.begin());
+    }
     _iteration++;
 }
 
