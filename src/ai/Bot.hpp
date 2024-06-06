@@ -25,6 +25,17 @@
 #include "behaviors/Behavior.hpp"
 #include "utils/PrintColor.hpp"
 
+class pairHash
+{
+public:
+    std::size_t operator()(const std::pair<int, int>& p) const {
+        auto hash1 = std::hash<int>{}(p.first);
+        auto hash2 = std::hash<int>{}(p.second);
+        return hash1 ^ (hash2 << 1);
+    }
+};
+
+
 class Bot
 {
 public:
@@ -35,7 +46,18 @@ public:
 
     void run(std::string response);
 
-    std::vector<std::function<void()>> queue;
+    std::vector<std::pair<std::function<void()>, std::string>> queue;
+
+    std::unordered_map<std::pair<int, int>, std::vector<std::string>, pairHash> movementMap = {
+        { {-1, 1}, {"FORWARD", "LEFT", "FORWARD"} },
+        { {0, 1},  {"FORWARD"} },
+        { {1, 1},  {"FORWARD", "RIGHT", "FORWARD"} },
+        { {1, 2},  {"FORWARD", "RIGHT", "FORWARD"} },
+        { {0, 2},  {"FORWARD", "FORWARD"} },
+        { {1, 2},  {"FORWARD", "FORWARD", "RIGHT"} },
+        { {2, 2},  {"FORWARD", "FORWARD", "RIGHT", "RIGHT"} },
+        { {0, 3},  {"FORWARD", "FORWARD", "FORWARD"} },
+    };
 
     // It is what ia observe to adjust behaviors probabilities
     BotState state;
@@ -78,7 +100,8 @@ private:
 
     // paterns
     void testPatern();
-    void testPatern2();
+    void searchAndTake(std::string param);
+    void survive();
 };
 
 #endif // BOT_HPP_

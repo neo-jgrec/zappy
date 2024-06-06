@@ -14,7 +14,7 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
     behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
                                                    { testPatern(); }, "testPatern"));
     behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
-                                                   { testPatern2(); }, "testPatern2"));
+                                                   { survive(); }, "survive"));
     for (auto &behavior : behaviors)
     {
         behavior->probability = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
@@ -49,26 +49,27 @@ void Bot::sendMessage(const std::string &message)
 
 void Bot::run(std::string response)
 {
+    int cycle = 0;
     if (!response.empty() && response.back() == '\n')
     {
         response.pop_back();
     }
 
-    printColor("========== [Bot Run] ==========\n", BLUE);
-    printKeyValueColored("Iteration", std::to_string(_iteration));
-    printKeyValueColored("Bot listens", response);
+    if (state.lastAction.action == LOOK) {
+        printColor("========== [Bot Run] ==========\n", BLUE);
+        printKeyValueColored("Iteration", std::to_string(_iteration));
+        printKeyValueColored("Bot listens", response);
 
-    listen(response); // -> change le state
+        listen(response); // -> change le state
+    }
     if (state.reward != 0)
         applyReward();
     updateProbabilities();
     if (queue.empty())
         act(); // -> fait l'action la plus rentable
     if (!queue.empty())
-    {
-        queue.front()();
+        queue.front().first();
         queue.erase(queue.begin());
-    }
     _iteration++;
 }
 
@@ -110,10 +111,12 @@ void Bot::listen(std::string response)
     }
     else if (state.lastAction.action == TAKE)
     {
+        printf("TAKE\n");
         listenTakeResponse(response);
     }
     else if (state.lastAction.action == FORWARD)
     {
+        printf("FORWARD\n");
         listenForwardResponse(response);
     }
 }
