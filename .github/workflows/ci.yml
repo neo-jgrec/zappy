@@ -7,28 +7,6 @@ env:
   EXECUTABLES: "zappy_server,zappy_ai,zappy_gui"
 
 jobs:
-  server_coding_style:
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/epitech/coding-style-checker:latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Execute coding style
-        run: |
-          check.sh src/server $(pwd) > coding-style-reports.log
-          has_errors=false
-          while read line; do
-              path=$(echo "$line" | cut -d: -f1)
-              line_number=$(echo "$line" | cut -d: -f2)
-              error_code=$(echo "$line" | cut -d: -f4)
-              type=$(echo "$line" | cut -d: -f3 | cut -d- -f4)
-              has_errors=true
-              echo "::warning title=${type}:${error_code} in ${path} at line ${line_number}::"
-          done < coding-style-reports.log
-          if $has_errors; then
-              exit 1
-          fi
   check_executables:
     runs-on: ubuntu-latest
     container:

@@ -23,10 +23,17 @@
     #include <netinet/in.h>
     #include <uuid/uuid.h>
     #include <unistd.h>
+    #include <sys/queue.h> // Include for TAILQ
     #include "flags.h"
     #include "utils.h"
     #include "client.h"
 
+typedef struct client_list_s {
+    client_t *client;
+    TAILQ_ENTRY(client_list_s) entries;
+} client_list_t;
+
+TAILQ_HEAD(client_tailq, client_list_s);
 typedef struct eggs_s {
     unsigned char x;
     unsigned char y;
@@ -49,7 +56,7 @@ typedef struct server_s {
     fd_set ready_sockets;
     flags_t proprieties;
     socklen_t addrlen;
-    client_t *clients;
+    struct client_tailq clients;
     team_t *teams;
 } server_t;
 
@@ -78,7 +85,6 @@ bool init_server(server_t *server, const char **args);
  * @param server server to free
  */
 void destroy_server(server_t server);
-
 
 /**
  * Create a new client
