@@ -5,7 +5,8 @@
 ** init.c
 */
 
-#include <server.h>
+#include "server.h"
+#include <string.h>
 
 static struct sockaddr_in init_socket_address(size_t port)
 {
@@ -22,7 +23,7 @@ bool init_server(server_t *server, const char **args)
 {
     if (!init_flags(&server->proprieties, args))
         return false;
-    server->clients = NULL;
+    TAILQ_INIT(&server->clients);
     server->info = init_socket_address((size_t)server->proprieties.port);
     server->fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server->fd < 0) {

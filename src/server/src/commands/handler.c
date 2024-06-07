@@ -6,6 +6,7 @@
 */
 
 #include "server.h"
+#include <strings.h>
 
 const commands_t commands[NB_COMMANDS] = {
     {"Forward", forward},
@@ -22,21 +23,32 @@ const commands_t commands[NB_COMMANDS] = {
     {"Incantation", incantation},
 };
 
-void handle_client_message(server_t *server)
+static bool execute_command(client_t *client, server_t *server)
 {
-    client_t *client = server->clients;
-
-    printf("RECEIVED: %s\n", client->message);
-    client->commands = str_to_array_separator(client->message, " \r\n\t");
-    if (client->commands == NULL || client->commands[0] == NULL)
-        return;
     for (size_t i = 0; i < NB_COMMANDS; i++) {
         if (strcasecmp(client->commands[0], commands[i].name) == 0) {
             commands[i].command(client, server);
             free_array((void **)client->commands);
-            return;
+            return true;
         }
     }
     free_array((void **)client->commands);
     dprintf(client->fd, "ko\n\r");
+    return false;
+}
+
+void handle_client_message(server_t *server)
+{
+    client_list_t *item;
+    client_t *client;
+
+    TAILQ_FOREACH(item, &server->clients, entries) {
+        client = item->client;
+        printf("RECEIVED: %s\n", client->message);
+        client->commands = str_to_array_separator(client->message, " \r\n\t");
+        if (client->commands == NULL || client->commands[0] == NULL)
+            continue;
+        if (!execute_command(client, server))
+            continue;
+    }
 }
