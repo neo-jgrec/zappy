@@ -10,11 +10,12 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
 {
     srand(static_cast<unsigned int>(time(nullptr)));
     sendMessage(teamName);
+    _orientation = NORTH;
     state.ressources.food = 9;
     behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
                                                    { testPatern(); }, "testPatern"));
     behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
-                                                   { survive(); }, "survive"));
+                                                   { group(); }, "group"));
     for (auto &behavior : behaviors)
     {
         behavior->probability = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
@@ -179,6 +180,64 @@ void Bot::doAction(actions action, const std::string &parameter)
     _timeUnit -= actionInfo.getValue();
     if (_timeUnit % 126 == 0)
         state.ressources.food -= 1;
+}
+
+void Bot::turnLeft(std::pair<int, int> &pos)
+{
+    _orientation = static_cast<Orientation>((_orientation + 3) % 4);
+}
+
+void Bot::turnRight(std::pair<int, int> &pos)
+{
+    _orientation = static_cast<Orientation>((_orientation + 1) % 4);
+}
+
+void Bot::moveForward(std::pair<int, int> &pos)
+{
+    switch (_orientation) {
+        case NORTH: pos.second++; break;
+        case EAST:  pos.first++; break;
+        case SOUTH: pos.second--; break;
+        case WEST:  pos.first--; break;
+    }
+}
+
+void Bot::turnToDirection(std::pair<int, int> &pos, Orientation targetDir) 
+{
+    int leftTurns = (_orientation - targetDir + 4) % 4;
+    int rightTurns = (targetDir - _orientation + 4) % 4;
+
+    if (leftTurns <= rightTurns) {
+        for (int i = 0; i < leftTurns; ++i) {
+            turnLeft(pos);
+            queue.push_back({[&]() { doAction(LEFT, ""); }, "LEFT"});
+        }
+    } else {
+        for (int i = 0; i < rightTurns; ++i) {
+            turnRight(pos);
+            queue.push_back({[&]() { doAction(RIGHT, ""); }, "RIGHT"});
+        }
+    }
+}
+
+void Bot::findPath(std::pair<int, int> start, const std::pair<int, int> &end) 
+{
+    while (start.first != end.first || start.second != end.second) {
+        if (start.first < end.first) {
+            turnToDirection(start, EAST);
+            moveForward(start);
+        } else if (start.first > end.first) {
+            turnToDirection(start, WEST);
+            moveForward(start);
+        } else if (start.second < end.second) {
+            turnToDirection(start, NORTH);
+            moveForward(start);
+        } else if (start.second > end.second) {
+            turnToDirection(start, SOUTH);
+            moveForward(start);
+        }
+        queue.push_back({[&]() { doAction(FORWARD, ""); }, "FORWARD"});
+    }
 }
 
 /* [ML] */

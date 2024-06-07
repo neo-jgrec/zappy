@@ -81,6 +81,15 @@ public:
 private:
     unsigned int _messageId;
     unsigned int _iteration;
+    enum Orientation { 
+        NORTH,
+        EAST, 
+        SOUTH,
+        WEST 
+    };
+    Orientation _orientation;
+    int x;
+    int y;
 
     // Client
     int _sockfd;
@@ -98,10 +107,16 @@ private:
     void listenTakeResponse(const std::string &response);
     void listenForwardResponse(const std::string &response);
 
+    void findPath(std::pair<int, int> start, const std::pair<int, int> &end);
+    void turnToDirection(std::pair<int, int> &pos, Orientation targetDir);
+    void moveForward(std::pair<int, int> &pos);
+    void turnLeft(std::pair<int, int> &pos);
+    void turnRight(std::pair<int, int> &pos);
     // paterns
     void testPatern();
     void searchAndTake(std::string param);
     void survive();
+    void group();
 };
 
 #endif // BOT_HPP_
