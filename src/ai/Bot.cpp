@@ -200,6 +200,7 @@ void Bot::moveForward(std::pair<int, int> &pos)
         case SOUTH: pos.second--; break;
         case WEST:  pos.first--; break;
     }
+    queue.push_back({[&]() { doAction(FORWARD, ""); }, "FORWARD"});
 }
 
 void Bot::turnToDirection(std::pair<int, int> &pos, Orientation targetDir) 
@@ -220,7 +221,36 @@ void Bot::turnToDirection(std::pair<int, int> &pos, Orientation targetDir)
     }
 }
 
-void Bot::findPath(std::pair<int, int> start, const std::pair<int, int> &end) 
+void Bot::findPath(std::pair<int, int> start, const std::pair<int, int>& end)
+{
+    static const std::vector<std::pair<int, Orientation>> directions = {
+        {1, EAST}, {-1, WEST}, {1, NORTH}, {-1, SOUTH}
+    };
+
+    while (start != end) {
+        for (const auto& [delta, dir] : directions) {
+            if ((dir == EAST || dir == WEST)
+                    && start.first != end.first
+                        && (dir == EAST ? start.first < end.first 
+                            : start.first > end.first)) {
+                turnToDirection(start, dir);
+                moveForward(start);
+                break;
+            } else if ((dir == NORTH || dir == SOUTH)
+                && start.second != end.second
+                    && (dir == NORTH ? start.second < end.second
+                        : start.second > end.second)) {
+                turnToDirection(start, dir);
+                moveForward(start);
+                break;
+            }
+        }
+    }
+}
+
+
+
+/*void Bot::findPath(std::pair<int, int> start, const std::pair<int, int> &end) 
 {
     while (start.first != end.first || start.second != end.second) {
         if (start.first < end.first) {
@@ -236,9 +266,8 @@ void Bot::findPath(std::pair<int, int> start, const std::pair<int, int> &end)
             turnToDirection(start, SOUTH);
             moveForward(start);
         }
-        queue.push_back({[&]() { doAction(FORWARD, ""); }, "FORWARD"});
     }
-}
+}*/
 
 /* [ML] */
 /* [AddObservation]
