@@ -125,13 +125,34 @@ void destroy_flags(flags_t *flags)
     free(flags->names);
 }
 
+static bool check_error_flags(flags_t *flags)
+{
+    if (flags->port < 0) {
+        dprintf(2, "Invalid port\n");
+        return false;
+    } else if (flags->names == NULL) {
+        dprintf(2, "Couldn't find any names\n");
+        return false;
+    }
+    if (flags->frequency < 2 || flags->frequency > 10000) {
+        dprintf(2, "Frequency can only be between 2 and 10000\n");
+        return false;
+    } else if (flags->width < 10 || flags->width > 30 ||
+            flags->height < 10 || flags->height > 30) {
+        dprintf(2, "Map values need to be between 10 and 30\n");
+        return false;
+    }
+    if (flags->nb_clients < 1 || flags->nb_clients > 200) {
+        dprintf(2, "clientsNb can only be between 1 and 200\n");
+        return false;
+    }
+    return true;
+}
+
 bool init_flags(flags_t *flags, const char **args)
 {
     flags->names = NULL;
-    if (!check_number_flags(flags, args))
-        return false;
-    if (flags->port < 0 || flags->names == NULL || flags->frequency < 0
-        || flags->width < 0 || flags->height < 0 || flags->nb_clients < 0)
+    if (!check_number_flags(flags, args) || !check_error_flags(flags))
         return false;
     return true;
 }

@@ -25,8 +25,10 @@ const commands_t commands[NB_COMMANDS] = {
 
 static bool execute_command(client_t *client, server_t *server)
 {
+    if (strlen(client->message) == 0)
+        return false;
     for (size_t i = 0; i < NB_COMMANDS; i++) {
-        if (strcasecmp(client->commands[0], commands[i].name) == 0) {
+        if (strcmp(client->commands[0], commands[i].name) == 0) {
             commands[i].command(client, server);
             free_array((void **)client->commands);
             return true;
