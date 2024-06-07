@@ -1,7 +1,9 @@
-#include <vector>
-#include <stdexcept>
-#include <iostream>
-#include "utils/Exception.hpp"
+#ifndef MAP_HPP
+    #define MAP_HPP
+
+    #include <vector>
+    #include <stdexcept>
+
 
 class Tile
 {
@@ -17,7 +19,7 @@ class Tile
         int q6 = 0;
     public:
         Tile(int x, int y) : x(x), y(y) {};
-        ~Tile();
+        ~Tile() {};
 
         void setQ0(int q0) { this->q0 = q0; };
         int getQ0() { return this->q0; };
@@ -69,9 +71,6 @@ class Tile
         };
 };
 
-Tile::~Tile()
-{
-}
 
 
 class Map
@@ -79,50 +78,23 @@ class Map
     private:
         std::vector<std::vector<Tile>> map;
     public:
-        Map();
-        ~Map();
-        void fillMap(int x, int y);
-        void updateTile(std::vector<std::string> values);
+        Map() {};
+        ~Map() {};
         int getSize() { return this->map.size();};
+        /**
+        * @brief Updates a tile on the map
+        * @param values The values to update the tile with
+        * @return void
+        */
+        void updateTile(std::vector<std::string> values);
+        /**
+        * @brief Fills the map with empty tiles
+        * @param x The heigth of the map
+        * @param y The width of the map
+        * @return void
+        */
+        void fillMap(int x, int y);
+
 };
 
-/**
- * @brief Updates a tile on the map
- * @param values The values to update the tile with
- * @return void
-*/
-void Map::updateTile(std::vector<std::string> values)
-{
-    int x = std::stoi(values.at(1));
-    int y = std::stoi(values.at(2));
-
-    if (x >= this->map.size() || y >= this->map.at(0).size()) {
-        throw std::invalid_argument("Invalid tile position");
-    }
-    map[x][y].update(values);
-}
-
-/**
- * @brief Fills the map with empty tiles
- * @param x The heigth of the map
- * @param y The width of the map
- * @return void
-*/
-void Map::fillMap(int x, int y)
-{
-    for (; x > 0; x--) {
-        std::vector<Tile> row;
-        for (int i = 0;i < y; i++) {
-            row.push_back(Tile(x, y));
-        }
-        this->map.push_back(row);
-    }
-}
-
-Map::Map()
-{
-}
-
-Map::~Map()
-{
-}
+#endif // MAP_HPP

@@ -1,3 +1,11 @@
+
+#ifndef PLAYER_HPP
+    #define PLAYER_HPP
+
+    #include <vector>
+    #include <string>
+    #include <stdexcept>
+
 class Player
 {
     enum Orientation
@@ -20,9 +28,9 @@ class Player
         bool isAlive = true;
         std::vector<int> inventory = {0, 0, 0, 0, 0, 0, 0};
     public:
-        Player();
+        Player() {};
         Player(int nb, int x, int y, int orientation, int lvl, std::string team) : playerNb(nb), x(x), y(y), orientation(orientation), lvl(lvl), team(team) {};
-        ~Player();
+        ~Player() {};
 
         void setPosition(int x, int y) { this->x = x; this->y = y; };
         void setOrientation(int orientation) { this->orientation = orientation; };
@@ -61,10 +69,4 @@ class Player
         std::vector<int> getInventory() { return this->inventory; };
 };
 
-Player::Player()
-{
-}
-
-Player::~Player()
-{
-}
+#endif // PLAYER_HPP

@@ -1,3 +1,8 @@
+#ifndef INCANTATION_HPP
+    #define INCANTATION_HPP
+
+    #include <vector>
+
 class Incantation
 {
 enum outcome {IN_PROGRESS, SUCCESS, FAILURE};
@@ -9,7 +14,7 @@ private:
     outcome status = IN_PROGRESS;
 public:
     Incantation(int x, int y, int lvl) : x(x), y(y), lvl(lvl) {};
-    ~Incantation();
+    ~Incantation() {};
 
     void setStatus(outcome status) { this->status = status; };
     outcome getStatus() { return this->status; };
@@ -18,6 +23,5 @@ public:
     int getLvl() { return this->lvl; };
 };
 
-Incantation::~Incantation()
-{
-}
+
+#endif // INCANTATION_HPP

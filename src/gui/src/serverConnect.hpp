@@ -106,4 +106,4 @@
         std::cout << "Sent: " << message << std::endl;
     }
 
-#endif
+#endif //SERVERCONNECT_HPP

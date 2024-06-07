@@ -1,8 +1,12 @@
-#include "map.hpp"
-#include "egg.hpp"
-#include "player.hpp"
-#include "incantation.hpp"
-#include "broadcast.hpp"
+#ifndef DATA_HPP
+    #define DATA_HPP
+    
+    #include "map.hpp"
+    #include "egg.hpp"
+    #include "player.hpp"
+    #include "incantation.hpp"
+    #include "broadcast.hpp"
+    #include "guiException.hpp"
 
 class Data
 {
@@ -17,8 +21,8 @@ class Data
         Map map = Map();
 
     public:
-        Data();
-        ~Data();
+        Data() {};
+        ~Data() {};
 
         /**
          * @brief Set the tick rate of the game high values will make the game run faster
@@ -35,6 +39,7 @@ class Data
 
         void addEgg(Egg egg) { this->eggs.push_back(egg); };
         std::vector<Egg> &getEggs() { return this->eggs; };
+        Egg &getEggAt(int n) { return this->eggs.at(n); };
 
 
         void addTeam(std::string team) { this->teamNames.push_back(team); };
@@ -44,6 +49,18 @@ class Data
         */
         std::vector<std::string> getTeams() { return this->teamNames; };
         std::string getTeamAt(int n) { return this->teamNames[n]; };
+        /**
+         * @brief Check if the team exists
+         * @param team the team name
+         * @return true if the team exists
+        */
+        bool doesTeamExist(std::string team) {
+            for (auto &t : this->teamNames) {
+                if (t.compare(team) == 0)
+                    return true;
+            }
+            return false;
+        };
 
 
         void addPlayer(std::vector<std::string> playerVals) {
@@ -93,10 +110,4 @@ class Data
         Map &getMap() { return this->map; };
 };
 
-Data::Data()
-{
-}
-
-Data::~Data()
-{
-}
+#endif // DATA_HPP
