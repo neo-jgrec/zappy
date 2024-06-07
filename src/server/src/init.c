@@ -23,8 +23,6 @@ bool init_server(server_t *server, const char **args)
 {
     if (init_flags(&server->proprieties, args) == false)
         return false;
-    if (init_eggs(&server->eggs, server->proprieties) == false)
-        return false;
     TAILQ_INIT(&server->clients);
     server->info = init_socket_address((size_t)server->proprieties.port);
     server->fd = socket(AF_INET, SOCK_STREAM, 0);

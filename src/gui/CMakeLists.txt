@@ -5,11 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/libs/raylib ${CMAKE_BINARY_DIR}/libs/raylib)
-find_package(raylib QUIET)
-add_subdirectory(${CMAKE_SOURCE_DIR}/libs/raylib-cpp ${CMAKE_BINARY_DIR}/libs/raylib-cpp)
-target_link_libraries(zappy_gui PRIVATE raylib raylib_cpp)
-
 # Set compilation flags
 add_compile_options(-Wall
 	-Wextra
@@ -67,6 +62,15 @@ target_include_directories(zappy_gui
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_SOURCE_DIR}/includes
+)
+
+find_package(SFML REQUIRED COMPONENTS network window graphics system)
+
+target_link_libraries(zappy_gui
+	PRIVATE
+		sfml-graphics
+		sfml-audio
+		sfml-network
 )
 
 install(TARGETS zappy_gui)

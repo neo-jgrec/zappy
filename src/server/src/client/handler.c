@@ -58,7 +58,7 @@ client_t *get_client(struct client_tailq *clients, int client_fd)
 
 int handle_client_data(server_t *server, int client_fd)
 {
-    client_t *client = get_client(server->clients, client_fd);
+    client_t *client = get_client(&server->clients, client_fd);
     ssize_t check_read;
 
     if (!client) {
