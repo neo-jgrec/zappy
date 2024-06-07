@@ -59,3 +59,8 @@ void Bot::survive()
 
     queue.push_back({[&]() { doAction(LOOK, ""); }, "LOOK"});
 }
+
+void Bot::group()
+{
+    findPath({0, 0}, {-10, 5});
+}
