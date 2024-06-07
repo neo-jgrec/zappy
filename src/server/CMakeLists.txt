@@ -40,6 +40,9 @@ else()
 	add_definitions(-D_FORTIFY_SOURCE=2)
 endif()
 
+find_package(PkgConfig REQUIRED)
+pkg_search_module(UUID REQUIRED uuid)
+
 file(GLOB_RECURSE SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/**/*.c
 )
@@ -54,7 +57,10 @@ target_include_directories(zappy_server
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/includes
         ${CMAKE_SOURCE_DIR}/includes
+		${UUID_INCLUDE_DIRS}
 )
+
+target_link_libraries(zappy_server ${UUID_LIBRARIES})
 
 install(TARGETS zappy_server)
 
