@@ -10,6 +10,7 @@
 
 #include "IScene.hpp"
 #include "../ui/button.hpp"
+#include "../ui/input.hpp"
 
 class Home : public IScene {
     public:
@@ -21,6 +22,8 @@ class Home : public IScene {
 
             _quitButton = std::make_shared<Button>(sf::Vector2f(100, 500), sf::Vector2f(100, 100), "Quit", zappy.getFont());
             _startButton = std::make_shared<Button>(sf::Vector2f(100, 400), sf::Vector2f(100, 100), "Start", zappy.getFont());
+            _portButton = std::make_shared<Input>(sf::Vector2f(100, 300), sf::Vector2f(100, 100), "Port", zappy.getFont());
+            _ipButton = std::make_shared<Input>(sf::Vector2f(100, 200), sf::Vector2f(100, 100), "Ip", zappy.getFont());
         }
         ~Home() {}
 
@@ -29,11 +32,15 @@ class Home : public IScene {
                 window.close();
             if (_startButton->update(event, window))
                 _zappy._state = GameState::GAME;
+            _ipButton->update(event, window);
+            _portButton->update(event, window);
             return true;
         }
         void draw(sf::RenderWindow &window) override {
             _quitButton->draw(window);
             _startButton->draw(window);
+            _ipButton->draw(window, _zappy.getDeltaTime());
+            _portButton->draw(window, _zappy.getDeltaTime());
             window.draw(_title);
         }
 
@@ -43,6 +50,9 @@ class Home : public IScene {
         sf::Text _title;
         std::shared_ptr<Button> _quitButton;
         std::shared_ptr<Button> _startButton;
+
+        std::shared_ptr<Input> _ipButton;
+        std::shared_ptr<Input> _portButton;
 
         Zappy &_zappy;
 };

@@ -20,17 +20,12 @@
 class Core {
     public:
         Core() {
-            _window.create(sf::VideoMode( 1280 , 720 ), "Zappy");
-            // _world = std::make_shared<World>(sf::Vector2i(15, 15));
-
-            // auto grass = std::make_shared<Sprite>("./assets/grass.png");
-            // _sprites["grass"] = grass;
-            // _isMousePressed = false;
-            // _world->init(_sprites);
+            _window.create(sf::VideoMode( 1280 , 720 ), "Zappy", sf::Style::Close);
 
             _scenes[GameState::HOME] = std::make_shared<Home>(_zappy);
             _scenes[GameState::END] = std::make_shared<Quit>(_zappy);
             _scenes[GameState::GAME] = std::make_shared<World>(sf::Vector2i(15, 15));
+            _clock.restart();
         }
         ~Core() {
         }
@@ -43,6 +38,9 @@ class Core {
 
         void run() {
             while (_window.isOpen()) {
+                _zappy.setDeltaTime(_clock.getElapsedTime().asSeconds());
+                _clock.restart();
+
                 while (_window.pollEvent(_event)) {
                     checkClose();
                     _scenes[((_zappy._upperState != GameState::NONE) ? _zappy._upperState : _zappy._state)]->update(_event, _window);
@@ -62,6 +60,7 @@ class Core {
         Zappy _zappy;
         std::map<GameState, std::shared_ptr<IScene>> _scenes;
         sf::Event _event;
+        sf::Clock _clock;
 
 };
 

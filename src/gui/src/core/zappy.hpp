@@ -31,9 +31,13 @@ class Zappy {
         sf::Font &getFont() { return _font; };
         GameState _state;
         GameState _upperState;
+
+        void setDeltaTime(float deltaTime) { _deltaTime = deltaTime; };
+        float getDeltaTime() { return _deltaTime; };
     protected:
     private:
         sf::Font _font;
+        float _deltaTime = 0;
 
 };
 

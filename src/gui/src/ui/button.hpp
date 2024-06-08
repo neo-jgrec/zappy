@@ -10,9 +10,15 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "IButton.hpp"
 #include "../sprites/sprite.hpp"
-class Button : public IButton {
+
+enum ButtonState {
+    IDLE,
+    HOVER,
+    CLICKED,
+};
+
+class Button {
     public:
         Button(sf::Vector2f pos, sf::Vector2f size, std::string text, sf::Font &font) {
             _text.setFont(font);
@@ -23,7 +29,7 @@ class Button : public IButton {
         }
         ~Button() {}
 
-        bool update(sf::Event event, sf::RenderWindow &window) override {
+        bool update(sf::Event event, sf::RenderWindow &window) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
             if (_text.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
@@ -45,7 +51,7 @@ class Button : public IButton {
                 _state = IDLE;
             return false;
         }
-        void draw(sf::RenderWindow &window) override {
+        void draw(sf::RenderWindow &window) {
             if (_state == HOVER)
                 _text.setFillColor(sf::Color::Red);
             else
