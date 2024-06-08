@@ -10,7 +10,7 @@ void Parser::msz (const std::vector<TokenType>& tokens, Data& gameData) {
         if (gameData.getMap().getSize() > 0)
             return;
         if (tokens.size() < 3)
-            throw guiException("Not enough arguments");
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
         int x = std::get<int>(tokens.at(1));
         int y = std::get<int>(tokens.at(2));
         gameData.getMap().fillMap(x, y);
@@ -19,14 +19,27 @@ void Parser::msz (const std::vector<TokenType>& tokens, Data& gameData) {
 };
 
 void Parser::bct (const std::vector<TokenType>& tokens, Data& gameData) {
+    if (std::is_same<std::variant<std::string, int>, std::string>::value)
+        throw ParserException("Invalid type for command" + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
-        // gameData.getMap().updateTile(tokens);
+        if (tokens.size() < 10)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
+        int x = std::get<int>(tokens.at(1));
+        int y = std::get<int>(tokens.at(2));
+        std::vector<int> values;
+        for (int i = 3; i < 10; i++)
+            values.push_back(std::get<int>(tokens.at(i)));
+        gameData.getMap().updateTile(x, y, values);
     };
     _queue.push(lambda);
 };
 
 void Parser::tna (const std::vector<TokenType>& tokens, Data& gameData) {
+    if (std::is_same<std::variant<std::string, int>, int>::value)
+        throw ParserException("Invalid type for command" + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
+        if (tokens.size() < 2)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
         std::string teamName = std::get<std::string>(tokens.at(1));
         if (!gameData.doesTeamExist(teamName))
             gameData.addTeam(teamName);
