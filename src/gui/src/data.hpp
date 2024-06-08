@@ -7,8 +7,10 @@
     #include "incantation.hpp"
     #include "broadcast.hpp"
     #include "guiException.hpp"
-#include <string>
-#include <vector>
+
+    #include <string>
+    #include <vector>
+    #include <map>
 
 class Data
 {
@@ -17,7 +19,7 @@ class Data
         std::vector<std::string> teamNames;
         bool isRunning = false;
         std::vector<Egg> eggs;
-        std::vector<Player> players;
+        std::map<int, Player> players;
         std::vector<Incantation> incantations;
         std::vector<Broadcast> broadcasts;
         Map map = Map();
@@ -66,25 +68,23 @@ class Data
 
 
         void addPlayer(std::vector<int> values, std::string teamName) {
-            this->players.push_back(Player(
+            std::vector<int> pos = {values[1], values[2]};
+            this->players.insert(std::make_pair(
                 values[0],
-                values[1],
-                values[2],
-                values[3],
-                values[4],
-                teamName));
+                Player( values[0], pos, values[3], values[4], teamName)
+            ));
         };
-        std::vector<Player> &getPlayers() { return this->players; };
+        std::map<int, Player> &getPlayers() { return this->players; };
         /**
-         * @brief Get the player at the given index
-         * @param n the index of the player
+         * @brief Get the player corresponding to the given id
+         * @param id the id of the player (player number)
          * @return a reference to the player
-         * @throw guiException if the index is out of range
+         * @throw guiException if the player does not exist
         */
-        Player &getPlayerAt(int n) {
-            if (n >= this->players.size())
-                throw guiException("The player index is out of range");
-            return this->players.at(n);
+        Player &getPlayerById(int id) {
+            if (this->players.find(id) == this->players.end())
+                throw guiException("getPlayerById: Invalid player id(" + std::to_string(id) + ")");
+            return this->players.at(id);
         };
 
         std::vector<Incantation> &getIncantations() { return this->incantations; };

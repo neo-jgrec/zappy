@@ -73,15 +73,15 @@ int main() {
             
             
             // if (tokens.at(0).compare("plv") == 0) {
-            //     gameData.getPlayerAt(std::stoi(tokens.at(1))).setLvl(std::stoi(tokens.at(2)));
+            //     gameData.getPlayerById(std::stoi(tokens.at(1))).setLvl(std::stoi(tokens.at(2)));
             //     continue;
             // }
             // if (tokens.at(0).compare("ppo") == 0) {
-            //     gameData.getPlayerAt(std::stoi(tokens.at(1))).update(tokens);
+            //     gameData.getPlayerById(std::stoi(tokens.at(1))).update(tokens);
             //     continue;
             // }
             // if (tokens.at(0).compare("pin") == 0) {
-            //     gameData.getPlayerAt(std::stoi(tokens.at(1))).setInventory(tokens);
+            //     gameData.getPlayerById(std::stoi(tokens.at(1))).setInventory(tokens);
             //     continue;
             // }
         }
