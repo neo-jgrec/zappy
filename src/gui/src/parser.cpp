@@ -242,25 +242,27 @@ void Parser::seg (const std::vector<TokenType>& tokens, Data& gameData) {
 };
 
 void Parser::smg (const std::vector<TokenType>& tokens, Data& gameData) {
+    if (std::is_same<std::variant<std::string, int>, int>::value)
+        throw ParserException("Invalid type for command" + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
-        // if (tokens.size() < 2)
-        //     return;
-        // std::string msg = tokens.at(1);
-        // std::cout << "server sent: " << msg << std::endl;
+        if (tokens.size() < 2)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
+        std::string msg = std::get<std::string>(tokens.at(1));
+        std::cout << "server sent: " << msg << std::endl;
     };
     _queue.push(lambda);
 };
 
 void Parser::suc (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
-        // unknown command
+        std::cout << "Unknown command response from the server" << std::endl;
     };
     _queue.push(lambda);
 };
 
 void Parser::sbp (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
-        // command parameter
+        std::cout << "server sent sbp. what for ?" << std::endl;
     };
     _queue.push(lambda);
 };
