@@ -13,7 +13,10 @@
 #include "serverConnect.hpp"
 #include "guiException.hpp"
 
+#include "utils/Debug.hpp"
+
 int main() {
+    debug_print("Starting GUI");
     serverConnect server;
     try {
         server.connectToServer(3000, "127.0.0.1");
