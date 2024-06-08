@@ -1,6 +1,7 @@
 #ifndef PARSER_HPP
     #define PARSER_HPP
 
+    #include <iostream>
     #include <map>
     #include <functional>
     #include <variant>
@@ -98,7 +99,7 @@ public:
         if (it != handlers.end()) {
             it->second(values, gameData);
         } else {
-            throw ParserException("Command not found");
+            std::cerr << "Command not found: " << command << std::endl;
         }
     };
 
