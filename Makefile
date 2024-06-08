@@ -33,4 +33,14 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re $(BINS)
+debug: $(BINS:%=%-debug)
+
+$(BINS:%=%-debug):
+	@echo "Building $@..."
+	@cmake -B $(BUILD_DIR) \
+		-DCMAKE_BUILD_TYPE=Debug \
+		-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$(CMAKE_RUNTIME_OUTPUT_DIRECTORY) \
+		-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=$(CMAKE_LIBRARY_OUTPUT_DIRECTORY) \
+		&& make -C $(BUILD_DIR) $(@:-debug=) -j --no-print-directory
+
+.PHONY: all clean fclean re $(BINS) debug $(BINS)-debug
