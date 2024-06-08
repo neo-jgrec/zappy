@@ -1,5 +1,6 @@
 #include "parser.hpp"
 #include "guiException.hpp"
+#include "player.hpp"
 
 #include <string>
 
@@ -49,36 +50,65 @@ void Parser::tna (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::pnw (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
-        // gameData.addPlayer(tokens);
+        if (tokens.size() < 7)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
+        std::vector<int> values;
+        for (int i = 1; i < 6; i++)
+            values.push_back(std::get<int>(tokens.at(i)));
+        std::string teamName = std::get<std::string>(tokens.at(6));
+        gameData.addPlayer(values, teamName);
     };
     _queue.push(lambda);
 };
 
 void Parser::ppo (const std::vector<TokenType>& tokens, Data& gameData) {
+    if (std::is_same<std::variant<std::string, int>, std::string>::value)
+        throw ParserException("Invalid type for command" + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
-        // std::cout << tokens.at(1) << std::endl;
-        // gameData.getPlayerAt(std::stoi(tokens.at(1))).move(std::stoi(tokens.at(2)), std::stoi(tokens.at(3)));
+        if (tokens.size() < 4)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
+        int playerNb = std::get<int>(tokens.at(1));
+        Player player = gameData.getPlayerAt(playerNb);
+        int x = std::get<int>(tokens.at(2));
+        int y = std::get<int>(tokens.at(3));
+        int orientation = std::get<int>(tokens.at(4));
+        player.setPosition(x, y);
+        player.setOrientation(orientation);
     };
     _queue.push(lambda);
 };
 
 void Parser::plv (const std::vector<TokenType>& tokens, Data& gameData) {
+    if (std::is_same<std::variant<std::string, int>, std::string>::value)
+        throw ParserException("Invalid type for command" + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
-        // std::cout << tokens.at(1) << std::endl;
-        // gameData.getPlayerAt(std::stoi(tokens.at(1))).setLevel(std::stoi(tokens.at(2)));
+        if (tokens.size() < 3)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
+        Player player = gameData.getPlayerAt(std::get<int>(tokens.at(1)));
+        int lvl = std::get<int>(tokens.at(2));
+        player.setLvl(lvl);
     };
     _queue.push(lambda);
 };
 
 void Parser::pin (const std::vector<TokenType>& tokens, Data& gameData) {
+    if (std::is_same<std::variant<std::string, int>, std::string>::value)
+        throw ParserException("Invalid type for command" + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
-        // std::cout << tokens.at(1) << std::endl;
-        // gameData.getPlayerAt(std::stoi(tokens.at(1))).setInventory(std::stoi(tokens.at(2)), std::stoi(tokens.at(3)), std::stoi(tokens.at(4)), std::stoi(tokens.at(5)), std::stoi(tokens.at(6)), std::stoi(tokens.at(7)), std::stoi(tokens.at(8)), std::stoi(tokens.at(9)));
+        if (tokens.size() < 11)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
+        Player player = gameData.getPlayerAt(std::get<int>(tokens.at(1)));
+        std::vector<int> inventory;
+        for (int i = 4; i < 11; i++)
+            inventory.push_back(std::get<int>(tokens.at(i)));
+        player.setInventory(inventory);
     };
     _queue.push(lambda);
 };
 
 void Parser::pex (const std::vector<TokenType>& tokens, Data& gameData) {
+    if (std::is_same<std::variant<std::string, int>, std::string>::value)
+        throw ParserException("Invalid type for command" + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         // n | player n is pushing someone
     };

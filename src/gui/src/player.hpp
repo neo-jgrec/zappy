@@ -40,17 +40,7 @@ class Player
         void setLvl(int lvl) { this->lvl = lvl; };
         void setTeam(std::string team) { this->team = team; };
         void setPlayerNb(int playerNb) { this->playerNb = playerNb; };
-        void setInventory(std::vector<std::string> inventoryVals) {
-            if (inventoryVals.size() != 11)
-                throw std::invalid_argument("Invalid inventory size");
-            this->inventory[0] = std::stoi(inventoryVals.at(4));
-            this->inventory[1] = std::stoi(inventoryVals.at(5));
-            this->inventory[2] = std::stoi(inventoryVals.at(6));
-            this->inventory[3] = std::stoi(inventoryVals.at(7));
-            this->inventory[4] = std::stoi(inventoryVals.at(8));
-            this->inventory[5] = std::stoi(inventoryVals.at(9));
-            this->inventory[6] = std::stoi(inventoryVals.at(10));
-        };
+        void setInventory(std::vector<int> inventoryVals) { this->inventory = inventoryVals; };
 
         void update(std::vector<std::string> vals) {
             if (vals.size() != 5)

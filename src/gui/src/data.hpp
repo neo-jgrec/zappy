@@ -63,16 +63,14 @@ class Data
         };
 
 
-        void addPlayer(std::vector<std::string> playerVals) {
-            if (playerVals.size() != 7)
-                throw guiException("Invalid player size");
+        void addPlayer(std::vector<int> values, std::string teamName) {
             this->players.push_back(Player(
-                std::stoi(playerVals[1]),
-                std::stoi(playerVals[2]),
-                std::stoi(playerVals[3]),
-                std::stoi(playerVals[4]),
-                std::stoi(playerVals[5]),
-                playerVals[6]));
+                values[0],
+                values[1],
+                values[2],
+                values[3],
+                values[4],
+                teamName));
         };
         std::vector<Player> &getPlayers() { return this->players; };
         /**
