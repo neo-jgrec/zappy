@@ -7,6 +7,8 @@
     #include "incantation.hpp"
     #include "broadcast.hpp"
     #include "guiException.hpp"
+#include <string>
+#include <vector>
 
 class Data
 {
@@ -96,13 +98,8 @@ class Data
         };
 
         std::vector<Broadcast> &getBroadcasts() { return this->broadcasts; };
-        void addBroadcast(std::vector<std::string> broadcastVals) {
-            if (broadcastVals.size() != 3)
-                throw guiException("Invalid broadcast size");
-            this->broadcasts.push_back(Broadcast(
-                std::stoi(broadcastVals[1]),
-                broadcastVals[2],
-                players.at(std::stoi(broadcastVals[1])).getPosition()));
+        void addBroadcast(int playerNb, std::vector<int> pos, std::string msg) {
+            this->broadcasts.push_back(Broadcast(playerNb, msg, pos));
         };
 
         Map &getMap() { return this->map; };

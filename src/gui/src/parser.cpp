@@ -67,8 +67,7 @@ void Parser::ppo (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         if (tokens.size() < 4)
             throw ParserException("Not enough arguments for command" + std::string(__func__));
-        int playerNb = std::get<int>(tokens.at(1));
-        Player player = gameData.getPlayerAt(playerNb);
+        Player player = gameData.getPlayerAt(std::get<int>(tokens.at(1)));
         int x = std::get<int>(tokens.at(2));
         int y = std::get<int>(tokens.at(3));
         int orientation = std::get<int>(tokens.at(4));
@@ -117,8 +116,13 @@ void Parser::pex (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::pbc (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
-        // std::cout << tokens.at(1) << std::endl;
-        // gameData.getPlayerAt(std::stoi(tokens.at(1))).broadcast(tokens.at(2));
+        if (tokens.size() < 3)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
+        int playerNb = std::get<int>(tokens.at(1));
+        Player player = gameData.getPlayerAt(playerNb);
+        std::vector<int> pos = player.getPosition();
+        std::string msg = std::get<std::string>(tokens.at(2));
+        gameData.addBroadcast(playerNb, pos, msg);
     };
     _queue.push(lambda);
 };
