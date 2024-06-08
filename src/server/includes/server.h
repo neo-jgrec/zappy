@@ -23,7 +23,7 @@
     #include <netinet/in.h>
     #include <uuid/uuid.h>
     #include <unistd.h>
-    #include <sys/queue.h> // Include for TAILQ
+    #include <sys/queue.h>
     #include "flags.h"
     #include "utils.h"
     #include "client.h"
@@ -34,6 +34,7 @@ typedef struct client_list_s {
 } client_list_t;
 
 TAILQ_HEAD(client_tailq, client_list_s);
+
 typedef struct eggs_s {
     unsigned char x;
     unsigned char y;
