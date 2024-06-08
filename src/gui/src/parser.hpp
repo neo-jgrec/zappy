@@ -7,8 +7,6 @@
     #include <vector>
     #include <string>
     #include <queue>
-    #include <iostream>
-
 
     #include "data.hpp"
 
@@ -16,35 +14,38 @@ class Parser
 {
 private:
 
-    
+    using TokenType = std::variant<std::string, int>;
+    using Handler = std::function<void(const std::vector<TokenType>&, Data&)>;
+
     std::queue<std::function<void()>> _queue;
-    void msz (std::vector<std::variant<std::string, int>> values, Data& gameData);
-    void bct (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void tna (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void pnw (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void ppo (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void plv (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void pin (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void pex (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void pbc (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void pic (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void pie (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void pfk (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void pdr (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void pgt (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void pdi (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void enw (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void ebo (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void edi (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void sst (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void sgt (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void seg (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void smg (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void suc (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
-    void sbp (std::vector<std::variant<std::string, int>> tokens, Data& gameData);
+
+    void msz(const std::vector<TokenType>& values, Data& gameData);
+    void bct(const std::vector<TokenType>& tokens, Data& gameData);
+    void tna(const std::vector<TokenType>& tokens, Data& gameData);
+    void pnw(const std::vector<TokenType>& tokens, Data& gameData);
+    void ppo(const std::vector<TokenType>& tokens, Data& gameData);
+    void plv(const std::vector<TokenType>& tokens, Data& gameData);
+    void pin(const std::vector<TokenType>& tokens, Data& gameData);
+    void pex(const std::vector<TokenType>& tokens, Data& gameData);
+    void pbc(const std::vector<TokenType>& tokens, Data& gameData);
+    void pic(const std::vector<TokenType>& tokens, Data& gameData);
+    void pie(const std::vector<TokenType>& tokens, Data& gameData);
+    void pfk(const std::vector<TokenType>& tokens, Data& gameData);
+    void pdr(const std::vector<TokenType>& tokens, Data& gameData);
+    void pgt(const std::vector<TokenType>& tokens, Data& gameData);
+    void pdi(const std::vector<TokenType>& tokens, Data& gameData);
+    void enw(const std::vector<TokenType>& tokens, Data& gameData);
+    void ebo(const std::vector<TokenType>& tokens, Data& gameData);
+    void edi(const std::vector<TokenType>& tokens, Data& gameData);
+    void sst(const std::vector<TokenType>& tokens, Data& gameData);
+    void sgt(const std::vector<TokenType>& tokens, Data& gameData);
+    void seg(const std::vector<TokenType>& tokens, Data& gameData);
+    void smg(const std::vector<TokenType>& tokens, Data& gameData);
+    void suc(const std::vector<TokenType>& tokens, Data& gameData);
+    void sbp(const std::vector<TokenType>& tokens, Data& gameData);
 
 
-    std::map<std::string, std::function<void(std::vector<std::variant<std::string, int>>, Data&)>> handlers = {
+    std::map<std::string, Handler> handlers = {
         {"msz", std::bind(&Parser::msz, this, std::placeholders::_1, std::placeholders::_2)},
         {"bct", std::bind(&Parser::bct, this, std::placeholders::_1, std::placeholders::_2)},
         {"tna", std::bind(&Parser::tna, this, std::placeholders::_1, std::placeholders::_2)},
@@ -70,18 +71,37 @@ private:
         {"suc", std::bind(&Parser::suc, this, std::placeholders::_1, std::placeholders::_2)},
         {"sbp", std::bind(&Parser::sbp, this, std::placeholders::_1, std::placeholders::_2)}
     };
+
 public:
     Parser() = default;
     ~Parser() = default;
 
+    class ParserException : public std::exception
+    {
+    public:
+        ParserException(const std::string& message) : _message(message) {};
+        const char* what() const noexcept override { return _message.c_str(); };
+    private:
+        std::string _message;
+    };
+
     void parse(std::vector<std::variant<std::string, int>> values, Data& gameData)
     {
-        if(handlers.find(std::get<std::string>(values.at(0))) == handlers.end()) {
-            std::cout << "command not found: " << std::get<std::string>(values.at(0)) << std::endl;
+        if (values.empty() || !std::holds_alternative<std::string>(values.at(0))) {
+            throw ParserException("Invalid command format");
             return;
         }
-        handlers.at(std::get<std::string>(values.at(0)))(values, gameData);
+
+        const std::string& command = std::get<std::string>(values.at(0));
+        auto it = handlers.find(command);
+
+        if (it != handlers.end()) {
+            it->second(values, gameData);
+        } else {
+            throw ParserException("Command not found");
+        }
     };
+
     void execute();
 };
 

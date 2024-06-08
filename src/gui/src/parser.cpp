@@ -1,13 +1,11 @@
 #include "parser.hpp"
 #include "guiException.hpp"
 
-#include <iostream>
 #include <string>
 
-void Parser::msz (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::msz (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
-        throw guiException("Invalid argument");
-        // change to parse except
+        throw ParserException("Invalid type for command" + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         if (gameData.getMap().getSize() > 0)
             return;
@@ -20,14 +18,14 @@ void Parser::msz (std::vector<std::variant<std::string, int>> tokens, Data& game
     _queue.push(lambda);
 };
 
-void Parser::bct (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::bct (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // gameData.getMap().updateTile(tokens);
     };
     _queue.push(lambda);
 };
 
-void Parser::tna (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::tna (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         std::string teamName = std::get<std::string>(tokens.at(1));
         if (!gameData.doesTeamExist(teamName))
@@ -36,14 +34,14 @@ void Parser::tna (std::vector<std::variant<std::string, int>> tokens, Data& game
     _queue.push(lambda);
 };
 
-void Parser::pnw (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::pnw (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // gameData.addPlayer(tokens);
     };
     _queue.push(lambda);
 };
 
-void Parser::ppo (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::ppo (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // std::cout << tokens.at(1) << std::endl;
         // gameData.getPlayerAt(std::stoi(tokens.at(1))).move(std::stoi(tokens.at(2)), std::stoi(tokens.at(3)));
@@ -51,7 +49,7 @@ void Parser::ppo (std::vector<std::variant<std::string, int>> tokens, Data& game
     _queue.push(lambda);
 };
 
-void Parser::plv (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::plv (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // std::cout << tokens.at(1) << std::endl;
         // gameData.getPlayerAt(std::stoi(tokens.at(1))).setLevel(std::stoi(tokens.at(2)));
@@ -59,7 +57,7 @@ void Parser::plv (std::vector<std::variant<std::string, int>> tokens, Data& game
     _queue.push(lambda);
 };
 
-void Parser::pin (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::pin (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // std::cout << tokens.at(1) << std::endl;
         // gameData.getPlayerAt(std::stoi(tokens.at(1))).setInventory(std::stoi(tokens.at(2)), std::stoi(tokens.at(3)), std::stoi(tokens.at(4)), std::stoi(tokens.at(5)), std::stoi(tokens.at(6)), std::stoi(tokens.at(7)), std::stoi(tokens.at(8)), std::stoi(tokens.at(9)));
@@ -67,14 +65,14 @@ void Parser::pin (std::vector<std::variant<std::string, int>> tokens, Data& game
     _queue.push(lambda);
 };
 
-void Parser::pex (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::pex (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // n | player n is pushing someone
     };
     _queue.push(lambda);
 };
 
-void Parser::pbc (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::pbc (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // std::cout << tokens.at(1) << std::endl;
         // gameData.getPlayerAt(std::stoi(tokens.at(1))).broadcast(tokens.at(2));
@@ -82,14 +80,14 @@ void Parser::pbc (std::vector<std::variant<std::string, int>> tokens, Data& game
     _queue.push(lambda);
 };
 
-void Parser::pic (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::pic (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // X Y L n n n ... | start of incantation on tile X Y by players n n n ...
     };
     _queue.push(lambda);
 };
 
-void Parser::pie (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::pie (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // // X Y R | end of incantation on tile X Y with result R
         // std::vector<Player> pls = gameData.getPlayers();
@@ -107,7 +105,7 @@ void Parser::pie (std::vector<std::variant<std::string, int>> tokens, Data& game
     _queue.push(lambda);
 };
 
-void Parser::pfk (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::pfk (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // int playerNb = std::stoi(tokens.at(1));
         // Player& player = gameData.getPlayerAt(playerNb);
@@ -116,7 +114,7 @@ void Parser::pfk (std::vector<std::variant<std::string, int>> tokens, Data& game
     _queue.push(lambda);
 };
 
-void Parser::pdr (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::pdr (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // n i | player n drops object i
         //std::vector<int> pos = gameData.getPlayerAt(std::stoi(tokens.at(1))).getPosition();
@@ -125,7 +123,7 @@ void Parser::pdr (std::vector<std::variant<std::string, int>> tokens, Data& game
     _queue.push(lambda);
 };
 
-void Parser::pgt (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::pgt (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // n i | player n takes object i
         //std::vector<int> pos = gameData.getPlayerAt(std::stoi(tokens.at(1))).getPosition();
@@ -134,7 +132,7 @@ void Parser::pgt (std::vector<std::variant<std::string, int>> tokens, Data& game
     _queue.push(lambda);
 };
 
-void Parser::pdi (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::pdi (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // int playerNb = std::stoi(tokens.at(1));
         // Player& player = gameData.getPlayerAt(playerNb);
@@ -143,7 +141,7 @@ void Parser::pdi (std::vector<std::variant<std::string, int>> tokens, Data& game
     _queue.push(lambda);
 };
 
-void Parser::enw (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::enw (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // Egg egg(tokens);
         // gameData.addEgg(egg);
@@ -156,7 +154,7 @@ void Parser::enw (std::vector<std::variant<std::string, int>> tokens, Data& game
     _queue.push(lambda);
 };
 
-void Parser::ebo (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::ebo (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // int eggNb = std::stoi(tokens.at(1));
         // gameData.getEggAt(eggNb).setHatched(true);
@@ -164,7 +162,7 @@ void Parser::ebo (std::vector<std::variant<std::string, int>> tokens, Data& game
     _queue.push(lambda);
 };
 
-void Parser::edi (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::edi (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // int eggNb = std::stoi(tokens.at(1));
         // gameData.getEggAt(eggNb).setAlive(false);
@@ -172,14 +170,14 @@ void Parser::edi (std::vector<std::variant<std::string, int>> tokens, Data& game
     _queue.push(lambda);
 };
 
-void Parser::sst(std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::sst(const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // T | set the time unit
     };
     _queue.push(lambda);
 };
 
-void Parser::sgt(std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::sgt(const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // if (tokens.size() < 2)
         //     return;
@@ -189,14 +187,14 @@ void Parser::sgt(std::vector<std::variant<std::string, int>> tokens, Data& gameD
     _queue.push(lambda);
 };
 
-void Parser::seg (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::seg (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // N | team N won
     };
     _queue.push(lambda);
 };
 
-void Parser::smg (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::smg (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // if (tokens.size() < 2)
         //     return;
@@ -206,14 +204,14 @@ void Parser::smg (std::vector<std::variant<std::string, int>> tokens, Data& game
     _queue.push(lambda);
 };
 
-void Parser::suc (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::suc (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // unknown command
     };
     _queue.push(lambda);
 };
 
-void Parser::sbp (std::vector<std::variant<std::string, int>> tokens, Data& gameData) {
+void Parser::sbp (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // command parameter
     };
