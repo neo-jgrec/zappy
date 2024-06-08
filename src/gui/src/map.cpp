@@ -1,15 +1,13 @@
 #include "map.hpp"
+#include "guiException.hpp"
 
 
-void Map::updateTile(std::vector<std::string> values)
+void Map::updateTile(int x, int y, std::vector<int> values)
 {
-    int x = std::stoi(values.at(1));
-    int y = std::stoi(values.at(2));
-
     if (x >= this->map.size() || y >= this->map.at(0).size()) {
-        throw std::invalid_argument("Invalid tile position");
+        throw guiException("Invalid tile position");
     }
-    map[x][y].update(values);
+    map[x][y].setRessources(values);
 }
 
 
