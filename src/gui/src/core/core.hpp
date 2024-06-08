@@ -11,75 +11,58 @@
 #include <iostream>
 #include <memory>
 
-#include "../world/world.hpp"
+#include "../scenes/world/world.hpp"
 #include "../sprites/sprite.hpp"
+#include "../scenes/home.hpp"
+#include "../scenes/quit.hpp"
+#include "zappy.hpp"
 
 class Core {
     public:
         Core() {
             _window.create(sf::VideoMode( 1280 , 720 ), "Zappy");
-            _world = std::make_shared<World>(sf::Vector2i(15, 15));
+            // _world = std::make_shared<World>(sf::Vector2i(15, 15));
 
-            auto grass = std::make_shared<Sprite>("./assets/Sprites/Enviroument/Spring/grass.png");
-            _sprites["grass"] = grass;
-            _isMousePressed = false;
+            // auto grass = std::make_shared<Sprite>("./assets/grass.png");
+            // _sprites["grass"] = grass;
+            // _isMousePressed = false;
+            // _world->init(_sprites);
+
+            _scenes[GameState::HOME] = std::make_shared<Home>(_zappy);
+            _scenes[GameState::END] = std::make_shared<Quit>(_zappy);
+            _scenes[GameState::GAME] = std::make_shared<World>(sf::Vector2i(15, 15));
         }
         ~Core() {
         }
 
-        void init() {
-            _world->init(_sprites);
-            run();
+        void checkClose() {
+            if (_event.type == sf::Event::Closed)
+                _zappy._upperState = GameState::END;
+
         }
 
         void run() {
             while (_window.isOpen()) {
-                update();
-                _world->draw(_window);
+                while (_window.pollEvent(_event)) {
+                    checkClose();
+                    _scenes[((_zappy._upperState != GameState::NONE) ? _zappy._upperState : _zappy._state)]->update(_event, _window);
+                }
+                _window.clear(sf::Color(100, 100, 100));
+
+                _scenes[_zappy._state]->draw(_window);
+                if (_zappy._upperState != GameState::NONE)
+                    _scenes[_zappy._upperState]->draw(_window);
                 _window.display();
             }
         }
 
-        void update() {
-            sf::Event event;
-            while (_window.pollEvent(event)) {
-                if (event.type == sf::Event::Closed)
-                    _window.close();
-                if (event.type == sf::Event::MouseButtonPressed) {
-                    if (event.mouseButton.button == sf::Mouse::Left) {
-                        std::cout << "Mouse pressed" << std::endl;
-                        _isMousePressed = true;
-                        _mousePos = (sf::Vector2f)sf::Mouse::getPosition(_window);
-                    }
-                }
-                if (event.type == sf::Event::MouseButtonReleased) {
-                    if (event.mouseButton.button == sf::Mouse::Left) {
-                        _isMousePressed = false;
-                        _world->move(_deltaMousePos);
-                        _world->_offset = sf::Vector2f(0, 0);
-                    }
-                }
-                if (_isMousePressed) {
-                    _deltaMousePos = (sf::Vector2f)sf::Mouse::getPosition(_window) - _mousePos;
-                    _world->_offset = _deltaMousePos;
-                }
-                if (event.type == sf::Event::KeyPressed)
-                    if (event.key.code == sf::Keyboard::Space)
-                        _world->reset();
-            }
-            _window.clear(sf::Color(100, 100, 100));
-        }
-
     private:
-        std::map<std::string, std::shared_ptr<Sprite>> _sprites;
         sf::RenderWindow _window;
-        std::shared_ptr<World> _world;
 
-        float _deltaTime;
-        sf::Clock _clock;
-        sf::Vector2f _mousePos;
-        sf::Vector2f _deltaMousePos;
-        bool _isMousePressed;
+        Zappy _zappy;
+        std::map<GameState, std::shared_ptr<IScene>> _scenes;
+        sf::Event _event;
+
 };
 
 #endif /* !CORE_HPP_ */

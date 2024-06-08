@@ -12,8 +12,22 @@
 
 #include "serverConnect.hpp"
 #include "guiException.hpp"
+#include "core/core.hpp"
 
 int main() {
+
+    try {
+        Core core;
+        core.run();
+    } catch (const guiException& e) {
+        std::cerr << e.what() << std::endl;
+        return 84;
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return 84;
+    }
+    return 0;
+
     serverConnect server;
     try {
         server.connectToServer(3000, "127.0.0.1");

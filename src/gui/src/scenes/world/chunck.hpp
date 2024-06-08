@@ -13,7 +13,7 @@
 #include <iostream>
 #include <memory>
 
-#include "../sprites/sprite.hpp"
+#include "../../sprites/sprite.hpp"
 
 class Chunck {
     public:

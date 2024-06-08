@@ -12,15 +12,14 @@
 #include <iostream>
 
 #include "chunck.hpp"
-#include "../sprites/sprite.hpp"
-#include "../utils/PerlinNoise.hpp"
+#include "../../utils/PerlinNoise.hpp"
+#include "../IScene.hpp"
 
-class World {
+class World : public IScene {
     public:
         World(sf::Vector2i size) : _size(size) {
             PerlinNoise noise;
 
-    
             for (int i = 0; i < size.x; i++) {
                 std::vector<Chunck> chuncks;
                 for (int j = 0; j < size.y; j++) {
@@ -31,11 +30,12 @@ class World {
                 }
                 _chuncks.push_back(chuncks);
             }
+            init();
         }
         ~World() {}
 
-        void init(std::map<std::string, std::shared_ptr<Sprite>> sprites) {
-            _sprite = sprites["grass"];
+        void init() {
+            _sprite = std::make_shared<Sprite>("./assets/grass.png");
             _tileSize = sf::Vector2f(
                 _sprite->_sprite.getTexture()->getSize().x,
                 _sprite->_sprite.getTexture()->getSize().y
@@ -45,7 +45,10 @@ class World {
 
         }
 
-        void draw(sf::RenderWindow &window);
+        bool update(sf::Event event, sf::RenderWindow &window) override {
+            return true;
+        };
+        void draw(sf::RenderWindow &window) override;
         void move(sf::Vector2f dir) {
             _pos += dir;
         }

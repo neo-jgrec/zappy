@@ -2,22 +2,21 @@
 ** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
-** IButton
+** IScene
 */
 
-#ifndef IBUTTON_HPP_
-#define IBUTTON_HPP_
+#ifndef ISCENE_HPP_
+#define ISCENE_HPP_
 
+#include <memory>
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
-enum ButtonState {
-    HOVER,
-    CLICKED,
-    IDLE
-};
-class IButton {
+#include "../core/zappy.hpp"
+
+class IScene {
     public:
-        virtual ~IButton() = default;
+        virtual ~IScene() = default;
 
         virtual bool update(sf::Event event, sf::RenderWindow &window) = 0;
         virtual void draw(sf::RenderWindow &window) = 0;
@@ -26,4 +25,4 @@ class IButton {
     private:
 };
 
-#endif /* !IBUTTON_HPP_ */
+#endif /* !ISCENE_HPP_ */
