@@ -11,13 +11,17 @@ void left(client_t *client, server_t *server)
 {
     (void)server;
     switch (client->orientation) {
-        case NORTH: client->orientation = WEST;
+        case NORTH:
+            client->orientation = WEST;
             break;
-        case WEST: client->orientation = SOUTH;
+        case WEST:
+            client->orientation = SOUTH;
             break;
-        case SOUTH: client->orientation = EAST;
+        case SOUTH:
+            client->orientation = EAST;
             break;
-        case EAST: client->orientation = NORTH;
+        case EAST:
+            client->orientation = NORTH;
             break;
     }
 }

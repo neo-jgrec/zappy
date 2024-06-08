@@ -12,7 +12,7 @@
     #include <stdio.h>
     #include "utils.h"
 
-enum Orientation{
+enum Orientation {
     NORTH,
     SOUTH,
     WEST,
