@@ -25,10 +25,4 @@ if(CCACHE_FOUND)
 	set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif()
 
-# Add a fclean rule that call clean and remove compiled files
-add_custom_target(fclean
-	COMMAND ${CMAKE_BUILD_TOOL} clean
-	COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/cmake/clean-all.cmake
-)
-
 add_subdirectory(src)
