@@ -3,7 +3,7 @@
 
     #include <vector>
 
-    enum Status {
+    enum EggStatus {
         INCUBATING,
         READY_TO_HATCH,
         HATCHED,
@@ -16,11 +16,11 @@ class Egg
         std::vector<int> pos;
         int nb;
         int playerNb;
-        Status state;
+        EggStatus state;
     public:
-        void setState(Status newState) { state = newState; }
+        void setState(EggStatus newState) { state = newState; }
 
-        Egg(std::vector<int> pos, int nb, int playerNb, Status state): pos(pos), nb(nb), playerNb(playerNb), state(state) {};
+        Egg(std::vector<int> pos, int nb, int playerNb, EggStatus state): pos(pos), nb(nb), playerNb(playerNb), state(state) {};
         ~Egg() {};
 };
 

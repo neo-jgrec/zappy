@@ -1,5 +1,4 @@
 #include "parser.hpp"
-#include "guiException.hpp"
 #include "player.hpp"
 #include "src/egg.hpp"
 
@@ -155,10 +154,14 @@ void Parser::pie (const std::vector<TokenType>& tokens, Data& gameData) {
 };
 
 void Parser::pfk (const std::vector<TokenType>& tokens, Data& gameData) {
+    if (std::is_same<std::variant<std::string, int>, std::string>::value)
+        throw ParserException("Invalid type for command" + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
-        // int playerNb = std::stoi(tokens.at(1));
-        // Player& player = gameData.getPlayerById(playerNb);
-        // player.setEgging(true);
+        if (tokens.size() < 2)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
+        int playerNb = std::get<int>(tokens.at(1));
+        Player& player = gameData.getPlayerById(playerNb);
+        player.setEgging(true);
     };
     _queue.push(lambda);
 };
@@ -200,19 +203,19 @@ void Parser::enw (const std::vector<TokenType>& tokens, Data& gameData) {
         int playerNb = std::get<int>(tokens.at(2));
         int x = std::get<int>(tokens.at(3));
         int y = std::get<int>(tokens.at(4));
-        Egg egg(std::vector<int>({x, y}), eggNb, playerNb, INCUBATING);
-        gameData.addEgg(egg);
+        std::vector<int> pos = std::vector<int>(x, y);
+        gameData.addEgg(pos, eggNb, playerNb, INCUBATING);
 
         Player& player = gameData.getPlayerById(playerNb);
-        player.setEgging(true);
+        player.setEgging(false);
     };
     _queue.push(lambda);
 };
 
 void Parser::ebo (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
-        // int eggNb = std::stoi(tokens.at(1));
-        // gameData.getEggAt(eggNb).setHatched(true);
+        int eggNb = std::get<int>(tokens.at(1));
+        gameData.getEggById(eggNb).setState(HATCHED);
     };
     _queue.push(lambda);
 };
@@ -224,7 +227,7 @@ void Parser::edi (const std::vector<TokenType>& tokens, Data& gameData) {
         if (tokens.size() < 2)
             throw ParserException("Not enough arguments for command" + std::string(__func__));
         int eggNb = std::get<int>(tokens.at(1));
-        gameData.getEggAt(eggNb).setState(DEAD);
+        gameData.getEggById(eggNb).setState(DEAD);
     };
     _queue.push(lambda);
 };
@@ -237,18 +240,25 @@ void Parser::sst(const std::vector<TokenType>& tokens, Data& gameData) {
 };
 
 void Parser::sgt(const std::vector<TokenType>& tokens, Data& gameData) {
+    if (std::is_same<std::variant<std::string, int>, std::string>::value)
+        throw ParserException("Invalid type for command" + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
-        // if (tokens.size() < 2)
-        //     return;
-        // int tickRate = tokens.at(1);
-        // gameData.setTickRate(tickRate);
+        if (tokens.size() < 2)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
+        int tickRate = std::get<int>(tokens.at(1));
+        gameData.setTickRate(tickRate);
     };
     _queue.push(lambda);
 };
 
 void Parser::seg (const std::vector<TokenType>& tokens, Data& gameData) {
+    if (std::is_same<std::variant<std::string, int>, int>::value)
+        throw ParserException("Invalid type for command" + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
-        // N | team N won
+        if (tokens.size() < 2)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
+        std::string teamName = std::get<std::string>(tokens.at(1));
+        gameData.setWinner(teamName);
     };
     _queue.push(lambda);
 };

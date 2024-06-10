@@ -18,10 +18,11 @@ class Data
         int tickRate = 0;
         std::vector<std::string> teamNames;
         bool isRunning = false;
-        std::vector<Egg> eggs;
+        std::map<int, Egg> eggs;
         std::map<int, Player> players;
         std::vector<Incantation> incantations;
         std::vector<Broadcast> broadcasts;
+        std::string winner = "";
         Map map = Map();
 
     public:
@@ -40,10 +41,27 @@ class Data
         void setRunning(bool state) { this->isRunning = state; };
         bool getRunning() { return this->isRunning; };
 
+        void setWinner(std::string team) { this->winner = team; };
+        std::string getWinner() { return this->winner; };
 
-        void addEgg(Egg egg) { this->eggs.push_back(egg); };
-        std::vector<Egg> &getEggs() { return this->eggs; };
-        Egg &getEggAt(int n) { return this->eggs.at(n); };
+        /**
+        * @brief Add an egg to the game
+        * @param values the values of the egg
+        * @param playerId the id of the player that laid the egg
+        * @param state the state of the egg
+        * @return void
+        */
+        void addEgg(std::vector<int> pos, int eggId, int playerId, EggStatus state) {
+            this->eggs.insert(std::make_pair(
+                eggId,
+                Egg(pos, eggId, playerId, state)
+            )); };
+        std::map<int, Egg> &getEggs() { return this->eggs; };
+        Egg &getEggById(int eggid) {
+            if (this->eggs.find(eggid) == this->eggs.end())
+                throw guiException("getEggById: Invalid egg id(" + std::to_string(eggid) + ")");
+            return this->eggs.at(eggid);
+        };
 
 
         void addTeam(std::string team) { this->teamNames.push_back(team); };
