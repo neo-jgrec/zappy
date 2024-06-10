@@ -137,18 +137,7 @@ void Parser::pic (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::pie (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
-        // // X Y R | end of incantation on tile X Y with result R
-        // std::vector<Player> pls = gameData.getPlayers();
-        // // int result = std::stoi(tokens.at(3));
-        // // int x = std::stoi(tokens.at(1));
-        // // int y = std::stoi(tokens.at(2));
-
-        // for (auto &pl : pls) {
-        //     if (pl.getPosition() == std::vector(x, y)) {
-        //         pl.setIncanting(false);
-        //         //server.sendToServer("plv " + std::to_string(pl.getPlayerNb()) + "\n");
-        //     }
-        // }
+        // X Y R | end of incantation on tile X Y with result R
     };
     _queue.push(lambda);
 };
@@ -169,8 +158,6 @@ void Parser::pfk (const std::vector<TokenType>& tokens, Data& gameData) {
 void Parser::pdr (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // n i | player n drops object i
-        //std::vector<int> pos = gameData.getPlayerById(std::stoi(tokens.at(1))).getPosition();
-        //server.sendToServer("bct " + std::to_string(pos.at(0)) + " " + std::to_string(pos.at(1)) + "\n");
     };
     _queue.push(lambda);
 };
@@ -178,17 +165,19 @@ void Parser::pdr (const std::vector<TokenType>& tokens, Data& gameData) {
 void Parser::pgt (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         // n i | player n takes object i
-        //std::vector<int> pos = gameData.getPlayerById(std::stoi(tokens.at(1))).getPosition();
-        //server.sendToServer("bct " + std::to_string(pos.at(0)) + " " + std::to_string(pos.at(1)) + "\n");
     };
     _queue.push(lambda);
 };
 
 void Parser::pdi (const std::vector<TokenType>& tokens, Data& gameData) {
+    if (std::is_same<std::variant<std::string, int>, std::string>::value)
+        throw ParserException("Invalid type for command" + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
-        // int playerNb = std::stoi(tokens.at(1));
-        // Player& player = gameData.getPlayerById(playerNb);
-        // player.setAlive(false);
+        if (tokens.size() < 2)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
+        int playerNb = std::get<int>(tokens.at(1));
+        Player& player = gameData.getPlayerById(playerNb);
+        player.setAlive(false);
     };
     _queue.push(lambda);
 };
