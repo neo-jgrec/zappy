@@ -6,18 +6,11 @@
 */
 
 #include <iostream>
-#include <sstream>
-#include <string>
-#include <variant>
-#include <vector>
 
 #include "ServerConnect.hpp"
+#include "Parser.hpp"
 #include "GuiException.hpp"
 #include "Data.hpp"
-#include "Parser.hpp"
-
-#include <boost/filesystem.hpp>
-#include <boost/tokenizer.hpp>
 
 #include "utils/Debug.hpp"
 
@@ -35,38 +28,7 @@ int main() {
     Parser parser;
 
     while (1) {
-        std::string data;
-        try {
-            data = server.readFromServer();
-        } catch (const guiException& e) {
-            std::cerr << e.what() << std::endl;
-            return 1;
-        }
-
-        if (data.compare(std::string("WELCOME\n")) == 0) {
-            server.sendToServer("GRAPHIC\n");
-            continue;
-        }
-
-        std::istringstream dataStream(data);
-        std::string line;
-
-        while (std::getline(dataStream, line)) {
-            boost::tokenizer<> tok(line);
-            std::vector<std::string> tokens(tok.begin(), tok.end());
-            std::vector<std::variant<std::string, int>> vals;
-
-            for (auto& token : tokens) {
-                try {
-                    int numVal = std::stoi(token);
-                    vals.push_back(numVal);
-                } catch (const std::exception& e) {
-                    vals.push_back(token);
-                }
-            }
-            parser.parse(vals, gameData);
-        }
-        parser.execute();
+        parser.updateData(gameData, server);
     }
     return 0;
 }

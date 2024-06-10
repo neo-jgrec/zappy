@@ -9,6 +9,7 @@
     #include <queue>
 
     #include "Data.hpp"
+    #include "ServerConnect.hpp"
 
 class Parser
 {
@@ -103,6 +104,8 @@ public:
     };
 
     void execute();
+
+    void updateData(Data& gameData, serverConnect &server);
 };
 
 #endif // PARSER_HPP

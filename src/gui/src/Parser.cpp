@@ -3,10 +3,16 @@
 #include "Egg.hpp"
 #include "Incantation.hpp"
 
-#include "utils/Debug.hpp"
-
+#include <sstream>
 #include <string>
 #include <vector>
+#include <iostream>
+
+#include <boost/filesystem.hpp>
+#include <boost/tokenizer.hpp>
+
+#include "utils/Debug.hpp"
+
 
 void Parser::msz (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
@@ -333,3 +339,37 @@ void Parser::execute() {
     }
 };
 
+void Parser::updateData(Data &gameData, serverConnect &server)
+{
+    std::string data;
+    try {
+        data = server.readFromServer();
+    } catch (const guiException& e) {
+        std::cerr << e.what() << std::endl;
+    }
+
+    if (data.compare(std::string("WELCOME\n")) == 0) {
+        server.sendToServer("GRAPHIC\n");
+        return;
+    }
+
+    std::istringstream dataStream(data);
+    std::string line;
+
+    while (std::getline(dataStream, line)) {
+        boost::tokenizer<> tok(line);
+        std::vector<std::string> tokens(tok.begin(), tok.end());
+        std::vector<std::variant<std::string, int>> vals;
+
+        for (auto& token : tokens) {
+            try {
+                int numVal = std::stoi(token);
+                vals.push_back(numVal);
+            } catch (const std::exception& e) {
+                vals.push_back(token);
+            }
+        }
+        parse(vals, gameData);
+    }
+    execute();
+}

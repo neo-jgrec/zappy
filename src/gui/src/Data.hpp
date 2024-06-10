@@ -57,6 +57,7 @@ class Data
                 Egg(pos, eggId, playerId, state)
             )); };
         std::map<int, Egg> &getEggs() { return this->eggs; };
+
         Egg &getEggById(int eggid) {
             if (this->eggs.find(eggid) == this->eggs.end())
                 throw guiException("getEggById: Invalid egg id(" + std::to_string(eggid) + ")");
@@ -65,12 +66,14 @@ class Data
 
 
         void addTeam(std::string team) { this->teamNames.push_back(team); };
+
         /**
          * @brief Get the teams in the game
          * @return a copy of the teams
         */
         std::vector<std::string> getTeams() { return this->teamNames; };
         std::string getTeamAt(int n) { return this->teamNames[n]; };
+
         /**
          * @brief Check if the team exists
          * @param team the team name
@@ -93,6 +96,7 @@ class Data
             ));
         };
         std::map<int, Player> &getPlayers() { return this->players; };
+
         /**
          * @brief Get the player corresponding to the given id
          * @param id the id of the player (player number)
@@ -117,6 +121,11 @@ class Data
         };
 
         std::vector<Broadcast> &getBroadcasts() { return this->broadcasts; };
+        Broadcast popBroadcast() {
+            Broadcast b = this->broadcasts.back();
+            this->broadcasts.pop_back();
+            return b;
+        };
         void addBroadcast(int playerNb, std::vector<int> pos, std::string msg) {
             this->broadcasts.push_back(Broadcast(playerNb, msg, pos));
         };

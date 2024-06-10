@@ -37,6 +37,7 @@ void serverConnect::connectToServer(int port, const char *ip)
     if (connect(this->fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
         throw guiException("Failed to connect to the server");
     }
+    debug_print("\nConnected to server");
 }
 
 std::string serverConnect::readFromServer()
@@ -46,6 +47,7 @@ std::string serverConnect::readFromServer()
     int valread;
 
     if (select.select() > 0 && select.isSet(fd)) {
+        debug_print("\reading from server");
         while ((valread = read(this->fd, buffer.data(), buffer.size())) > 0) {
             message += std::string(buffer.data(), valread);
             if (message.back() == '\n' && valread != buffer.size())
