@@ -1,6 +1,7 @@
 #include "Parser.hpp"
 #include "Player.hpp"
 #include "Egg.hpp"
+#include "Incantation.hpp"
 
 #include "utils/Debug.hpp"
 
@@ -141,15 +142,41 @@ void Parser::pbc (const std::vector<TokenType>& tokens, Data& gameData) {
 };
 
 void Parser::pic (const std::vector<TokenType>& tokens, Data& gameData) {
+    if (std::is_same<std::variant<std::string, int>, std::string>::value)
+        throw ParserException("Invalid type for command" + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
-        // X Y L n n n ... | start of incantation on tile X Y by players n n n ...
+        if (tokens.size() < 5)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
+        int x = std::get<int>(tokens.at(1));
+        int y = std::get<int>(tokens.at(2));
+        std::vector<int> pos = std::vector<int>({x, y});
+        int lvl = std::get<int>(tokens.at(3));
+        std::vector<int> playersId;
+
+        for (int i = 4; i < tokens.size(); i++) {
+            int playerNb = std::get<int>(tokens.at(i));
+            Player& player = gameData.getPlayerById(playerNb);
+            player.setIncanting(true);
+            playersId.push_back(playerNb);
+        }
+        gameData.addIncantation(pos, lvl, playersId);
     };
     _queue.push(lambda);
 };
 
 void Parser::pie (const std::vector<TokenType>& tokens, Data& gameData) {
+    if (std::is_same<std::variant<std::string, int>, std::string>::value)
+        throw ParserException("Invalid type for command" + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
-        // X Y R | end of incantation on tile X Y with result R
+        if (tokens.size() < 4)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
+        int x = std::get<int>(tokens.at(1));
+        int y = std::get<int>(tokens.at(2));
+        int result = std::get<int>(tokens.at(3));
+        std::vector<int> pos = std::vector<int>({x, y});
+
+        Incantation incantation = gameData.getIncantationByPos(pos);
+        incantation.setStatus(result == 0 ? FAILURE : SUCCESS);
     };
     _queue.push(lambda);
 };

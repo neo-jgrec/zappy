@@ -20,7 +20,7 @@ class Data
         bool isRunning = false;
         std::map<int, Egg> eggs;
         std::map<int, Player> players;
-        std::vector<Incantation> incantations;
+        std::map<std::vector<int>, Incantation> incantations;
         std::vector<Broadcast> broadcasts;
         std::string winner = "";
         Map map = Map();
@@ -106,14 +106,14 @@ class Data
         };
         bool playerExists(int id) { return this->players.find(id) != this->players.end(); };
 
-        std::vector<Incantation> &getIncantations() { return this->incantations; };
-        void addIncantation(std::vector<std::string> incVals) {
-            if (incVals.size() < 4)
-                throw guiException("Invalid incantation size");
-            this->incantations.push_back(Incantation(
-                std::stoi(incVals[1]),
-                std::stoi(incVals[2]),
-                std::stoi(incVals[3])));
+        std::map<std::vector<int>, Incantation> &getIncantations() { return this->incantations; };
+        Incantation &getIncantationByPos(std::vector<int> pos) {
+            if (this->incantations.find(pos) == this->incantations.end())
+                throw guiException("getIncantationsByPos: Invalid position");
+            return this->incantations.at(pos);
+        };
+        void addIncantation(std::vector<int> pos, int lvl, std::vector<int> playersId) {
+            this->incantations.insert(std::make_pair(pos, Incantation(pos, lvl, playersId)));
         };
 
         std::vector<Broadcast> &getBroadcasts() { return this->broadcasts; };

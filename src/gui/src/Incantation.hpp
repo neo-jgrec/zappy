@@ -3,24 +3,32 @@
 
     #include <vector>
 
+enum IncantationOutcome
+{
+    FAILURE,
+    SUCCESS,
+    IN_PROGRESS
+};
+
 class Incantation
 {
-enum outcome {IN_PROGRESS, SUCCESS, FAILURE};
+    private:
+        std::vector<int> pos;
+        int lvl;
+        std::vector<int> playersIds;
+        IncantationOutcome status = IN_PROGRESS;
+    public:
+        Incantation(std::vector<int> pos, int lvl, std::vector<int> playersIds) : pos(pos), lvl(lvl), playersIds(playersIds) {};
+        ~Incantation() {};
 
-private:
-    int x;
-    int y;
-    int lvl;
-    outcome status = IN_PROGRESS;
-public:
-    Incantation(int x, int y, int lvl) : x(x), y(y), lvl(lvl) {};
-    ~Incantation() {};
+        void setStatus(IncantationOutcome status) { this->status = status; };
+        IncantationOutcome getStatus() { return this->status; };
 
-    void setStatus(outcome status) { this->status = status; };
-    outcome getStatus() { return this->status; };
+        void addPlayer(int playerId) { this->playersIds.push_back(playerId); };
+        std::vector<int> getPlayersId() { return this->playersIds; };
 
-    std::vector<int> getPosition() { return {this->x, this->y}; };
-    int getLvl() { return this->lvl; };
+        std::vector<int> getPosition() { return {this->pos}; };
+        int getLvl() { return this->lvl; };
 };
 
 
