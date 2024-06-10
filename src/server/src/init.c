@@ -25,11 +25,12 @@ static bool init_teams(server_t *server)
     int nb_clients = server->proprieties.nb_clients;
     int width = server->proprieties.width;
     int height = server->proprieties.height;
-    team_list_t *new_team = malloc(sizeof(team_list_t));
+    team_list_t *new_team;
 
-    if (new_team == NULL)
-        return false;
     for (size_t i = 0; teams[i] != NULL; i++) {
+        new_team = malloc(sizeof(team_list_t));
+        if (new_team == NULL)
+            return false;
         new_team->team = init_team(teams[i], nb_clients, width, height);
         if (new_team->team == NULL)
             return false;

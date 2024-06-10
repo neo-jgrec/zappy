@@ -57,6 +57,7 @@ void print_teams_infos(struct teams_tailq *teams)
     char **uuids;
     unsigned char i = 0;
     team_list_t *item;
+    eggs_list_t *item_e;
 
     TAILQ_FOREACH(item, teams, entries) {
         uuids = item->team->client_ids;
@@ -65,7 +66,10 @@ void print_teams_infos(struct teams_tailq *teams)
         printf("UUIDs:\n");
         for (; i < MAX_CAPACITY_TEAM && uuids[i] != NULL; i++)
             printf("%u - (%s)\n", i, item->team->client_ids[i]);
-        break;
+        printf("Eggs:\n");
+        TAILQ_FOREACH(item_e, &item->team->eggs, entries) {
+            printf("X(%u) Y(%u)\n", item_e->egg->x, item_e->egg->y);
+        }
     }
 }
 

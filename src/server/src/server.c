@@ -48,6 +48,7 @@ int server(const char **args)
     int status = OK_STATUS;
     server_t server = {0};
 
+    srand(time(NULL));
     if (!init_server(&server, args)) {
         destroy_server(server);
         return helper(ERROR_STATUS);
@@ -56,7 +57,6 @@ int server(const char **args)
         status = ERROR_STATUS;
     if (listen(server.fd, FD_SETSIZE) < 0)
         status = ERROR_STATUS;
-    srand(time(NULL));
     if (start_server(&server) == ERROR_STATUS)
         status = ERROR_STATUS;
     if (status == ERROR_STATUS)
