@@ -104,6 +104,7 @@ class Data
                 throw guiException("getPlayerById: Invalid player id(" + std::to_string(id) + ")");
             return this->players.at(id);
         };
+        bool playerExists(int id) { return this->players.find(id) != this->players.end(); };
 
         std::vector<Incantation> &getIncantations() { return this->incantations; };
         void addIncantation(std::vector<std::string> incVals) {
