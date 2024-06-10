@@ -2,14 +2,13 @@
     #define PARSER_HPP
 
     #include <iostream>
-    #include <map>
     #include <functional>
     #include <variant>
     #include <vector>
     #include <string>
     #include <queue>
 
-    #include "data.hpp"
+    #include "Data.hpp"
 
 class Parser
 {

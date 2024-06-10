@@ -11,10 +11,10 @@
 #include <variant>
 #include <vector>
 
-#include "serverConnect.hpp"
-#include "guiException.hpp"
-#include "data.hpp"
-#include "parser.hpp"
+#include "ServerConnect.hpp"
+#include "GuiException.hpp"
+#include "Data.hpp"
+#include "Parser.hpp"
 
 #include <boost/filesystem.hpp>
 #include <boost/tokenizer.hpp>

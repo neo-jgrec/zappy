@@ -16,7 +16,7 @@
     #include <iostream>
     #include <vector>
 
-    #include "guiException.hpp"
+    #include "GuiException.hpp"
 
     class serverConnect
     {

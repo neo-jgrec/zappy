@@ -1,6 +1,6 @@
-#include "parser.hpp"
-#include "player.hpp"
-#include "src/egg.hpp"
+#include "Parser.hpp"
+#include "Player.hpp"
+#include "Egg.hpp"
 
 #include <string>
 #include <vector>

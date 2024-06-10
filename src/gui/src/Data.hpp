@@ -1,12 +1,12 @@
 #ifndef DATA_HPP
     #define DATA_HPP
     
-    #include "map.hpp"
-    #include "egg.hpp"
-    #include "player.hpp"
-    #include "incantation.hpp"
-    #include "broadcast.hpp"
-    #include "guiException.hpp"
+    #include "Map.hpp"
+    #include "Egg.hpp"
+    #include "Player.hpp"
+    #include "Incantation.hpp"
+    #include "Broadcast.hpp"
+    #include "GuiException.hpp"
 
     #include <string>
     #include <vector>

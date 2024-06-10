@@ -1,5 +1,5 @@
-#include "map.hpp"
-#include "guiException.hpp"
+#include "Map.hpp"
+#include "GuiException.hpp"
 
 
 void Map::updateTile(int x, int y, std::vector<int> values)

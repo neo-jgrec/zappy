@@ -4,7 +4,6 @@
 
     #include <vector>
     #include <string>
-    #include <stdexcept>
 
 class Player
 {
@@ -40,13 +39,6 @@ class Player
         void setTeam(std::string newTeam) { this->team = newTeam; };
         void setPlayerNb(int newId) { this->id = newId; };
         void setInventory(std::vector<int> inventoryVals) { this->inventory = inventoryVals; };
-
-        void update(std::vector<std::string> vals) {
-            if (vals.size() != 5)
-                throw std::invalid_argument("Invalid player size");
-            // setPosition();
-            setOrientation(std::stoi(vals.at(4)));
-        };
 
         std::vector<int> getPosition() { return {position}; };
         int getOrientation() { return this->orientation; };
