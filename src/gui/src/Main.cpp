@@ -28,10 +28,7 @@ int main() {
         server.connectToServer(3000, "127.0.0.1");
     } catch (const guiException& e) {
         std::cerr <<  e.what() << std::endl;
-        return 1;
-    } catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-        return 1;
+        return 84;
     }
 
     Data gameData;
@@ -44,10 +41,8 @@ int main() {
         } catch (const guiException& e) {
             std::cerr << e.what() << std::endl;
             return 1;
-        } catch (const std::exception& e) {
-            std::cerr << e.what() << std::endl;
-            return 1;
         }
+
         if (data.compare(std::string("WELCOME\n")) == 0) {
             server.sendToServer("GRAPHIC\n");
             continue;

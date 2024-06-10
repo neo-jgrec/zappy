@@ -11,10 +11,13 @@
     #include <string>
     #include <unistd.h>
 
+    #include "Select.hpp"
+
     class serverConnect
     {
         private:
             int fd = -1;
+            Select select = Select();
 
         public:
 

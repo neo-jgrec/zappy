@@ -25,6 +25,7 @@ void serverConnect::connectToServer(int port, const char *ip)
         throw guiException("Failed to create a socket");
     }
 
+    select.addFd(this->fd);
     struct sockaddr_in server_addr;
     memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
@@ -44,14 +45,15 @@ std::string serverConnect::readFromServer()
     std::vector<char> buffer(1024);
     int valread;
 
-    while ((valread = read(this->fd, buffer.data(), buffer.size())) > 0) {
-        message += std::string(buffer.data(), valread);
-        if (message.back() == '\n' && valread != buffer.size())
-            break;
+    if (select.select() > 0 && select.isSet(fd)) {
+        while ((valread = read(this->fd, buffer.data(), buffer.size())) > 0) {
+            message += std::string(buffer.data(), valread);
+            if (message.back() == '\n' && valread != buffer.size())
+                break;
+        }
+        if (valread < 0)
+            throw guiException("Failed to read from the server");
     }
-
-    if (valread < 0)
-        throw guiException("Failed to read from the server");
     return message;
 }
 
