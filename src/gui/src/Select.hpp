@@ -1,6 +1,9 @@
-#include <sys/select.h>
-#include <unistd.h>
-#include <algorithm>
+#ifndef SELECT_HPP
+    #define SELECT_HPP
+
+    #include <sys/select.h>
+    #include <unistd.h>
+    #include <algorithm>
 
 class Select {
     private:
@@ -44,3 +47,5 @@ class Select {
             return ::select(max_fd + 1, &copy_fds, nullptr, nullptr, &tv);
         }
 };
+
+#endif //SELECT_HPP
