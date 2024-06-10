@@ -6,6 +6,7 @@
 */
 
 #include "server.h"
+#include <time.h>
 
 static int handle_connections(server_t *server, int fd)
 {
@@ -55,6 +56,7 @@ int server(const char **args)
         status = ERROR_STATUS;
     if (listen(server.fd, FD_SETSIZE) < 0)
         status = ERROR_STATUS;
+    srand(time(NULL));
     if (start_server(&server) == ERROR_STATUS)
         status = ERROR_STATUS;
     if (status == ERROR_STATUS)
