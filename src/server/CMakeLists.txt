@@ -49,7 +49,7 @@ pkg_search_module(UUID REQUIRED uuid)
 find_library(MATH_LIB m)
 
 file(GLOB_RECURSE SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/**/*.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
 )
 
 target_sources(zappy_server
@@ -69,3 +69,4 @@ target_link_libraries(zappy_server ${UUID_LIBRARIES} ${MATH_LIB})
 
 install(TARGETS zappy_server)
 
+add_subdirectory(tests)

@@ -50,14 +50,21 @@ $(addprefix re/, $(PROJECTS_SUFFIXES)):
 debug: CMAKE_BUILD_TYPE=Debug
 debug: all
 
-$(addprefix debug/, $(BINS)):
+$(addprefix debug/, $(PROJECTS_SUFFIXES)):
 	@cmake -B $(BUILD_DIR) \
 		-DCMAKE_BUILD_TYPE=Debug \
 		-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$(CMAKE_RUNTIME_OUTPUT_DIRECTORY) \
 		-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=$(CMAKE_LIBRARY_OUTPUT_DIRECTORY) \
-		&& make -C $(BUILD_DIR) $(@:debug/%=%) -j --no-print-directory
+		&& make -C $(BUILD_DIR) $(PROJECT_NAME)_$(@:debug/%=%) -j --no-print-directory
 
-.PHONY: all clean fclean re debug help $(BINS) $(addprefix clean/, $(PROJECTS_SUFFIXES)) $(addprefix fclean/, $(PROJECTS_SUFFIXES)) $(addprefix re/, $(PROJECTS_SUFFIXES)) $(addprefix debug/, $(BINS))
+$(addprefix test/, $(PROJECTS_SUFFIXES)):
+	@cmake -B $(BUILD_DIR) \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$(CMAKE_RUNTIME_OUTPUT_DIRECTORY) \
+		-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=$(CMAKE_LIBRARY_OUTPUT_DIRECTORY) \
+		&& make -C $(BUILD_DIR) $(@:test/%=%)_unit_tests -j --no-print-directory
+
+.PHONY: all clean fclean re debug help $(BINS) $(addprefix clean/, $(PROJECTS_SUFFIXES)) $(addprefix fclean/, $(PROJECTS_SUFFIXES)) $(addprefix re/, $(PROJECTS_SUFFIXES)) $(addprefix debug/, $(BINS)) $(addprefix test/, $(PROJECTS_SUFFIXES))
 
 .DEFAULT_GOAL := all
 
@@ -77,9 +84,10 @@ help:
 	@echo "  fclean/<project>: Clean the specified project and remove the binary"
 	@echo "  re/<project>:     Clean the specified project and rebuild it"
 	@echo "  debug/<project>:  Build the specified project in debug mode"
+	@echo "  test/<project>:   Build the specified project unit tests"
 	@echo ""
 	@echo "Projects:"
-	@echo "  $(BINS)"
+	@echo "  $(PROJECTS_SUFFIXES)"
 	@echo ""
 	@echo "Examples:"
 	@echo "  make"
@@ -92,5 +100,6 @@ help:
 	@echo "  make fclean/server"
 	@echo "  make re/server"
 	@echo "  make debug/server"
+	@echo "  make test/server"
 	@echo ""
 	@echo "For more information, ask me"

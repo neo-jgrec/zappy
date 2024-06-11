@@ -52,8 +52,8 @@ if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 file(GLOB_RECURSE SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp
 )
 
 target_sources(zappy_gui
@@ -77,3 +77,5 @@ target_link_libraries(zappy_gui
 )
 
 install(TARGETS zappy_gui)
+
+add_subdirectory(tests)
