@@ -127,7 +127,9 @@ void Parser::pex (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
         throw ParserException("Invalid type for command" + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
-        // n | player n is pushing someone
+        int playerNb = std::get<int>(tokens.at(1));
+        Player& player = gameData.getPlayerById(playerNb);
+        player.setPushing();
     };
     _queue.push(lambda);
 };
@@ -162,7 +164,7 @@ void Parser::pic (const std::vector<TokenType>& tokens, Data& gameData) {
         for (int i = 4; i < tokens.size(); i++) {
             int playerNb = std::get<int>(tokens.at(i));
             Player& player = gameData.getPlayerById(playerNb);
-            player.setIncanting(true);
+            player.setIncanting();
             playersId.push_back(playerNb);
         }
         gameData.addIncantation(pos, lvl, playersId);
@@ -196,7 +198,7 @@ void Parser::pfk (const std::vector<TokenType>& tokens, Data& gameData) {
             throw ParserException("Not enough arguments for command" + std::string(__func__));
         int playerNb = std::get<int>(tokens.at(1));
         Player& player = gameData.getPlayerById(playerNb);
-        player.setEgging(true);
+        player.setEgging();
         debug_print("\\pfk");
     };
     _queue.push(lambda);
@@ -204,14 +206,24 @@ void Parser::pfk (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::pdr (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
-        // n i | player n drops object i
+        if (tokens.size() < 3)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
+        int playerNb = std::get<int>(tokens.at(1));
+        int resource = std::get<int>(tokens.at(2));
+        Player& player = gameData.getPlayerById(playerNb);
+        player.setDrop(resource);
     };
     _queue.push(lambda);
 };
 
 void Parser::pgt (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
-        // n i | player n takes object i
+        if (tokens.size() < 3)
+            throw ParserException("Not enough arguments for command" + std::string(__func__));
+        int playerNb = std::get<int>(tokens.at(1));
+        int resource = std::get<int>(tokens.at(2));
+        Player& player = gameData.getPlayerById(playerNb);
+        player.setPickup(resource);
     };
     _queue.push(lambda);
 };
@@ -248,7 +260,6 @@ void Parser::enw (const std::vector<TokenType>& tokens, Data& gameData) {
 
         if (gameData.playerExists(playerNb)) {
             Player& player = gameData.getPlayerById(playerNb);
-            player.setEgging(false);
         }
         debug_print("\\enw");
     };
