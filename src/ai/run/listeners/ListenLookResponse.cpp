@@ -22,7 +22,7 @@ void Bot::listenLookResponse(const std::string &response)
     unsigned int nbTile = 0;
 
     unsigned int center = 2;
-    unsigned int limit = 3;
+    unsigned int limit = 4;
     unsigned int addCenter = 4;
     unsigned int addLimit = 5;
 
