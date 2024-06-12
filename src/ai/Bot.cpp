@@ -15,7 +15,7 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
     behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
                                                    { testPatern(); }, "testPatern"));
     behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
-                                                   { group(); }, "group"));
+                                                   { survive(); }, "survive"));
     for (auto &behavior : behaviors)
     {
         behavior->probability = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);

@@ -20,8 +20,7 @@ void Bot::updateProbabilities()
         {
             if (state.ressources.food < 20)
             {
-
-                newProbability += getProbabilityByName("food_importance").probability;
+                newProbability = getProbabilityByName("food_importance").probability;
             }
         }
 
