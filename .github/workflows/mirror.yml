@@ -1,0 +1,24 @@
+name: mirror
+
+on:
+  push:
+
+env:
+  MIRROR_URL: git@github.com:EpitechPromo2027/B-YEP-400-REN-4-1-zappy-jean-yanis.jeffroy.git
+  SUBMODULES_TO_RESOLVE: "libs/raylib libs/raylib-cpp"
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Push changes to mirror repository
+        uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url: ${{ env.MIRROR_URL }}
+          ssh_private_key: ${{ secrets.GIT_SSH_PRIVATE_KEY }}
