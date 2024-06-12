@@ -46,7 +46,6 @@ void handle_client_message(server_t *server)
 
     TAILQ_FOREACH(item, &server->clients, entries) {
         client = item->client;
-        printf("RECEIVED: %s\n", client->message);
         client->commands = str_to_array_separator(client->message, " \r\n\t");
         if (client->commands == NULL || client->commands[0] == NULL)
             continue;

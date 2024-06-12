@@ -10,6 +10,8 @@
     #define BUFFER_SIZE 1024
     #include <stdlib.h>
     #include <stdio.h>
+    #include <sys/queue.h>
+    #include <uuid/uuid.h>
     #include "utils.h"
 
 enum Orientation {
@@ -28,8 +30,6 @@ typedef struct client_s {
     int fd;
     char **commands;
     char message[BUFFER_SIZE];
-    struct client_s *next;
-    struct client_s *prev;
     signed char x;
     signed char y;
     char *team_name;
@@ -37,13 +37,13 @@ typedef struct client_s {
     inventory_t inventory;
 } client_t;
 
+typedef struct client_list_s {
+    client_t *client;
+    TAILQ_ENTRY(client_list_s) entries;
+} client_list_t;
+
 /* LISTS */
 
-/**
- *
- * @param clients clients to print
- */
-void print_clients_fds(client_t *clients);
 
 /**
  *

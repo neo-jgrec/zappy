@@ -6,6 +6,7 @@
 */
 
 #include "server.h"
+#include <time.h>
 
 static int handle_connections(server_t *server, int fd)
 {
@@ -30,6 +31,7 @@ static int check_connections(server_t *server)
 
 static int start_server(server_t *server)
 {
+
     while (true) {
         server->ready_sockets = server->current_sockets;
         if (select(FD_SETSIZE, &server->ready_sockets, NULL, NULL, NULL) < 0) {
@@ -47,6 +49,7 @@ int server(const char **args)
     int status = OK_STATUS;
     server_t server = {0};
 
+    srand(time(NULL));
     if (!init_server(&server, args)) {
         destroy_server(server);
         return helper(ERROR_STATUS);

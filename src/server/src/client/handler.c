@@ -31,7 +31,7 @@ int create_new_client(server_t *server)
     dprintf(client_fd, "WELCOME\n");
     new_client = malloc(sizeof(client_list_t));
     if (!new_client) {
-        perror("Malloc failed");
+        perror("Malloc while creating a client failed");
         return ERROR_STATUS;
     }
     new_client->client = init_client(client_fd);

@@ -21,34 +21,40 @@
     #include <stdlib.h>
     #include <stdio.h>
     #include <netinet/in.h>
-    #include <uuid/uuid.h>
     #include <unistd.h>
-    #include <sys/queue.h>
     #include "flags.h"
     #include "utils.h"
     #include "client.h"
 
-typedef struct client_list_s {
-    client_t *client;
-    TAILQ_ENTRY(client_list_s) entries;
-} client_list_t;
-
 TAILQ_HEAD(client_tailq, client_list_s);
+TAILQ_HEAD(eggs_tailq, eggs_list_s);
+TAILQ_HEAD(teams_tailq, team_list_s);
 
-typedef struct eggs_s {
+typedef struct egg_s {
     unsigned char x;
     unsigned char y;
-    struct eggs_s *next;
-    struct eggs_s *prev;
-} eggs_t;
+} egg_t;
+
+typedef struct eggs_list_s {
+    egg_t *egg;
+    TAILQ_ENTRY(eggs_list_s) entries;
+} eggs_list_t;
+
 
 typedef struct team_s {
+    char *name;
     char *client_ids[MAX_CAPACITY_TEAM];
-    bool is_available;
+    bool is_complete;
     unsigned char capacity;
-    struct team_s *next;
-    struct team_s *prev;
+    struct eggs_tailq eggs;
 } team_t;
+
+
+typedef struct team_list_s {
+    team_t *team;
+    TAILQ_ENTRY(team_list_s) entries;
+} team_list_t;
+
 
 typedef struct server_s {
     struct sockaddr_in info;
@@ -58,8 +64,15 @@ typedef struct server_s {
     flags_t proprieties;
     socklen_t addrlen;
     struct client_tailq clients;
-    team_t *teams;
+    struct teams_tailq teams;
 } server_t;
+
+void print_clients_fds(struct client_tailq *clients);
+void destroy_clients(struct client_tailq *clients);
+void destroy_teams(struct teams_tailq *teams);
+egg_t *init_egg(int width, int height);
+team_t *init_team(const char *team_name, int nb_client, int width, int height);
+void print_teams_infos(struct teams_tailq *teams);
 
 typedef struct commands_s {
     char *name;
