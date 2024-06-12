@@ -2,6 +2,7 @@
 #include "Player.hpp"
 #include "Egg.hpp"
 #include "Incantation.hpp"
+#include "GuiException.hpp"
 
 #include <sstream>
 #include <string>
@@ -13,6 +14,9 @@
 
 #include "utils/Debug.hpp"
 
+// ---------------------------------------------------------------- //
+// --------------------------- HANDLERS --------------------------- //
+// ---------------------------------------------------------------- //
 
 void Parser::msz (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
@@ -343,6 +347,12 @@ void Parser::sbp (const std::vector<TokenType>& tokens, Data& gameData) {
     _queue.push(lambda);
 };
 
+
+// ---------------------------------------------------------------- //
+// -------------------------- EXECUTION --------------------------- //
+// ---------------------------------------------------------------- //
+
+
 void Parser::execute() {
     while (!_queue.empty()) {
         _queue.front()();
@@ -384,3 +394,20 @@ void Parser::updateData(Data &gameData, serverConnect &server)
     }
     execute();
 }
+
+void Parser::parse(std::vector<std::variant<std::string, int>> values, Data& gameData)
+{
+    if (values.empty() || !std::holds_alternative<std::string>(values.at(0))) {
+        throw ParserException("Invalid command format");
+        return;
+    }
+
+    const std::string& command = std::get<std::string>(values.at(0));
+    auto it = handlers.find(command);
+
+    if (it != handlers.end()) {
+        it->second(values, gameData);
+    } else {
+        std::cerr << "Command not found: " << command << std::endl;
+    }
+};

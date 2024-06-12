@@ -42,59 +42,44 @@ class Player
     private:
         std::vector<int> position = {0, 0};
         std::vector<std::vector<int>> nextPositions;
-        int lvl;
         int orientation = UP;
-        std::string team;
+
+        int lvl;
         int id;
-        std::vector<Event> events;
         bool isAlive = true;
+        std::string team;
+
         std::vector<int> inventory = {0, 0, 0, 0, 0, 0, 0};
+        std::vector<Event> events;
+
+        void popNextPosition();
+
     public:
         Player() {};
         Player(int id, std::vector<int> position, int orientation, int lvl, std::string team) : id(id), position(position), orientation(orientation), lvl(lvl), team(team) {};
         ~Player() {};
 
-        void setPosition(std::vector<int> newPos) {
-            nextPositions.push_back(position);
-            events.push_back(Event(MOVING, newPos));
-        };
-        void setOrientation(int newOrientation) { this->orientation = newOrientation; };
-        void setIncanting() { events.push_back(Event(INCANTATING)); };
-        void setEgging() { events.push_back(Event(EGGING)); };
-        void setPushing() { events.push_back(Event(PUSHING)); };
-        void setPickup(int res) { events.push_back(Event(PICKUP, std::vector<int>(res))); };
-        void setDrop(int res) { events.push_back(Event(DROP, std::vector<int>(res))); };
-        void setAlive(bool alive) { this->isAlive = alive; };
-        void setLvl(int newLvl) {
-            this->lvl = newLvl;
-            events.push_back(Event(LVLUP, std::vector<int>(newLvl)));
-        };
-        void setTeam(std::string newTeam) { this->team = newTeam; };
-        void setPlayerNb(int newId) { this->id = newId; };
-        void setInventory(std::vector<int> inventoryVals) { this->inventory = inventoryVals; };
+        void setPosition(std::vector<int> newPos);
+        void setOrientation(int newOrientation);
+        void setIncanting();
+        void setEgging();
+        void setPushing();
+        void setPickup(int res);
+        void setDrop(int res);
+        void setAlive(bool alive);
+        void setLvl(int newLvl);
+        void setTeam(std::string newTeam);
+        void setPlayerNb(int newId);
+        void setInventory(std::vector<int> inventoryVals);
         
-        Event getNextEvent() {
-            if (events.empty())
-                return NONE;
-            Event event = events.front();
-            if (event.action == MOVING)
-                popNextPosition();
-            events.erase(events.begin());
-            return event;
-        };
-        void popNextPosition() {
-            if (nextPositions.empty())
-                return;
-            this->position = nextPositions.front();
-            nextPositions.erase(nextPositions.begin());
-        };
-        std::vector<int> getPosition() { return {position}; };
-        int getOrientation() { return this->orientation; };
-        int getLvl() { return this->lvl; };
-        std::string getTeam()  { return this->team; };
-        int getPlayerNb() { return this->id; };
-        bool getAlive() { return this->isAlive; };
-        std::vector<int> getInventory() { return this->inventory; };
+        std::vector<int> getInventory();
+        std::vector<int> getPosition();
+        int getOrientation();
+        int getPlayerNb();
+        int getLvl();
+        std::string getTeam();
+        Event getNextEvent();
+        bool getAlive();
 };
 
 #endif // PLAYER_HPP

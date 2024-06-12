@@ -1,7 +1,6 @@
 #ifndef PARSER_HPP
     #define PARSER_HPP
 
-    #include <iostream>
     #include <functional>
     #include <variant>
     #include <vector>
@@ -86,22 +85,7 @@ public:
         std::string _message;
     };
 
-    void parse(std::vector<std::variant<std::string, int>> values, Data& gameData)
-    {
-        if (values.empty() || !std::holds_alternative<std::string>(values.at(0))) {
-            throw ParserException("Invalid command format");
-            return;
-        }
-
-        const std::string& command = std::get<std::string>(values.at(0));
-        auto it = handlers.find(command);
-
-        if (it != handlers.end()) {
-            it->second(values, gameData);
-        } else {
-            std::cerr << "Command not found: " << command << std::endl;
-        }
-    };
+    void parse(std::vector<std::variant<std::string, int>> values, Data& gameData);
 
     void execute();
 
