@@ -25,4 +25,25 @@ if(CCACHE_FOUND)
 	set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif()
 
+add_compile_options(-Wall
+	-Wextra
+	-Wpedantic
+	-fexceptions
+	-ffunction-sections
+	-fdata-sections
+	-fasynchronous-unwind-tables
+	-fno-delete-null-pointer-checks
+	-fno-common
+	-fno-omit-frame-pointer
+	-fno-strict-aliasing
+	-fno-semantic-interposition
+	-fstack-protector-strong
+	-fstack-clash-protection
+	-flto=auto
+	-fdiagnostics-color=auto
+	-grecord-gcc-switches
+	-pipe
+	-pthread
+)
+
 add_subdirectory(src)

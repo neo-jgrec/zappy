@@ -1,27 +1,5 @@
 add_executable(zappy_server)
 
-# Set compilation flags
-add_compile_options(-Wall
-	-Wextra
-	-pedantic-errors
-	-fexceptions
-	-ffunction-sections
-	-fdata-sections
-	-fasynchronous-unwind-tables
-	-fno-delete-null-pointer-checks
-	-fno-common
-	-fno-omit-frame-pointer
-	-fno-strict-aliasing
-	-fno-semantic-interposition
-	-fstack-protector-strong
-	-fstack-clash-protection
-	-flto=auto
-	-fdiagnostics-color=auto
-	-grecord-gcc-switches
-	-pipe
-	-pthread
-)
-
 # If in debug mode, enable debug flags
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_compile_options(-O0 -g3)

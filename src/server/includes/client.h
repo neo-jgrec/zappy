@@ -34,7 +34,7 @@ typedef struct client_s {
     signed char y;
     char *team_name;
     unsigned char orientation;
-    inventory_t inventory;
+    // inventory_t inventory;
 } client_t;
 
 typedef struct client_list_s {
