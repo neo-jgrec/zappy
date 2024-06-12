@@ -1,0 +1,50 @@
+name: coverage deployement
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  TEST_BINARIES: "ai_unit_tests gui_unit_tests server_unit_tests"
+  PROJECTS: "src/ai src/gui src/server"
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcriterion-dev
+          sudo apt-get install -y libsfml-dev
+          sudo apt-get install -y libboost-all-dev
+          sudo apt-get install -y gcovr
+
+      - name: Build the tests
+        run: |
+          make tests_run
+
+      - name: Run the tests
+        run: |
+          for binary in $TEST_BINARIES; do
+            ./$binary
+          done
+
+      - name: Generate the coverage reports
+        run: |
+          for project in $PROJECTS; do
+            gcovr -r $project --html --html-details -o ${project}_coverage.html
+          done
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-reports
+          path: '*.html'
