@@ -22,7 +22,7 @@ void Bot::listenLookResponse(const std::string &response)
     unsigned int nbTile = 0;
 
     unsigned int center = 2;
-    unsigned int limit = 3;
+    unsigned int limit = 4;
     unsigned int addCenter = 4;
     unsigned int addLimit = 5;
 
@@ -58,17 +58,17 @@ void Bot::listenLookResponse(const std::string &response)
     }
 
     // debug
-    for (auto &tile : state.environment.tiles)
-    {
-        std::cout << "Tile: x:" << tile.x << " y: " << tile.y << " distance: " << tile.distance << std::endl;
-        std::cout << "Ressources: " << std::endl;
-        std::cout << "food: " << tile.ressources.food << std::endl;
-        std::cout << "linemate: " << tile.ressources.linemate << std::endl;
-        std::cout << "deraumere: " << tile.ressources.deraumere << std::endl;
-        std::cout << "sibur: " << tile.ressources.sibur << std::endl;
-        std::cout << "mendiane: " << tile.ressources.mendiane << std::endl;
-        std::cout << "phiras: " << tile.ressources.phiras << std::endl;
-        std::cout << "thystame: " << tile.ressources.thystame << std::endl;
-        std::cout << "player: " << tile.ressources.player << std::endl;
-    }
+    // for (auto &tile : state.environment.tiles)
+    // {
+    //     std::cout << "Tile: x:" << tile.x << " y: " << tile.y << " distance: " << tile.distance << std::endl;
+    //     std::cout << "Ressources: " << std::endl;
+    //     std::cout << "food: " << tile.ressources.food << std::endl;
+    //     std::cout << "linemate: " << tile.ressources.linemate << std::endl;
+    //     std::cout << "deraumere: " << tile.ressources.deraumere << std::endl;
+    //     std::cout << "sibur: " << tile.ressources.sibur << std::endl;
+    //     std::cout << "mendiane: " << tile.ressources.mendiane << std::endl;
+    //     std::cout << "phiras: " << tile.ressources.phiras << std::endl;
+    //     std::cout << "thystame: " << tile.ressources.thystame << std::endl;
+    //     std::cout << "player: " << tile.ressources.player << std::endl;
+    // }
 }

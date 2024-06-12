@@ -15,33 +15,12 @@ void Bot::updateProbabilities()
     {
         double newProbability = behavior->probability;
 
-        if (state.ressources.food < getProbabilityByName("food_importance").condition)
+        // if (state.ressources.food < getProbabilityByName("food_importance").condition) V2
+        if (behavior->name == "survive")
         {
-            if (behavior->name == "take_food")
+            if (state.ressources.food < 20)
             {
-                newProbability += getProbabilityByName("food_importance").probability;
-            }
-        }
-        {
-            if (behavior->name == "take_food")
-            {
-                newProbability += 0.1;
-            }
-        }
-
-        if (state.level > 1)
-        {
-            if (behavior->name == "forward")
-            {
-                newProbability += 0.05;
-            }
-        }
-
-        if (state.ressources.linemate > 2) // && !state.environment.contains("linemate")
-        {
-            if (behavior->name == "look")
-            {
-                newProbability -= 0.05; // decrease the probability of looking if we have enough linemate
+                newProbability = getProbabilityByName("food_importance").probability;
             }
         }
 
@@ -56,7 +35,6 @@ void Bot::updateProbabilities()
 
         behavior->probability = newProbability;
     }
-
     normalizeProbabilities();
 }
 
@@ -93,23 +71,41 @@ Probability &Bot::getProbabilityByName(const std::string &name)
 }
 
 // to verify: do it with condition too
+// to verify: change could  be negativ ? V2
+// void Bot::exploreProbabilities()
+// {
+//     state.exploredProbabilities.clear();
+
+//     int randomIndex = rand() % probabilities.size();
+//     double change = ((rand() % 100) / 100.0) * 0.2 - 0.1; // Change between -0.1 and 0.1
+
+//     probabilities[randomIndex]->probability += change;
+
+//     // Clamp the probability values between 0 and 1
+//     if (probabilities[randomIndex]->probability > 1)
+//         probabilities[randomIndex]->probability = 1;
+//     else if (probabilities[randomIndex]->probability < 0)
+//         probabilities[randomIndex]->probability = 0;
+
+//     state.exploredProbabilities.push_back(probabilities[randomIndex]->name);
+
+//     printKeyValueColored("Exploring probability", probabilities[randomIndex]->name + " with change: " + std::to_string(change));
+// }
+
 void Bot::exploreProbabilities()
 {
-    state.exploredProbabilities.clear(); // Réinitialiser la liste des comportements explorés
+    state.exploredProbabilities.clear();
 
-    // Modifie aléatoirement les probabilités d'une probabilité
     int randomIndex = rand() % probabilities.size();
-    double change = ((rand() % 100) / 100.0) * 0.2 - 0.1; // Change between -0.1 and 0.1
+    double change = (rand() % 100) / 100.0 * 0.1; // Change between 0 and 0.1
 
     probabilities[randomIndex]->probability += change;
 
     // Clamp the probability values between 0 and 1
     if (probabilities[randomIndex]->probability > 1)
         probabilities[randomIndex]->probability = 1;
-    else if (probabilities[randomIndex]->probability < 0)
-        probabilities[randomIndex]->probability = 0;
 
-    state.exploredProbabilities.push_back(probabilities[randomIndex]->name); // Enregistrer le comportement exploré
+    state.exploredProbabilities.push_back(probabilities[randomIndex]->name);
 
     printKeyValueColored("Exploring probability", probabilities[randomIndex]->name + " with change: " + std::to_string(change));
 }

@@ -16,10 +16,6 @@ void Bot::testPatern()
     queue.push_back({[&]() { doAction(RIGHT, ""); }, "RIGHT"});
 }
 
-void Bot::survive()
-{
-    searchAndTakeRessource("food");
-}
 
 void Bot::searchLinemate()
 {

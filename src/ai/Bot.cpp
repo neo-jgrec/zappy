@@ -12,17 +12,17 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
     sendMessage(teamName);
     _orientation = NORTH;
     state.ressources.food = 9;
-    behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
+    behaviors.push_back(std::make_unique<Behavior>(0.45, [&]()
                                                    { testPatern(); }, "testPatern"));
-    behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
-                                                   { group(); }, "group"));
+    behaviors.push_back(std::make_unique<Behavior>(0.4, [&]()
+                                                   { survive(); }, "survive"));
     for (auto &behavior : behaviors)
     {
         behavior->probability = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
     }
     debugInitialisation();
     /* probabilities */
-    probabilities.push_back(std::make_unique<Probability>(5, 0.5, "food_importance"));
+    probabilities.push_back(std::make_unique<Probability>(5, 0.4, "food_importance"));
     debugProbabilities();
 }
 
@@ -51,28 +51,34 @@ void Bot::sendMessage(const std::string &message)
 void Bot::run(std::string response)
 {
     int cycle = 0;
+    printColor("========== [Bot Run] ==========\n", BLUE);
+    printKeyValueColored("Iteration", std::to_string(_iteration));
+
     if (!response.empty() && response.back() == '\n')
     {
         response.pop_back();
     }
 
-    if (state.lastAction.action == LOOK) {
-        printColor("========== [Bot Run] ==========\n", BLUE);
-        printKeyValueColored("Iteration", std::to_string(_iteration));
+    if (state.lastAction.action == LOOK)
+    {
         printKeyValueColored("Bot listens", response);
 
         listen(response); // -> change le state
     }
     if (state.reward != 0)
         applyReward();
+    if (state.reward != 0 || _iteration == 0)
+        applyReward();
     updateProbabilities();
     if (queue.empty())
         act(); // -> fait l'action la plus rentable
-    if (!queue.empty()) {
+    if (!queue.empty())
+    {
         queue.front().first();
         queue.erase(queue.begin());
     }
     _iteration++;
+    printColor("========== [!Bot Run] ==========\n", BLUE);
 }
 
 /*
@@ -84,7 +90,18 @@ void Bot::act()
     exploreProbabilities();
     Behavior *bestBehavior = nullptr;
 
-    int maxProbability = -1;
+    double maxProbability = -1;
+
+    if (!behaviors.empty())
+    {
+        maxProbability = behaviors.front()->probability;
+
+        bestBehavior = behaviors.front().get();
+    }
+    else
+    {
+        return;
+    }
 
     for (auto &behavior : behaviors)
     {
@@ -94,7 +111,7 @@ void Bot::act()
             bestBehavior = behavior.get();
         }
     }
-    printKeyValueColored("Behavior", bestBehavior->name);
+    printColor("Behavior choosen: " + bestBehavior->name + "\n", BOLD);
     if (bestBehavior)
     {
         bestBehavior->act();
@@ -127,9 +144,9 @@ void Bot::applyReward()
 {
     double reward = state.reward;
 
+    printColor("========== [Bot Probabilities] ==========\n", CYAN);
     printKeyValueColored("Reward", std::to_string(reward));
 
-    // Mettre à jour la probabilité basée sur la récompense uniquement pour les comportements explorés
     for (auto &probability : probabilities)
     {
         if (std::find(state.exploredProbabilities.begin(), state.exploredProbabilities.end(), probability->name) != state.exploredProbabilities.end())
@@ -146,6 +163,7 @@ void Bot::applyReward()
 
     state.reward = 0;
     debugProbabilities();
+    printColor("========== [!Bot Probabilities] ==========\n", CYAN);
 }
 
 void Bot::takeFirstDecision(std::string response)
@@ -194,52 +212,67 @@ void Bot::turnRight(std::pair<int, int> &pos)
 
 void Bot::moveForward(std::pair<int, int> &pos)
 {
-    switch (_orientation) {
-        case NORTH: pos.second++; break;
-        case EAST:  pos.first++; break;
-        case SOUTH: pos.second--; break;
-        case WEST:  pos.first--; break;
+    switch (_orientation)
+    {
+    case NORTH:
+        pos.second++;
+        break;
+    case EAST:
+        pos.first++;
+        break;
+    case SOUTH:
+        pos.second--;
+        break;
+    case WEST:
+        pos.first--;
+        break;
     }
-    queue.push_back({[&]() { doAction(FORWARD, ""); }, "FORWARD"});
+    queue.push_back({[&]()
+                     { doAction(FORWARD, ""); }, "FORWARD"});
 }
 
-void Bot::turnToDirection(std::pair<int, int> &pos, Orientation targetDir) 
+void Bot::turnToDirection(std::pair<int, int> &pos, Orientation targetDir)
 {
     int leftTurns = (_orientation - targetDir + 4) % 4;
     int rightTurns = (targetDir - _orientation + 4) % 4;
 
-    if (leftTurns <= rightTurns) {
-        for (int i = 0; i < leftTurns; ++i) {
+    if (leftTurns <= rightTurns)
+    {
+        for (int i = 0; i < leftTurns; ++i)
+        {
             turnLeft(pos);
-            queue.push_back({[&]() { doAction(LEFT, ""); }, "LEFT"});
+            queue.push_back({[&]()
+                             { doAction(LEFT, ""); }, "LEFT"});
         }
-    } else {
-        for (int i = 0; i < rightTurns; ++i) {
+    }
+    else
+    {
+        for (int i = 0; i < rightTurns; ++i)
+        {
             turnRight(pos);
-            queue.push_back({[&]() { doAction(RIGHT, ""); }, "RIGHT"});
+            queue.push_back({[&]()
+                             { doAction(RIGHT, ""); }, "RIGHT"});
         }
     }
 }
 
-void Bot::findPath(std::pair<int, int> start, const std::pair<int, int>& end)
+void Bot::findPath(std::pair<int, int> start, const std::pair<int, int> &end)
 {
     static const std::vector<std::pair<int, Orientation>> directions = {
-        {1, EAST}, {-1, WEST}, {1, NORTH}, {-1, SOUTH}
-    };
+        {1, EAST}, {-1, WEST}, {1, NORTH}, {-1, SOUTH}};
 
-    while (start != end) {
-        for (const auto& [delta, dir] : directions) {
-            if ((dir == EAST || dir == WEST)
-                    && start.first != end.first
-                        && (dir == EAST ? start.first < end.first 
-                            : start.first > end.first)) {
+    while (start != end)
+    {
+        for (const auto &[delta, dir] : directions)
+        {
+            if ((dir == EAST || dir == WEST) && start.first != end.first && (dir == EAST ? start.first < end.first : start.first > end.first))
+            {
                 turnToDirection(start, dir);
                 moveForward(start);
                 break;
-            } else if ((dir == NORTH || dir == SOUTH)
-                && start.second != end.second
-                    && (dir == NORTH ? start.second < end.second
-                        : start.second > end.second)) {
+            }
+            else if ((dir == NORTH || dir == SOUTH) && start.second != end.second && (dir == NORTH ? start.second < end.second : start.second > end.second))
+            {
                 turnToDirection(start, dir);
                 moveForward(start);
                 break;
@@ -248,9 +281,7 @@ void Bot::findPath(std::pair<int, int> start, const std::pair<int, int>& end)
     }
 }
 
-
-
-/*void Bot::findPath(std::pair<int, int> start, const std::pair<int, int> &end) 
+/*void Bot::findPath(std::pair<int, int> start, const std::pair<int, int> &end)
 {
     while (start.first != end.first || start.second != end.second) {
         if (start.first < end.first) {
