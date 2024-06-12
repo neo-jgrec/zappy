@@ -29,12 +29,65 @@ static int check_connections(server_t *server)
     return OK_STATUS;
 }
 
+static double get_interval(int command, double freq)
+{
+    const interval_t intervals[NB_COMMANDS_TO_SEND] = {
+            {FORWARD, FORWARD_TLIMIT},
+            {RIGHT, RIGHT_TLIMIT},
+            {LEFT, LEFT_TLIMIT},
+            {LOOK, LOOK_TLIMIT},
+            {INVENTORY, INVENTORY_TLIMIT},
+            {BROADCAST, BROADCAST_TLIMIT},
+            {FORK, FORK_TLIMIT},
+            {EJECT, EJECT_TLIMIT},
+            {TAKE, TAKE_TLIMIT},
+            {SET, SET_TLIMIT},
+            {INCANTATION, INCANTATION_TLIMIT}
+    };
+
+    for (unsigned char i = 0; i < NB_COMMANDS_TO_SEND; i++) {
+        if (intervals[i].command == command)
+            return freq > 0.0f ? intervals[i].frequency / freq : -1.0f;
+    }
+    return -1.0f;
+}
+
+static void check_response_client_time(
+        struct client_tailq *clients,
+        double freq,
+        struct timespec current
+)
+{
+    client_list_t *item;
+    double interval;
+    double elapsed;
+    struct timespec start;
+
+    TAILQ_FOREACH(item, clients, entries) {
+        for (unsigned char i = 0; i < NB_REQUESTS_HANDLEABLE; i++) {
+            if (item->client->tclient[i].available_request) {
+                start = item->client->tclient[i].future_time;
+                interval = get_interval(item->client->tclient[i].command, freq);
+                elapsed = (current.tv_sec - start.tv_sec) + (current.tv_nsec + start.tv_nsec) / NANOSECONDS_IN_SECOND;
+                if (elapsed >= interval) {
+                    dprintf(item->client->fd, "Finally!!!\n");
+                }
+            }
+        }
+        printf("FD(%d)\n", item->client->fd);
+    }
+}
+
 static int start_server(server_t *server)
 {
+    double freq = (double)server->proprieties.frequency;
 
     while (true) {
+        clock_gettime(CLOCK_REALTIME, &server->current_time);
+        check_response_client_time(&server->clients, freq, server->current_time);
         server->ready_sockets = server->current_sockets;
-        if (select(FD_SETSIZE, &server->ready_sockets, NULL, NULL, NULL) < 0) {
+        if (select(FD_SETSIZE, &server->ready_sockets, NULL, NULL,
+                   &server->timeout) < 0) {
             perror("There was an error in select");
             return ERROR_STATUS;
         }

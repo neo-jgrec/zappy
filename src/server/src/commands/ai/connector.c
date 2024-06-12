@@ -7,7 +7,8 @@
 
 #include "server.h"
 
-void connector(client_t *client, server_t *server)
+bool connector(client_t *client, server_t *server)
 {
-    return;
+    // TODO: add team connection
+    return false;
 }

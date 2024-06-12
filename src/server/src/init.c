@@ -56,5 +56,7 @@ bool init_server(server_t *server, const char **args)
     }
     FD_ZERO(&server->current_sockets);
     FD_SET(server->fd, &server->current_sockets);
+    server->timeout.tv_sec = 0;
+    server->timeout.tv_usec = 0;
     return true;
 }

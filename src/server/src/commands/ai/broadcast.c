@@ -69,6 +69,7 @@ void broadcast(client_t *client, server_t *server)
             server->proprieties.width,
             server->proprieties.height
         );
-        dprintf(receiver->fd, "message %d, %s\n", direction, client->message);
+        // TODO: stock direction variable
     }
+    client_time_handler(client, BROADCAST);
 }

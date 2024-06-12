@@ -34,8 +34,9 @@ static bool execute_command(client_t *client, server_t *server)
             return true;
         }
     }
+    if (connector(client, server) == false)
+        dprintf(client->fd, "ko\n\r");
     free_array((void **)client->commands);
-    dprintf(client->fd, "ko\n\r");
     return false;
 }
 

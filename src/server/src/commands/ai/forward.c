@@ -27,6 +27,6 @@ void forward(client_t *client, server_t *server)
     client->y = (client->y < 0)
         ? (signed char)server->proprieties.height - 1 : client->y;
     client->x = (client->x >= server->proprieties.width) ? 0 : client->x;
-    client->x = (client->x < 0)
-        ? (signed char)server->proprieties.width - 1 : client->x;
+    client->x = (client->x < 0) ? server->proprieties.width - 1 : client->x;
+    client_time_handler(client, FORWARD);
 }

@@ -24,4 +24,5 @@ void right(client_t *client, server_t *server)
             client->orientation = NORTH;
             break;
     }
+    client_time_handler(client, RIGHT);
 }
