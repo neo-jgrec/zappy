@@ -61,14 +61,14 @@ static void check_response_client_time(
     client_list_t *item;
     double interval;
     double elapsed;
-    struct timespec start;
+    struct timespec cmd_start_time;
 
     TAILQ_FOREACH(item, clients, entries) {
         for (unsigned char i = 0; i < NB_REQUESTS_HANDLEABLE; i++) {
             if (item->client->tclient[i].available_request) {
-                start = item->client->tclient[i].future_time;
+                cmd_start_time = item->client->tclient[i].future_time;
                 interval = get_interval(item->client->tclient[i].command, freq);
-                elapsed = (current.tv_sec - start.tv_sec) + (current.tv_nsec + start.tv_nsec) / NANOSECONDS_IN_SECOND;
+                elapsed = (current.tv_sec - cmd_start_time.tv_sec) + (current.tv_nsec + cmd_start_time.tv_nsec) / NANOSECONDS_IN_SECOND;
                 if (elapsed >= interval) {
                     dprintf(item->client->fd, "Finally!!!\n");
                 }
