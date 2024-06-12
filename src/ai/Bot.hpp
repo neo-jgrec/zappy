@@ -116,7 +116,14 @@ private:
     void testPatern();
     void searchAndTake(std::string param);
     void survive();
+    void searchAndTakeRessource(const std::string &ressource);
     void group();
+    void searchLinemate();
+    void searchDeraumere();
+    void searchSibur();
+    void searchMendiane();
+    void searchPhiras();
+    void searchThystame();
 };
 
 #endif // BOT_HPP_

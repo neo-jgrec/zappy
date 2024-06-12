@@ -18,7 +18,42 @@ void Bot::testPatern()
 
 void Bot::survive()
 {
-    if (state.environment.tiles.empty())
+    searchAndTakeRessource("food");
+}
+
+void Bot::searchLinemate()
+{
+    searchAndTakeRessource("linemate");
+}
+
+void Bot::searchDeraumere()
+{
+    searchAndTakeRessource("deraumere");
+}
+
+void Bot::searchSibur()
+{
+    searchAndTakeRessource("sibur");
+}
+
+void Bot::searchMendiane()
+{
+    searchAndTakeRessource("mendiane");
+}
+
+void Bot::searchPhiras()
+{
+    searchAndTakeRessource("phiras");
+}
+
+void Bot::searchThystame()
+{
+    searchAndTakeRessource("thystame");
+}
+
+void Bot::searchAndTakeRessource(const std::string &ressource)
+{
+    if (state.environment.tiles.empty()) 
     {
         queue.push_back({[&]() { doAction(LOOK, ""); }, "LOOK"});
     }
@@ -27,20 +62,37 @@ void Bot::survive()
         { "FORWARD", [&]() { doAction(FORWARD, ""); } },
         { "LEFT",    [&]() { doAction(LEFT, ""); } },
         { "RIGHT",   [&]() { doAction(RIGHT, ""); } },
-        { "TAKE",    [&]() { doAction(TAKE, "food"); } }
+        { "TAKE",    [=]() { doAction(TAKE, ressource); } } 
     };
 
-    bool foodFound = false;
+    bool resourceFound = false;
 
     for (const auto& tile : state.environment.tiles)
     {
         std::cout << "Tile: " << tile.x << " " << tile.y << std::endl;
-        std::cout << "food: " << tile.ressources.food << std::endl;
+
+        int resourceQuantity = 0;
+        if (ressource == "food")
+            resourceQuantity = tile.ressources.food;
+        else if (ressource == "linemate")
+            resourceQuantity = tile.ressources.linemate;
+        else if (ressource == "deraumere")
+            resourceQuantity = tile.ressources.deraumere;
+        else if (ressource == "sibur")
+            resourceQuantity = tile.ressources.sibur;
+        else if (ressource == "mendiane")
+            resourceQuantity = tile.ressources.mendiane;
+        else if (ressource == "phiras")
+            resourceQuantity = tile.ressources.phiras;
+        else if (ressource == "thystame")
+            resourceQuantity = tile.ressources.thystame;
+
+        std::cout << ressource << ": " << resourceQuantity << std::endl;
         std::cout << "distance: " << tile.distance << std::endl;
-        
-        if (tile.ressources.food > 0)
+
+        if (resourceQuantity > 0)
         {
-            foodFound = true;
+            resourceFound = true;
             std::pair<int, int> coord = {tile.x, tile.y};
             if (movementMap.find(coord) != movementMap.end())
             {
@@ -54,7 +106,7 @@ void Bot::survive()
         }
     }
 
-    if (!foodFound)
+    if (!resourceFound)
         queue.push_back({[&]() { doAction(FORWARD, ""); }, "FORWARD"});
 
     queue.push_back({[&]() { doAction(LOOK, ""); }, "LOOK"});
@@ -62,5 +114,5 @@ void Bot::survive()
 
 void Bot::group()
 {
-    findPath({0, 0}, {-10, 5});
+    findPath({0, 0}, {-10, -10});
 }
