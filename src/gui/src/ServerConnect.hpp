@@ -10,8 +10,14 @@
 
     #include <string>
     #include <unistd.h>
+    #include <vector>
 
     #include "Select.hpp"
+
+    enum Flags {
+        IP,
+        PORT
+    };
 
     class serverConnect
     {
@@ -20,6 +26,10 @@
             Select select = Select();
 
         public:
+
+            std::vector<Flags> launchedWith;
+            int port = 3000;
+            std::string ip = "127.0.0.1";
 
             /**
             * @brief read the message sent by the server
