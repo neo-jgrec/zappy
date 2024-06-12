@@ -50,7 +50,8 @@ jobs:
           sudo apt-get install -y libcriterion-dev
           sudo apt-get install -y libsfml-dev
           sudo apt-get install -y libboost-all-dev
-          sudo apt-get install -y gcovr
+          sudo apt-get install -y python3-pip
+          pip3 install gcovr
 
       - name: Fetch all branches
         run: git fetch --all
