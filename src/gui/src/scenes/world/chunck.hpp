@@ -22,6 +22,7 @@ class Chunck {
 
         sf::Vector2i _pos;
         float _yOffset;
+        bool _hover = false;
 
     private:
         int _food;

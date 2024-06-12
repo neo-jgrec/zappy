@@ -16,24 +16,27 @@
 #include "../scenes/home.hpp"
 #include "../scenes/quit.hpp"
 #include "zappy.hpp"
-
 class Core {
     public:
         Core() {
-            _window.create(sf::VideoMode( 1280 , 720 ), "Zappy", sf::Style::Close);
+            // _window.create(sf::VideoMode( 1280 , 720 ), "Zappy", sf::Style::Close);
+            _window.create(sf::VideoMode( 1920 , 1080 ), "Zappy", sf::Style::Default);
+            // _window.setFramerateLimit(60);
+            // _window.setVerticalSyncEnabled(true);
 
             _scenes[GameState::HOME] = std::make_shared<Home>(_zappy);
             _scenes[GameState::END] = std::make_shared<Quit>(_zappy);
-            _scenes[GameState::GAME] = std::make_shared<World>(sf::Vector2i(15, 15));
+            _scenes[GameState::GAME] = std::make_shared<World>(_zappy, sf::Vector2f(15, 15));
             _clock.restart();
         }
         ~Core() {
         }
 
-        void checkClose() {
+        void update() {
             if (_event.type == sf::Event::Closed)
                 _zappy._upperState = GameState::END;
-
+            if (_event.type == sf::Event::MouseMoved)
+                _zappy.setMousePos(sf::Vector2f(_event.mouseMove.x, _event.mouseMove.y));
         }
 
         void run() {
@@ -42,7 +45,7 @@ class Core {
                 _clock.restart();
 
                 while (_window.pollEvent(_event)) {
-                    checkClose();
+                    update();
                     _scenes[((_zappy._upperState != GameState::NONE) ? _zappy._upperState : _zappy._state)]->update(_event, _window);
                 }
                 _window.clear(sf::Color(100, 100, 100));
@@ -54,10 +57,10 @@ class Core {
             }
         }
 
+        Zappy _zappy;
     private:
         sf::RenderWindow _window;
 
-        Zappy _zappy;
         std::map<GameState, std::shared_ptr<IScene>> _scenes;
         sf::Event _event;
         sf::Clock _clock;

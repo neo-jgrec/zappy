@@ -11,7 +11,6 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 #include <iostream>
-
 #include "../core/zappy.hpp"
 
 class IScene {

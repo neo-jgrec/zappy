@@ -34,10 +34,13 @@ class Zappy {
 
         void setDeltaTime(float deltaTime) { _deltaTime = deltaTime; };
         float getDeltaTime() { return _deltaTime; };
+        void setMousePos(sf::Vector2f mousePos) { _mousePos = mousePos; };
+        sf::Vector2f getMousePos() { return _mousePos; };
     protected:
     private:
         sf::Font _font;
         float _deltaTime = 0;
+        sf::Vector2f _mousePos;
 
 };
 
