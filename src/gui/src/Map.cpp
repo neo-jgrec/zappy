@@ -4,7 +4,7 @@
 
 void Map::updateTile(int x, int y, std::vector<int> values)
 {
-    if (x >= this->map.size() || y >= this->map.at(0).size()) {
+    if (x >= static_cast<int>(this->map.size()) || y >= static_cast<int>(this->map.at(0).size())) {
         throw guiException("Invalid tile position");
     }
     map[x][y].setRessources(values);

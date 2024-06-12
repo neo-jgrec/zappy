@@ -24,8 +24,8 @@ class Event {
         std::vector<int> params;
         Actions action;
 
-        Event(Actions action, std::vector<int> params) : action(action), params(params) {};
-        Event(Actions action) : action(action), params(std::vector<int>()) {};
+        Event(Actions action, std::vector<int> params) : params(params), action(action) {};
+        Event(Actions action) : params(std::vector<int>()), action(action) {};
         ~Event() {};
 };
 
@@ -56,7 +56,7 @@ class Player
 
     public:
         Player() {};
-        Player(int id, std::vector<int> position, int orientation, int lvl, std::string team) : id(id), position(position), orientation(orientation), lvl(lvl), team(team) {};
+        Player(int id, std::vector<int> position, int orientation, int lvl, std::string team) : position(position), orientation(orientation), lvl(lvl), id(id), team(team) {};
         ~Player() {};
 
         void setPosition(std::vector<int> newPos);

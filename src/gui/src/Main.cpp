@@ -16,7 +16,7 @@
 #include "utils/CommandLineParser.hpp"
 
 int main(int argc, char **argv) {
-    debug_print("Starting GUI");
+    debug_print("Starting GUI", "");
 
     CommandLineParser cmdParser(argc, argv);
     cmdParser.addOption("--ip", "-i", "The ip to connect to");

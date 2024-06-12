@@ -14,8 +14,8 @@ class Egg
 {
     private:
         std::vector<int> pos;
-        int nb;
-        int playerNb;
+        [[maybe_unused]] int nb;
+        [[maybe_unused]] int playerNb;
         EggStatus state;
     public:
         void setState(EggStatus newState) { state = newState; }
