@@ -31,6 +31,7 @@ static int check_connections(server_t *server)
 
 static int start_server(server_t *server)
 {
+
     while (true) {
         server->ready_sockets = server->current_sockets;
         if (select(FD_SETSIZE, &server->ready_sockets, NULL, NULL, NULL) < 0) {

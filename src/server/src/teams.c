@@ -73,7 +73,7 @@ void print_teams_infos(struct teams_tailq *teams)
     }
 }
 
-// TODO
+// TODO: use team_list_t instead of team_t
 void add_client_uuid_to_team(team_t *team, char uuid[37])
 {
     unsigned char i = 0;
