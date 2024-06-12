@@ -1,4 +1,3 @@
-# Simple workflow for deploying static content to GitHub Pages
 name: Deploy static content to Pages
 
 on:
@@ -20,6 +19,10 @@ concurrency:
   group: 'pages'
   cancel-in-progress: true
 
+env:
+  TEST_BINARIES: "ai_unit_tests gui_unit_tests server_unit_tests"
+  PROJECTS: "src/ai src/gui src/server"
+
 jobs:
   # Single deploy job since we're just deploying
   deploy:
@@ -31,6 +34,52 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Cache APT packages
+        uses: actions/cache@v3
+        with:
+          path: /var/cache/apt
+          key: ${{ runner.os }}-apt-cache
+          restore-keys: |
+            ${{ runner.os }}-apt-cache
+
+      - name: Install dependencies
+        working-directory: ${{ github.workspace }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcriterion-dev
+          sudo apt-get install -y libsfml-dev
+          sudo apt-get install -y libboost-all-dev
+          sudo apt-get install -y gcovr
+
+      - name: Fetch all branches
+        run: git fetch --all
+
+      - name: Checkout `main` branch
+        run: git checkout main
+
+      - name: Build the tests
+        run: make tests_run
+
+      - name: Run the tests
+        run: |
+          for binary in $TEST_BINARIES; do
+            ./$binary
+          done
+
+      - name: Generate coverage report
+        run: |
+          mkdir -p coverage
+          for project in $PROJECTS; do
+            gcovr . -r $project --html --html-details -o coverage/${project##*/}.html --exclude $project/tests
+          done
+
+      - name: Switch to `docs` branch with coverage report
+        run: |
+          git checkout docs
+          mkdir -p static/coverage
+          mv coverage/* static/coverage
+
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
