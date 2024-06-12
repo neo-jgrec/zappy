@@ -12,10 +12,20 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
     sendMessage(teamName);
     _orientation = NORTH;
     state.ressources.food = 9;
-    behaviors.push_back(std::make_unique<Behavior>(0.45, [&]()
-                                                   { testPatern(); }, "testPatern"));
     behaviors.push_back(std::make_unique<Behavior>(0.4, [&]()
                                                    { survive(); }, "survive"));
+    behaviors.push_back(std::make_unique<Behavior>(0.75, [&]()
+                                                   { searchLinemate(); }, "searchLinemate"));
+    // behaviors.push_back(std::make_unique<Behavior>(0.15, [&]()
+    //                                                { searchDeraumere(); }, "searchDeraumere"));
+    // behaviors.push_back(std::make_unique<Behavior>(0.15, [&]()
+    //                                                { searchSibur(); }, "searchSibur"));
+    // behaviors.push_back(std::make_unique<Behavior>(0.15, [&]()
+    //                                                { searchMendiane(); }, "searchMendiane"));
+    // behaviors.push_back(std::make_unique<Behavior>(0.15, [&]()
+    //                                                { searchPhiras(); }, "searchPhiras"));
+    // behaviors.push_back(std::make_unique<Behavior>(0.15, [&]()
+    //                                                { searchThystame(); }, "searchThystame"));
     for (auto &behavior : behaviors)
     {
         behavior->probability = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
@@ -23,6 +33,12 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
     debugInitialisation();
     /* probabilities */
     probabilities.push_back(std::make_unique<Probability>(5, 0.4, "food_importance"));
+    probabilities.push_back(std::make_unique<Probability>(5, 0.3, "linemate_importance"));
+    // probabilities.push_back(std::make_unique<Probability>(5, 0.3, "deraumere_importance"));
+    // probabilities.push_back(std::make_unique<Probability>(5, 0.3, "sibur_importance"));
+    // probabilities.push_back(std::make_unique<Probability>(5, 0.3, "mendiane_importance"));
+    // probabilities.push_back(std::make_unique<Probability>(5, 0.3, "phiras_importance"));
+    // probabilities.push_back(std::make_unique<Probability>(5, 0.3, "thystame_importance"));
     debugProbabilities();
 }
 
@@ -65,11 +81,11 @@ void Bot::run(std::string response)
 
         listen(response); // -> change le state
     }
+    setRewardWithState();
     if (state.reward != 0)
         applyReward();
     if (state.reward != 0 || _iteration == 0)
-        applyReward();
-    updateProbabilities();
+        updateProbabilities();
     if (queue.empty())
         act(); // -> fait l'action la plus rentable
     if (!queue.empty())

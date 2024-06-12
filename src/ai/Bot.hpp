@@ -20,6 +20,7 @@
 #include <queue>
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 
 #include "state/BotState.hpp"
 #include "behaviors/Behavior.hpp"
@@ -65,13 +66,14 @@ public:
     std::vector<std::unique_ptr<Probability>> probabilities;
 
     void listen(std::string response);
-    void applyReward();
     void act();
 
     // Traning
     void updateProbabilities();
     void normalizeProbabilities();
     void exploreProbabilities();
+    void setRewardWithState();
+    void applyReward();
 
     // Debug
     void debugInitialisation();
