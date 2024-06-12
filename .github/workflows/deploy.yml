@@ -71,7 +71,7 @@ jobs:
         run: |
           mkdir -p coverage
           for project in $PROJECTS; do
-            gcovr . -r $project --html --html-details -o coverage/${project##*/}.html --exclude $project/tests
+            gcovr . -r $project --html --html-details -o coverage/${project##*/}.html --exclude $project/tests --html-theme github.dark-blue
           done
 
       - name: Switch to `docs` branch with coverage report
