@@ -71,20 +71,39 @@ Probability &Bot::getProbabilityByName(const std::string &name)
 }
 
 // to verify: do it with condition too
+// to verify: change could  be negativ ? V2
+// void Bot::exploreProbabilities()
+// {
+//     state.exploredProbabilities.clear();
+
+//     int randomIndex = rand() % probabilities.size();
+//     double change = ((rand() % 100) / 100.0) * 0.2 - 0.1; // Change between -0.1 and 0.1
+
+//     probabilities[randomIndex]->probability += change;
+
+//     // Clamp the probability values between 0 and 1
+//     if (probabilities[randomIndex]->probability > 1)
+//         probabilities[randomIndex]->probability = 1;
+//     else if (probabilities[randomIndex]->probability < 0)
+//         probabilities[randomIndex]->probability = 0;
+
+//     state.exploredProbabilities.push_back(probabilities[randomIndex]->name);
+
+//     printKeyValueColored("Exploring probability", probabilities[randomIndex]->name + " with change: " + std::to_string(change));
+// }
+
 void Bot::exploreProbabilities()
 {
     state.exploredProbabilities.clear();
 
     int randomIndex = rand() % probabilities.size();
-    double change = ((rand() % 100) / 100.0) * 0.2 - 0.1; // Change between -0.1 and 0.1
+    double change = (rand() % 100) / 100.0 * 0.1; // Change between 0 and 0.1
 
     probabilities[randomIndex]->probability += change;
 
     // Clamp the probability values between 0 and 1
     if (probabilities[randomIndex]->probability > 1)
         probabilities[randomIndex]->probability = 1;
-    else if (probabilities[randomIndex]->probability < 0)
-        probabilities[randomIndex]->probability = 0;
 
     state.exploredProbabilities.push_back(probabilities[randomIndex]->name);
 

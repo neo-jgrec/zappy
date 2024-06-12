@@ -12,9 +12,9 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
     sendMessage(teamName);
     _orientation = NORTH;
     state.ressources.food = 9;
-    behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
+    behaviors.push_back(std::make_unique<Behavior>(0.45, [&]()
                                                    { testPatern(); }, "testPatern"));
-    behaviors.push_back(std::make_unique<Behavior>(0.0, [&]()
+    behaviors.push_back(std::make_unique<Behavior>(0.4, [&]()
                                                    { survive(); }, "survive"));
     for (auto &behavior : behaviors)
     {
@@ -22,7 +22,7 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
     }
     debugInitialisation();
     /* probabilities */
-    probabilities.push_back(std::make_unique<Probability>(5, 0.5, "food_importance"));
+    probabilities.push_back(std::make_unique<Probability>(5, 0.4, "food_importance"));
     debugProbabilities();
 }
 
@@ -51,6 +51,9 @@ void Bot::sendMessage(const std::string &message)
 void Bot::run(std::string response)
 {
     int cycle = 0;
+    printColor("========== [Bot Run] ==========\n", BLUE);
+    printKeyValueColored("Iteration", std::to_string(_iteration));
+
     if (!response.empty() && response.back() == '\n')
     {
         response.pop_back();
@@ -58,13 +61,13 @@ void Bot::run(std::string response)
 
     if (state.lastAction.action == LOOK)
     {
-        printColor("========== [Bot Run] ==========\n", BLUE);
-        printKeyValueColored("Iteration", std::to_string(_iteration));
         printKeyValueColored("Bot listens", response);
 
         listen(response); // -> change le state
     }
     if (state.reward != 0)
+        applyReward();
+    if (state.reward != 0 || _iteration == 0)
         applyReward();
     updateProbabilities();
     if (queue.empty())
@@ -75,6 +78,7 @@ void Bot::run(std::string response)
         queue.erase(queue.begin());
     }
     _iteration++;
+    printColor("========== [!Bot Run] ==========\n", BLUE);
 }
 
 /*
@@ -86,7 +90,18 @@ void Bot::act()
     exploreProbabilities();
     Behavior *bestBehavior = nullptr;
 
-    int maxProbability = -1;
+    double maxProbability = -1;
+
+    if (!behaviors.empty())
+    {
+        maxProbability = behaviors.front()->probability;
+
+        bestBehavior = behaviors.front().get();
+    }
+    else
+    {
+        return;
+    }
 
     for (auto &behavior : behaviors)
     {
@@ -96,7 +111,7 @@ void Bot::act()
             bestBehavior = behavior.get();
         }
     }
-    printKeyValueColored("Behavior", bestBehavior->name);
+    printColor("Behavior choosen: " + bestBehavior->name + "\n", BOLD);
     if (bestBehavior)
     {
         bestBehavior->act();
@@ -129,9 +144,9 @@ void Bot::applyReward()
 {
     double reward = state.reward;
 
+    printColor("========== [Bot Probabilities] ==========\n", CYAN);
     printKeyValueColored("Reward", std::to_string(reward));
 
-    // update the probabilities that have been explored
     for (auto &probability : probabilities)
     {
         if (std::find(state.exploredProbabilities.begin(), state.exploredProbabilities.end(), probability->name) != state.exploredProbabilities.end())
@@ -148,6 +163,7 @@ void Bot::applyReward()
 
     state.reward = 0;
     debugProbabilities();
+    printColor("========== [!Bot Probabilities] ==========\n", CYAN);
 }
 
 void Bot::takeFirstDecision(std::string response)
