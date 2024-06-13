@@ -43,6 +43,9 @@ class Map
         */
         void fillMap(int x, int y);
 
+        std::vector<std::vector<Tile>> getMap() { return this->map; };
+        Tile getTileAt(int x, int y) { return this->map.at(x).at(y); };
+
 };
 
 #endif // MAP_HPP
