@@ -5,7 +5,6 @@
 ** serverConnect
 */
 
-#include <cstddef>
 #include <cstring>
 #include <iostream>
 #include <sys/socket.h>

@@ -5,7 +5,7 @@
 //-----------------------------------------------------------------//
 
 void Player::setPosition(std::vector<int> newPos) {
-    nextPositions.push_back(position);
+    nextPositions.push_back(newPos);
     events.push_back(Event(MOVING, newPos));
 };
 
