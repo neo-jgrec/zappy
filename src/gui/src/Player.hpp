@@ -29,28 +29,28 @@ class Event {
         ~Event() {};
 };
 
+enum Orientation
+{
+    UP,
+    RIGHT,
+    DOWN,
+    LEFT
+};
+
 class Player
 {
-    enum Orientation
-    {
-        UP,
-        RIGHT,
-        DOWN,
-        LEFT
-    };
-
     private:
         std::vector<int> position = {0, 0};
-        std::vector<std::vector<int>> nextPositions;
+        std::vector<std::vector<int>> nextPositions = {};
         int orientation = UP;
 
-        int lvl;
-        int id;
+        int lvl = 1;
+        int id = 0;
         bool isAlive = true;
-        std::string team;
+        std::string team = "default";
 
         std::vector<int> inventory = {0, 0, 0, 0, 0, 0, 0};
-        std::vector<Event> events;
+        std::vector<Event> events = {};
 
         void popNextPosition();
 
