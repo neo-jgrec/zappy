@@ -29,16 +29,16 @@ class Event {
         ~Event() {};
 };
 
+enum Orientation
+{
+    UP,
+    RIGHT,
+    DOWN,
+    LEFT
+};
+
 class Player
 {
-    enum Orientation
-    {
-        UP,
-        RIGHT,
-        DOWN,
-        LEFT
-    };
-
     private:
         std::vector<int> position = {0, 0};
         std::vector<std::vector<int>> nextPositions = {};
