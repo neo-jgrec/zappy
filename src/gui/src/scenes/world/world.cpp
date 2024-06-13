@@ -24,7 +24,7 @@ void World::draw(sf::RenderWindow &window)
                 j * 27 + i * 27 + (int)(_chuncks[i][j]._yOffset * 80)
             );
             window.draw(_sprite->_sprite);
-            if (i == _hoveredTile.x && j == _hoveredTile.y) {
+            if (i == _hoveredTile.x && j == _hoveredTile.y && !_isDragging) {
                 _sprites["halo1"]->_sprite.setPosition(
                     i * 46 - j * 46 - _tileSize.x / 4 * 3,
                     j * 27 + i * 27 + (int)(_chuncks[i][j]._yOffset * 80) - _tileSize.y
@@ -38,6 +38,13 @@ void World::draw(sf::RenderWindow &window)
 
 bool World::update(sf::Event event, sf::RenderWindow &window)
 {
+    _mousePos = _zappy.getMousePos();
+    _mousePos = sf::Vector2f(
+        (_mousePos.x * _zoom + _view.getCenter().x - _view.getSize().x / 2),
+        (_mousePos.y * _zoom + _view.getCenter().y - _view.getSize().y / 2)
+    );
+    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+        _zappy._upperState = GameState::MENU;
     if (event.type == sf::Event::MouseMoved) {
         for (int i = 0; i < _gameSize.x; i++) {
             for (int j = 0; j < _gameSize.y; j++) {
@@ -45,7 +52,7 @@ bool World::update(sf::Event event, sf::RenderWindow &window)
                     i * 46 - j * 46 - _tileSize.x / 4 * 3,
                     j * 27 + i * 27 + (int)(_chuncks[i][j]._yOffset * 80)
                 ));
-                if (_diamond.checkCollision(_zappy.getMousePos())) {
+                if (_diamond.checkCollision(_mousePos)) {
                     _hoveredTile = sf::Vector2f(i, j);
                     break;
                 }
@@ -79,6 +86,6 @@ bool World::moveMap(sf::Event event)
             _tmpOffset = sf::Vector2f(0, 0);
     }
     if (_isDragging)
-        _tmpOffset = -_zappy.getMousePos() + _dragStart;
+        _tmpOffset = - _zappy.getMousePos() + _dragStart;
     return true;
 }

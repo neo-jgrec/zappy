@@ -80,6 +80,7 @@ class World : public IScene {
         Zappy &_zappy;
         sf::Vector2f _hoveredTile;
         Diamond _diamond;
+        sf::Vector2f _mousePos;
 };
 
 

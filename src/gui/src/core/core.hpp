@@ -15,18 +15,17 @@
 #include "../sprites/sprite.hpp"
 #include "../scenes/home.hpp"
 #include "../scenes/quit.hpp"
+#include "../scenes/menu.hpp"
 #include "zappy.hpp"
 class Core {
     public:
         Core() {
-            _window.create(sf::VideoMode( 1080 , 720 ), "Zappy", sf::Style::Default);
-            // _window.create(sf::VideoMode( 1920 , 1080 ), "Zappy", sf::Style::Default);
-            // _window.setFramerateLimit(60);
-            // _window.setVerticalSyncEnabled(true);
+            _window.create(sf::VideoMode( _resolution.x , _resolution.y ), "Zappy", sf::Style::Fullscreen);
 
             _scenes[GameState::HOME] = std::make_shared<Home>(_zappy);
             _scenes[GameState::END] = std::make_shared<Quit>(_zappy);
             _scenes[GameState::GAME] = std::make_shared<World>(_zappy, sf::Vector2f(15, 15));
+            _scenes[GameState::MENU] = std::make_shared<Menu>(_zappy);
             _clock.restart();
         }
         ~Core() {
@@ -37,9 +36,14 @@ class Core {
                 _zappy._upperState = GameState::END;
             if (_event.type == sf::Event::MouseMoved) {
                 // _zappy.setMousePos(
-                //     _window.mapPixelToCoords(sf::Mouse::getPosition(_window))
+                //     // _window.mapPixelToCoords(sf::Mouse::getPosition(_window))
                 // );
-                _zappy.setMousePos(sf::Vector2f(_event.mouseMove.x, _event.mouseMove.y));
+                _zappy.setMousePos(sf::Vector2f(
+                    _event.mouseMove.x * 1920 / _window.getSize().x,
+                    _event.mouseMove.y * 1080 / _window.getSize().y
+                ));
+                // sf::Vector2f ratio = sf::Vector2f(_resolution.x / 1920, _resolution.y / 1080);
+                // _zappy.setMousePos(sf::Vector2f(_zappy.getMousePos().x / ratio.x, _zappy.getMousePos().y / ratio.y));
             }
         }
 
@@ -51,6 +55,12 @@ class Core {
                 while (_window.pollEvent(_event)) {
                     update();
                     _scenes[((_zappy._upperState != GameState::NONE) ? _zappy._upperState : _zappy._state)]->update(_event, _window);
+                    if (_zappy._resolution != _resolution ||
+                        _zappy._fullscreen != _fullscreen) {
+                        _fullscreen = _zappy._fullscreen;
+                        _resolution = _zappy._resolution;
+                        _window.create(sf::VideoMode(_resolution.x, _resolution.y), "Zappy", (_fullscreen) ? sf::Style::Fullscreen : sf::Style::Default);
+                    }
                 }
                 _window.clear(sf::Color(100, 100, 100));
 
@@ -68,6 +78,9 @@ class Core {
         std::map<GameState, std::shared_ptr<IScene>> _scenes;
         sf::Event _event;
         sf::Clock _clock;
+
+        bool _fullscreen = true;
+        sf::Vector2f _resolution = sf::Vector2f(1920, 1080);
 
 };
 

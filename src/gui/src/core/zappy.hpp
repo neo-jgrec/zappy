@@ -36,6 +36,9 @@ class Zappy {
         float getDeltaTime() { return _deltaTime; };
         void setMousePos(sf::Vector2f mousePos) { _mousePos = mousePos; };
         sf::Vector2f getMousePos() { return _mousePos; };
+
+        sf::Vector2f _resolution = sf::Vector2f(1920, 1080);
+        bool _fullscreen = true;
     protected:
     private:
         sf::Font _font;
