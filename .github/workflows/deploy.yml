@@ -29,14 +29,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache APT packages
-        uses: actions/cache@v3
-        with:
-          path: /var/cache/apt
-          key: ${{ runner.os }}-apt-cache
-          restore-keys: |
-            ${{ runner.os }}-apt-cache
-
       - name: Install dependencies
         working-directory: ${{ github.workspace }}
         run: |
