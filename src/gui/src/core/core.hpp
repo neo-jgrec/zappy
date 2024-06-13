@@ -19,8 +19,8 @@
 class Core {
     public:
         Core() {
-            // _window.create(sf::VideoMode( 1280 , 720 ), "Zappy", sf::Style::Close);
-            _window.create(sf::VideoMode( 1920 , 1080 ), "Zappy", sf::Style::Default);
+            _window.create(sf::VideoMode( 1080 , 720 ), "Zappy", sf::Style::Default);
+            // _window.create(sf::VideoMode( 1920 , 1080 ), "Zappy", sf::Style::Default);
             // _window.setFramerateLimit(60);
             // _window.setVerticalSyncEnabled(true);
 
@@ -35,8 +35,12 @@ class Core {
         void update() {
             if (_event.type == sf::Event::Closed)
                 _zappy._upperState = GameState::END;
-            if (_event.type == sf::Event::MouseMoved)
+            if (_event.type == sf::Event::MouseMoved) {
+                // _zappy.setMousePos(
+                //     _window.mapPixelToCoords(sf::Mouse::getPosition(_window))
+                // );
                 _zappy.setMousePos(sf::Vector2f(_event.mouseMove.x, _event.mouseMove.y));
+            }
         }
 
         void run() {
