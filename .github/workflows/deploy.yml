@@ -25,23 +25,17 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    container:
+      image: epitechcontent/epitest-docker:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        working-directory: ${{ github.workspace }}
-        run: |
-          sudo apt update
-          sudo apt install -y libcriterion-dev
-          sudo apt install -y libsfml-dev
-          sudo apt install -y libboost-all-dev
-          sudo apt install -y python3-pip
-          pip3 install gcovr
-
       - name: Fetch all branches
         working-directory: ${{ github.workspace }}
-        run: git fetch --all
+        run: |
+          git config --global --add safe.directory /__w/zappy/zappy
+          git fetch --all
 
       - name: Checkout `main` branch
         working-directory: ${{ github.workspace }}
@@ -63,7 +57,7 @@ jobs:
         run: |
           mkdir -p coverage
           for project in $PROJECTS; do
-            gcovr . -r $project --html --html-details -o coverage/${project##*/}.html --exclude $project/tests --html-theme github.dark-blue
+            gcovr . -r $project --html --html-details -o coverage/${project##*/}.html --exclude $project/tests
           done
 
       - name: Switch to `docs` branch with coverage report
