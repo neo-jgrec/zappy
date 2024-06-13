@@ -26,11 +26,11 @@ void Player::setPushing() {
 };
 
 void Player::setPickup(int res) {
-    events.push_back(Event(PICKUP, std::vector<int>(res)));
+    events.push_back(Event(PICKUP, std::vector<int>({res})));
 };
 
 void Player::setDrop(int res) {
-    events.push_back(Event(DROP, std::vector<int>(res)));
+    events.push_back(Event(DROP, std::vector<int>({res})));
 };
 
 void Player::setAlive(bool alive) {
@@ -39,7 +39,7 @@ void Player::setAlive(bool alive) {
 
 void Player::setLvl(int newLvl) {
     this->lvl = newLvl;
-    events.push_back(Event(LVLUP, std::vector<int>(newLvl)));
+    events.push_back(Event(LVLUP, std::vector<int>({newLvl})));
 };
 
 void Player::setTeam(std::string newTeam) {
