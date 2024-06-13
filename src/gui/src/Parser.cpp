@@ -21,12 +21,12 @@
 
 void Parser::msz (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         if (gameData.getMap().getSize() > 0)
             return;
         if (tokens.size() < 3)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command msz");
         int x = std::get<int>(tokens.at(1));
         int y = std::get<int>(tokens.at(2));
         gameData.getMap().fillMap(x, y);
@@ -36,10 +36,10 @@ void Parser::msz (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::bct (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         if (tokens.size() < 10)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command bct");
         int x = std::get<int>(tokens.at(1));
         int y = std::get<int>(tokens.at(2));
         std::vector<int> values;
@@ -52,10 +52,10 @@ void Parser::bct (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::tna (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, int>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         if (tokens.size() < 2)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command tna");
         std::string teamName = std::get<std::string>(tokens.at(1));
         if (!gameData.doesTeamExist(teamName))
             gameData.addTeam(teamName);
@@ -67,7 +67,7 @@ void Parser::pnw (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         debug_print("\npnw", "");
         if (tokens.size() < 7)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command pnw");
         std::vector<int> values;
         for (int i = 1; i < 6; i++)
             values.push_back(std::get<int>(tokens.at(i)));
@@ -80,11 +80,11 @@ void Parser::pnw (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::ppo (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         debug_print("\nppo", "");
         if (tokens.size() < 4)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command ppo");
         Player player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
         int x = std::get<int>(tokens.at(2));
         int y = std::get<int>(tokens.at(3));
@@ -98,11 +98,11 @@ void Parser::ppo (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::plv (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         debug_print("\nplv", "");
         if (tokens.size() < 3)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command plv");
         Player player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
         int lvl = std::get<int>(tokens.at(2));
         player.setLvl(lvl);
@@ -113,11 +113,11 @@ void Parser::plv (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::pin (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         debug_print("\npin", "");
         if (tokens.size() < 11)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command pin");
         Player player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
         std::vector<int> inventory;
         for (int i = 4; i < 11; i++)
@@ -130,8 +130,10 @@ void Parser::pin (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::pex (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
+        if (tokens.size() < 2)
+            throw ParserException("Not enough arguments for command pex");
         int playerNb = std::get<int>(tokens.at(1));
         Player& player = gameData.getPlayerById(playerNb);
         player.setPushing();
@@ -143,7 +145,7 @@ void Parser::pbc (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         debug_print("\npbc", "");
         if (tokens.size() < 3)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command pbc");
         int playerNb = std::get<int>(tokens.at(1));
         Player player = gameData.getPlayerById(playerNb);
         std::vector<int> pos = player.getPosition();
@@ -156,10 +158,10 @@ void Parser::pbc (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::pic (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         if (tokens.size() < 5)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command pic");
         int x = std::get<int>(tokens.at(1));
         int y = std::get<int>(tokens.at(2));
         std::vector<int> pos = std::vector<int>({x, y});
@@ -179,10 +181,10 @@ void Parser::pic (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::pie (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         if (tokens.size() < 4)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command pie");
         int x = std::get<int>(tokens.at(1));
         int y = std::get<int>(tokens.at(2));
         int result = std::get<int>(tokens.at(3));
@@ -196,11 +198,11 @@ void Parser::pie (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::pfk (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         debug_print("\npfk", "");
         if (tokens.size() < 2)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command pfk");
         int playerNb = std::get<int>(tokens.at(1));
         Player& player = gameData.getPlayerById(playerNb);
         player.setEgging();
@@ -212,7 +214,7 @@ void Parser::pfk (const std::vector<TokenType>& tokens, Data& gameData) {
 void Parser::pdr (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         if (tokens.size() < 3)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command pdr");
         int playerNb = std::get<int>(tokens.at(1));
         int resource = std::get<int>(tokens.at(2));
         Player& player = gameData.getPlayerById(playerNb);
@@ -224,7 +226,7 @@ void Parser::pdr (const std::vector<TokenType>& tokens, Data& gameData) {
 void Parser::pgt (const std::vector<TokenType>& tokens, Data& gameData) {
     auto lambda = [tokens, &gameData]() {
         if (tokens.size() < 3)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command pgt");
         int playerNb = std::get<int>(tokens.at(1));
         int resource = std::get<int>(tokens.at(2));
         Player& player = gameData.getPlayerById(playerNb);
@@ -235,11 +237,11 @@ void Parser::pgt (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::pdi (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         debug_print("\npdi", "");
         if (tokens.size() < 2)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command pdi");
         int playerNb = std::get<int>(tokens.at(1));
         Player& player = gameData.getPlayerById(playerNb);
         player.setAlive(false);
@@ -250,11 +252,11 @@ void Parser::pdi (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::enw (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         debug_print("\nenw , """ + std::to_string((std::get<int>(tokens.at(2)))));
         if (tokens.size() < 4)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command enw");
         int eggNb = std::get<int>(tokens.at(1));
         int playerNb = std::get<int>(tokens.at(2));
         int x = std::get<int>(tokens.at(3));
@@ -276,10 +278,10 @@ void Parser::ebo (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::edi (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         if (tokens.size() < 2)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command edi");
         int eggNb = std::get<int>(tokens.at(1));
         gameData.getEggById(eggNb).setState(DEAD);
     };
@@ -295,10 +297,10 @@ void Parser::sst(const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::sgt(const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, std::string>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         if (tokens.size() < 2)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command sgt");
         int tickRate = std::get<int>(tokens.at(1));
         gameData.setTickRate(tickRate);
     };
@@ -307,10 +309,10 @@ void Parser::sgt(const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::seg (const std::vector<TokenType>& tokens, Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, int>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens, &gameData]() {
         if (tokens.size() < 2)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command seg");
         std::string teamName = std::get<std::string>(tokens.at(1));
         gameData.setWinner(teamName);
     };
@@ -319,10 +321,10 @@ void Parser::seg (const std::vector<TokenType>& tokens, Data& gameData) {
 
 void Parser::smg (const std::vector<TokenType>& tokens, [[maybe_unused]] Data& gameData) {
     if (std::is_same<std::variant<std::string, int>, int>::value)
-        throw ParserException("Invalid type for command" + std::string(__func__));
+        throw ParserException("Invalid type for command " + std::string(__func__));
     auto lambda = [tokens]() {
         if (tokens.size() < 2)
-            throw ParserException("Not enough arguments for command" + std::string(__func__));
+            throw ParserException("Not enough arguments for command smg");
         std::string msg = std::get<std::string>(tokens.at(1));
         std::cout << "server sent: " << msg << std::endl;
     };
