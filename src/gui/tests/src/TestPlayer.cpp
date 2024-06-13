@@ -121,3 +121,47 @@ Test(Player, Drop)
     player.setDrop(1);
     cr_assert(player.getNextEvent().action == DROP, "Next event is not Dropping");
 }
+
+Test(Player, getEventActionEmpty)
+{
+    Player player;
+
+    Actions expected = NONE;
+    Actions result = player.getNextEvent().action;
+
+    cr_assert_eq(result, expected, "Expected %d, got %d", expected, result);
+}
+
+Test(Player, getEventActionNotEmpty)
+{
+    Player player;
+
+    player.setEgging();
+
+    Actions expected = NONE;
+    Actions result = player.getNextEvent().action;
+
+    cr_assert_neq(result, expected, "Expected not %d, got %d", expected, result);
+}
+
+Test(Player, constructor)
+{
+    Player player(1, {1, 2}, 1, 1, "Team A");
+
+    cr_assert_eq(player.getPlayerNb(), 1, "Expected 1, got %d", player.getPlayerNb());
+    cr_assert_eq(player.getPosition()[0], 1, "Expected 1, got %d", player.getPosition()[0]);
+    cr_assert_eq(player.getPosition()[1], 2, "Expected 2, got %d", player.getPosition()[1]);
+    cr_assert_eq(player.getOrientation(), 1, "Expected 1, got %d", player.getOrientation());
+    cr_assert_eq(player.getLvl(), 1, "Expected 1, got %d", player.getLvl());
+    cr_assert_eq(player.getTeam(), "Team A", "Expected Team A, got %s", player.getTeam().c_str());
+}
+
+Test(Player, constructorDefault)
+{
+    Player player;
+
+    cr_assert_eq(player.getPosition()[0], 0, "Expected 0, got %d", player.getPosition()[0]);
+    cr_assert_eq(player.getPosition()[1], 0, "Expected 0, got %d", player.getPosition()[1]);
+    cr_assert_eq(player.getOrientation(), 0, "Expected 0, got %d", player.getOrientation());
+    cr_assert_eq(player.getLvl(), 0, "Expected 0, got %d", player.getLvl());
+}
