@@ -154,6 +154,15 @@ Test(Player, constructor)
     cr_assert_eq(player.getOrientation(), 1, "Expected 1, got %d", player.getOrientation());
     cr_assert_eq(player.getLvl(), 1, "Expected 1, got %d", player.getLvl());
     cr_assert_eq(player.getTeam(), "Team A", "Expected Team A, got %s", player.getTeam().c_str());
+
+    std::vector<int> inventory = player.getInventory();
+    cr_assert_eq(inventory[0], 0, "Expected 0, got %d", inventory[0]);
+    cr_assert_eq(inventory[1], 0, "Expected 0, got %d", inventory[1]);
+    cr_assert_eq(inventory[2], 0, "Expected 0, got %d", inventory[2]);
+    cr_assert_eq(inventory[3], 0, "Expected 0, got %d", inventory[3]);
+    cr_assert_eq(inventory[4], 0, "Expected 0, got %d", inventory[4]);
+    cr_assert_eq(inventory[5], 0, "Expected 0, got %d", inventory[5]);
+    cr_assert_eq(inventory[6], 0, "Expected 0, got %d", inventory[6]);
 }
 
 Test(Player, constructorDefault)
@@ -162,6 +171,30 @@ Test(Player, constructorDefault)
 
     cr_assert_eq(player.getPosition()[0], 0, "Expected 0, got %d", player.getPosition()[0]);
     cr_assert_eq(player.getPosition()[1], 0, "Expected 0, got %d", player.getPosition()[1]);
-    cr_assert_eq(player.getOrientation(), 0, "Expected 0, got %d", player.getOrientation());
-    cr_assert_eq(player.getLvl(), 0, "Expected 0, got %d", player.getLvl());
+    cr_assert_eq(player.getOrientation(), UP, "Expected UP, got %d", player.getOrientation());
+    cr_assert_eq(player.getLvl(), 1, "Expected 1, got %d", player.getLvl());
+    cr_assert_eq(player.getTeam(), "default", "Expected default, got %s", player.getTeam().c_str());
+    cr_assert_eq(player.getAlive(), true, "Expected true, got %d", player.getAlive());
+
+    std::vector<int> inventory = player.getInventory();
+    cr_assert_eq(inventory[0], 0, "Expected 0, got %d", inventory[0]);
+    cr_assert_eq(inventory[1], 0, "Expected 0, got %d", inventory[1]);
+    cr_assert_eq(inventory[2], 0, "Expected 0, got %d", inventory[2]);
+    cr_assert_eq(inventory[3], 0, "Expected 0, got %d", inventory[3]);
+    cr_assert_eq(inventory[4], 0, "Expected 0, got %d", inventory[4]);
+    cr_assert_eq(inventory[5], 0, "Expected 0, got %d", inventory[5]);
+    cr_assert_eq(inventory[6], 0, "Expected 0, got %d", inventory[6]);
+
+    Event event = player.getNextEvent();
+    cr_assert_eq(event.action, NONE, "Expected NONE, got %d", event.action);
+}
+
+Test(Event, construction)
+{
+    Event test(DROP, std::vector<int>({1}));
+    Event test2(PICKUP);
+
+    cr_assert_eq(test.action, DROP, "Expected DROP, got %d", test.action);
+    cr_assert_eq(test.params[0], 1, "Expected , got %d", test.params[0]);
+    cr_assert_eq(test2.action, PICKUP, "Expected PICKUP, got %d", test2.action);
 }
