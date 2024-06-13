@@ -40,11 +40,11 @@ jobs:
       - name: Install dependencies
         working-directory: ${{ github.workspace }}
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libcriterion-dev
-          sudo apt-get install -y libsfml-dev
-          sudo apt-get install -y libboost-all-dev
-          sudo apt-get install -y python3-pip
+          sudo apt update
+          sudo apt install -y libcriterion-dev
+          sudo apt install -y libsfml-dev
+          sudo apt install -y libboost-all-dev
+          sudo apt install -y python3-pip
           pip3 install gcovr
 
       - name: Fetch all branches
