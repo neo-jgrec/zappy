@@ -16,12 +16,12 @@ class Data
 {
     private:
         int tickRate = 0;
-        std::vector<std::string> teamNames;
+        std::vector<std::string> teamNames = {};
         bool isRunning = false;
-        std::map<int, Egg> eggs;
-        std::map<int, Player> players;
-        std::map<std::vector<int>, Incantation> incantations;
-        std::vector<Broadcast> broadcasts;
+        std::map<int, Egg> eggs = {};
+        std::map<int, Player> players = {};
+        std::map<std::vector<int>, Incantation> incantations = {};
+        std::vector<Broadcast> broadcasts = {};
         std::optional<std::string> winner = std::nullopt;
         Map map = Map();
 

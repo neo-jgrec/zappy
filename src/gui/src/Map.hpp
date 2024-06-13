@@ -8,7 +8,7 @@ class Tile
     private:
         int x;
         int y;
-        std::vector<int> ressources = {0, 0, 0, 0, 0, 0, 0};
+        std::vector<int> ressources = std::vector<int>(7, 0);
     public:
         Tile(int x, int y) : x(x), y(y) {};
         ~Tile() {};
@@ -23,7 +23,7 @@ class Tile
 class Map
 {
     private:
-        std::vector<std::vector<Tile>> map;
+        std::vector<std::vector<Tile>> map = {};
     public:
         Map() {};
         ~Map() {};

@@ -6,8 +6,8 @@
 
 class Select {
     private:
-        fd_set read_fds;
-        int max_fd;
+        fd_set read_fds = {};
+        int max_fd = 0;
 
     public:
         Select();
