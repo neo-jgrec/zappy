@@ -259,7 +259,7 @@ void Parser::enw (const std::vector<TokenType>& tokens, Data& gameData) {
         int playerNb = std::get<int>(tokens.at(2));
         int x = std::get<int>(tokens.at(3));
         int y = std::get<int>(tokens.at(4));
-        std::vector<int> pos = std::vector<int>(x, y);
+        std::vector<int> pos = std::vector<int>({x, y});
         gameData.addEgg(pos, eggNb, playerNb, INCUBATING);
         debug_print("\\enw", "");
     };

@@ -9,7 +9,7 @@ class Tile
         [[ maybe_unused ]] std::vector<int> pos = {0, 0};
         std::vector<int> ressources = std::vector<int>(7, 0);
     public:
-        Tile(int x, int y) : pos(std::vector<int>(x, y)) {};
+        Tile(int x, int y) : pos(std::vector<int>({x, y})) {};
         ~Tile() {};
 
         void setRessources(std::vector<int> values) { this->ressources = values; };
