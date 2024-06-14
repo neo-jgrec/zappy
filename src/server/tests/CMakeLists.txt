@@ -29,6 +29,8 @@ target_include_directories(server_unit_tests PRIVATE
 target_link_libraries(server_unit_tests PRIVATE
     criterion
     gcov
+    uuid
+    m
 )
 
 target_compile_options(server_unit_tests PRIVATE
