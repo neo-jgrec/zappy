@@ -348,7 +348,6 @@ void Parser::parse(std::vector<TokenType> values, Data& gameData)
 {
     if (values.empty() || !std::holds_alternative<std::string>(values.at(0))) {
         throw ParserException("Invalid command format");
-        return;
     }
 
     const std::string& command = std::get<std::string>(values.at(0));

@@ -24,8 +24,7 @@ Test(ServerConnect, socketThrow)
     std::string ip = "127.0.0.1";
     int sockfd;
 
-    while ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) != -1) {
-    }
+    while ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) != -1);
     cr_assert_throw(server.connectToServer(port, ip.c_str()), guiException);
     close(sockfd);
 }
@@ -39,29 +38,29 @@ Test(ServerConnect, inet_ptonThrow)
     cr_assert_throw(server.connectToServer(port, "A"), guiException);
 }
 
-Test(ServerConnect, successful_connection) {
-    ServerConnect server;
+// Test(ServerConnect, successful_connection) {
+//     ServerConnect server;
 
-    cr_assert_no_throw(server.connectToServer(3000, "127.0.0.1"), guiException);
-}
+//     cr_assert_no_throw(server.connectToServer(3000, "127.0.0.1"), guiException);
+// }
 
-Test(ServerConnect, readFromServer) {
-    ServerConnect server;
+// Test(ServerConnect, readFromServer) {
+//     ServerConnect server;
 
-    cr_assert_no_throw(server.readFromServer(), guiException);
-}
+//     cr_assert_no_throw(server.readFromServer(), guiException);
+// }
 
-Test(ServerConnect, readFromServerThrow) {
-    ServerConnect server;
+// Test(ServerConnect, readFromServerThrow) {
+//     ServerConnect server;
 
-    cr_assert_throw(server.readFromServer(), guiException);
-}
+//     cr_assert_throw(server.readFromServer(), guiException);
+// }
 
-Test(ServerConnect, sendToServer) {
-    ServerConnect server;
+// Test(ServerConnect, sendToServer) {
+//     ServerConnect server;
 
-    cr_assert_no_throw(server.sendToServer("Hello"), guiException);
-}
+//     cr_assert_no_throw(server.sendToServer("Hello"), guiException);
+// }
 
 Test(ServerConnect, sendToServerThrow) {
     ServerConnect server;

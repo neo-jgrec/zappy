@@ -34,7 +34,9 @@ Incantation &Data::getIncantationByPos(std::vector<int> pos)
     return this->incantations.at(pos);
 };
 
-Broadcast Data::getNextBroadcast() {
+std::optional<Broadcast> Data::getNextBroadcast() {
+    if (this->broadcasts.size() <= 0)
+        return std::nullopt;
     Broadcast b = this->broadcasts.back();
     this->broadcasts.pop_back();
     return b;

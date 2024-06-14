@@ -79,7 +79,7 @@ class Data
         void addIncantation(std::vector<int> pos, int lvl, std::vector<int> playersId);
 
         std::vector<Broadcast> &getBroadcasts() { return this->broadcasts; };
-        Broadcast getNextBroadcast();
+        std::optional<Broadcast> getNextBroadcast();
         void addBroadcast(int playerNb, std::vector<int> pos, std::string msg);
 
         Map &getMap() { return this->map; };

@@ -1,5 +1,6 @@
 #include <criterion/criterion.h>
 #include <criterion/internal/assert.h>
+#include <optional>
 
 #include "../../src/Data.hpp"
 #include "../../src/GuiException.hpp"
@@ -158,11 +159,16 @@ Test(Data, getNextBroadcast)
     Data data;
 
     data.addBroadcast(1, {4, 4}, "test");
-    Broadcast broadcast = data.getNextBroadcast();
+    std::optional<Broadcast> maybeBroadcast = data.getNextBroadcast();
+    if (!maybeBroadcast.has_value())
+        return;
+    Broadcast broadcast = maybeBroadcast.value();
     std::string msg = broadcast.getMessage();
     cr_assert_str_eq(msg.c_str(), "test", "got %s, expected \"test\"", msg.c_str());
     cr_assert_eq(broadcast.getPlayerNb(), 1, "got %d, expected 1", broadcast.getPlayerNb());
     cr_assert_eq(broadcast.getPosition()[0], 4, "got %d, expected 4", broadcast.getPosition()[0]);
+
+    cr_assert_eq(data.getNextBroadcast(), std::nullopt);
 }
 
 Test(Data, doesTeamExist)

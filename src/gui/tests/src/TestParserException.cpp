@@ -21,12 +21,11 @@ Test(ParserException, what)
     Data gameData;
 
     std::vector<std::variant<std::string, int>> values = {"msz"};
-    parser.parse(values, gameData);
 
     try {
-        parser.execute();
+        parser.parse(values, gameData);
     } catch (const Parser::ParserException &e) {
-        cr_assert_str_eq(e.what(), "Not enough arguments for command msz", "got %s, expected \"Not enough arguments for command msz\"", e.what());
+        cr_assert_str_eq(e.what(), "Invalid number of arguments for command msz", "got %s, expected \"Invalid number of arguments for command msz\"", e.what());
     }
 }
 

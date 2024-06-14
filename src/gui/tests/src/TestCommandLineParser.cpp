@@ -41,6 +41,38 @@ Test(CmdParser, getOptionSuccess)
     }
 }
 
+Test(CmdParser, WrongOptions)
+{
+    const char* const_argv[] = { "zappy_gui", "-a", "3000", "--ip", "127.0.0.1" };
+    char* argv[5];
+    for (int i = 0; i < 5; ++i) {
+        argv[i] = const_cast<char*>(const_argv[i]);
+    }
+
+    CommandLineParser cmdParser(5, argv);
+
+    cmdParser.addOption("--ip", "-i", "The ip to connect to");
+    cmdParser.addOption("--port", "-p", "The port to connect to");
+
+    cr_assert_throw(cmdParser.parse(), std::runtime_error);
+}
+
+Test(CmdParser, WrongArg)
+{
+    const char* const_argv[] = { "zappy_gui", "aaaa", "3000", "--ep", "127.0.0.1" };
+    char* argv[5];
+    for (int i = 0; i < 5; ++i) {
+        argv[i] = const_cast<char*>(const_argv[i]);
+    }
+
+    CommandLineParser cmdParser(5, argv);
+
+    cmdParser.addOption("--ip", "-i", "The ip to connect to");
+    cmdParser.addOption("--port", "-p", "The port to connect to");
+
+    cr_assert_throw(cmdParser.parse(), std::runtime_error);
+}
+
 void setup_stdout_redirect(void) {
     cr_redirect_stdout();
 }
