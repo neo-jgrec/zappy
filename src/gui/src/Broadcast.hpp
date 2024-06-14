@@ -12,7 +12,7 @@ class Broadcast
         std::string message;
         int playerNb;
     public:
-        Broadcast(int playerNb, std::string message, std::vector<int> pos) : playerNb(playerNb), message(message), pos(pos) {};
+        Broadcast(int playerNb, std::string message, std::vector<int> pos) : pos(pos), message(message), playerNb(playerNb) {};
         ~Broadcast() {};
 
         std::vector<int> getPosition() { return this->pos; };

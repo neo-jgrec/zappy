@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
-** serverConnect
+** GuiException
 */
 
 #ifndef GUIEXCEPTION_HPP

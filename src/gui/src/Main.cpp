@@ -16,7 +16,7 @@
 #include "utils/CommandLineParser.hpp"
 
 int main(int argc, char **argv) {
-    debug_print("Starting GUI");
+    debug_print("Starting GUI", "");
 
     CommandLineParser cmdParser(argc, argv);
     cmdParser.addOption("--ip", "-i", "The ip to connect to");
@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
         return 0;
     }
 
-    serverConnect server;
+    ServerConnect server;
 
     if (cmdParser.getOption("--ip") != std::nullopt)
         server.ip = *cmdParser.getOption("--ip");

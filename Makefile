@@ -64,6 +64,8 @@ $(addprefix test/, $(PROJECTS_SUFFIXES)):
 		-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=$(CMAKE_LIBRARY_OUTPUT_DIRECTORY) \
 		&& make -C $(BUILD_DIR) $(@:test/%=%)_unit_tests -j --no-print-directory
 
+tests_run: $(addprefix test/, $(PROJECTS_SUFFIXES))
+
 .PHONY: all clean fclean re debug help $(BINS) $(addprefix clean/, $(PROJECTS_SUFFIXES)) $(addprefix fclean/, $(PROJECTS_SUFFIXES)) $(addprefix re/, $(PROJECTS_SUFFIXES)) $(addprefix debug/, $(BINS)) $(addprefix test/, $(PROJECTS_SUFFIXES))
 
 .DEFAULT_GOAL := all

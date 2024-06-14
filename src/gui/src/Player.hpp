@@ -24,39 +24,39 @@ class Event {
         std::vector<int> params;
         Actions action;
 
-        Event(Actions action, std::vector<int> params) : action(action), params(params) {};
-        Event(Actions action) : action(action), params(std::vector<int>()) {};
+        Event(Actions action, std::vector<int> params) : params(params), action(action) {};
+        Event(Actions action) : params(std::vector<int>()), action(action) {};
         ~Event() {};
+};
+
+enum Orientation
+{
+    UP,
+    RIGHT,
+    DOWN,
+    LEFT
 };
 
 class Player
 {
-    enum Orientation
-    {
-        UP,
-        RIGHT,
-        DOWN,
-        LEFT
-    };
-
     private:
         std::vector<int> position = {0, 0};
-        std::vector<std::vector<int>> nextPositions;
+        std::vector<std::vector<int>> nextPositions = {};
         int orientation = UP;
 
-        int lvl;
-        int id;
+        int lvl = 1;
+        int id = 0;
         bool isAlive = true;
-        std::string team;
+        std::string team = "default";
 
         std::vector<int> inventory = {0, 0, 0, 0, 0, 0, 0};
-        std::vector<Event> events;
+        std::vector<Event> events = {};
 
         void popNextPosition();
 
     public:
         Player() {};
-        Player(int id, std::vector<int> position, int orientation, int lvl, std::string team) : id(id), position(position), orientation(orientation), lvl(lvl), team(team) {};
+        Player(int id, std::vector<int> position, int orientation, int lvl, std::string team) : position(position), orientation(orientation), lvl(lvl), id(id), team(team) {};
         ~Player() {};
 
         void setPosition(std::vector<int> newPos);

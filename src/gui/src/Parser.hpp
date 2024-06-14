@@ -89,7 +89,7 @@ public:
 
     void execute();
 
-    void updateData(Data& gameData, serverConnect &server);
+    void updateData(Data& gameData, ServerConnect &server);
 };
 
 #endif // PARSER_HPP

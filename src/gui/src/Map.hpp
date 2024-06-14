@@ -6,11 +6,10 @@
 class Tile
 {
     private:
-        int x;
-        int y;
-        std::vector<int> ressources = {0, 0, 0, 0, 0, 0, 0};
+        [[ maybe_unused ]] std::vector<int> pos = {0, 0};
+        std::vector<int> ressources = std::vector<int>(7, 0);
     public:
-        Tile(int x, int y) : x(x), y(y) {};
+        Tile(int x, int y) : pos(std::vector<int>({x, y})) {};
         ~Tile() {};
 
         void setRessources(std::vector<int> values) { this->ressources = values; };
@@ -23,7 +22,7 @@ class Tile
 class Map
 {
     private:
-        std::vector<std::vector<Tile>> map;
+        std::vector<std::vector<Tile>> map = {};
     public:
         Map() {};
         ~Map() {};
@@ -43,6 +42,9 @@ class Map
         * @return void
         */
         void fillMap(int x, int y);
+
+        std::vector<std::vector<Tile>> getMap() { return this->map; };
+        Tile getTileAt(int x, int y) { return this->map.at(x).at(y); };
 
 };
 

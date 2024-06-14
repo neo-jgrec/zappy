@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
-** serverConnect
+** ServerConnect
 */
 
 #ifndef INCLUDED_SERVERCONNECT_HPP
@@ -10,16 +10,10 @@
 
     #include <string>
     #include <unistd.h>
-    #include <vector>
 
     #include "Select.hpp"
 
-    enum Flags {
-        IP,
-        PORT
-    };
-
-    class serverConnect
+    class ServerConnect
     {
         private:
             int fd = -1;
@@ -27,7 +21,6 @@
 
         public:
 
-            std::vector<Flags> launchedWith;
             int port = 3000;
             std::string ip = "127.0.0.1";
 
@@ -52,8 +45,8 @@
             */
             void connectToServer(int port, const char *ip);
     
-            serverConnect() {};
-            ~serverConnect() { if (this->fd >= 0) close(this->fd); };
+            ServerConnect() {};
+            ~ServerConnect() { if (this->fd >= 0) close(this->fd); };
     };
 
 #endif //SERVERCONNECT_HPP
