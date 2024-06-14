@@ -45,7 +45,7 @@ typedef struct client_s {
     unsigned char orientation;
     inventory_t inventory;
     tclient_t tclient[NB_REQUESTS_HANDLEABLE];
-    // inventory_t inventory;
+    char *payload;
 } client_t;
 
 typedef struct client_list_s {
