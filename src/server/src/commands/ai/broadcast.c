@@ -53,10 +53,17 @@ static int get_sound_direction(
     return 0;
 }
 
-/*
-**
-** TODO: send message with direction
-*/
+static char *get_message_from_command(char **commands)
+{
+    char *message = NULL;
+
+    for (int i = 1; commands[i]; i++) {
+        if (asprintf(&message, "%s%s", message, commands[i]) == -1)
+            return NULL;
+    }
+    return message;
+}
+
 void broadcast(client_t *client, server_t *server)
 {
     client_list_t *client_list_entry;
@@ -73,6 +80,8 @@ void broadcast(client_t *client, server_t *server)
             server->proprieties.width,
             server->proprieties.height
         );
+        if (asprintf(&client->payload, "message %d, %s\n", direction, get_message_from_command(client->commands)) == -1)
+            dprintf(client->fd, "ko\n");
     }
     client_time_handler(client, BROADCAST);
 }
