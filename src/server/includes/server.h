@@ -18,21 +18,6 @@
     #define THYSTAME_DENSITY 0.05f
     #define NANOSECONDS_IN_SECOND 1.0e9
 
-    // Commands
-    enum Commands {
-        FORWARD,
-        RIGHT,
-        LEFT,
-        LOOK,
-        INVENTORY,
-        BROADCAST,
-        FORK,
-        EJECT,
-        TAKE,
-        SET,
-        INCANTATION
-    };
-
     // Time limits
     #define FORWARD_TLIMIT 7.0f
     #define RIGHT_TLIMIT 7.0f
@@ -45,9 +30,6 @@
     #define TAKE_TLIMIT 7.0f
     #define SET_TLIMIT 7.0f
     #define INCANTATION_TLIMIT 300.0f
-
-
-
     #define NB_COMMANDS 12
     #define MAX_CAPACITY_TEAM 200
     #include <stdlib.h>
@@ -57,6 +39,21 @@
     #include "flags.h"
     #include "utils.h"
     #include "client.h"
+
+// Commands
+enum Commands {
+    FORWARD,
+    RIGHT,
+    LEFT,
+    LOOK,
+    INVENTORY,
+    BROADCAST,
+    FORK,
+    EJECT,
+    TAKE,
+    SET,
+    INCANTATION
+};
 
 TAILQ_HEAD(client_tailq, client_list_s);
 TAILQ_HEAD(eggs_tailq, eggs_list_s);

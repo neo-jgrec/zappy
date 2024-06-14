@@ -52,29 +52,43 @@ static double get_interval(int command, double freq)
     return -1.0f;
 }
 
+static void send_command(
+    client_t *client,
+    unsigned char i,
+    struct timespec *current,
+    double freq
+)
+{
+    struct timespec cmd_start_time;
+    double interval;
+    double elapsed;
+    time_t sec_sus;
+    time_t nsec_sus;
+
+    if (client->tclient[i].available_request) {
+        cmd_start_time = client->tclient[i].future_time;
+        interval = get_interval(client->tclient[i].command, freq);
+        sec_sus = (current->tv_sec - cmd_start_time.tv_sec);
+        nsec_sus = (current->tv_nsec + cmd_start_time.tv_nsec);
+        elapsed = sec_sus + nsec_sus / NANOSECONDS_IN_SECOND;
+        if (elapsed >= interval) {
+            dprintf(client->fd, "Finally!!!\n");
+        }
+    }
+}
+
 static void check_response_client_time(
-        struct client_tailq *clients,
-        double freq,
-        struct timespec current
+    struct client_tailq *clients,
+    double freq,
+    struct timespec *current
 )
 {
     client_list_t *item;
-    double interval;
-    double elapsed;
-    struct timespec cmd_start_time;
 
     TAILQ_FOREACH(item, clients, entries) {
         for (unsigned char i = 0; i < NB_REQUESTS_HANDLEABLE; i++) {
-            if (item->client->tclient[i].available_request) {
-                cmd_start_time = item->client->tclient[i].future_time;
-                interval = get_interval(item->client->tclient[i].command, freq);
-                elapsed = (current.tv_sec - cmd_start_time.tv_sec) + (current.tv_nsec + cmd_start_time.tv_nsec) / NANOSECONDS_IN_SECOND;
-                if (elapsed >= interval) {
-                    dprintf(item->client->fd, "Finally!!!\n");
-                }
-            }
+            send_command(item->client, i, current, freq);
         }
-        printf("FD(%d)\n", item->client->fd);
     }
 }
 
@@ -84,10 +98,11 @@ static int start_server(server_t *server)
 
     while (true) {
         clock_gettime(CLOCK_REALTIME, &server->current_time);
-        check_response_client_time(&server->clients, freq, server->current_time);
+        check_response_client_time(&server->clients, freq,
+            &server->current_time);
         server->ready_sockets = server->current_sockets;
         if (select(FD_SETSIZE, &server->ready_sockets, NULL, NULL,
-                   &server->timeout) < 0) {
+            &server->timeout) < 0) {
             perror("There was an error in select");
             return ERROR_STATUS;
         }
