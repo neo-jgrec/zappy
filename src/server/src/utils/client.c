@@ -19,7 +19,6 @@ void client_time_handler(client_t *client, int command)
             break;
         }
     }
-    dprintf(client->fd, "JUST GOT %u\n", index);
     if (index >= 0)
         clock_gettime(CLOCK_REALTIME, &client->tclient[index].future_time);
 }
