@@ -84,6 +84,22 @@ typedef struct team_list_s {
     TAILQ_ENTRY(team_list_s) entries;
 } team_list_t;
 
+typedef enum {
+    EMPTY,
+    FOOD,
+    LINEMATE,
+    DERAUMERE,
+    SIBUR,
+    MENDIANE,
+    PHIRAS,
+    THYSTAME,
+    PLAYER
+} object_t;
+
+typedef struct {
+    size_t num_objects;
+    object_t *objects;
+} tile_t;
 
 typedef struct server_s {
     struct sockaddr_in info;
@@ -96,6 +112,7 @@ typedef struct server_s {
     struct teams_tailq teams;
     struct timespec current_time;
     struct timeval timeout;
+    tile_t *map;
 } server_t;
 
 typedef struct interval_s {
