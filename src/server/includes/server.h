@@ -9,6 +9,7 @@
     #define SERVER_H_
     #define ERROR_STATUS 84
     #define OK_STATUS 0
+    #define NEUTRAL_VALUE 1
     #define FOOD_DENSITY 0.5f
     #define LINEMATE_DENSITY 0.3f
     #define DERAUMERE_DENSITY 0.15f
@@ -109,11 +110,28 @@ void destroy_teams(struct teams_tailq *teams);
 egg_t *init_egg(int width, int height);
 team_t *init_team(const char *team_name, int nb_client, int width, int height);
 void print_teams_infos(struct teams_tailq *teams);
+void remove_client_by_fd(struct client_tailq *clients, int fd);
 
 typedef struct commands_s {
     char *name;
     void (*command)(client_t *client, server_t *server);
 } commands_t;
+
+/**
+ * Returns the size of the teams list
+ * @param teams
+ * @param team_name
+ * @return
+ */
+size_t team_nb_slots(struct teams_tailq *teams, const char *team_name);
+
+/**
+ * Get a team by it's name
+ * @param teams
+ * @param team_name
+ * @return
+ */
+team_t *get_team_by_name(struct teams_tailq *teams, const char *team_name);
 
 /**
  *
@@ -170,7 +188,7 @@ bool connector(client_t *client, server_t *server);
 
 
 /* commands */
-void handle_client_message(server_t *server);
+void handle_client_message(client_t *client, server_t *server);
 void broadcast(client_t *client, server_t *server);
 void connect_nbr(client_t *client, server_t *server);
 void eject(client_t *client, server_t *server);

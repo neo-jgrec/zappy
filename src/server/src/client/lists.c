@@ -22,6 +22,7 @@ client_t *init_client(int client_fd)
         client->tclient[i].available_request = false;
         client->tclient[i].command = -1;
     }
+    client->is_connected = false;
     return client;
 }
 
@@ -32,8 +33,22 @@ void destroy_clients(struct client_tailq *clients)
     while (!TAILQ_EMPTY(clients)) {
         item = TAILQ_FIRST(clients);
         TAILQ_REMOVE(clients, item, entries);
-        free(item->client);
-        free(item);
+        secure_free(item->client);
+        secure_free(item);
+    }
+}
+
+void remove_client_by_fd(struct client_tailq *clients, int fd)
+{
+    client_list_t *item;
+
+    TAILQ_FOREACH(item, clients, entries) {
+        if (item->client->fd == fd) {
+            TAILQ_REMOVE(clients, item, entries);
+            secure_free(item->client);
+            item->client = NULL;
+            break;
+        }
     }
 }
 
