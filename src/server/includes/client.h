@@ -10,6 +10,7 @@
     #define BUFFER_SIZE 1024
     #define NB_REQUESTS_HANDLEABLE 10
     #define NB_COMMANDS_TO_SEND 11
+    #include <stdint.h>
     #include <stdlib.h>
     #include <stdio.h>
     #include <sys/queue.h>
@@ -25,7 +26,13 @@ enum Orientation {
 };
 
 typedef struct inventory_s {
-
+    uint32_t food;
+    uint32_t linemate;
+    uint32_t deraumere;
+    uint32_t sibur;
+    uint32_t mendiane;
+    uint32_t phiras;
+    uint32_t thystame;
 } inventory_t;
 
 typedef struct tclient_s {
@@ -39,8 +46,8 @@ typedef struct client_s {
     int fd;
     char **commands;
     char message[BUFFER_SIZE];
-    unsigned char x;
-    unsigned char y;
+    signed char x;
+    signed char y;
     bool is_connected;
     char *team_name;
     unsigned char orientation;
