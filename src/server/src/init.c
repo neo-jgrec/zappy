@@ -39,20 +39,17 @@ static bool init_teams(server_t *server)
     return true;
 }
 
-static tile_t **init_map(int width, int height)
+static tile_t *init_map(int width, int height)
 {
-    tile_t **map = malloc(sizeof(tile_t *) * height);
+    tile_t *map = malloc(sizeof(tile_t) * height);
 
     if (map == NULL)
-        return false;
+        return NULL;
     for (int i = 0; i < height; i++) {
-        map[i] = malloc(sizeof(tile_t) * width);
-        if (map[i] == NULL)
-            return false;
-        for (int j = 0; j < width; j++) {
-            map[i][j].num_objects = 0;
-            map[i][j].objects = NULL;
-        }
+        map[i].objects = malloc(sizeof(object_t) * width);
+        if (map[i].objects == NULL)
+            return NULL;
+        map[i].num_objects = 0;
     }
     return map;
 }

@@ -23,18 +23,31 @@ static const struct {
     {0, NULL}
 };
 
-static void populate_map_with_players(tile_t **map, client_t *client, server_t *server)
+static tile_t *copy_map(tile_t *dest, tile_t *src, int height, int width)
+{
+    for (int i = 0; i < height; i++) {
+        dest[i].objects = malloc(sizeof(object_t) * width);
+        if (dest[i].objects == NULL)
+            return NULL;
+        dest[i].num_objects = src[i].num_objects;
+        for (int j = 0; j < width; j++)
+            dest[i].objects[j] = src[i].objects[j];
+    }
+    return dest;
+}
+
+static void populate_map_with_players(
+    tile_t *map,
+    server_t *server
+)
 {
     client_list_t *tmp;
-    tile_t tile;
+    client_t *client;
 
     TAILQ_FOREACH(tmp, &server->clients, entries) {
-        tile = map[client->y][client->x];
-        tile.num_objects++;
-        tile.objects = realloc(tile.objects,
-            sizeof(tile.objects) * tile.num_objects);
-        tile.objects[tile.num_objects - 1] = PLAYER;
-        map[client->y][client->x] = tile;
+        client = tmp->client;
+        map[client->y].num_objects++;
+        map[client->y].objects[map[client->y].num_objects - 1] = PLAYER;
     }
 }
 
@@ -63,24 +76,24 @@ static void object_to_string(client_t *client, tile_t tile)
 
 void look(client_t *client, server_t *server)
 {
-    tile_t **map = malloc(sizeof(tile_t *) * server->proprieties.height);
+    tile_t *map = copy_map(
+        malloc(sizeof(tile_t *) * server->proprieties.height),
+        server->map, server->proprieties.height, server->proprieties.width
+    );
     tile_t tile;
-    client->payload = "[";
 
-    for (int i = 0; i < server->proprieties.height; i++) {
-        map[i] = malloc(sizeof(tile_t) * server->proprieties.width);
-        for (int j = 0; j < server->proprieties.width; j++)
-            map[i][j] = server->map[i][j];
-    }
-    populate_map_with_players(map, client, server);
+    if (map == NULL)
+        return;
+    client->payload = "[";
+    populate_map_with_players(map, server);
     for (int y = 0; y <= (int)client->level; y++) {
         for (int x = -y; x <= y; x++) {
-            tile = map[(client->y + y) % server->proprieties.height]
-                [(client->x + x) % server->proprieties.width];
+            tile = map[(client->y + y) % server->proprieties.height];
             object_to_string(client, tile);
         }
     }
     if (asprintf(&client->payload, "%s ]\n", client->payload) == -1)
         return;
+    free(map);
     client_time_handler(client, LOOK);
 }

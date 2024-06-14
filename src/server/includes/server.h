@@ -112,7 +112,7 @@ typedef struct server_s {
     struct teams_tailq teams;
     struct timespec current_time;
     struct timeval timeout;
-    tile_t **map;
+    tile_t *map;
 } server_t;
 
 typedef struct interval_s {
