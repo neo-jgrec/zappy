@@ -53,15 +53,13 @@ static int get_sound_direction(
     return 0;
 }
 
-static char *get_message_from_command(char **commands)
+static char *get_message_from_complete_command(char *message)
 {
-    char *message = NULL;
+    char *ret = strstr(message, " ");
 
-    for (int i = 1; commands[i]; i++) {
-        if (asprintf(&message, "%s%s", message, commands[i]) == -1)
-            return NULL;
-    }
-    return message;
+    if (ret == NULL)
+        return "";
+    return ret + 1;
 }
 
 void broadcast(client_t *client, server_t *server)
@@ -81,7 +79,7 @@ void broadcast(client_t *client, server_t *server)
             server->proprieties.height
         );
         if (asprintf(&client->payload, "message %d, %s\n",
-            direction, get_message_from_command(client->commands)) == -1)
+            direction, get_message_from_complete_command(client->message)) == -1)
             dprintf(client->fd, "ko\n");
     }
     client_time_handler(client, BROADCAST);
