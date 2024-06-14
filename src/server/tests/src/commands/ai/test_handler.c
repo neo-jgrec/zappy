@@ -12,7 +12,8 @@ Test(handle_client_message, null_client_message, .init = redirect_all_std) {
     server_t server;
     server.clients.tqh_first = NULL;
     server.clients.tqh_last = &server.clients.tqh_first;
-    handle_client_message(&server);
+    client_t client;
+    handle_client_message(&client, &server);
 }
 
 Test(handle_client_message, empty_client_message, .init = redirect_all_std) {
@@ -25,7 +26,7 @@ Test(handle_client_message, empty_client_message, .init = redirect_all_std) {
     item.client = &client;
     TAILQ_INIT(&server.clients);
     TAILQ_INSERT_TAIL(&server.clients, &item, entries);
-    handle_client_message(&server);
+    handle_client_message(&client, &server);
 }
 
 Test(handle_client_message, unknown_command, .init = redirect_all_std) {
@@ -38,7 +39,7 @@ Test(handle_client_message, unknown_command, .init = redirect_all_std) {
     item.client = &client;
     TAILQ_INIT(&server.clients);
     TAILQ_INSERT_TAIL(&server.clients, &item, entries);
-    handle_client_message(&server);
+    handle_client_message(&client, &server);
 }
 
 Test(handle_client_message, valid_command, .init = redirect_all_std) {
@@ -51,5 +52,5 @@ Test(handle_client_message, valid_command, .init = redirect_all_std) {
     item.client = &client;
     TAILQ_INIT(&server.clients);
     TAILQ_INSERT_TAIL(&server.clients, &item, entries);
-    handle_client_message(&server);
+    handle_client_message(&client, &server);
 }
