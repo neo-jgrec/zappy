@@ -24,6 +24,7 @@
 #include "state/BotState.hpp"
 #include "behaviors/Behavior.hpp"
 #include "utils/PrintColor.hpp"
+#include "message/Message.hpp"
 
 class pairHash
 {
@@ -41,6 +42,7 @@ class Bot
 public:
     Bot(int sockfd, std::string teamName);
     ~Bot();
+    bool doNothing = false;
 
     void sendMessage(const std::string &message);
 
@@ -81,6 +83,7 @@ public:
 private:
     unsigned int _messageId;
     unsigned int _iteration;
+    Message _message;
     enum Orientation
     {
         NORTH,
@@ -125,6 +128,7 @@ private:
     void searchMendiane();
     void searchPhiras();
     void searchThystame();
+    void sentinelle();
 };
 
 #endif // BOT_HPP_
