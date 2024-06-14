@@ -13,6 +13,11 @@
 class Parser
 {
 private:
+    enum class Type
+    {
+        INT,
+        STRING
+    };
 
     using TokenType = std::variant<std::string, int>;
     using Handler = std::function<void(const std::vector<TokenType>&, Data&)>;
@@ -85,11 +90,13 @@ public:
         std::string _message;
     };
 
-    void parse(std::vector<std::variant<std::string, int>> values, Data& gameData);
+    void parse(std::vector<TokenType> values, Data& gameData);
 
     void execute();
 
     void updateData(Data& gameData, ServerConnect &server);
+
+    void checkType(const std::vector<TokenType>& tokens, const std::vector<Type>& expectedTypes, const std::string& name);
 };
 
 #endif // PARSER_HPP
