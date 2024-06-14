@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
-** serverConnect
+** ServerConnect
 */
 
 #include <cstring>
@@ -17,7 +17,7 @@
 #include "GuiException.hpp"
 #include "utils/Debug.hpp"
 
-void serverConnect::connectToServer(int port, const char *ip)
+void ServerConnect::connectToServer(int port, const char *ip)
 {
     debug_print("\nConnecting to server", "");
     this->fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -40,7 +40,7 @@ void serverConnect::connectToServer(int port, const char *ip)
     debug_print("\nConnected to server", "");
 }
 
-std::string serverConnect::readFromServer()
+std::string ServerConnect::readFromServer()
 {
     std::string message;
     std::vector<char> buffer(1024);
@@ -59,7 +59,7 @@ std::string serverConnect::readFromServer()
     return message;
 }
 
-void serverConnect::sendToServer(std::string message)
+void ServerConnect::sendToServer(std::string message)
 {
     if (write(this->fd, message.c_str(), message.size()) < 0) {
         throw guiException("Failed to send message to the server");

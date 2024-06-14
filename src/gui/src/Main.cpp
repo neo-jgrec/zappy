@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
         return 0;
     }
 
-    serverConnect server;
+    ServerConnect server;
 
     if (cmdParser.getOption("--ip") != std::nullopt)
         server.ip = *cmdParser.getOption("--ip");

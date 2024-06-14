@@ -358,7 +358,7 @@ void Parser::execute() {
     }
 };
 
-void Parser::updateData(Data &gameData, serverConnect &server)
+void Parser::updateData(Data &gameData, ServerConnect &server)
 {
     std::string data;
     try {
