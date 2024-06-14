@@ -24,9 +24,9 @@ void forward(client_t *client, server_t *server)
             break;
     }
     client->y = (client->y >= server->proprieties.height) ? 0 : client->y;
-    client->y = (client->y < 0)
-        ? (signed char)server->proprieties.height - 1 : client->y;
+    client->y = (client->y < 0) ? server->proprieties.height - 1 : client->y;
     client->x = (client->x >= server->proprieties.width) ? 0 : client->x;
     client->x = (client->x < 0) ? server->proprieties.width - 1 : client->x;
+    client->payload = strdup("ok\n");
     client_time_handler(client, FORWARD);
 }
