@@ -8,9 +8,12 @@
 #ifndef ZAPPY_CLIENT_H
     #define ZAPPY_CLIENT_H
     #define BUFFER_SIZE 1024
+    #define NB_REQUESTS_HANDLEABLE 10
+    #define NB_COMMANDS_TO_SEND 11
     #include <stdlib.h>
     #include <stdio.h>
     #include <sys/queue.h>
+    #include <time.h>
     #include <uuid/uuid.h>
     #include "utils.h"
 
@@ -25,6 +28,12 @@ typedef struct inventory_s {
 
 } inventory_t;
 
+typedef struct tclient_s {
+    bool available_request;
+    struct timespec future_time;
+    int command;
+} tclient_t;
+
 typedef struct client_s {
     char uuid[37];
     int fd;
@@ -34,6 +43,8 @@ typedef struct client_s {
     signed char y;
     char *team_name;
     unsigned char orientation;
+    inventory_t inventory;
+    tclient_t tclient[NB_REQUESTS_HANDLEABLE];
     // inventory_t inventory;
 } client_t;
 

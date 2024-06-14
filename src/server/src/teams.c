@@ -58,11 +58,13 @@ void print_teams_infos(struct teams_tailq *teams)
     unsigned char i = 0;
     team_list_t *item;
     eggs_list_t *item_e;
+    char *res;
 
     TAILQ_FOREACH(item, teams, entries) {
         uuids = item->team->client_ids;
         i = 0;
-        printf("Team %s is %scomplete\n", item->team->name, item->team->is_complete ? "" : "not ");
+        res = item->team->is_complete ? "" : "not ";
+        printf("Team %s is %scomplete\n", item->team->name, res);
         printf("UUIDs:\n");
         for (; i < MAX_CAPACITY_TEAM && uuids[i] != NULL; i++)
             printf("%u - (%s)\n", i, item->team->client_ids[i]);
@@ -73,7 +75,6 @@ void print_teams_infos(struct teams_tailq *teams)
     }
 }
 
-// TODO: use team_list_t instead of team_t
 void add_client_uuid_to_team(team_t *team, char uuid[37])
 {
     unsigned char i = 0;

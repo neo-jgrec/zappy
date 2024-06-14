@@ -18,6 +18,10 @@ client_t *init_client(int client_fd)
     uuid_unparse_lower(binuuid, client->uuid);
     client->commands = NULL;
     client->fd = client_fd;
+    for (unsigned char i = 0; i < NB_REQUESTS_HANDLEABLE; i++) {
+        client->tclient[i].available_request = false;
+        client->tclient[i].command = -1;
+    }
     return client;
 }
 

@@ -16,6 +16,20 @@
     #define MENDIANE_DENSITY 0.1f
     #define PHIRAS_DENSITY 0.08f
     #define THYSTAME_DENSITY 0.05f
+    #define NANOSECONDS_IN_SECOND 1.0e9
+
+    // Time limits
+    #define FORWARD_TLIMIT 7.0f
+    #define RIGHT_TLIMIT 7.0f
+    #define LEFT_TLIMIT 7.0f
+    #define LOOK_TLIMIT 7.0f
+    #define INVENTORY_TLIMIT 1.0f
+    #define BROADCAST_TLIMIT 7.0f
+    #define FORK_TLIMIT 42.0f
+    #define EJECT_TLIMIT 7.0f
+    #define TAKE_TLIMIT 7.0f
+    #define SET_TLIMIT 7.0f
+    #define INCANTATION_TLIMIT 300.0f
     #define NB_COMMANDS 12
     #define MAX_CAPACITY_TEAM 200
     #include <stdlib.h>
@@ -25,6 +39,21 @@
     #include "flags.h"
     #include "utils.h"
     #include "client.h"
+
+// Commands
+enum Commands {
+    FORWARD,
+    RIGHT,
+    LEFT,
+    LOOK,
+    INVENTORY,
+    BROADCAST,
+    FORK,
+    EJECT,
+    TAKE,
+    SET,
+    INCANTATION
+};
 
 TAILQ_HEAD(client_tailq, client_list_s);
 TAILQ_HEAD(eggs_tailq, eggs_list_s);
@@ -65,7 +94,14 @@ typedef struct server_s {
     socklen_t addrlen;
     struct client_tailq clients;
     struct teams_tailq teams;
+    struct timespec current_time;
+    struct timeval timeout;
 } server_t;
+
+typedef struct interval_s {
+    int command;
+    double frequency;
+} interval_t;
 
 void print_clients_fds(struct client_tailq *clients);
 void destroy_clients(struct client_tailq *clients);
@@ -115,11 +151,28 @@ int create_new_client(server_t *server);
  */
 int handle_client_data(server_t *server, int client_fd);
 
+
+/**
+ * Handles the time when a client connects up to 10 (NB_REQUESTS_HANDLEABLE)
+ * @param client client to handle
+ * @param command command to copy
+ */
+void client_time_handler(client_t *client, int command);
+
+
+/**
+ * Handles client connection to a team
+ * @param client
+ * @param server
+ * @return
+ */
+bool connector(client_t *client, server_t *server);
+
+
 /* commands */
 void handle_client_message(server_t *server);
 void broadcast(client_t *client, server_t *server);
 void connect_nbr(client_t *client, server_t *server);
-void connector(client_t *client, server_t *server);
 void eject(client_t *client, server_t *server);
 void fork_z(client_t *client, server_t *server);
 void forward(client_t *client, server_t *server);
