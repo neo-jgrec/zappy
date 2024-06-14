@@ -72,7 +72,7 @@ static void send_command(
         nsec_sus = (current->tv_nsec + cmd_start_time.tv_nsec);
         elapsed = sec_sus + nsec_sus / NANOSECONDS_IN_SECOND;
         if (elapsed >= interval) {
-            dprintf(client->fd, "Finally!!!\n");
+            dprintf(client->fd, "%s", client->payload);
         }
     }
 }
