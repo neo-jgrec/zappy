@@ -39,8 +39,9 @@ typedef struct client_s {
     int fd;
     char **commands;
     char message[BUFFER_SIZE];
-    signed char x;
-    signed char y;
+    unsigned char x;
+    unsigned char y;
+    bool is_connected;
     char *team_name;
     unsigned char orientation;
     inventory_t inventory;

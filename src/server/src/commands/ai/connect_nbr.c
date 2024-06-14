@@ -9,5 +9,7 @@
 
 void connect_nbr(client_t *client, server_t *server)
 {
-    return;
+    size_t nb_slots = team_nb_slots(&server->teams, client->team_name);
+
+    dprintf(client->fd, "%zu\n", nb_slots);
 }
