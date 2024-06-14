@@ -39,6 +39,24 @@ static bool init_teams(server_t *server)
     return true;
 }
 
+static tile_t **init_map(int width, int height)
+{
+    tile_t **map = malloc(sizeof(tile_t *) * height);
+
+    if (map == NULL)
+        return false;
+    for (int i = 0; i < height; i++) {
+        map[i] = malloc(sizeof(tile_t) * width);
+        if (map[i] == NULL)
+            return false;
+        for (int j = 0; j < width; j++) {
+            map[i][j].num_objects = 0;
+            map[i][j].objects = NULL;
+        }
+    }
+    return map;
+}
+
 bool init_server(server_t *server, const char **args)
 {
     if (init_flags(&server->proprieties, args) == false)
@@ -58,5 +76,7 @@ bool init_server(server_t *server, const char **args)
     FD_SET(server->fd, &server->current_sockets);
     server->timeout.tv_sec = 0;
     server->timeout.tv_usec = 0;
+    server->map = init_map(server->proprieties.width,
+        server->proprieties.height);
     return true;
 }

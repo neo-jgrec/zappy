@@ -46,6 +46,7 @@ typedef struct client_s {
     inventory_t inventory;
     tclient_t tclient[NB_REQUESTS_HANDLEABLE];
     char *payload;
+    size_t level;
 } client_t;
 
 typedef struct client_list_s {
