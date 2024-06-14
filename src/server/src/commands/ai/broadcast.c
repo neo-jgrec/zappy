@@ -80,7 +80,8 @@ void broadcast(client_t *client, server_t *server)
             server->proprieties.width,
             server->proprieties.height
         );
-        if (asprintf(&client->payload, "message %d, %s\n", direction, get_message_from_command(client->commands)) == -1)
+        if (asprintf(&client->payload, "message %d, %s\n",
+            direction, get_message_from_command(client->commands)) == -1)
             dprintf(client->fd, "ko\n");
     }
     client_time_handler(client, BROADCAST);
