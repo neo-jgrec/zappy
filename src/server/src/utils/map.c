@@ -55,28 +55,25 @@ void remove_element_from_map(server_t *server, int x, int y, object_t object)
     }
 }
 
-info_map_t get_map_density(server_t *server, int x, int y)
+info_map_t get_map_density(server_t *server)
 {
-    info_map_t d = {0};
+    info_map_t info_map = {0};
+    int map_size = server->proprieties.width * server->proprieties.height;
+    tile_t *cell = NULL;
 
-    for (size_t i = 0; i < server->map[y * server->proprieties.width + x]
-        .num_objects; i++) {
-        d.deraumere = (server->map[y * server->proprieties.width + x]
-            .objects[i] == DERAUMERE ? d.deraumere + 1 : d.deraumere);
-        d.food = (server->map[y * server->proprieties.width + x]
-            .objects[i] == FOOD ? d.food + 1 : d.food);
-        d.linemate = (server->map[y * server->proprieties.width + x]
-            .objects[i] == LINEMATE ? d.linemate + 1 : d.linemate);
-        d.mendiane = (server->map[y * server->proprieties.width + x]
-            .objects[i] == MENDIANE ? d.mendiane + 1 : d.mendiane);
-        d.phiras = (server->map[y * server->proprieties.width + x]
-            .objects[i] == PHIRAS ? d.phiras + 1 : d.phiras);
-        d.sibur = (server->map[y * server->proprieties.width + x]
-            .objects[i] == SIBUR ? d.sibur + 1 : d.sibur);
-        d.thystame = (server->map[y * server->proprieties.width + x]
-            .objects[i] == THYSTAME ? d.thystame + 1 : d.thystame);
+    for (int idx = 0; idx < map_size; idx++) {
+        cell = &server->map[idx];
+        for (size_t k = 0; k < cell->num_objects; k++) {
+            (cell->objects[k] == FOOD) ? info_map.food++ : 0;
+            (cell->objects[k] == LINEMATE) ? info_map.linemate++ : 0;
+            (cell->objects[k] == DERAUMERE) ? info_map.deraumere++ : 0;
+            (cell->objects[k] == SIBUR) ? info_map.sibur++ : 0;
+            (cell->objects[k] == MENDIANE) ? info_map.mendiane++ : 0;
+            (cell->objects[k] == PHIRAS) ? info_map.phiras++ : 0;
+            (cell->objects[k] == THYSTAME) ? info_map.thystame++ : 0;
+        }
     }
-    return d;
+    return info_map;
 }
 
 void print_tile(tile_t *tile)

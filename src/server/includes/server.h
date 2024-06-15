@@ -255,7 +255,7 @@ void remove_element_from_map(server_t *server, int x, int y, object_t object);
  * @param y
  * @return info_map_t
  */
-info_map_t get_map_density(server_t *server, int x, int y);
+info_map_t get_map_density(server_t *server);
 
 /**
  * @brief
