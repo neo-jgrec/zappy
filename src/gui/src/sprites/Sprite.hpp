@@ -6,9 +6,9 @@
 */
 
 #ifndef SPRITE_HPP_
-#define SPRITE_HPP_
+    #define SPRITE_HPP_
 
-#include <SFML/Graphics.hpp>
+    #include <SFML/Graphics.hpp>
 
 class Sprite {
     public:
@@ -18,27 +18,13 @@ class Sprite {
                 throw std::runtime_error("Cannot load texture");
             _sprite.setTexture(_texture);
         }
-        ~Sprite() {}
+        ~Sprite() {};
 
         void setPosition(sf::Vector2f pos) { _sprite.setPosition(pos); }
         void setSize(sf::Vector2f size) { _sprite.setScale(size); }
         void draw(sf::RenderWindow &window) { window.draw(_sprite); }
-        void update() {
-            if (_clock.getElapsedTime().asSeconds() > _frameTime) {
-                _frame++;
-                if (_frame >= _frameCount)
-                    _frame = 0;
-                _sprite.setTextureRect(sf::IntRect(_frame * _texture.getSize().x / _frameCount, 0, _texture.getSize().x / _frameCount, _texture.getSize().y));
-                _clock.restart();
-            }
-        }
-        void setFrame(int frame) {
-            if (frame >= _frameCount)
-                frame = 0;
-            _frame = frame;
-            _sprite.setTextureRect(sf::IntRect(_frame * _texture.getSize().x / _frameCount, 0,
-                _texture.getSize().x / _frameCount, _texture.getSize().y));
-        }
+        void update();
+        void setFrame(int frame);
 
         sf::Sprite _sprite;
     private:

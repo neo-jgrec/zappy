@@ -6,14 +6,9 @@
 */
 
 #ifndef CHUNCK_HPP_
-#define CHUNCK_HPP_
+    #define CHUNCK_HPP_
 
-
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include <memory>
-
-#include "../../sprites/sprite.hpp"
+    #include <SFML/Graphics.hpp>
 
 class Chunck {
     public:

@@ -5,13 +5,14 @@
 ** world
 */
 
-#include "world.hpp"
+
+#include "World.hpp"
+#include "../../utils/PerlinNoise.hpp"
+
+#include <iostream>
 
 void World::draw(sf::RenderWindow &window)
 {
-    int i = 0;
-    int x, y;
-
     _view.setCenter(sf::Vector2f(
         10 * 46 - 10 * 46 - _tileSize.x / 4 * 3 + _tmpOffset.x + _offset.x,
                     10 * 27 + 10 * 27 + (int)(_chuncks[10][10]._yOffset * 80) - _tileSize.y + _tmpOffset.y + _offset.y
@@ -36,7 +37,7 @@ void World::draw(sf::RenderWindow &window)
     window.setView(window.getDefaultView());
 }
 
-bool World::update(sf::Event event, sf::RenderWindow &window)
+bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
 {
     _mousePos = _zappy.getMousePos();
     _mousePos = sf::Vector2f(
@@ -88,4 +89,29 @@ bool World::moveMap(sf::Event event)
     if (_isDragging)
         _tmpOffset = - _zappy.getMousePos() + _dragStart;
     return true;
+}
+
+void World::init() {
+    PerlinNoise noise;
+
+    for (int i = 0; i < _worldSize.x; i++) {
+        std::vector<Chunck> chuncks;
+        for (int j = 0; j < _worldSize.y; j++) {
+            Chunck chunck;
+            chunck._pos = sf::Vector2i(i, j);
+            chunck._yOffset = noise.noise(i * 0.1, j * 0.1);
+            chuncks.push_back(chunck);
+        }
+        _chuncks.push_back(chuncks);
+    }
+    _sprite = std::make_shared<Sprite>("./assets/grass.png");
+    _tileSize = sf::Vector2f(
+        _sprite->_sprite.getTexture()->getSize().x,
+        _sprite->_sprite.getTexture()->getSize().y
+    );
+    _diamond = Diamond(_tileSize);
+    // sf::Vector2f _viewSize = sf::Vector2f((_worldSize.x * _tileSize.x) / 2 + (_worldSize.y * _tileSize.x) / 2,
+    //     (_worldSize.x * _tileSize.y) / 2 + (_worldSize.y * _tileSize.y) / 2);
+    _sprites["halo1"] = std::make_shared<Sprite>("./assets/halo1.png");
+    _view.setSize(sf::Vector2f(1920 , 1080));
 }

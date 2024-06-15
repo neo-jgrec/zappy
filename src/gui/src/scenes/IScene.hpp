@@ -6,12 +6,9 @@
 */
 
 #ifndef ISCENE_HPP_
-#define ISCENE_HPP_
+    #define ISCENE_HPP_
 
-#include <memory>
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include "../core/zappy.hpp"
+    #include <SFML/Graphics.hpp>
 
 class IScene {
     public:

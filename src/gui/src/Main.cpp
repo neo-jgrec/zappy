@@ -11,7 +11,7 @@
 #include "Parser.hpp"
 #include "GuiException.hpp"
 #include "Data.hpp"
-#include "core/core.hpp"
+#include "core/Core.hpp"
 
 #include "utils/Debug.hpp"
 #include "utils/CommandLineParser.hpp"

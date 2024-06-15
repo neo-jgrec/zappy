@@ -6,9 +6,9 @@
 */
 
 #ifndef ZAPPY_HPP_
-#define ZAPPY_HPP_
+    #define ZAPPY_HPP_
 
-#include <SFML/Graphics.hpp>
+    #include <SFML/Graphics.hpp>
 
 enum GameState {
     HOME,

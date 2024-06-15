@@ -6,9 +6,9 @@
 */
 
 #ifndef DIAMOND_HPP_
-#define DIAMOND_HPP_
+    #define DIAMOND_HPP_
 
-#include <SFML/Graphics.hpp>
+    #include <SFML/Graphics.hpp>
 
 class Diamond {
     public:
