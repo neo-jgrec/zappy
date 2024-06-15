@@ -16,52 +16,47 @@ client_t *init_client(int client_fd)
         return NULL;
     uuid_generate_random(binuuid);
     uuid_unparse_lower(binuuid, client->uuid);
-    client->next = NULL;
-    client->prev = NULL;
     client->commands = NULL;
     client->fd = client_fd;
+    for (unsigned char i = 0; i < NB_REQUESTS_HANDLEABLE; i++) {
+        client->tclient[i].available_request = false;
+        client->tclient[i].command = -1;
+    }
+    client->is_connected = false;
     return client;
 }
 
-void free_clients(client_t *clients)
+void destroy_clients(struct client_tailq *clients)
 {
-    client_t *next_client;
+    client_list_t *item;
 
-    if (!clients)
-        return;
-    for (; clients->prev; clients = clients->prev);
-    while (clients) {
-        next_client = clients->next;
-        free_array((void **)clients->commands);
-        free(clients);
-        clients = next_client;
+    while (!TAILQ_EMPTY(clients)) {
+        item = TAILQ_FIRST(clients);
+        TAILQ_REMOVE(clients, item, entries);
+        secure_free(item->client);
+        secure_free(item);
     }
-    clients = NULL;
 }
 
-void print_clients_fds(client_t *clients)
+void remove_client_by_fd(struct client_tailq *clients, int fd)
 {
-    while (clients != NULL) {
-        printf("[%d]", clients->fd);
-        if (clients->next != NULL)
-            printf("-");
-        clients = clients->next;
+    client_list_t *item;
+
+    TAILQ_FOREACH(item, clients, entries) {
+        if (item->client->fd == fd) {
+            TAILQ_REMOVE(clients, item, entries);
+            secure_free(item->client);
+            item->client = NULL;
+            break;
+        }
     }
-    printf("\n");
 }
 
-bool push_client(client_t *client, int client_fd)
+void print_clients_fds(struct client_tailq *clients)
 {
-    client_t *new_client = init_client(client_fd);
+    client_list_t *item;
 
-    if (new_client == NULL)
-        return false;
-    if (client == NULL) {
-        client = new_client;
-        return true;
+    TAILQ_FOREACH(item, clients, entries) {
+        printf("FD: %d\n", item->client->fd);
     }
-    for (; client->next; client = client->next);
-    client->next = new_client;
-    new_client->prev = client;
-    return true;
 }

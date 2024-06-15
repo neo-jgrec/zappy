@@ -8,8 +8,14 @@
 #ifndef ZAPPY_CLIENT_H
     #define ZAPPY_CLIENT_H
     #define BUFFER_SIZE 1024
+    #define NB_REQUESTS_HANDLEABLE 10
+    #define NB_COMMANDS_TO_SEND 11
+    #include <stdint.h>
     #include <stdlib.h>
     #include <stdio.h>
+    #include <sys/queue.h>
+    #include <time.h>
+    #include <uuid/uuid.h>
     #include "utils.h"
 
 enum Orientation {
@@ -20,30 +26,44 @@ enum Orientation {
 };
 
 typedef struct inventory_s {
-
+    uint32_t food;
+    uint32_t linemate;
+    uint32_t deraumere;
+    uint32_t sibur;
+    uint32_t mendiane;
+    uint32_t phiras;
+    uint32_t thystame;
 } inventory_t;
+
+typedef struct tclient_s {
+    bool available_request;
+    struct timespec future_time;
+    int command;
+} tclient_t;
 
 typedef struct client_s {
     char uuid[37];
     int fd;
     char **commands;
     char message[BUFFER_SIZE];
-    struct client_s *next;
-    struct client_s *prev;
     signed char x;
     signed char y;
+    bool is_connected;
     char *team_name;
     unsigned char orientation;
     inventory_t inventory;
+    tclient_t tclient[NB_REQUESTS_HANDLEABLE];
+    char *payload;
+    size_t level;
 } client_t;
+
+typedef struct client_list_s {
+    client_t *client;
+    TAILQ_ENTRY(client_list_s) entries;
+} client_list_t;
 
 /* LISTS */
 
-/**
- *
- * @param clients clients to print
- */
-void print_clients_fds(client_t *clients);
 
 /**
  *

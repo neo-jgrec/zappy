@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-int main(int ac, char **av)
+int main([[maybe_unused]] int ac, [[maybe_unused]] char **av)
 {
     std::cout << "C'est vraiment trop bien l'IA" << std::endl;
     return 0;

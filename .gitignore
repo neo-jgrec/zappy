@@ -60,6 +60,7 @@ include/*
 
 # tests
 unit_tests
+/*_unit_tests
 coverage.info
 *.gcno
 *.gcda

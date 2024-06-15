@@ -25,7 +25,7 @@ class Quit : public IScene {
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter)
                 window.close();
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-                _zappy._upperState = GameState::NONE;
+                _zappy._upperState = GameState::DEFAULT;
             if (_quitButton->update(event, window))
                 window.close();
             return true;

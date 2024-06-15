@@ -31,7 +31,7 @@ int create_new_client(server_t *server)
     dprintf(client_fd, "WELCOME\n");
     new_client = malloc(sizeof(client_list_t));
     if (!new_client) {
-        perror("Malloc failed");
+        perror("Malloc while creating a client failed");
         return ERROR_STATUS;
     }
     new_client->client = init_client(client_fd);
@@ -56,6 +56,34 @@ client_t *get_client(struct client_tailq *clients, int client_fd)
     return NULL;
 }
 
+static int handle_quit_client(
+    client_t *client,
+    server_t *server,
+    ssize_t check_read,
+    int client_fd
+)
+{
+    egg_t *egg;
+    eggs_list_t *item_e;
+    team_t *team;
+    client_list_t *item_c;
+
+    if (check_read == 0) {
+        egg = init_egg(client->x, client->y);
+        item_e = malloc(sizeof(eggs_list_t));
+        if (item_e == NULL)
+            return ERROR_STATUS;
+        team = get_team_by_name(&server->teams, client->team_name);
+        item_e->egg = egg;
+        TAILQ_INSERT_TAIL(&team->eggs, item_e, entries);
+        close(client_fd);
+        FD_CLR(client_fd, &server->current_sockets);
+        remove_client_by_fd(&server->clients, client_fd);
+        return OK_STATUS;
+    }
+    return NEUTRAL_VALUE;
+}
+
 int handle_client_data(server_t *server, int client_fd)
 {
     client_t *client = get_client(&server->clients, client_fd);
@@ -71,11 +99,9 @@ int handle_client_data(server_t *server, int client_fd)
         close(client_fd);
         return ERROR_STATUS;
     }
-    if (check_read == 0) {
-        close(client_fd);
-        FD_CLR(client_fd, &server->current_sockets);
-        return OK_STATUS;
-    }
-    handle_client_message(server);
+    if (client->is_connected && handle_quit_client(client, server,
+        check_read, client_fd) == ERROR_STATUS)
+        return ERROR_STATUS;
+    handle_client_message(client, server);
     return OK_STATUS;
 }

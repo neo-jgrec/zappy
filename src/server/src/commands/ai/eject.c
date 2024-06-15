@@ -9,5 +9,5 @@
 
 void eject(client_t *client, server_t *server)
 {
-    return;
+    client_time_handler(client, EJECT);
 }

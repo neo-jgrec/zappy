@@ -24,4 +24,6 @@ void left(client_t *client, server_t *server)
             client->orientation = NORTH;
             break;
     }
+    client->payload = strdup("ok\n");
+    client_time_handler(client, LEFT);
 }

@@ -25,10 +25,25 @@ if(CCACHE_FOUND)
 	set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif()
 
-# Add a fclean rule that call clean and remove compiled files
-add_custom_target(fclean
-	COMMAND ${CMAKE_BUILD_TOOL} clean
-	COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/cmake/clean-all.cmake
+add_compile_options(-Wall
+	-Wextra
+	-Wpedantic
+	-fexceptions
+	-ffunction-sections
+	-fdata-sections
+	-fasynchronous-unwind-tables
+	-fno-delete-null-pointer-checks
+	-fno-common
+	-fno-omit-frame-pointer
+	-fno-strict-aliasing
+	-fno-semantic-interposition
+	-fstack-protector-strong
+	-fstack-clash-protection
+	-flto=auto
+	-fdiagnostics-color=auto
+	-grecord-gcc-switches
+	-pipe
+	-pthread
 )
 
 add_subdirectory(src)

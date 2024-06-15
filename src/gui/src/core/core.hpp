@@ -49,7 +49,7 @@ class Core {
 
                 while (_window.pollEvent(_event)) {
                     update();
-                    _scenes[((_zappy._upperState != GameState::NONE) ? _zappy._upperState : _zappy._state)]->update(_event, _window);
+                    _scenes[((_zappy._upperState != GameState::DEFAULT) ? _zappy._upperState : _zappy._state)]->update(_event, _window);
                     if (_zappy._resolution != _resolution ||
                         _zappy._fullscreen != _fullscreen) {
                         _fullscreen = _zappy._fullscreen;
@@ -60,7 +60,7 @@ class Core {
                 _window.clear(sf::Color(100, 100, 100));
 
                 _scenes[_zappy._state]->draw(_window);
-                if (_zappy._upperState != GameState::NONE)
+                if (_zappy._upperState != GameState::DEFAULT)
                     _scenes[_zappy._upperState]->draw(_window);
                 _window.display();
             }

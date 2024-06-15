@@ -16,7 +16,7 @@ enum GameState {
     GAME,
     QUIT,
     END,
-    NONE,
+    DEFAULT,
 };
 
 class Zappy {
@@ -24,7 +24,7 @@ class Zappy {
         Zappy() {
             _font.loadFromFile("assets/BadComic-Regular.ttf");
             _state = GameState::HOME;
-            _upperState = GameState::NONE;
+            _upperState = GameState::DEFAULT;
         };
         ~Zappy() {};
 

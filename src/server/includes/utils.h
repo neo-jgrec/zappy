@@ -13,6 +13,8 @@
     #include <stdio.h>
     #include <stdlib.h>
 
+    #define _2D_ARRAY_TO_1D(array, x, y) (array)[(x) * (y) + (x)]
+
 /**
  *
  * @param av

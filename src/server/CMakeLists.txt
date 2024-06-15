@@ -1,27 +1,5 @@
 add_executable(zappy_server)
 
-# Set compilation flags
-add_compile_options(-Wall
-	-Wextra
-	-pedantic-errors
-	-fexceptions
-	-ffunction-sections
-	-fdata-sections
-	-fasynchronous-unwind-tables
-	-fno-delete-null-pointer-checks
-	-fno-common
-	-fno-omit-frame-pointer
-	-fno-strict-aliasing
-	-fno-semantic-interposition
-	-fstack-protector-strong
-	-fstack-clash-protection
-	-flto=auto
-	-fdiagnostics-color=auto
-	-grecord-gcc-switches
-	-pipe
-	-pthread
-)
-
 # If in debug mode, enable debug flags
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_compile_options(-O0 -g3)
@@ -49,7 +27,7 @@ pkg_search_module(UUID REQUIRED uuid)
 find_library(MATH_LIB m)
 
 file(GLOB_RECURSE SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/**/*.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
 )
 
 target_sources(zappy_server
@@ -69,3 +47,4 @@ target_link_libraries(zappy_server ${UUID_LIBRARIES} ${MATH_LIB})
 
 install(TARGETS zappy_server)
 
+add_subdirectory(tests)
