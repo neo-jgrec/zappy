@@ -37,8 +37,8 @@ class Zappy {
         void setMousePos(sf::Vector2f mousePos) { _mousePos = mousePos; };
         sf::Vector2f getMousePos() { return _mousePos; };
 
-        sf::Vector2f _resolution = sf::Vector2f(1920, 1080);
-        bool _fullscreen = true;
+        sf::Vector2f _resolution = sf::Vector2f(1080, 720);
+        bool _fullscreen = false;
     protected:
     private:
         sf::Font _font;

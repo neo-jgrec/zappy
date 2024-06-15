@@ -20,7 +20,7 @@
 class Core {
     public:
         Core() {
-            _window.create(sf::VideoMode( _resolution.x , _resolution.y ), "Zappy", sf::Style::Fullscreen);
+            _window.create(sf::VideoMode( _resolution.x , _resolution.y ), "Zappy", sf::Style::Close);
 
             _scenes[GameState::HOME] = std::make_shared<Home>(_zappy);
             _scenes[GameState::END] = std::make_shared<Quit>(_zappy);
@@ -74,8 +74,8 @@ class Core {
         sf::Event _event;
         sf::Clock _clock;
 
-        bool _fullscreen = true;
-        sf::Vector2f _resolution = sf::Vector2f(1920, 1080);
+        bool _fullscreen = false;
+        sf::Vector2f _resolution = sf::Vector2f(1080, 720);
 
 };
 
