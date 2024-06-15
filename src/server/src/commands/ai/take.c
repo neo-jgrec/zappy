@@ -84,4 +84,5 @@ void take(client_t *client, server_t *server)
         asprintf(&client->payload, "ok\n");
     } else
         dprintf(client->fd, "ko\n");
+    client_time_handler(client, TAKE);
 }
