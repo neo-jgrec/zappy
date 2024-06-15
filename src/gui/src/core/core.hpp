@@ -35,15 +35,10 @@ class Core {
             if (_event.type == sf::Event::Closed)
                 _zappy._upperState = GameState::END;
             if (_event.type == sf::Event::MouseMoved) {
-                // _zappy.setMousePos(
-                //     // _window.mapPixelToCoords(sf::Mouse::getPosition(_window))
-                // );
                 _zappy.setMousePos(sf::Vector2f(
                     _event.mouseMove.x * 1920 / _window.getSize().x,
                     _event.mouseMove.y * 1080 / _window.getSize().y
                 ));
-                // sf::Vector2f ratio = sf::Vector2f(_resolution.x / 1920, _resolution.y / 1080);
-                // _zappy.setMousePos(sf::Vector2f(_zappy.getMousePos().x / ratio.x, _zappy.getMousePos().y / ratio.y));
             }
         }
 
