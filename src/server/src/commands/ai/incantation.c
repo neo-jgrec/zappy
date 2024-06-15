@@ -26,17 +26,17 @@ static void count_resources(tile_t *tile, size_t *resource_count)
 
 static bool check_requirements_met(
     const size_t *resource_count,
-    const size_t *required_resources,
+    const size_t *z,
     size_t players_on_tile
 )
 {
     for (size_t i = 1; i < 7; i++) {
-        if (resource_count[i] < required_resources[i]) {
+        if (resource_count[i] < z[i]) {
             fprintf(stderr, "Insufficient resources of type %zu\n", i);
             return false;
         }
     }
-    if (players_on_tile < required_resources[0]) {
+    if (players_on_tile < z[0]) {
         fprintf(stderr, "Insufficient players on the tile\n");
         return false;
     }
@@ -107,8 +107,8 @@ static void callback_freeze(
     UNUSED server_t *server
 )
 {
-    for (int i = 0; i < NB_REQUESTS_HANDLEABLE; i++)
-        client->tclient[i].available_request = false;
+    // for (int i = 0; i < NB_REQUESTS_HANDLEABLE; i++)
+    //     client->tclient[i].available_request = false;
 }
 
 static void callback_level_up(
@@ -116,9 +116,19 @@ static void callback_level_up(
     UNUSED server_t *server
 )
 {
+    printf("zfoijezfiuez", client->level);
     client->level++;
-    for (int i = 0; i < NB_REQUESTS_HANDLEABLE; i++)
-        client->tclient[i].available_request = true;
+    // for (int i = 0; i < NB_REQUESTS_HANDLEABLE; i++)
+    //     client->tclient[i].available_request = true;
+}
+
+static void callback_unfreeze(
+    client_t *client,
+    UNUSED server_t *server
+)
+{
+    // for (int i = 0; i < NB_REQUESTS_HANDLEABLE; i++)
+    //     client->tclient[i].available_request = true;
 }
 
 static bool are_requierment_met_encapsulation(
@@ -151,4 +161,26 @@ void incantation(client_t *client, server_t *server)
     if (!are_requierment_met_encapsulation(client, resource_count,
         players_on_tile, required_level))
         return;
+    run_logic_on_group(client, server, required_level, callback_freeze);
+    client_time_handler(client, INCANTATION);
+}
+
+void incantation_callback_end_of_command(client_t *client, server_t *server)
+{
+    size_t required_level = client->level - 1;
+    size_t old_level = client->level;
+    size_t resource_count[8] = {0};
+    size_t players_on_tile = get_nb_players_on_tile(client, server);
+    tile_t *tile = &server
+        ->map[client->x + client->y * server->proprieties.width];
+
+    count_resources(tile, resource_count);
+    if (!are_requierment_met_encapsulation(client, resource_count,
+        players_on_tile, required_level)) {
+        run_logic_on_group(client, server, required_level, callback_unfreeze);
+        return;
+    }
+    remove_resources(tile, required_resources[old_level]);
+    run_logic_on_group(client, server, old_level, callback_level_up);
+    asprintf(&client->payload, "Current level: %zu\n", old_level);
 }
