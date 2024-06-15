@@ -257,4 +257,18 @@ void remove_element_from_map(server_t *server, int x, int y, object_t object);
  */
 info_map_t get_map_density(server_t *server, int x, int y);
 
+/**
+ * @brief
+ *
+ * @param server
+ */
+void print_map(server_t *server);
+
+/**
+ * @brief
+ *
+ * @param tile
+ */
+void print_tile(tile_t *tile);
+
 #endif /* !SERVER_H_ */

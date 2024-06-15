@@ -7,6 +7,22 @@
 
 #include "server.h"
 
+static const struct {
+    object_t type;
+    char *name;
+} object_handlers[] = {
+    {EMPTY, ""},
+    {FOOD, "food"},
+    {LINEMATE, "linemate"},
+    {DERAUMERE, "deraumere"},
+    {SIBUR, "sibur"},
+    {MENDIANE, "mendiane"},
+    {PHIRAS, "phiras"},
+    {THYSTAME, "thystame"},
+    {PLAYER, "player"},
+    {0, NULL}
+};
+
 void add_element_to_map(server_t *server, int x, int y, object_t object)
 {
     server->map[y * server->proprieties.width + x].objects =
@@ -61,4 +77,26 @@ info_map_t get_map_density(server_t *server, int x, int y)
             .objects[i] == THYSTAME ? d.thystame + 1 : d.thystame);
     }
     return d;
+}
+
+void print_tile(tile_t *tile)
+{
+    dprintf(1, "[");
+    for (size_t k = 0; k < tile->num_objects; k++) {
+        dprintf(1, "%s%s", object_handlers[tile->objects[k]].name,
+                k + 1 < tile->num_objects ? ", " : "");
+    }
+    dprintf(1, "]");
+}
+
+void print_map(server_t *server)
+{
+    for (int i = 0; i < server->proprieties.height; i++) {
+        for (int j = 0; j < server->proprieties.width; j++) {
+            dprintf(1, "%d, %d, ", j, i);
+            print_tile(&server->map[i * server->proprieties.width + j]);
+            dprintf(1, "%s", j + 1 < server->proprieties.width ? ", " : "");
+        }
+        dprintf(1, "\n");
+    }
 }
