@@ -9,20 +9,31 @@
 
 void add_element_to_map(server_t *server, int x, int y, object_t object)
 {
-    tile_t *tile = &server->map[y * server->proprieties.width + x];
-
-    tile->objects[tile->num_objects] = object;
-    tile->num_objects++;
+    server->map[y * server->proprieties.width + x].objects =
+        realloc(server->map[y * server->proprieties.width + x].objects,
+            sizeof(object_t) * (server->map[y * server->proprieties.width + x]
+                .num_objects + 1));
+    server->map[y * server->proprieties.width + x].objects[server->map[y *
+        server->proprieties.width + x].num_objects] = object;
+    server->map[y * server->proprieties.width + x].num_objects++;
 }
 
 void remove_element_from_map(server_t *server, int x, int y, object_t object)
 {
-    tile_t *tile = &server->map[y * server->proprieties.width + x];
-
-    for (size_t i = 0; i < tile->num_objects; i++) {
-        if (tile->objects[i] == object) {
-            tile->objects[i] = tile->objects[tile->num_objects - 1];
-            tile->num_objects--;
+    for (size_t i = 0; i < server->map[y * server->proprieties.width + x]
+        .num_objects; i++) {
+        if (server->map[y * server->proprieties.width + x]
+            .objects[i] == object) {
+            server->map[y * server->proprieties.width + x].objects[i] =
+                server->map[y * server->proprieties.width + x]
+                    .objects[server->map[y * server->proprieties.width + x]
+                    .num_objects - 1];
+            server->map[y * server->proprieties.width + x].num_objects--;
+            server->map[y * server->proprieties.width + x].objects =
+                realloc(server->map[y * server->proprieties.width + x].objects,
+                    sizeof(object_t) * server
+                        ->map[y * server->proprieties.width + x]
+                        .num_objects);
             break;
         }
     }
