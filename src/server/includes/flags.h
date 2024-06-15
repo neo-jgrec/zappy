@@ -10,6 +10,7 @@
     #define NB_FLAGS 6
     #define INCORRECT_FLAG_VALUE (-1)
     #include "utils.h"
+    #include <stdint.h>
 
 enum {
     PORT,
@@ -21,13 +22,13 @@ enum {
 };
 
 typedef struct info_map_s {
-    int food;
-    int linemate;
-    int deraumere;
-    int sibur;
-    int mendiane;
-    int phiras;
-    int thystame;
+    uint8_t food;
+    uint8_t linemate;
+    uint8_t deraumere;
+    uint8_t sibur;
+    uint8_t mendiane;
+    uint8_t phiras;
+    uint8_t thystame;
 } info_map_t;
 
 typedef struct flags_s {
@@ -38,7 +39,6 @@ typedef struct flags_s {
     int nb_clients;
     int frequency;
     info_map_t max_map;
-    info_map_t current_map;
 } flags_t;
 
 /**

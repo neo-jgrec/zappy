@@ -224,4 +224,37 @@ void look(client_t *client, server_t *server);
 void right(client_t *client, server_t *server);
 void set(client_t *client, server_t *server);
 void take(client_t *client, server_t *server);
+
+/* map utils */
+
+/**
+ * @brief Get the map density object
+ *
+ * @param server
+ * @param x
+ * @param y
+ * @param object
+ */
+void add_element_to_map(server_t *server, int x, int y, object_t object);
+
+/**
+ * @brief Remove an element from the map
+ *
+ * @param server
+ * @param x
+ * @param y
+ * @param object
+ */
+void remove_element_from_map(server_t *server, int x, int y, object_t object);
+
+/**
+ * @brief Get the map density object
+ *
+ * @param server
+ * @param x
+ * @param y
+ * @return info_map_t
+ */
+info_map_t get_map_density(server_t *server, int x, int y);
+
 #endif /* !SERVER_H_ */

@@ -172,6 +172,5 @@ bool init_flags(flags_t *flags, const char **args)
     flags->max_map.mendiane = (int)(width * height * MENDIANE_DENSITY);
     flags->max_map.phiras = (int)(width * height * PHIRAS_DENSITY);
     flags->max_map.thystame = (int)(width * height * THYSTAME_DENSITY);
-    flags->current_map = flags->max_map;
     return true;
 }
