@@ -20,6 +20,16 @@ enum {
     FREQ
 };
 
+typedef struct info_map_s {
+    int food;
+    int linemate;
+    int deraumere;
+    int sibur;
+    int mendiane;
+    int phiras;
+    int thystame;
+} info_map_t;
+
 typedef struct flags_s {
     int port;
     int width;
@@ -27,6 +37,8 @@ typedef struct flags_s {
     char **names;
     int nb_clients;
     int frequency;
+    info_map_t max_map;
+    info_map_t current_map;
 } flags_t;
 
 /**

@@ -129,6 +129,12 @@ team_t *init_team(const char *team_name, int nb_client, int width, int height);
 void print_teams_infos(struct teams_tailq *teams);
 void remove_client_by_fd(struct client_tailq *clients, int fd);
 
+/**
+ * Check resources, if not equitable
+ * @param server
+ */
+void check_available_resources(server_t *server);
+
 typedef struct commands_s {
     char *name;
     void (*command)(client_t *client, server_t *server);
