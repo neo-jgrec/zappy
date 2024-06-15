@@ -2,8 +2,8 @@
 #include <criterion/internal/assert.h>
 #include <optional>
 
-#include "../../src/Data.hpp"
-#include "../../src/GuiException.hpp"
+#include "../../src/parser/Data.hpp"
+#include "../../src/utils/GuiException.hpp"
 
 
 Test(Data, getTickRate)

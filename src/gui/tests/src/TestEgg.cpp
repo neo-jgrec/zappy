@@ -1,7 +1,7 @@
 #include <criterion/criterion.h>
 #include <vector>
 
-#include "../../src/Egg.hpp"
+#include "../../src/parser/Egg.hpp"
 
 Test(Egg, constructor)
 {

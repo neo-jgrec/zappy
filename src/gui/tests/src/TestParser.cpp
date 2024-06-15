@@ -5,8 +5,8 @@
 #include <variant>
 #include <vector>
 
-#include "../../src/Parser.hpp"
-#include "../../src/Incantation.hpp"
+#include "../../src/parser/Parser.hpp"
+#include "../../src/parser/Incantation.hpp"
 
 Test(Parser, mszNormal)
 {

@@ -1,7 +1,7 @@
 #include <criterion/criterion.h>
 #include <criterion/internal/assert.h>
 
-#include "../../src/Parser.hpp"
+#include "../../src/parser/Parser.hpp"
 
 Test(ParserException, constructor)
 {
