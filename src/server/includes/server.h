@@ -86,7 +86,6 @@ typedef struct team_list_s {
 } team_list_t;
 
 typedef enum {
-    EMPTY,
     FOOD,
     LINEMATE,
     DERAUMERE,
@@ -94,7 +93,8 @@ typedef enum {
     MENDIANE,
     PHIRAS,
     THYSTAME,
-    PLAYER
+    PLAYER,
+    EMPTY
 } object_t;
 
 typedef struct {
