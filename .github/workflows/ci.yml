@@ -1,0 +1,28 @@
+name: epitech coding style
+
+on:
+  push:
+
+env:
+  EXECUTABLES: "zappy_server,zappy_ai,zappy_gui"
+
+jobs:
+  check_executables:
+    runs-on: ubuntu-latest
+    container:
+      image: epitechcontent/epitest-docker:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      - name: Execute the project with make cmd
+        run: |
+          make
+          SPLIT_EXECUTABLES=$(echo $EXECUTABLES | tr "," "\n")
+          for EXECUTABLE in $SPLIT_EXECUTABLES; do
+            if [[ ! -f $EXECUTABLE ]]; then
+            echo "::error title=This executable was not found $EXECUTABLE::"
+            exit 1
+          fi
+          done

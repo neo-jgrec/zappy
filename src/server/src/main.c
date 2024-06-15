@@ -5,9 +5,11 @@
 ** server
 */
 
-#include <stdio.h>
+#include "server.h"
 
 int main(int ac, char **av)
 {
-    printf("Le C c'est pas si mal :)");
+    if (ac < 13)
+        return helper(ERROR_STATUS);
+    return server((const char **)av);
 }

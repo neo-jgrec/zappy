@@ -51,6 +51,7 @@ zappy_gui
 .idea/*.xml
 
 build/**/*
+binaries/**/*
 
 include/*
 /bin/*
@@ -59,6 +60,7 @@ include/*
 
 # tests
 unit_tests
+/*_unit_tests
 coverage.info
 *.gcno
 *.gcda
