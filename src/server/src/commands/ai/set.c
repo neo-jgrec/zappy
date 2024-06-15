@@ -42,46 +42,36 @@ static void remove_element_from_inventory(client_t *c, object_t object)
     }
 }
 
-static bool does_object_exist_on_tile(tile_t *tile, object_t object)
+static void add_element_to_tile(tile_t *tile, object_t object)
 {
-    for (size_t i = 0; i < tile->num_objects; i++) {
-        if (tile->objects[i] == object)
-            return true;
-    }
-    return false;
-}
-
-static object_t get_object_from_string(char *object_string)
-{
-    object_t object = -1;
-
-    for (size_t i = 0; i < 7; i++) {
-        if (strcmp(object_handlers[i].name, object_string) == 0) {
-            object = object_handlers[i].type;
-        }
-    }
-    return object;
+    tile->num_objects++;
+    tile->objects = realloc(tile->objects, sizeof(object_t) * tile->num_objects);
+    tile->objects[tile->num_objects - 1] = object;
 }
 
 void set(client_t *client, server_t *server)
 {
-    tile_t *tile = &server->map[client->y * server->proprieties.width + client->x];
-    object_t object;
+    object_t object = -1;
 
     if (client->commands[1] == NULL) {
         dprintf(client->fd, "ko\n");
         return;
     }
-    object = get_object_from_string(client->commands[1]);
+    for (size_t i = 0; i < 7; i++) {
+        if (strcmp(object_handlers[i].name, client->commands[1]) == 0) {
+            object = object_handlers[i].type;
+            break;
+        }
+    }
     if ((int)object == -1) {
         dprintf(client->fd, "ko\n");
         return;
     }
-    if (does_object_exist_on_tile(tile, object) == false) {
+    if (client->inventory.food == 0) {
         dprintf(client->fd, "ko\n");
         return;
     }
-    remove_element_from_inventory(client, object);
-    add_element_to_map(server, client->x, client->y, object);
-    asprintf(&client->payload, "ok\n");
+    remove_element_from_inventory(client, FOOD);
+    add_element_to_tile(&server->map[client->y * server->proprieties.width + client->x], object);
+    dprintf(client->fd, "ok\n");
 }
