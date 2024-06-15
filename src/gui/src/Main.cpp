@@ -7,14 +7,14 @@
 
 #include <iostream>
 
-#include "ServerConnect.hpp"
-#include "Parser.hpp"
-#include "GuiException.hpp"
-#include "Data.hpp"
-#include "core/Core.hpp"
+#include "parser/ServerConnect.hpp"
+#include "parser/Parser.hpp"
+#include "parser/Data.hpp"
+#include "render/core/Core.hpp"
 
 #include "utils/Debug.hpp"
 #include "utils/CommandLineParser.hpp"
+#include "utils/GuiException.hpp"
 
 int main(int argc, char **argv) {
     try {

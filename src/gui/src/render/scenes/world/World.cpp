@@ -7,7 +7,7 @@
 
 
 #include "World.hpp"
-#include "../../utils/PerlinNoise.hpp"
+#include "../../../utils/PerlinNoise.hpp"
 
 #include <iostream>
 

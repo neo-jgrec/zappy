@@ -1,5 +1,5 @@
 #include "Data.hpp"
-#include "GuiException.hpp"
+#include "../utils/GuiException.hpp"
 
 // ------------------------------------------------------------------ //
 // ---------------------------- GETTERS ----------------------------- //

@@ -14,8 +14,8 @@
 #include <vector>
 
 #include "ServerConnect.hpp"
-#include "GuiException.hpp"
-#include "utils/Debug.hpp"
+#include "../utils/GuiException.hpp"
+#include "../utils/Debug.hpp"
 
 void ServerConnect::connectToServer(int port, const char *ip)
 {

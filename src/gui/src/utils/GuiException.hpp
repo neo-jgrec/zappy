@@ -8,7 +8,7 @@
 #ifndef GUIEXCEPTION_HPP
     #define GUIEXCEPTION_HPP
 
-#include "utils/Exception.hpp"
+#include "Exception.hpp"
 
 class guiException final : public utils::Exception {
     public:

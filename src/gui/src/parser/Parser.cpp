@@ -2,7 +2,7 @@
 #include "Player.hpp"
 #include "Egg.hpp"
 #include "Incantation.hpp"
-#include "GuiException.hpp"
+#include "../utils/GuiException.hpp"
 
 #include <cstddef>
 #include <sstream>
@@ -13,7 +13,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/tokenizer.hpp>
 
-#include "utils/Debug.hpp"
+#include "../utils/Debug.hpp"
 
 // ---------------------------------------------------------------- //
 // --------------------------- HANDLERS --------------------------- //
