@@ -55,6 +55,7 @@ typedef struct client_s {
     tclient_t tclient[NB_REQUESTS_HANDLEABLE];
     char *payload;
     size_t level;
+    bool is_incanting;
 } client_t;
 
 typedef struct client_list_s {

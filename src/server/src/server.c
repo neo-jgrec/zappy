@@ -8,8 +8,6 @@
 #include "server.h"
 #include <time.h>
 
-void incantation_callback_end_of_command(client_t *client, server_t *server);
-
 static int handle_connections(server_t *server, int fd)
 {
     if (FD_ISSET(fd, &server->ready_sockets)) {

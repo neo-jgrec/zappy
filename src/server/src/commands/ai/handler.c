@@ -28,7 +28,7 @@ static void execute_command(client_t *client, server_t *server)
     if (strlen(client->message) == 0)
         return;
     for (size_t i = 0; i < NB_COMMANDS; i++) {
-        if (client->is_connected == false)
+        if (client->is_connected == false || client->is_incanting == true)
             break;
         if (strcmp(client->commands[0], commands[i].name) == 0) {
             commands[i].command(client, server);

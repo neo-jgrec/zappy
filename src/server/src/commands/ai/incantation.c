@@ -6,7 +6,6 @@
 */
 
 #include "server.h"
-#include "unused.h"
 
 static const size_t required_resources[7][7] = {
     {1, 1, 0, 0, 0, 0, 0},
@@ -102,35 +101,6 @@ static void run_logic_on_group(
     }
 }
 
-static void callback_freeze(
-    client_t *client,
-    UNUSED server_t *server
-)
-{
-    // for (int i = 0; i < NB_REQUESTS_HANDLEABLE; i++)
-    //     client->tclient[i].available_request = false;
-}
-
-static void callback_level_up(
-    client_t *client,
-    UNUSED server_t *server
-)
-{
-    printf("zfoijezfiuez", client->level);
-    client->level++;
-    // for (int i = 0; i < NB_REQUESTS_HANDLEABLE; i++)
-    //     client->tclient[i].available_request = true;
-}
-
-static void callback_unfreeze(
-    client_t *client,
-    UNUSED server_t *server
-)
-{
-    // for (int i = 0; i < NB_REQUESTS_HANDLEABLE; i++)
-    //     client->tclient[i].available_request = true;
-}
-
 static bool are_requierment_met_encapsulation(
     client_t *client,
     size_t *resource_count,
@@ -162,6 +132,8 @@ void incantation(client_t *client, server_t *server)
         players_on_tile, required_level))
         return;
     run_logic_on_group(client, server, required_level, callback_freeze);
+    run_logic_on_group(client, server, required_level,
+        callback_start_incantation_set_payload);
     client_time_handler(client, INCANTATION);
 }
 
@@ -182,5 +154,6 @@ void incantation_callback_end_of_command(client_t *client, server_t *server)
     }
     remove_resources(tile, required_resources[old_level]);
     run_logic_on_group(client, server, old_level, callback_level_up);
-    asprintf(&client->payload, "Current level: %zu\n", old_level);
+    run_logic_on_group(client, server, old_level,
+        callback_end_incantation_set_payload);
 }
