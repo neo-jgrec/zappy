@@ -4,7 +4,7 @@
 ** File description:
 ** Debug.cpp
 */
-#include "Bot.hpp"
+#include "../Bot.hpp"
 
 void Bot::debugInitialisation()
 {

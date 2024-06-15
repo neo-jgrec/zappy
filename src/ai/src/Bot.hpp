@@ -26,6 +26,7 @@
 #include "behaviors/Behavior.hpp"
 #include "utils/PrintColor.hpp"
 #include "message/Message.hpp"
+#include "utils/StringUtils.hpp"
 
 class pairHash
 {
@@ -112,6 +113,7 @@ private:
     void listenForkResponse(const std::string &response);
     void listenTakeResponse(const std::string &response);
     void listenForwardResponse(const std::string &response);
+    void listenBroadcastResponse(const std::string &response);
 
     void findPath(std::pair<int, int> start, const std::pair<int, int> &end);
     void turnToDirection(std::pair<int, int> &pos, Orientation targetDir);

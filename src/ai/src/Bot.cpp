@@ -4,6 +4,7 @@
 ** File description:
 ** Bot.cpp
 */
+
 #include "Bot.hpp"
 
 Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName), _messageId(0), _timeUnit(126), _iteration(0)
@@ -135,22 +136,6 @@ void Bot::act()
     }
 }
 
-std::string getElementAfterComma(const std::string& input)
-{
-    std::istringstream iss(input);
-    std::string token;
-    
-    while (std::getline(iss, token, ',')) {
-        // Après la virgule, récupérer le token suivant
-        if (iss >> token) {
-            return token;
-        }
-    }
-
-    return ""; // Retourner une chaîne vide si la virgule n'est pas trouvée
-}
-
-
 void Bot::listen(std::string response)
 {
     if (state.lastAction.action == LOOK)
@@ -163,20 +148,15 @@ void Bot::listen(std::string response)
     }
     else if (state.lastAction.action == TAKE)
     {
-        printf("TAKE\n");
         listenTakeResponse(response);
     }
     else if (state.lastAction.action == FORWARD)
     {
-        printf("FORWARD\n");
         listenForwardResponse(response);
     }
     if (response.find("message") != std::string::npos)
     {
-        std::string message = getElementAfterComma(response);
-        _message._content = message;
-        _message.vigenereDecrypt();
-        printKeyValueColored("Message", _message._content);
+        listenBroadcastResponse(response);
     }
 }
 

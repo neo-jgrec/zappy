@@ -23,6 +23,7 @@ class Message
         void vigenereDecrypt();
         void vigenereEncrypt();
         std::string getCurrentTimeAsLetters();
+        void generateMessage(const std::string &content);
         std::string convertDigitsToLetters(const std::string& digits);
         std::string _content;
     private:

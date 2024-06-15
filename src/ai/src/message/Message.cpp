@@ -47,12 +47,16 @@ std::string Message::getCurrentTimeAsLetters()
     return convertDigitsToLetters(digits);
 }
 
+void Message::generateMessage(const std::string &content)
+{
+    _content = content + ":bFNneQbXQkyJHGEQd";
+}
 
 void Message::vigenereEncrypt()
 {
     std::string result = _content;
     int keyIndex = 0;
-    const std::string& key = getCurrentTimeAsLetters();
+    const std::string& key = "EPITECH";
 
     for (int i = 0; i < _content.length(); ++i) {
         if (isalpha(_content[i])) {
@@ -69,7 +73,7 @@ void Message::vigenereDecrypt()
 {
     std::string result = _content;
     int keyIndex = 0;
-    const std::string& key = getCurrentTimeAsLetters();
+    const std::string& key = "EPITECH";
     
     for (int i = 0; i < _content.length(); ++i) {
         if (isalpha(_content[i])) {

@@ -46,6 +46,8 @@ public:
     // int getThystame() const;
 private:
     std::unordered_map<std::string, size_t *> ressourcesMap;
+    //hello
+    
 };
 
 #endif // RESSOURCES_HPP_

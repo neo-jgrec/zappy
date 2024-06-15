@@ -11,7 +11,7 @@
 void Bot::survive()
 {
     searchAndTakeRessource("food");
-    _message._content = "salut";
+    _message.generateMessage("group");
     _message.vigenereEncrypt();
     queue.push_back({[&]() { doAction(BROADCAST, _message._content); }, "BROADCAST"});
 }
