@@ -64,9 +64,9 @@ static object_t get_object_from_string(char *object_string)
     return object;
 }
 
-void take(client_t *client, server_t *server)
+void take(client_t *client, server_t *s)
 {
-    tile_t *tile = &server->map[client->y * server->proprieties.width + client->x];
+    tile_t *tile = &s->map[client->y * s->proprieties.width + client->x];
     object_t object;
 
     if (client->commands[1] == NULL) {
@@ -80,7 +80,7 @@ void take(client_t *client, server_t *server)
     }
     if (does_object_exist_on_tile(tile, object)) {
         add_element_to_inventory(client, object);
-        remove_element_from_map(server, client->x, client->y, object);
+        remove_element_from_map(s, client->x, client->y, object);
         asprintf(&client->payload, "ok\n");
     } else
         dprintf(client->fd, "ko\n");
