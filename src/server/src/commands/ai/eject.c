@@ -7,7 +7,7 @@
 
 #include "server.h"
 
-static int reverse_direction(int direction)
+static int reverse_orientation(int direction)
 {
     switch (direction) {
         case NORTH:
@@ -23,32 +23,40 @@ static int reverse_direction(int direction)
     }
 }
 
+static void set_dx_and_dy(
+    unsigned char orientation,
+    signed char *dx,
+    signed char *dy
+)
+{
+    if (orientation == NORTH)
+        *dy = -1;
+    if (orientation == SOUTH)
+        *dy = 1;
+    if (orientation == WEST)
+        *dx = -1;
+    if (orientation == EAST)
+        *dx = 1;
+}
+
 void eject(client_t *c, server_t *s)
 {
-    unsigned char orientation = c->orientation;
     signed char dx = 0;
     signed char dy = 0;
-    client_list_t *node;
-    client_t *other_client;
+    client_list_t *n;
     signed char new_x;
     signed char new_y;
 
-    if (orientation == NORTH)
-        dy = -1;
-    if (orientation == SOUTH)
-        dy = 1;
-    if (orientation == WEST)
-        dx = -1;
-    if (orientation == EAST)
-        dx = 1;
-    TAILQ_FOREACH(node, &s->clients, entries) {
-        other_client = node->client;
-        if (other_client->x == c->x && other_client->y == c->y && other_client != c) {
+    set_dx_and_dy(c->orientation, &dx, &dy);
+    TAILQ_FOREACH(n, &s->clients, entries) {
+        if (n->client->x == c->x && n->client->y == c->y && n->client != c) {
             new_x = (c->x + dx + s->proprieties.width) % s->proprieties.width;
-            new_y = (c->y + dy + s->proprieties.height) % s->proprieties.height;
-            other_client->x = new_x;
-            other_client->y = new_y;
-            asprintf(&other_client->payload, "eject: %d\n", reverse_direction(orientation));
+            new_y = (c->y + dy + s->proprieties.height)
+                % s->proprieties.height;
+            n->client->x = new_x;
+            n->client->y = new_y;
+            asprintf(&n->client->payload,
+                "eject: %d\n", reverse_orientation(c->orientation));
         }
     }
     asprintf(&c->payload, "ok\n");
