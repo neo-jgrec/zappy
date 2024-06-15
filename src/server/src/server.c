@@ -72,7 +72,18 @@ static void send_command(
         nsec_sus = (current->tv_nsec + cmd_start_time.tv_nsec);
         elapsed = sec_sus + nsec_sus / NANOSECONDS_IN_SECOND;
         if (elapsed >= interval) {
-            dprintf(client->fd, "%s", client->payload);
+            if (client->tclient[i].command == INCANTATION) {
+                run_logic_on_group(client, server, required_level, callback_freeze);
+                client_time_handler(client, INCANTATION);
+                are_requierment_met_encapsulation(client, resource_count,
+                    players_on_tile, required_level);
+                run_logic_on_group(client, server, client->level, callback_level_up);
+                remove_resources(tile, required_resources[required_level]);
+                (void)asprintf(&client->payload, "elevation en cours\n");
+                dprintf("%s\n", client->payload);
+            } else {
+                dprintf(client->fd, "%s", client->payload);
+            }
         }
     }
 }

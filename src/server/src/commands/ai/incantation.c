@@ -148,13 +148,7 @@ void incantation(client_t *client, server_t *server)
         ->map[client->x + client->y * server->proprieties.width];
 
     count_resources(tile, resource_count);
-    are_requierment_met_encapsulation(client, resource_count,
-        players_on_tile, required_level);
-    run_logic_on_group(client, server, required_level, callback_freeze);
-    client_time_handler(client, INCANTATION);
-    are_requierment_met_encapsulation(client, resource_count,
-        players_on_tile, required_level);
-    run_logic_on_group(client, server, client->level, callback_level_up);
-    remove_resources(tile, required_resources[required_level]);
-    (void)asprintf(&client->payload, "elevation en cours\n");
+    if (!are_requierment_met_encapsulation(client, resource_count,
+        players_on_tile, required_level))
+        return;
 }
