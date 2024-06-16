@@ -15,8 +15,6 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
     state.ressources.food = 9;
     behaviors.push_back(std::make_unique<Behavior>(0.4, [&]()
                                                    { survive(); }, "survive"));
-    behaviors.push_back(std::make_unique<Behavior>(0.75, [&]()
-                                                   { searchLinemate(); }, "searchLinemate"));
     // behaviors.push_back(std::make_unique<Behavior>(0.15, [&]()
     //                                                { searchDeraumere(); }, "searchDeraumere"));
     // behaviors.push_back(std::make_unique<Behavior>(0.15, [&]()
@@ -83,6 +81,15 @@ void Bot::run(std::string response)
             doNothing = true;
         listen(response);
     }
+
+    if (doNothing)
+    {
+        behaviors.erase(behaviors.begin());
+        behaviors.push_back(std::make_unique<Behavior>(0.4, [&]()
+                                                       { trapMessage(); }, "trap Message"));
+        doNothing = false;
+    }
+
     setRewardWithState();
     if (state.reward != 0)
         applyReward();
@@ -90,7 +97,7 @@ void Bot::run(std::string response)
         updateProbabilities();
     if (queue.empty())
         act(); // -> fait l'action la plus rentable
-    if (!queue.empty() && !doNothing)
+    if (!queue.empty())
     {
         queue.front().first();
         queue.erase(queue.begin());

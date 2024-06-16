@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
+#include <random>
 
 #include "state/BotState.hpp"
 #include "behaviors/Behavior.hpp"
@@ -45,6 +46,7 @@ public:
     Bot(int sockfd, std::string teamName);
     ~Bot();
     bool doNothing = false;
+    std::string _signature = "bFNneQbXQkyJHGEQd";
 
     void sendMessage(const std::string &message);
 
@@ -87,6 +89,7 @@ private:
     unsigned int _messageId;
     unsigned int _iteration;
     Message _message;
+    Message _enemyMessage;
     enum Orientation
     {
         NORTH,
@@ -133,6 +136,7 @@ private:
     void searchPhiras();
     void searchThystame();
     void sentinelle();
+    void trapMessage();
 };
 
 #endif // BOT_HPP_
