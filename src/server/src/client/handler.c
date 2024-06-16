@@ -69,13 +69,15 @@ static int handle_quit_client(
     client_list_t *item_c;
 
     if (check_read == 0) {
-        egg = init_egg(client->x, client->y);
-        item_e = malloc(sizeof(eggs_list_t));
-        if (item_e == NULL)
-            return ERROR_STATUS;
-        team = get_team_by_name(&server->teams, client->team_name);
-        item_e->egg = egg;
-        TAILQ_INSERT_TAIL(&team->eggs, item_e, entries);
+        if (client->is_graphic == false) {
+            egg = init_egg(client->x, client->y);
+            item_e = malloc(sizeof(eggs_list_t));
+            if (item_e == NULL)
+                return ERROR_STATUS;
+            team = get_team_by_name(&server->teams, client->team_name);
+            item_e->egg = egg;
+            TAILQ_INSERT_TAIL(&team->eggs, item_e, entries);
+        }
         close(client_fd);
         FD_CLR(client_fd, &server->current_sockets);
         remove_client_by_fd(&server->clients, client_fd);

@@ -32,7 +32,8 @@
     #define SET_TLIMIT 7.0f
     #define INCANTATION_TLIMIT 300.0f
     #define METEORS_LIMIT 20.0f
-    #define NB_COMMANDS 12
+    #define NB_AI_COMMANDS 12
+    #define NB_GUI_COMMANDS 9
     #define MAX_CAPACITY_TEAM 200
     #include <stdlib.h>
     #include <stdio.h>
@@ -130,6 +131,7 @@ egg_t *init_egg(int width, int height);
 team_t *init_team(const char *team_name, int nb_client, int width, int height);
 void print_teams_infos(struct teams_tailq *teams);
 void remove_client_by_fd(struct client_tailq *clients, int fd);
+void execute_commands_ai(client_t *client, server_t *server);
 
 /**
  * returns the rand() % val, don't forger to srand(time(NULL))
@@ -219,7 +221,7 @@ void client_time_handler(client_t *client, int command);
 bool connector(client_t *client, server_t *server);
 
 
-/* commands */
+/* commands ai */
 void handle_client_message(client_t *client, server_t *server);
 void broadcast(client_t *client, server_t *server);
 void connect_nbr(client_t *client, server_t *server);
@@ -233,6 +235,33 @@ void look(client_t *client, server_t *server);
 void right(client_t *client, server_t *server);
 void set(client_t *client, server_t *server);
 void take(client_t *client, server_t *server);
+
+/* commands gui */
+void bct(client_t *client, server_t *server);
+void ebo(client_t *client, server_t *server);
+void edi(client_t *client, server_t *server);
+void enw(client_t *client, server_t *server);
+void mct(client_t *client, server_t *server);
+void msz(client_t *client, server_t *server);
+void pdi(client_t *client, server_t *server);
+void pdr(client_t *client, server_t *server);
+void pex(client_t *client, server_t *server);
+void pfk(client_t *client, server_t *server);
+void pgt(client_t *client, server_t *server);
+void pic(client_t *client, server_t *server);
+void pie(client_t *client, server_t *server);
+void pin(client_t *client, server_t *server);
+void plv(client_t *client, server_t *server);
+void pnc(client_t *client, server_t *server);
+void pnw(client_t *client, server_t *server);
+void ppo(client_t *client, server_t *server);
+void sbp(client_t *client, server_t *server);
+void seg(client_t *client, server_t *server);
+void sgt(client_t *client, server_t *server);
+void smg(client_t *client, server_t *server);
+void sst(client_t *client, server_t *server);
+void suc(client_t *client, server_t *server);
+void tna(client_t *client, server_t *server);
 
 /* map utils */
 
