@@ -62,8 +62,8 @@ TAILQ_HEAD(eggs_tailq, eggs_list_s);
 TAILQ_HEAD(teams_tailq, team_list_s);
 
 typedef struct egg_s {
-    unsigned char x;
-    unsigned char y;
+    int x;
+    int y;
 } egg_t;
 
 typedef struct eggs_list_s {

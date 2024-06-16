@@ -112,7 +112,6 @@ static void handle_meteors(server_t *server)
     if (elapsed >= interval) {
         map = get_map_density(server);
         clock_gettime(CLOCK_REALTIME, &server->meteor_last_time);
-        print_map(server);
         if (map.thystame != max_map.thystame || map.phiras != max_map.phiras ||
             map.mendiane != max_map.mendiane || map.sibur != max_map.sibur ||
             map.linemate != max_map.linemate || map.food != max_map.food ||

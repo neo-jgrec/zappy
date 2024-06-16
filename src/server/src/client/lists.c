@@ -46,7 +46,6 @@ void remove_client_by_fd(struct client_tailq *clients, int fd)
         if (item->client->fd == fd) {
             TAILQ_REMOVE(clients, item, entries);
             secure_free(item->client);
-            item->client = NULL;
             break;
         }
     }
