@@ -82,7 +82,7 @@ void take(client_t *client, server_t *s)
         add_element_to_inventory(client, object);
         remove_element_from_map(s, client->x, client->y, object);
         asprintf(&client->payload, "ok\n");
+        client_time_handler(client, TAKE);
     } else
         dprintf(client->fd, "ko\n");
-    client_time_handler(client, TAKE);
 }

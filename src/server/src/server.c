@@ -77,6 +77,51 @@ static void send_command(
     }
 }
 
+static void add_object(server_t *server, int max, int value, int obj_enum)
+{
+    int diff = max - value;
+    int x = server->proprieties.width;
+    int y = server->proprieties.height;
+
+    for (int i = diff; i >= 0; i--)
+        add_element_to_map(server, rand_p(x), rand_p(y), obj_enum);
+}
+
+static void fill_objects(server_t *server, info_map_t *max, info_map_t *map)
+{
+    add_object(server, max->food, map->food, FOOD);
+    add_object(server, max->linemate, map->linemate, LINEMATE);
+    add_object(server, max->deraumere, map->deraumere, DERAUMERE);
+    add_object(server, max->sibur, map->sibur, SIBUR);
+    add_object(server, max->mendiane, map->mendiane, MENDIANE);
+    add_object(server, max->phiras, map->phiras, PHIRAS);
+    add_object(server, max->thystame, map->thystame, THYSTAME);
+}
+
+static void handle_meteors(server_t *server)
+{
+    struct timespec current = server->current_time;
+    struct timespec meteor_time = server->meteor_last_time;
+    double interval = METEORS_LIMIT / (double)server->proprieties.frequency;
+    time_t sec_sus = (current.tv_sec - meteor_time.tv_sec);
+    time_t nsec_sus = (current.tv_nsec + meteor_time.tv_nsec);
+    double elapsed = sec_sus + nsec_sus / NANOSECONDS_IN_SECOND;
+    info_map_t map;
+    info_map_t max_map = server->proprieties.max_map;
+
+    if (elapsed >= interval) {
+        map = get_map_density(server);
+        clock_gettime(CLOCK_REALTIME, &server->meteor_last_time);
+        print_map(server);
+        if (map.thystame != max_map.thystame || map.phiras != max_map.phiras ||
+            map.mendiane != max_map.mendiane || map.sibur != max_map.sibur ||
+            map.linemate != max_map.linemate || map.food != max_map.food ||
+            map.deraumere != max_map.deraumere)
+            fill_objects(server, &max_map, &map);
+    }
+    METEORS_LIMIT;
+}
+
 static void check_response_client_time(
     struct client_tailq *clients,
     double freq,
@@ -98,6 +143,7 @@ static int start_server(server_t *server)
 
     while (true) {
         clock_gettime(CLOCK_REALTIME, &server->current_time);
+        handle_meteors(server);
         check_response_client_time(&server->clients, freq,
             &server->current_time);
         server->ready_sockets = server->current_sockets;

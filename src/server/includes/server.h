@@ -31,6 +31,7 @@
     #define TAKE_TLIMIT 7.0f
     #define SET_TLIMIT 7.0f
     #define INCANTATION_TLIMIT 300.0f
+    #define METEORS_LIMIT 20.0f
     #define NB_COMMANDS 12
     #define MAX_CAPACITY_TEAM 200
     #include <stdlib.h>
@@ -112,6 +113,7 @@ typedef struct server_s {
     struct client_tailq clients;
     struct teams_tailq teams;
     struct timespec current_time;
+    struct timespec meteor_last_time;
     struct timeval timeout;
     tile_t *map;
 } server_t;
@@ -128,6 +130,13 @@ egg_t *init_egg(int width, int height);
 team_t *init_team(const char *team_name, int nb_client, int width, int height);
 void print_teams_infos(struct teams_tailq *teams);
 void remove_client_by_fd(struct client_tailq *clients, int fd);
+
+/**
+ * returns the rand() % val, don't forger to srand(time(NULL))
+ * @param val
+ * @return
+ */
+int rand_p(int val);
 
 /**
  * Check resources, if not equitable
