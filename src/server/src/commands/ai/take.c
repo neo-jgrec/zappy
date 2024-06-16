@@ -66,7 +66,8 @@ static object_t get_object_from_string(char *object_string)
 
 void take(client_t *client, server_t *server)
 {
-    tile_t *tile = &server->map[client->y * server->proprieties.width + client->x];
+    tile_t *tile = &server->map[client->y *
+        server->proprieties.width + client->x];
     object_t object;
 
     if (client->commands[1] == NULL) {
@@ -82,7 +83,7 @@ void take(client_t *client, server_t *server)
         add_element_to_inventory(client, object);
         remove_element_from_map(server, client->x, client->y, object);
         asprintf(&client->payload, "ok\n");
+        client_time_handler(client, TAKE);
     } else
         dprintf(client->fd, "ko\n");
-    client_time_handler(client, TAKE);
 }

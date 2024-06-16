@@ -79,7 +79,8 @@ void broadcast(client_t *client, server_t *server)
             server->proprieties.height
         );
         if (asprintf(&client->payload, "message %d, %s\n",
-            direction, get_message_from_complete_command(client->message)) == -1)
+            direction,
+            get_message_from_complete_command(client->message)) == -1)
             dprintf(client->fd, "ko\n");
     }
     client_time_handler(client, BROADCAST);

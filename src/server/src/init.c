@@ -41,17 +41,34 @@ static bool init_teams(server_t *server)
 
 static tile_t *init_map(int width, int height)
 {
-    tile_t *map = malloc(sizeof(tile_t) * height);
+    tile_t *map = calloc(height * width, sizeof(tile_t));
 
     if (map == NULL)
         return NULL;
-    for (int i = 0; i < height; i++) {
-        map[i].objects = malloc(sizeof(object_t) * width);
-        if (map[i].objects == NULL)
-            return NULL;
-        map[i].num_objects = 0;
-    }
     return map;
+}
+
+static void add_object(int obj, int obj_enum, server_t *server)
+{
+    int x = server->proprieties.width;
+    int y = server->proprieties.height;
+
+    for (int i = obj; i >= 0; i--)
+        add_element_to_map(server, rand_p(x), rand_p(y), obj_enum);
+}
+
+static void init_meteor(server_t *server)
+{
+    info_map_t objs = server->proprieties.max_map;
+
+    add_object(objs.food, FOOD, server);
+    add_object(objs.linemate, LINEMATE, server);
+    add_object(objs.deraumere, DERAUMERE, server);
+    add_object(objs.sibur, SIBUR, server);
+    add_object(objs.mendiane, MENDIANE, server);
+    add_object(objs.phiras, PHIRAS, server);
+    add_object(objs.thystame, THYSTAME, server);
+    clock_gettime(CLOCK_REALTIME, &server->meteor_last_time);
 }
 
 bool init_server(server_t *server, const char **args)
@@ -66,14 +83,14 @@ bool init_server(server_t *server, const char **args)
     server->info = init_socket_address((size_t)server->proprieties.port);
     server->fd = socket(AF_INET, SOCK_STREAM, 0);
     server->addrlen = sizeof(struct sockaddr_in);
-    if (server->fd < 0) {
+    if (server->fd < 0)
         return false;
-    }
     FD_ZERO(&server->current_sockets);
     FD_SET(server->fd, &server->current_sockets);
     server->timeout.tv_sec = 0;
     server->timeout.tv_usec = 0;
     server->map = init_map(server->proprieties.width,
         server->proprieties.height);
+    init_meteor(server);
     return true;
 }

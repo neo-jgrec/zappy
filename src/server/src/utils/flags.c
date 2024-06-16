@@ -163,8 +163,8 @@ bool init_flags(flags_t *flags, const char **args)
     flags->names = NULL;
     if (!check_number_flags(flags, args) || !check_error_flags(flags))
         return false;
-    width = (double )flags->width;
-    height = (double )flags->height;
+    width = (double)flags->width;
+    height = (double)flags->height;
     flags->max_map.food = (int)(width * height * FOOD_DENSITY);
     flags->max_map.linemate = (int)(width * height * LINEMATE_DENSITY);
     flags->max_map.deraumere = (int)(width * height * DERAUMERE_DENSITY);
