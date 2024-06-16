@@ -28,6 +28,7 @@
 #include "utils/PrintColor.hpp"
 #include "message/Message.hpp"
 #include "utils/StringUtils.hpp"
+#include "IBot.hpp"
 
 class pairHash
 {
@@ -40,17 +41,18 @@ public:
     }
 };
 
-class Bot
+class Bot : public IBot
 {
 public:
-    Bot(int sockfd, std::string teamName);
+    Bot();
     ~Bot();
     bool doNothing = false;
     std::string _signature = "bFNneQbXQkyJHGEQd";
 
     void sendMessage(const std::string &message);
 
-    void run(std::string response);
+    void run(const std::string &response) override;
+    void init(int sockfd, const std::string &teamName) override;
 
     std::vector<std::pair<std::function<void()>, std::string>> queue;
 

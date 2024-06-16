@@ -16,8 +16,10 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <cstring>
-#include "Bot.hpp"
 #include <memory>
+
+#include "botFactory/BotFactory.hpp"
+#include "Constants.hpp"
 
 class Client
 {
@@ -34,7 +36,7 @@ private:
     int _sockfd;
     fd_set _readfds;
     struct timeval _tv;
-    std::unique_ptr<Bot> _bot;
+    std::unique_ptr<IBot> _bot;
 
     void setupConnection();
     void authenticate();
