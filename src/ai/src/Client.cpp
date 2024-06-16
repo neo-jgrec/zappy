@@ -53,7 +53,6 @@ void Client::setupConnection()
     {
         std::cout << "Connected to server: " << _host << ":" << _port << " on team: " << _teamName << "\n";
         std::string buffer;
-        // recvMessage(buffer);
     }
 }
 
@@ -61,9 +60,19 @@ void Client::authenticate()
 {
     std::string buffer;
 
+    // to pass the first message welcome
     recvMessage(buffer);
-    // code            // to handle Welcome message
-    _bot = std::make_unique<Bot>(_sockfd, _teamName);
+    try
+    {
+        _bot = BotFactory::createBot("Bot");
+    }
+    catch (const std::exception &e)
+    {
+        PRINT_ERROR(e.what());
+        close(_sockfd);
+        exit(EXIT_FAILURE);
+    }
+    _bot->init(_sockfd, _teamName);
 }
 
 void Client::loop()

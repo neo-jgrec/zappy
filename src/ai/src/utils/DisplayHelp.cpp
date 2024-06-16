@@ -7,6 +7,7 @@
 
 #include <fstream>
 #include <iostream>
+#include "../Constants.hpp"
 
 static void printFileContentError(const std::string &filePath)
 {
@@ -24,7 +25,8 @@ static void printFileContentError(const std::string &filePath)
     }
     else
     {
-        std::cerr << "Unable to open file: " << filePath << '\n';
+        std::string errorMsg = "Unable to open file: " + filePath + '\n';
+        PRINT_ERROR(errorMsg);
     }
 }
 

@@ -7,26 +7,22 @@
 
 #include "Bot.hpp"
 
-Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName), _messageId(0), _timeUnit(126), _iteration(0)
+Bot::Bot() : _sockfd(-1), _teamName(""), _messageId(0), _timeUnit(126), _iteration(0)
 {
-    srand(static_cast<unsigned int>(time(nullptr)));
-    sendMessage(teamName);
     _orientation = NORTH;
     state.ressources.food = 9;
+}
+
+void Bot::init(int sockfd, const std::string &teamName)
+{
+    srand(static_cast<unsigned int>(time(nullptr)));
+    _sockfd = sockfd;
+    _teamName = teamName;
+    sendMessage(teamName);
     behaviors.push_back(std::make_unique<Behavior>(0.4, [&]()
                                                    { survive(); }, "survive"));
     behaviors.push_back(std::make_unique<Behavior>(0.75, [&]()
                                                    { searchLinemate(); }, "searchLinemate"));
-    // behaviors.push_back(std::make_unique<Behavior>(0.15, [&]()
-    //                                                { searchDeraumere(); }, "searchDeraumere"));
-    // behaviors.push_back(std::make_unique<Behavior>(0.15, [&]()
-    //                                                { searchSibur(); }, "searchSibur"));
-    // behaviors.push_back(std::make_unique<Behavior>(0.15, [&]()
-    //                                                { searchMendiane(); }, "searchMendiane"));
-    // behaviors.push_back(std::make_unique<Behavior>(0.15, [&]()
-    //                                                { searchPhiras(); }, "searchPhiras"));
-    // behaviors.push_back(std::make_unique<Behavior>(0.15, [&]()
-    //                                                { searchThystame(); }, "searchThystame"));
     for (auto &behavior : behaviors)
     {
         behavior->probability = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
@@ -35,11 +31,6 @@ Bot::Bot(int sockfd, std::string teamName) : _sockfd(sockfd), _teamName(teamName
     /* probabilities */
     probabilities.push_back(std::make_unique<Probability>(5, 0.4, "food_importance"));
     probabilities.push_back(std::make_unique<Probability>(5, 0.3, "linemate_importance"));
-    // probabilities.push_back(std::make_unique<Probability>(5, 0.3, "deraumere_importance"));
-    // probabilities.push_back(std::make_unique<Probability>(5, 0.3, "sibur_importance"));
-    // probabilities.push_back(std::make_unique<Probability>(5, 0.3, "mendiane_importance"));
-    // probabilities.push_back(std::make_unique<Probability>(5, 0.3, "phiras_importance"));
-    // probabilities.push_back(std::make_unique<Probability>(5, 0.3, "thystame_importance"));
     debugProbabilities();
 }
 
@@ -65,23 +56,24 @@ void Bot::sendMessage(const std::string &message)
     send(_sockfd, messageToSend.c_str(), messageToSend.size(), 0);
 }
 
-void Bot::run(std::string response)
+void Bot::run(const std::string &response)
 {
     int cycle = 0;
+    std::string responseCopy = response;
     printColor("========== [Bot Run] ==========\n", BLUE);
     printKeyValueColored("Iteration", std::to_string(_iteration));
 
-    if (!response.empty() && response.back() == '\n')
+    if (!responseCopy.empty() && responseCopy.back() == '\n')
     {
-        response.pop_back();
+        responseCopy.pop_back();
     }
 
     if (state.lastAction.action == LOOK)
     {
-        printKeyValueColored("Bot listens", response);
-        if (response.find("message") != std::string::npos)
+        printKeyValueColored("Bot listens", responseCopy);
+        if (responseCopy.find("message") != std::string::npos)
             doNothing = true;
-        listen(response);
+        listen(responseCopy);
     }
     setRewardWithState();
     if (state.reward != 0)
