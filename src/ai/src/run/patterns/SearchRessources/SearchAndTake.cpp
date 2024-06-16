@@ -5,26 +5,31 @@
 ** Survive.cpp
 */
 
-#include "../../../Bot.hpp"
+#include "../../../ABotProbabilistic.hpp"
+#include "../../../Constants.hpp"
 #include <functional>
 
-void Bot::searchAndTakeRessource(const std::string &ressource)
+void ABotProbabilistic::searchAndTakeRessource(const std::string &ressource)
 {
-    if (state.environment.tiles.empty()) 
+    if (_state.environment.tiles.empty())
     {
-        queue.push_back({[&]() { doAction(LOOK, ""); }, "LOOK"});
+        queue.push_back({[&]()
+                         { doAction(LOOK, ""); }, "LOOK"});
     }
 
     std::unordered_map<std::string, std::function<void()>> actions = {
-        { "FORWARD", [&]() { doAction(FORWARD, ""); } },
-        { "LEFT",    [&]() { doAction(LEFT, ""); } },
-        { "RIGHT",   [&]() { doAction(RIGHT, ""); } },
-        { "TAKE",    [=]() { doAction(TAKE, ressource); } } 
-    };
+        {"FORWARD", [&]()
+         { doAction(FORWARD, ""); }},
+        {"LEFT", [&]()
+         { doAction(LEFT, ""); }},
+        {"RIGHT", [&]()
+         { doAction(RIGHT, ""); }},
+        {"TAKE", [=]()
+         { doAction(TAKE, ressource); }}};
 
     bool resourceFound = false;
 
-    for (const auto& tile : state.environment.tiles)
+    for (const auto &tile : _state.environment.tiles)
     {
         std::cout << "Tile: " << tile.x << " " << tile.y << std::endl;
 
@@ -53,18 +58,20 @@ void Bot::searchAndTakeRessource(const std::string &ressource)
             std::pair<int, int> coord = {tile.x, tile.y};
             if (movementMap.find(coord) != movementMap.end())
             {
-                for (const auto& move : movementMap[coord])
+                for (const auto &move : movementMap[coord])
                 {
-                    queue.push_back({ actions[move], move });
+                    queue.push_back({actions[move], move});
                 }
             }
-            queue.push_back({ actions["TAKE"], "TAKE" });
+            queue.push_back({actions["TAKE"], "TAKE"});
             break;
         }
     }
 
     if (!resourceFound)
-        queue.push_back({[&]() { doAction(FORWARD, ""); }, "FORWARD"});
+        queue.push_back({[&]()
+                         { doAction(FORWARD, ""); }, "FORWARD"});
 
-    queue.push_back({[&]() { doAction(LOOK, ""); }, "LOOK"});
+    queue.push_back({[&]()
+                     { doAction(LOOK, ""); }, "LOOK"});
 }

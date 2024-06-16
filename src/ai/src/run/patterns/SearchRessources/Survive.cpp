@@ -5,10 +5,10 @@
 ** Survive.cpp
 */
 
-#include "../../../Bot.hpp"
+#include "../../../ABotProbabilistic.hpp"
 #include <functional>
 
-void Bot::survive()
+void ABotProbabilistic::survive()
 {
     searchAndTakeRessource("food");
     _message._content = "group_24";

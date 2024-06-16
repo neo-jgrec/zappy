@@ -9,6 +9,9 @@
 #define CONSTANTS_HPP_
 
 #include <array>
+#include <unordered_map>
+#include <vector>
+#include "hash/Pairhash.hpp"
 
 const std::array<std::array<int, 6>, 9> levelRequirements = {{
     {0, 0, 0, 0, 0, 0}, // Level 0

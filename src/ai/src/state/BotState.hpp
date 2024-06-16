@@ -28,8 +28,6 @@ public:
     std::string lastBehavior;
     unsigned int level;
 
-    // to verify: test reward
-    double reward;
     std::vector<std::string> exploredProbabilities;
 };
 

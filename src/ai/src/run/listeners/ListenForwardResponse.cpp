@@ -5,8 +5,8 @@
 ** ListenForwardeResponse.cpp
 */
 
-#include "../../Bot.hpp"
+#include "../../ABotProbabilistic.hpp"
 
-void Bot::listenForwardResponse(const std::string &response)
+void ABotProbabilistic::listenForwardResponse(const std::string &response)
 {
 }

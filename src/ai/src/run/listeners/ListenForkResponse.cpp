@@ -5,8 +5,8 @@
 ** ListenForkResponse.cpp
 */
 
-#include "../../Bot.hpp"
+#include "../../ABotProbabilistic.hpp"
 
-void Bot::listenForkResponse(const std::string &response)
+void ABotProbabilistic::listenForkResponse(const std::string &response)
 {
 }
