@@ -64,13 +64,13 @@ info_map_t get_map_density(server_t *server)
     for (int idx = 0; idx < map_size; idx++) {
         cell = &server->map[idx];
         for (size_t k = 0; k < cell->num_objects; k++) {
-            cell->objects[k] == FOOD ? info_map.food++ : 0;
-            cell->objects[k] == LINEMATE ? info_map.linemate++ : 0;
-            cell->objects[k] == DERAUMERE ? info_map.deraumere++ : 0;
-            cell->objects[k] == SIBUR ? info_map.sibur++ : 0;
-            cell->objects[k] == MENDIANE ? info_map.mendiane++ : 0;
-            cell->objects[k] == PHIRAS ? info_map.phiras++ : 0;
-            cell->objects[k] == THYSTAME ? info_map.thystame++ : 0;
+            info_map.food += (cell->objects[k] == FOOD);
+            info_map.linemate += (cell->objects[k] == LINEMATE);
+            info_map.deraumere += (cell->objects[k] == DERAUMERE);
+            info_map.sibur += (cell->objects[k] == SIBUR);
+            info_map.mendiane += (cell->objects[k] == MENDIANE);
+            info_map.phiras += (cell->objects[k] == PHIRAS);
+            info_map.thystame += (cell->objects[k] == THYSTAME);
         }
     }
     return info_map;
