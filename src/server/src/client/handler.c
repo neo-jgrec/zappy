@@ -67,7 +67,9 @@ static int handle_quit_client(
     eggs_list_t *item_e;
     team_t *team;
 
-    if (check_read == 0) {
+    if (check_read != 0)
+        return NEUTRAL_VALUE;
+    if (client->is_graphic == false) {
         egg = init_egg(client->x, client->y);
         item_e = malloc(sizeof(eggs_list_t));
         if (item_e == NULL)
@@ -75,12 +77,11 @@ static int handle_quit_client(
         team = get_team_by_name(&server->teams, client->team_name);
         item_e->egg = egg;
         TAILQ_INSERT_TAIL(&team->eggs, item_e, entries);
-        close(client_fd);
-        FD_CLR(client_fd, &server->current_sockets);
-        remove_client_by_fd(&server->clients, client_fd);
-        return OK_STATUS;
     }
-    return NEUTRAL_VALUE;
+    close(client_fd);
+    FD_CLR(client_fd, &server->current_sockets);
+    remove_client_by_fd(&server->clients, client_fd);
+    return OK_STATUS;
 }
 
 int handle_client_data(server_t *server, int client_fd)

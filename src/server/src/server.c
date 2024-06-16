@@ -73,6 +73,7 @@ static void send_command(
         elapsed = sec_sus + nsec_sus / NANOSECONDS_IN_SECOND;
         if (elapsed >= interval) {
             dprintf(client->fd, "%s", client->payload);
+            client->tclient[i].available_request = false;
         }
     }
 }
