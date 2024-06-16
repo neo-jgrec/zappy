@@ -315,4 +315,13 @@ void print_map(server_t *server);
  */
 void print_tile(tile_t *tile);
 
+/**
+ * @brief Send a message to all graphical clients
+ *
+ * @param server
+ * @param fmt
+ * @param ...
+ */
+void message_to_graphicals(server_t *server, char *fmt, ...);
+
 #endif /* !SERVER_H_ */
