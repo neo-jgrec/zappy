@@ -8,30 +8,30 @@
 #include "server.h"
 
 const commands_t commands_gui[NB_GUI_COMMANDS] = {
-        {"msz", msz},
-        {"bct", bct},
-        {"mct", mct},
-        {"tna", tna},
-        {"ppo", ppo},
-        {"plv", plv},
-        {"pin", pin},
-        {"sgt", sgt},
-        {"sst", sst}
+    {"msz", msz},
+    {"bct", bct},
+    {"mct", mct},
+    {"tna", tna},
+    {"ppo", ppo},
+    {"plv", plv},
+    {"pin", pin},
+    {"sgt", sgt},
+    {"sst", sst}
 };
 
 const commands_t commands_ai[NB_AI_COMMANDS] = {
-        {"Forward", forward},
-        {"Right", right},
-        {"Left", left},
-        {"Look", look},
-        {"Inventory", inventory},
-        {"Broadcast", broadcast},
-        {"Connect_nbr", connect_nbr},
-        {"Fork", fork_z},
-        {"Eject", eject},
-        {"Take", take},
-        {"Set", set},
-        {"Incantation", incantation},
+    {"Forward", forward},
+    {"Right", right},
+    {"Left", left},
+    {"Look", look},
+    {"Inventory", inventory},
+    {"Broadcast", broadcast},
+    {"Connect_nbr", connect_nbr},
+    {"Fork", fork_z},
+    {"Eject", eject},
+    {"Take", take},
+    {"Set", set},
+    {"Incantation", incantation},
 };
 
 static bool execute_command(client_t *client, server_t *server)
@@ -44,7 +44,6 @@ static bool execute_command(client_t *client, server_t *server)
         name = client->is_graphic ? commands_gui[i].name : commands_ai[i].name;
         if (strcmp(client->commands[0], name) != 0)
             continue;
-        printf("This is a %s command\n", client->is_graphic ? "graphic" : "user");
         if (client->is_graphic)
             commands_gui[i].command(client, server);
         else
