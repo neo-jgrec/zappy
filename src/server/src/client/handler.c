@@ -66,7 +66,6 @@ static int handle_quit_client(
     egg_t *egg;
     eggs_list_t *item_e;
     team_t *team;
-    client_list_t *item_c;
 
     if (check_read == 0) {
         egg = init_egg(client->x, client->y);
@@ -88,6 +87,7 @@ int handle_client_data(server_t *server, int client_fd)
 {
     client_t *client = get_client(&server->clients, client_fd);
     ssize_t check_read;
+    int quit_status;
 
     if (!client) {
         perror("Client not found");
@@ -99,8 +99,10 @@ int handle_client_data(server_t *server, int client_fd)
         close(client_fd);
         return ERROR_STATUS;
     }
-    if (client->is_connected && handle_quit_client(client, server,
-        check_read, client_fd) == ERROR_STATUS)
+    quit_status = handle_quit_client(client, server, check_read, client_fd);
+    if (quit_status == OK_STATUS)
+        return OK_STATUS;
+    if (client->is_connected && quit_status == ERROR_STATUS)
         return ERROR_STATUS;
     handle_client_message(client, server);
     return OK_STATUS;

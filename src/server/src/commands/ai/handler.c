@@ -43,6 +43,8 @@ static void execute_command(client_t *client, server_t *server)
 
 void handle_client_message(client_t *client, server_t *server)
 {
+    if (client == NULL || server == NULL)
+        return;
     client->commands = str_to_array_separator(client->message, " \r\n\t");
     if (client->commands == NULL || client->commands[0] == NULL)
         return;

@@ -17,7 +17,7 @@
 
 static bool is_separator(char c, char const *separator)
 {
-    if (!separator)
+    if (separator == NULL)
         return false;
     for (size_t i = 0; separator[i]; i++) {
         if (separator[i] == c)
@@ -68,7 +68,7 @@ char **str_to_array_separator(char const *str, char *separator)
     size_t k = 0;
     size_t j = 0;
 
-    if (!array)
+    if (array == NULL || str == NULL)
         return NULL;
     for (size_t i = 0; i < lines; i++) {
         array[i] = set_line(str, j, separator);
