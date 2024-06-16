@@ -5,9 +5,9 @@
 ** ListenBroadcastResponse.cpp
 */
 
-#include "../../Bot.hpp"
+#include "../../ABotProbabilistic.hpp"
 
-void Bot::listenBroadcastResponse(const std::string &response)
+void ABotProbabilistic::listenBroadcastResponse(const std::string &response)
 {
     std::string message = getElementAfter(response, ',');
     _message._content = message;

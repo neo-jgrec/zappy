@@ -5,17 +5,17 @@
 ** TestPattern.cpp
 */
 
-#include "../../Bot.hpp"
+#include "../../ABotProbabilistic.hpp"
 #include <functional>
 
-void Bot::testPatern()
+void ABotProbabilistic::testPatern()
 {
-    queue.push_back({[&]() { doAction(LOOK, ""); }, "LOOK"});
-    queue.push_back({[&]() { doAction(FORWARD, ""); }, "FORWARD"});
-    queue.push_back({[&]() { doAction(TAKE, "food"); }, "TAKE"});
-    queue.push_back({[&]() { doAction(RIGHT, ""); }, "RIGHT"});
-}
-
-void Bot::sentinelle()
-{
+    queue.push_back({[&]()
+                     { doAction(LOOK, ""); }, "LOOK"});
+    queue.push_back({[&]()
+                     { doAction(FORWARD, ""); }, "FORWARD"});
+    queue.push_back({[&]()
+                     { doAction(TAKE, "food"); }, "TAKE"});
+    queue.push_back({[&]()
+                     { doAction(RIGHT, ""); }, "RIGHT"});
 }

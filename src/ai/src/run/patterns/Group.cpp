@@ -5,32 +5,41 @@
 ** Survive.cpp
 */
 
-#include "../../Bot.hpp"
+#include "../../ABotProbabilistic.hpp"
 #include <functional>
 
-void Bot::turnLeft(std::pair<int, int> &pos)
+void ABotProbabilistic::turnLeft(std::pair<int, int> &pos)
 {
     _orientation = static_cast<Orientation>((_orientation + 3) % 4);
 }
 
-void Bot::turnRight(std::pair<int, int> &pos)
+void ABotProbabilistic::turnRight(std::pair<int, int> &pos)
 {
     _orientation = static_cast<Orientation>((_orientation + 1) % 4);
 }
 
-void Bot::moveForward(std::pair<int, int> &pos)
+void ABotProbabilistic::moveForward(std::pair<int, int> &pos)
 {
-    switch (_orientation) {
-        case NORTH: pos.second++; break;
-        case EAST: pos.first++; break;
-        case SOUTH: pos.second--; break;
-        case WEST: pos.first--; break;
+    switch (_orientation)
+    {
+    case NORTH:
+        pos.second++;
+        break;
+    case EAST:
+        pos.first++;
+        break;
+    case SOUTH:
+        pos.second--;
+        break;
+    case WEST:
+        pos.first--;
+        break;
     }
     queue.push_back({[&]()
                      { doAction(FORWARD, ""); }, "FORWARD"});
 }
 
-void Bot::turnToDirection(std::pair<int, int> &pos, Orientation targetDir)
+void ABotProbabilistic::turnToDirection(std::pair<int, int> &pos, Orientation targetDir)
 {
     int leftTurns = (_orientation - targetDir + 4) % 4;
     int rightTurns = (targetDir - _orientation + 4) % 4;
@@ -55,7 +64,7 @@ void Bot::turnToDirection(std::pair<int, int> &pos, Orientation targetDir)
     }
 }
 
-void Bot::findPath(std::pair<int, int> start, const std::pair<int, int> &end)
+void ABotProbabilistic::findPath(std::pair<int, int> start, const std::pair<int, int> &end)
 {
     static const std::vector<std::pair<int, Orientation>> directions = {
         {1, EAST}, {-1, WEST}, {1, NORTH}, {-1, SOUTH}};
@@ -80,7 +89,7 @@ void Bot::findPath(std::pair<int, int> start, const std::pair<int, int> &end)
     }
 }
 
-void Bot::group()
+void ABotProbabilistic::group()
 {
     findPath({0, 0}, {-10, -10});
 }

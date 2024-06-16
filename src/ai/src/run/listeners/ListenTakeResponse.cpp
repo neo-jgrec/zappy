@@ -5,22 +5,16 @@
 ** ListenTakeResponse.cpp
 */
 
-#include "../../Bot.hpp"
+#include "../../ABotProbabilistic.hpp"
 
-// to verify: test reward
-// We have to take a list of last actions and rewards them till a reward
-void Bot::listenTakeResponse(const std::string &response)
+// TODO: make others ressources
+void ABotProbabilistic::listenTakeResponse(const std::string &response)
 {
-    if (state.lastAction.parameter == "food")
+    if (_state.lastAction.parameter == "food")
     {
         if (response == "ok")
         {
-            state.ressources.food += 1;
-            state.reward = state.ressources.food * 0.005;
-        }
-        else
-        {
-            state.reward = -0.05;
+            _state.ressources.food += 1;
         }
     }
 }

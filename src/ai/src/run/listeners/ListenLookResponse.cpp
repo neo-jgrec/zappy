@@ -5,9 +5,9 @@
 ** ListenLookResponse.cpp
 */
 
-#include "../../Bot.hpp"
+#include "../../ABotProbabilistic.hpp"
 
-void Bot::listenLookResponse(const std::string &response)
+void ABotProbabilistic::listenLookResponse(const std::string &response)
 {
     // Remove brackets
     std::string cleanedResponse = response.substr(1, response.size() - 2);
@@ -15,7 +15,7 @@ void Bot::listenLookResponse(const std::string &response)
     std::istringstream iss(cleanedResponse);
     std::string tileString;
 
-    state.environment.clear();
+    _state.environment.clear();
 
     int x = 0, y = 0;
     unsigned int distance = 0;
@@ -40,7 +40,7 @@ void Bot::listenLookResponse(const std::string &response)
         distance = abs(x) + abs(y);
 
         Tile tile(x, y, distance, ressources);
-        state.environment.tiles.push_back(tile);
+        _state.environment.tiles.push_back(tile);
         if (nbTile == 0)
         {
             y += 1;
@@ -56,19 +56,19 @@ void Bot::listenLookResponse(const std::string &response)
             addLimit += 2;
         }
     }
-
-    // debug
-    // for (auto &tile : state.environment.tiles)
-    // {
-    //     std::cout << "Tile: x:" << tile.x << " y: " << tile.y << " distance: " << tile.distance << std::endl;
-    //     std::cout << "Ressources: " << std::endl;
-    //     std::cout << "food: " << tile.ressources.food << std::endl;
-    //     std::cout << "linemate: " << tile.ressources.linemate << std::endl;
-    //     std::cout << "deraumere: " << tile.ressources.deraumere << std::endl;
-    //     std::cout << "sibur: " << tile.ressources.sibur << std::endl;
-    //     std::cout << "mendiane: " << tile.ressources.mendiane << std::endl;
-    //     std::cout << "phiras: " << tile.ressources.phiras << std::endl;
-    //     std::cout << "thystame: " << tile.ressources.thystame << std::endl;
-    //     std::cout << "player: " << tile.ressources.player << std::endl;
-    // }
 }
+
+// debug
+// for (auto &tile : state.environment.tiles)
+// {
+//     std::cout << "Tile: x:" << tile.x << " y: " << tile.y << " distance: " << tile.distance << std::endl;
+//     std::cout << "Ressources: " << std::endl;
+//     std::cout << "food: " << tile.ressources.food << std::endl;
+//     std::cout << "linemate: " << tile.ressources.linemate << std::endl;
+//     std::cout << "deraumere: " << tile.ressources.deraumere << std::endl;
+//     std::cout << "sibur: " << tile.ressources.sibur << std::endl;
+//     std::cout << "mendiane: " << tile.ressources.mendiane << std::endl;
+//     std::cout << "phiras: " << tile.ressources.phiras << std::endl;
+//     std::cout << "thystame: " << tile.ressources.thystame << std::endl;
+//     std::cout << "player: " << tile.ressources.player << std::endl;
+// }

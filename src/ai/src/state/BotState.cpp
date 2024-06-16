@@ -7,7 +7,7 @@
 
 #include "BotState.hpp"
 
-BotState::BotState() : lastAction(actions::DEFAULT, ""), lastBehavior(""), level(1), reward(0)
+BotState::BotState() : lastAction(actions::DEFAULT, ""), lastBehavior(""), level(1)
 {
 }
 

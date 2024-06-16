@@ -5,13 +5,14 @@
 ** Survive.cpp
 */
 
-#include "../../../Bot.hpp"
+#include "../../../ABotProbabilistic.hpp"
 #include <functional>
 
-void Bot::survive()
+void ABotProbabilistic::survive()
 {
     searchAndTakeRessource("food");
     _message.generateMessage("group");
     _message.vigenereEncrypt();
-    queue.push_back({[&]() { doAction(BROADCAST, _message._content); }, "BROADCAST"});
+    queue.push_back({[&]()
+                     { doAction(BROADCAST, _message._content); }, "BROADCAST"});
 }
