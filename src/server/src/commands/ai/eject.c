@@ -48,7 +48,7 @@ static void send_player_expulsion_to_graphicals(
 
     TAILQ_FOREACH(n, &s->clients, entries) {
         if (n->client->is_graphic)
-            dprintf(n->client->fd, "pex %s\n", c->uuid);
+            dprintf(n->client->fd, "pex %d\n", c->fd);
     }
 }
 

@@ -52,7 +52,7 @@ bool connector(client_t *client, server_t *server)
     dprintf(client->fd, "%zu\n%u %u\n", (nb_slots - 1),
         server->proprieties.width, server->proprieties.height);
     message_to_graphicals(server, "pnw %d %u %u %u %u %s\n",
-        client->fd, client->uuid, client->x, client->y, client->orientation,
+        client->fd, client->fd, client->x, client->y, client->orientation,
         client->team_name);
     return true;
 }
