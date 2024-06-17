@@ -24,6 +24,13 @@ void ABotProbabilistic::sendMessage(const std::string &message)
     send(_sockfd, messageToSend.c_str(), messageToSend.size(), 0);
 }
 
+// if (_doNothing)
+// {
+//     _behaviors.erase(_behaviors.begin());
+//     _behaviors.push_back(std::make_unique<Behavior>(0.4, [&]()
+//                                                     { trapMessage(); }, "trap Message"));
+//     _doNothing = false;
+// }
 void ABotProbabilistic::run(const std::string &response)
 {
     std::string responseCopy = response;
@@ -34,23 +41,14 @@ void ABotProbabilistic::run(const std::string &response)
     {
         responseCopy.pop_back();
     }
-    if (_state.lastAction.action == LOOK)
+    if (_state.lastAction.action == LOOK || _state.lastAction.action == TAKE)
     {
         printKeyValueColored("Bot listens", responseCopy);
         if (responseCopy.find("message") != std::string::npos)
             _doNothing = true;
         listen(responseCopy);
     }
-
-    // if (_doNothing)
-    // {
-    //     _behaviors.erase(_behaviors.begin());
-    //     _behaviors.push_back(std::make_unique<Behavior>(0.4, [&]()
-    //                                                     { trapMessage(); }, "trap Message"));
-    //     _doNothing = false;
-    // }
-    // if (_iteration == 0) find when iterate
-    //     updateProbabilities();
+    updateProbabilities();
     if (queue.empty())
         act(); // -> fait l'action la plus rentable
     if (!queue.empty())

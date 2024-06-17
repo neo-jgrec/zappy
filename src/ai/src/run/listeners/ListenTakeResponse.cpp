@@ -17,4 +17,11 @@ void ABotProbabilistic::listenTakeResponse(const std::string &response)
             _state.ressources.food += 1;
         }
     }
+    if (_state.lastAction.parameter == "linemate")
+    {
+        if (response == "ok")
+        {
+            _state.ressources.linemate += 1;
+        }
+    }
 }
