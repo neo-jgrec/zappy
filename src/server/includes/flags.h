@@ -39,6 +39,7 @@ typedef struct flags_s {
     int nb_clients;
     int frequency;
     info_map_t max_map;
+    bool is_iteration;
 } flags_t;
 
 /**
