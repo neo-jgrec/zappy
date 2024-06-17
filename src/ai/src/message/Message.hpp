@@ -23,11 +23,13 @@ class Message
         void vigenereDecrypt();
         void vigenereEncrypt();
         std::string getCurrentTimeAsLetters();
-        void generateMessage(const std::string &content);
+        void generateMessage();
         std::string convertDigitsToLetters(const std::string& digits);
         std::string _content;
+        int _id;
     private:
         std::string _conversionTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        std::string _signature = "bFNneQbXQkyJHGEQd";
 };
 
 #endif // MESSAGE_HPP_

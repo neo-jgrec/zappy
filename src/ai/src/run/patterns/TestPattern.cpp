@@ -19,3 +19,12 @@ void ABotProbabilistic::testPatern()
     queue.push_back({[&]()
                      { doAction(RIGHT, ""); }, "RIGHT"});
 }
+
+void Bot::trapMessage()
+{
+    std::string trapMessage = replaceNumbersInString(_enemyMessage._content, 1200);
+    if (trapMessage.empty())
+        trapMessage = _enemyMessage._content;
+    std::cout << "trapMessage: " << trapMessage << std::endl;
+    queue.push_back({[&]() { doAction(BROADCAST, trapMessage); }, "BROADCAST"});
+}
