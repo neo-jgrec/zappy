@@ -22,6 +22,7 @@ client_t *init_client(int client_fd)
         client->tclient[i].available_request = false;
         client->tclient[i].command = -1;
     }
+    client->level = 1;
     client->is_connected = false;
     client->is_graphic = false;
     return client;

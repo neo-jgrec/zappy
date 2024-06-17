@@ -45,6 +45,10 @@ static tile_t *init_map(int width, int height)
 
     if (map == NULL)
         return NULL;
+    for (int i = 0; i < height * width; i++) {
+        map[i].num_objects = 0;
+        map[i].objects = NULL;
+    }
     return map;
 }
 

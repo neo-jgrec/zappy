@@ -39,6 +39,8 @@ static bool execute_command(client_t *client, server_t *server)
     size_t nb_commands;
     char *name;
 
+    if (client->is_connected == false)
+        return false;
     nb_commands = client->is_graphic ? NB_GUI_COMMANDS : NB_AI_COMMANDS;
     for (size_t i = 0; i < nb_commands; i++) {
         name = client->is_graphic ? commands_gui[i].name : commands_ai[i].name;
