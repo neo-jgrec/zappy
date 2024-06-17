@@ -93,6 +93,8 @@ static void send_command(
             incantation_callback_end_of_command(client, NULL);
         if (elapsed >= interval) {
             dprintf(client->fd, "%s", client->payload);
+            if (client->tclient[i].command == FORK)
+                message_to_graphicals(server, "enw %d %s %d %d\n", client->egg_id ,client->uuid, client->x, client->y);
             client->tclient[i].available_request = false;
         }
     }

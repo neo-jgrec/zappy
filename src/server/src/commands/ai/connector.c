@@ -22,6 +22,7 @@ static void asign_egg_to_client(
             client->is_connected = true;
             client->x = item->egg->x;
             client->y = item->egg->y;
+            client->egg_id = team->nb_eggs;
             TAILQ_REMOVE(&team->eggs, item, entries);
             asprintf(&client->team_name, "%s", client->commands[0]);
             secure_free(item->egg);

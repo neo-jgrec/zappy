@@ -42,6 +42,7 @@ client_t *init_client(int client_fd)
     client->orientation = orientations[rand_p(4)];
     client->payload = NULL;
     init_inventory(&client->inventory);
+    client->egg_id = 0;
     return client;
 }
 

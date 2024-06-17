@@ -53,6 +53,8 @@ static bool execute_command(client_t *client, server_t *server)
         free_array((void **)client->commands);
         return true;
     }
+    if (client->is_graphic)
+        message_to_graphicals(server, "sbp\n");
     return false;
 }
 
@@ -64,7 +66,8 @@ void handle_client_message(client_t *client, server_t *server)
     if (execute_command(client, server) == true)
         return;
     if (connector(client, server) == false) {
-        dprintf(client->fd, "ko\n");
+        if (client->is_graphic == false)
+            dprintf(client->fd, "ko\n");
         free_array((void **)client->commands);
         return;
     }

@@ -79,6 +79,7 @@ typedef struct team_s {
     bool is_complete;
     unsigned char capacity;
     struct eggs_tailq eggs;
+    size_t nb_eggs;
 } team_t;
 
 
