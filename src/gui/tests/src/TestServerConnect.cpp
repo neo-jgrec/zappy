@@ -5,8 +5,8 @@
 #include <string>
 #include <sys/socket.h>
 
-#include "../../src/ServerConnect.hpp"
-#include "../../src/GuiException.hpp"
+#include "../../src/parser/ServerConnect.hpp"
+#include "../../src/utils/GuiException.hpp"
 
 Test(ServerConnect, connectFails)
 {

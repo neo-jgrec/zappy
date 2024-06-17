@@ -1,8 +1,8 @@
 #include <criterion/criterion.h>
 #include <vector>
 
-#include "../../src/Map.hpp"
-#include "../../src/GuiException.hpp"
+#include "../../src/parser/Map.hpp"
+#include "../../src/utils/GuiException.hpp"
 
 Test(Map, constructor)
 {

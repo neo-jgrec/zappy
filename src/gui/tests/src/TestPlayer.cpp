@@ -1,7 +1,7 @@
 #include <criterion/criterion.h>
 #include <vector>
 
-#include "../../src/Player.hpp"
+#include "../../src/parser/Player.hpp"
 
 Test(Player, Alive)
 {
