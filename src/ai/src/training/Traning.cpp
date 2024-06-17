@@ -38,24 +38,3 @@ Probability &ABotProbabilistic::getProbabilityByName(const std::string &name)
 
     throw std::runtime_error("Behavior not found");
 }
-
-// to verify: do it with condition too
-// to verify: change could  be negativ ? V2
-//     double change = ((rand() % 100) / 100.0) * 0.2 - 0.1; // Change between -0.1 and 0.1
-void ABotProbabilistic::exploreProbabilities()
-{
-    _state.exploredProbabilities.clear();
-
-    int randomIndex = rand() % _probabilities.size();
-    double change = (rand() % 100) / 100.0 * 0.1; // Change between 0 and 0.1
-
-    _probabilities[randomIndex]->probability += change;
-
-    // Clamp the probability values between 0 and 1
-    if (_probabilities[randomIndex]->probability > 1)
-        _probabilities[randomIndex]->probability = 1;
-
-    _state.exploredProbabilities.push_back(_probabilities[randomIndex]->name);
-
-    printKeyValueColored("Exploring probability", _probabilities[randomIndex]->name + " with change: " + std::to_string(change));
-}

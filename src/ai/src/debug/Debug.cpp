@@ -18,8 +18,11 @@ void ABotProbabilistic::debugInitialisation()
 
 void ABotProbabilistic::debugProbabilities()
 {
+    printColor("========== [Bot Probabilities] ==========\n", BLUE);
+
     for (auto &probability : _probabilities)
     {
         printKeyValueColored(probability->name, std::to_string(probability->condition) + " " + std::to_string(probability->probability));
     }
+    printColor("========== [!Bot Probabilities] ==========\n", BLUE);
 }

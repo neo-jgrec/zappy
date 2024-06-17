@@ -41,6 +41,7 @@ void ABotProbabilistic::run(const std::string &response)
             _doNothing = true;
         listen(responseCopy);
     }
+
     // if (_doNothing)
     // {
     //     _behaviors.erase(_behaviors.begin());
@@ -104,22 +105,15 @@ void ABotProbabilistic::doAction(actions action, const std::string &parameter)
 
 void ABotProbabilistic::act()
 {
-    exploreProbabilities();
     Behavior *bestBehavior = nullptr;
 
     double maxProbability = -1;
 
     if (!_behaviors.empty())
     {
-        maxProbability = _behaviors.front()->probability;
-
-        bestBehavior = _behaviors.front().get();
+        maxProbability = _behaviors[0]->probability;
+        bestBehavior = _behaviors[0].get();
     }
-    else
-    {
-        return;
-    }
-
     for (auto &behavior : _behaviors)
     {
         if (behavior->probability > maxProbability)

@@ -13,17 +13,53 @@ void Bot::init(int sockfd, const std::string &teamName)
     _sockfd = sockfd;
     _teamName = teamName;
     sendMessage(teamName);
+
     _behaviors.push_back(std::make_unique<Behavior>(0.4, [&]()
                                                     { survive(); }, "survive"));
+
     for (auto &behavior : _behaviors)
     {
         behavior->probability = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
     }
+    try
+    {
+        loadConfig("./src/ai/config.txt");
+    }
+    catch (const std::exception &e)
+    {
+        PRINT_ERROR(e.what());
+        exit(EXIT_FAILURE); // TODO: should close server socket
+    }
     debugInitialisation();
-    /* probabilities */
-    _probabilities.push_back(std::make_unique<Probability>(5, 0.4, "food_importance"));
-    _probabilities.push_back(std::make_unique<Probability>(5, 0.3, "linemate_importance"));
     debugProbabilities();
+}
+
+void Bot::loadConfig(const std::string &filename)
+{
+    std::ifstream configStream(filename);
+
+    if (!configStream.is_open())
+    {
+        throw std::runtime_error("Unable to open config file: " + filename);
+        return;
+    }
+
+    std::string line;
+    std::unordered_map<std::string, double> configValues;
+
+    while (std::getline(configStream, line))
+    {
+        std::istringstream iss(line);
+        std::string key;
+        double value;
+
+        if (std::getline(iss, key, '=') && iss >> value)
+        {
+            configValues[key] = value;
+        }
+    }
+    _probabilities.push_back(std::make_unique<Probability>(configValues["food_importance.condition"], configValues["food_importance.probability"], "food_importance"));
+    _probabilities.push_back(std::make_unique<Probability>(configValues["linemate_importance.condition"], configValues["linemate_importance.probability"], "linemate_importance"));
 }
 
 void Bot::updateProbabilities()
@@ -34,11 +70,10 @@ void Bot::updateProbabilities()
     {
         double newProbability = behavior->probability;
 
-        // if (state.ressources.food < getProbabilityByName("food_importance").condition) V2
-
         if (behavior->name == "survive")
         {
-            newProbability += getProbabilityByName("food_importance").probability * std::log(1 + _state.ressources.food);
+            if (_state.ressources.food < getProbabilityByName("food_importance").condition)
+                newProbability += getProbabilityByName("food_importance").probability * std::log(1 + _state.ressources.food);
         }
         if (behavior->name == "searchLinemate")
         {
