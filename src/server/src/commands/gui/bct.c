@@ -9,6 +9,9 @@
 
 void bct(client_t *client, server_t *server)
 {
-    (void)client;
+    if (client->commands[1] == NULL || client->commands[2] == NULL) {
+        dprintf(client->fd, "sbp\n");
+        return;
+    }
     (void)server;
 }

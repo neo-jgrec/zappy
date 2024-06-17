@@ -9,6 +9,9 @@
 
 void sst(client_t *client, server_t *server)
 {
-    (void)client;
+    if (client->commands[1] == NULL) {
+        dprintf(client->fd, "sbp\n");
+        return;
+    }
     (void)server;
 }
