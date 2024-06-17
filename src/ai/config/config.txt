@@ -1,4 +1,4 @@
-food_importance.condition=10
-food_importance.probability=0.22
-linemate_importance.condition=3
-linemate_importance.probability=0.78
+food_importance.condition=6
+food_importance.probability=0.74
+linemate_importance.condition=6
+linemate_importance.probability=0.26

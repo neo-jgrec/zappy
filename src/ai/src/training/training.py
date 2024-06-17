@@ -4,6 +4,8 @@ import os
 import signal
 import random
 import re
+import matplotlib.pyplot as plt
+from termcolor import colored
 
 def start_server(port, width, height, team_names, client_count, freq):
     return subprocess.Popen(
@@ -64,6 +66,16 @@ def parse_bot_output(output):
 
     return bot_state
 
+def print_best_bot_graph(bot):
+    labels = ['food_probability', 'linemate_probability']
+    probabilities = [bot['config']['food_probability'], bot['config']['linemate_probability']]
+    plt.bar(labels, probabilities)
+    plt.ylim(0, 1)
+    plt.title('Best Bot Probabilities')
+    plt.ylabel('Probability')
+    plt.show()
+
+
 if __name__ == "__main__":
     port = 4040
     width = 10
@@ -122,9 +134,17 @@ if __name__ == "__main__":
             stop_server(server_process)
 
     best_bots.sort(key=lambda x: (x['state']['level'], x['state']['thystame'], x['state']['phiras'], x['state']['mendiane'], x['state']['sibur'], x['state']['deraumere'], x['state']['linemate'], x['state']['food']), reverse=True)
+    with open('./src/ai/config/config_trained.txt', 'w') as f:
+        f.write(f"food_importance.condition={best_bots[0]['config']['food_condition']}\n")
+        f.write(f"food_importance.probability={best_bots[0]['config']['food_probability']}\n")
+        f.write(f"linemate_importance.condition={best_bots[0]['config']['linemate_condition']}\n")
+        f.write(f"linemate_importance.probability={best_bots[0]['config']['linemate_probability']}\n")
+    print_best_bot_graph(best_bots[0])
 
-    print("Best bot configurations:")
+    print(colored("Best bot configurations:", 'blue'))
     for bot in best_bots[:5]:
-        print(bot['config'])
-        print(bot['state'])
+        for key, value in bot['config'].items():
+            print(colored(f"{key}: ", 'green') + colored(f"{value}", 'yellow'))
+        for key, value in bot['state'].items():
+            print(colored(f"{key}: ", 'green') + colored(f"{value}", 'yellow'))
         print()
