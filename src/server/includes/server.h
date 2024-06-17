@@ -88,7 +88,6 @@ typedef struct team_list_s {
 } team_list_t;
 
 typedef enum {
-    EMPTY,
     FOOD,
     LINEMATE,
     DERAUMERE,
@@ -96,7 +95,8 @@ typedef enum {
     MENDIANE,
     PHIRAS,
     THYSTAME,
-    PLAYER
+    PLAYER,
+    EMPTY
 } object_t;
 
 typedef struct {
@@ -229,6 +229,12 @@ void eject(client_t *client, server_t *server);
 void fork_z(client_t *client, server_t *server);
 void forward(client_t *client, server_t *server);
 void incantation(client_t *client, server_t *server);
+void incantation_callback_end_of_command(client_t *client, server_t *server);
+void callback_freeze(client_t *client, server_t *server);
+void callback_level_up(client_t *client, server_t *server);
+void callback_unfreeze(client_t *client, server_t *server);
+void callback_start_incantation_set_payload(client_t *client, server_t *server);
+void callback_end_incantation_set_payload(client_t *client, server_t *server);
 void inventory(client_t *client, server_t *server);
 void left(client_t *client, server_t *server);
 void look(client_t *client, server_t *server);

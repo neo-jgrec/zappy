@@ -56,7 +56,7 @@ static void send_command(
     client_t *client,
     unsigned char i,
     struct timespec *current,
-    double freq
+    server_t *server
 )
 {
     struct timespec cmd_start_time;
@@ -67,10 +67,13 @@ static void send_command(
 
     if (client->tclient[i].available_request) {
         cmd_start_time = client->tclient[i].future_time;
-        interval = get_interval(client->tclient[i].command, freq);
+        interval = get_interval(client->tclient[i].command,
+            server->proprieties.frequency);
         sec_sus = (current->tv_sec - cmd_start_time.tv_sec);
         nsec_sus = (current->tv_nsec + cmd_start_time.tv_nsec);
         elapsed = sec_sus + nsec_sus / NANOSECONDS_IN_SECOND;
+        if (elapsed >= interval && client->tclient[i].command == INCANTATION)
+            incantation_callback_end_of_command(client, NULL);
         if (elapsed >= interval) {
             dprintf(client->fd, "%s", client->payload);
             client->tclient[i].available_request = false;
@@ -124,7 +127,7 @@ static void handle_meteors(server_t *server)
 
 static void check_response_client_time(
     struct client_tailq *clients,
-    double freq,
+    server_t *server,
     struct timespec *current
 )
 {
@@ -132,19 +135,17 @@ static void check_response_client_time(
 
     TAILQ_FOREACH(item, clients, entries) {
         for (unsigned char i = 0; i < NB_REQUESTS_HANDLEABLE; i++) {
-            send_command(item->client, i, current, freq);
+            send_command(item->client, i, current, server);
         }
     }
 }
 
 static int start_server(server_t *server)
 {
-    double freq = (double)server->proprieties.frequency;
-
     while (true) {
         clock_gettime(CLOCK_REALTIME, &server->current_time);
         handle_meteors(server);
-        check_response_client_time(&server->clients, freq,
+        check_response_client_time(&server->clients, server,
             &server->current_time);
         server->ready_sockets = server->current_sockets;
         if (select(FD_SETSIZE, &server->ready_sockets, NULL, NULL,
