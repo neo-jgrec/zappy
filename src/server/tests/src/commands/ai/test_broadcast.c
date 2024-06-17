@@ -11,6 +11,9 @@ Test(broadcast, message_format_test) {
     client.x = 5;
     client.y = 5;
     client.level = 1;
+    client.commands = calloc(2, sizeof(char *));
+    client.commands[0] = strdup("Broadcast");
+    client.commands[1] = strdup("Hello, world!");
 
     TAILQ_INIT(&server.clients);
 
@@ -25,15 +28,13 @@ Test(broadcast, message_format_test) {
         TAILQ_INSERT_TAIL(&server.clients, new_client_list, entries);
     }
 
+    client_list_t *client2 = TAILQ_FIRST(&server.clients);
+
     client_list_t *client_list_entry;
     client_list_entry = malloc(sizeof(client_list_t));
     client_list_entry->client = &client;
     TAILQ_INSERT_TAIL(&server.clients, client_list_entry, entries);
 
-    char message[] = "Broadcast Hello, world!";
-    char expected[] = "message 2, Hello, world!\n";
-
-    strcpy(client.message, message);
     broadcast(&client, &server);
-    cr_assert_str_eq(client.payload, expected);
+    cr_assert_str_eq(client2->client->payload, "message 2, Hello, world!\n");
 }
