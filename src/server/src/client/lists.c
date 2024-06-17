@@ -7,6 +7,19 @@
 
 #include "server.h"
 
+const int orientations[4] = {NORTH, SOUTH, WEST, EAST};
+
+static void init_inventory(inventory_t *inv)
+{
+    inv->thystame = 0;
+    inv->phiras = 0;
+    inv->mendiane = 0;
+    inv->sibur = 0;
+    inv->deraumere = 0;
+    inv->linemate = 0;
+    inv->food = 0;
+}
+
 client_t *init_client(int client_fd)
 {
     uuid_t binuuid;
@@ -26,6 +39,9 @@ client_t *init_client(int client_fd)
     client->is_incanting = false;
     client->is_connected = false;
     client->is_graphic = false;
+    client->orientation = orientations[rand_p(4)];
+    client->payload = NULL;
+    init_inventory(&client->inventory);
     return client;
 }
 

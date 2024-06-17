@@ -159,6 +159,10 @@ static int start_server(server_t *server)
     return OK_STATUS;
 }
 
+
+/**
+ * TODO: do buffer handling
+ */
 int server(const char **args)
 {
     int status = OK_STATUS;
