@@ -14,8 +14,10 @@ void Bot::init(int sockfd, const std::string &teamName)
     _teamName = teamName;
     sendMessage(teamName);
 
-    _behaviors.push_back(std::make_unique<Behavior>(0.4, [&]()
+    _behaviors.push_back(std::make_unique<Behavior>(0, [&]()
                                                     { survive(); }, "survive"));
+    _behaviors.push_back(std::make_unique<Behavior>(0, [&]()
+                                                    { searchLinemate(); }, "searchLinemate"));
 
     for (auto &behavior : _behaviors)
     {
@@ -31,7 +33,7 @@ void Bot::init(int sockfd, const std::string &teamName)
         exit(EXIT_FAILURE); // TODO: should close server socket
     }
     debugInitialisation();
-    debugProbabilities();
+    debugTrainedVariables();
 }
 
 void Bot::loadConfig(const std::string &filename)
@@ -58,34 +60,37 @@ void Bot::loadConfig(const std::string &filename)
             configValues[key] = value;
         }
     }
-    _probabilities.push_back(std::make_unique<Probability>(configValues["food_importance.condition"], configValues["food_importance.probability"], "food_importance"));
-    _probabilities.push_back(std::make_unique<Probability>(configValues["linemate_importance.condition"], configValues["linemate_importance.probability"], "linemate_importance"));
+    _trainedVariables.push_back(std::make_unique<TrainedVariable>(configValues["food_importance"], "food_importance"));
+    _trainedVariables.push_back(std::make_unique<TrainedVariable>(configValues["food_probability"], "food_probability"));
+    _trainedVariables.push_back(std::make_unique<TrainedVariable>(configValues["linemate_probability"], "linemate_probability"));
 }
 
+// TODO: verify it with Garance
+// Update behaviors depending on the state of the bot
+// MACHINE LEARNING OF IA: The bot whill choose itself the numbers here
 void Bot::updateProbabilities()
 {
-    // Update behaviors depending on the state of the bot
-    // MACHINE LEARNING OF IA: The bot whill choose itself the numbers here
+    // double baseline_survive = 0.5;
+    // double baseline_searchLinemate = 0.5;
+    double baseline = 0.05;
+
     for (auto &behavior : _behaviors)
     {
         double newProbability = behavior->probability;
 
         if (behavior->name == "survive")
         {
-            if (_state.ressources.food < getProbabilityByName("food_importance").condition)
-                newProbability += getProbabilityByName("food_importance").probability * std::log(1 + _state.ressources.food);
+            if (_state.ressources.food < getTrainedVariableValueByName("food_importance"))
+                newProbability += getTrainedVariableValueByName("food_probability") * std::log(1 + _state.ressources.food);
+            else
+                newProbability = baseline;
         }
         if (behavior->name == "searchLinemate")
         {
-            // if (state.ressources.linemate != 1 && state.level != 3 && state.level != 7)
-            // {
-            newProbability += getProbabilityByName("linemate_importance").probability * std::log(1 + _state.ressources.linemate);
-            // }
-            // if (state.ressources.linemate != 2 && state.level != 1 && state.level != 2 && state.level != 4 && state.level != 5 &&
-            //     state.level != 6 && state.level != 8)
-            // {
-            // newProbability = getProbabilityByName("linemate_importance").probability;
-            // }
+            if (_state.level == 1 && _state.ressources.linemate != 1)
+                newProbability += getTrainedVariableValueByName("linemate_probability") * std::log(1 + _state.ressources.linemate);
+            else
+                newProbability = baseline;
         }
 
         if (newProbability > 1)

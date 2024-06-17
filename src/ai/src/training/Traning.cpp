@@ -26,14 +26,14 @@ void ABotProbabilistic::normalizeProbabilities()
     }
 }
 
-Probability &ABotProbabilistic::getProbabilityByName(const std::string &name)
+const double &ABotProbabilistic::getTrainedVariableValueByName(const std::string &name) const
 {
-    auto it = std::find_if(_probabilities.begin(), _probabilities.end(), [&name](const std::unique_ptr<Probability> &b)
+    auto it = std::find_if(_trainedVariables.begin(), _trainedVariables.end(), [&name](const std::unique_ptr<TrainedVariable> &b)
                            { return b->name == name; });
 
-    if (it != _probabilities.end())
+    if (it != _trainedVariables.end())
     {
-        return **it;
+        return it->get()->value;
     }
 
     throw std::runtime_error("Behavior not found");

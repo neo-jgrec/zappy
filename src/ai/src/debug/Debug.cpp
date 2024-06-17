@@ -16,13 +16,13 @@ void ABotProbabilistic::debugInitialisation()
     printColor("========== [!Bot initiation] ==========\n\n", BLUE);
 }
 
-void ABotProbabilistic::debugProbabilities()
+void ABotProbabilistic::debugTrainedVariables()
 {
     printColor("========== [Bot Probabilities] ==========\n", BLUE);
 
-    for (auto &probability : _probabilities)
+    for (auto &TrainedVariable : _trainedVariables)
     {
-        printKeyValueColored(probability->name, std::to_string(probability->condition) + " " + std::to_string(probability->probability));
+        printKeyValueColored(TrainedVariable->name, std::to_string(TrainedVariable->value));
     }
     printColor("========== [!Bot Probabilities] ==========\n", BLUE);
 }

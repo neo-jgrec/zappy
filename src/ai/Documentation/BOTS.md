@@ -29,6 +29,21 @@ Our bot do actions depending on the worth rate of an action. We calculate each t
 
 Our models is ML trained by genetic algorithms.
 
+### Genetic algorithms:
+- Initialize a Population: Create an initial set of bots with random configurations.
+- Evaluate Fitness: Run the bots and evaluate their performance based on the state they achieve.
+- Selection: Select the best-performing bots.
+- Crossover and Mutation: Create new bots by combining characteristics of the best bots and introducing slight changes (mutations).
+- Repeat: Continue this process for a specified number of generations.
+
+#### Trained variables:
+- There is importance variables injected in conditions, can be whatever in number
+- There is probability variables that must between 0 and 1
+
+#### Mutations
+- Will mutate importance on -2 : 2
+- Will mutate probability on -0.1 : 0.1
+
 **Fitness**: “Fitness” is used to evaluate the quality of candidate solutions in the current population. Each individual (or candidate solution) is evaluated based on a fitness function that quantifies their fitness or performance relative to the overall objective.
 
 ## Strategies 🥷

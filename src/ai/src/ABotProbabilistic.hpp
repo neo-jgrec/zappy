@@ -31,6 +31,7 @@
 #include "utils/StringUtils.hpp"
 #include "IBot.hpp"
 #include "hash/Pairhash.hpp"
+#include "training/TrainedVariable.hpp"
 
 enum Orientation
 {
@@ -91,7 +92,7 @@ protected:
     // Material of training
     BotState _state;
     std::vector<std::unique_ptr<Behavior>> _behaviors;
-    std::vector<std::unique_ptr<Probability>> _probabilities;
+    std::vector<std::unique_ptr<TrainedVariable>> _trainedVariables;
 
     // Actions
     std::vector<std::pair<std::function<void()>, std::string>> queue;
@@ -136,11 +137,11 @@ protected:
 
     // Debug
     void debugInitialisation();
-    void debugProbabilities();
+    void debugTrainedVariables();
     void debugState();
 
     // Probabilities
-    Probability &getProbabilityByName(const std::string &name);
+    const double &getTrainedVariableValueByName(const std::string &name) const;
 };
 
 #endif // ABOT_PROBABILITIS_HPP_
