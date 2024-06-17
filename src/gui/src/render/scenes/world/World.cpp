@@ -7,39 +7,12 @@
 
 
 #include "World.hpp"
-#include "../../../utils/PerlinNoise.hpp"
 #include "../../core/Core.hpp"
 
 #include <iostream>
 
 void World::init() {
-    PerlinNoise noise;
 
-    for (int i = 0; i < _worldSize.x; i++) {
-        std::vector<Chunck> chuncks;
-        for (int j = 0; j < _worldSize.y; j++) {
-            Chunck chunck;
-            chunck._pos = sf::Vector2f(
-                 i * 46 - j * 46 - TILE_SIZE_X / 4 * 3,
-                j * 27 + i * 27
-            );
-            chunck._yOffset = noise.noise(i * 0.1, j * 0.1) * 80;
-            chuncks.push_back(chunck);
-        }
-        _chuncks.push_back(chuncks);
-    }
-    _sprite = std::make_shared<Sprite>("./assets/grass.png");
-    _diamond = Diamond(sf::Vector2f(TILE_SIZE_X, TILE_SIZE_Y));
-    _sprites["halo1"] = std::make_shared<Sprite>("./assets/halo1.png");
-    _view.setSize(sf::Vector2f(1920 , 1080));
-
-    _mapDiamond = Diamond(sf::Vector2f(TILE_SIZE_X * _worldSize.x - TILE_SIZE_X * 2 , TILE_SIZE_Y * _worldSize.y));
-    _mapDiamond.setPosition(sf::Vector2f(- TILE_SIZE_X * _worldSize.x / 2, 0));
-
-    _pos = sf::Vector2f(
-        (int)(_worldSize.x / 2) * TILE_SIZE_MX- (int)(_worldSize.x / 2) * TILE_SIZE_MX - TILE_SIZE_MY,
-        (int)(_worldSize.y / 2) * TILE_SIZE_MY + (int)(_worldSize.y / 2) * TILE_SIZE_MY - TILE_SIZE_Y
-    );
 }
 
 bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
@@ -51,7 +24,8 @@ bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
     );
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
         _core->_upperState = GameState::MENU;
-    if (event.type == sf::Event::MouseMoved) {
+    if (event.type == sf::Event::MouseMoved ||
+        event.type == sf::Event::MouseButtonPressed) {
         for (int i = 0; i < _worldSize.x; i++) {
             for (int j = 0; j < _worldSize.y; j++) {
                 _diamond.setPosition(sf::Vector2f(
@@ -60,8 +34,11 @@ bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
                 ));
                 if (_diamond.checkCollision(_mousePos)) {
                     _hoveredTile = sf::Vector2f(i, j);
+                    if (event.mouseButton.button == sf::Mouse::Button::Left)
+                        _selectedTile = sf::Vector2f(i, j);
                     break;
                 }
+
             }
         }
     }
@@ -78,22 +55,50 @@ void World::draw(sf::RenderWindow &window)
     window.setView(_view);
     for (int i = 0; i < _worldSize.x; i++) {
         for (int j = 0; j < _worldSize.y; j++) {
-            _sprite->_sprite.setPosition(
-                _chuncks[i][j]._pos.x,
-                _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset
-            );
-            window.draw(_sprite->_sprite);
-            if (i == _hoveredTile.x && j == _hoveredTile.y && !_isDragging) {
-                _sprites["halo1"]->_sprite.setPosition(
-                    _chuncks[i][j]._pos.x,
-                    _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y
-                );
-                window.draw(_sprites["halo1"]->_sprite);
-            }
+            drawChunck(window, i, j);
         }
     }
     // _mapDiamond.draw(window);
     window.setView(window.getDefaultView());
+}
+
+void World::drawChunck(sf::RenderWindow &window, int i, int j)
+{
+    _sprite->_sprite.setPosition(
+                _chuncks[i][j]._pos.x,
+                _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset
+            );
+    window.draw(_sprite->_sprite);
+    if (i == _hoveredTile.x && j == _hoveredTile.y && !_isDragging) {
+        _sprites["hover1"]->_sprite.setPosition(
+            _chuncks[i][j]._pos.x,
+            _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset
+        );
+        window.draw(_sprites["hover1"]->_sprite);
+    }
+    for (auto &trantorian : _trantorians) {
+        if (trantorian._tile.x == i && trantorian._tile.y == j) {
+            trantorian.setPosition(sf::Vector2f(
+                _chuncks[i][j]._pos.x,
+                _chuncks[i][j]._pos.y
+            ));
+            trantorian.draw(window);
+        }
+    }
+    if (i == _hoveredTile.x && j == _hoveredTile.y && !_isDragging) {
+        _sprites["hover2"]->_sprite.setPosition(
+            _chuncks[i][j]._pos.x,
+            _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset
+        );
+        window.draw(_sprites["hover2"]->_sprite);
+    }
+    if (_selectedTile.x == i && _selectedTile.y == j) {
+        _sprites["halo1"]->_sprite.setPosition(
+            _chuncks[i][j]._pos.x,
+            _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y
+        );
+        window.draw(_sprites["halo1"]->_sprite);
+    }
 }
 
 bool World::moveMap(sf::Event event)

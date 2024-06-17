@@ -42,6 +42,8 @@ class Core {
         float getDeltaTime() { return _deltaTime; };
         sf::Font &getFont() { return _font; };
         sf::Vector2f getMousePos() { return _mousePos; };
+
+        bool connectToServer(int port, std::string ip);
     private:
         std::map<GameState, std::shared_ptr<IScene>> _scenes;
 
@@ -50,8 +52,8 @@ class Core {
         sf::Clock _clock;
         float _deltaTime;
         sf::Vector2f _mousePos;
-
         ServerConnect _server;
+
         Data _data;
         Parser _parser;
 
