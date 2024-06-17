@@ -102,8 +102,8 @@ Test(Player, Pushing)
 {
     Player player;
 
-    player.setPushing();
-    cr_assert(player.getNextEvent().action == PUSHING, "Next event is not Pushing");
+    player.setPushed();
+    cr_assert(player.getNextEvent().action == PUSHED, "Next event is not Pushing");
 }
 
 Test(Player, Pickup)

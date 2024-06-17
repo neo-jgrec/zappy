@@ -274,7 +274,7 @@ Test(Parser, pexNormal)
 
     parser.parse(args2, data);
     parser.execute();
-    cr_assert_eq(data.getPlayerById(1).getNextEvent().action, PUSHING);
+    cr_assert_eq(data.getPlayerById(1).getNextEvent().action, PUSHED);
 }
 
 Test(Parser, pexWrongArgs)
