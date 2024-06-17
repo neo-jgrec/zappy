@@ -15,9 +15,10 @@
 
     #include <memory>
 
+class Core;
 class Home : public IScene {
     public:
-        Home(Zappy &zappy);
+        Home(Core *core);
         ~Home() {}
 
         bool update(sf::Event event, sf::RenderWindow &window) override;
@@ -33,7 +34,7 @@ class Home : public IScene {
         std::shared_ptr<Input> _ipButton;
         std::shared_ptr<Input> _portButton;
 
-        Zappy &_zappy;
+        Core *_core;
 };
 
 #endif /* !HOME_HPP_ */

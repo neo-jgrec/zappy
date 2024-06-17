@@ -19,19 +19,21 @@ enum GameState {
     DEFAULT,
 };
 
+class Core;
 class Zappy {
     public:
-        Zappy() {
+        Zappy(Core *core)
+            : _core(core) {
             _font.loadFromFile("assets/BadComic-Regular.ttf");
             _state = GameState::HOME;
             _upperState = GameState::DEFAULT;
         };
         ~Zappy() {};
 
-        sf::Font &getFont() { return _font; };
         GameState _state;
         GameState _upperState;
 
+        sf::Font &getFont() { return _font; };
         void setDeltaTime(float deltaTime) { _deltaTime = deltaTime; };
         float getDeltaTime() { return _deltaTime; };
         void setMousePos(sf::Vector2f mousePos) { _mousePos = mousePos; };
@@ -39,13 +41,13 @@ class Zappy {
 
         sf::Vector2f _resolution = sf::Vector2f(1280, 720);
         bool _fullscreen = false;
-        sf::RenderWindow _window;
     protected:
     private:
-
         sf::Font _font;
         float _deltaTime = 0;
         sf::Vector2f _mousePos;
+        Core *_core;
+
 
 };
 

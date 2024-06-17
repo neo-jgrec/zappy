@@ -15,6 +15,7 @@
     #include "../../parser/ServerConnect.hpp"
     #include "../../parser/Parser.hpp"
     #include "../../parser/Data.hpp"
+    #include "../../utils/CommandLineParser.hpp"
 
 class Core {
     public:
@@ -24,19 +25,20 @@ class Core {
         void update();
         void run();
 
+
+        void newWindow(sf::Vector2f resolution, bool fullscreen);
         Zappy _zappy;
     private:
-
         std::map<GameState, std::shared_ptr<IScene>> _scenes;
+
+        sf::RenderWindow _window;
         sf::Event _event;
         sf::Clock _clock;
 
-        bool _fullscreen = false;
-        sf::Vector2f _resolution = sf::Vector2f(1080, 720);
-
-        // ServerConnect _server;
-        // Parser _parser;
-        // Data _data;
+        ServerConnect _server;
+        CommandLineParser _cmdParser;
+        Data _data;
+        Parser _parser;
 };
 
 #endif /* !CORE_HPP_ */
