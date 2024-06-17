@@ -6,7 +6,7 @@
 
 void incantation_callback_end_of_command(client_t *client, server_t *server);
 
-void redirect_all_stdout(void)
+static void redirect_all_stdout(void)
 {
     cr_redirect_stdout();
     cr_redirect_stderr();
