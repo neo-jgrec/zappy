@@ -96,6 +96,9 @@ static void send_command(
             if (client->tclient[i].command == FORK)
                 message_to_graphicals(server, "enw %d %s %d %d\n", client->egg_id ,client->uuid, client->x, client->y);
             client->tclient[i].available_request = false;
+            client->tclient[i].command = -1;
+            secure_free(client->payload);
+            client->payload = NULL;
         }
     }
 }
