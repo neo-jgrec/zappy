@@ -68,7 +68,7 @@ void set(client_t *c, server_t *s)
         remove_element_from_inventory(c, FOOD);
         add_element_to_tile(&s->map[c->y * s->proprieties.width + c->x], o);
         asprintf(&c->payload, "ok\n");
-        message_to_graphicals(s, "pdr %s %d\n", c->uuid, o);
+        message_to_graphicals(s, "pdr %d %d\n", c->fd, o);
         client_time_handler(c, SET);
     }
     dprintf(c->fd, "ko\n");

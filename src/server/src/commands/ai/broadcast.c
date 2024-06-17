@@ -64,8 +64,8 @@ static void send_broadcast_to_graphicals(client_t *client, server_t *server)
     TAILQ_FOREACH(client_list_entry, &server->clients, entries) {
         receiver = client_list_entry->client;
         if (receiver->is_graphic)
-            dprintf(receiver->fd, "pbc %s %s\n",
-                client->uuid, client->commands[1]);
+            dprintf(receiver->fd, "pbc %d %s\n",
+                client->fd, client->commands[1]);
     }
 }
 

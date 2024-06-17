@@ -16,8 +16,8 @@ void ppo(client_t *client, server_t *server)
         return;
     }
     TAILQ_FOREACH(player, &server->clients, entries) {
-        if (strcmp(player->client->uuid, client->commands[1]) == 0) {
-            dprintf(client->fd, "ppo %s %u %u %u\n", player->client->uuid,
+        if (player->client->fd == atoi(client->commands[1])) {
+            dprintf(client->fd, "ppo %d %u %u %u\n", player->client->fd,
                 player->client->x, player->client->y,
                 player->client->orientation);
             return;

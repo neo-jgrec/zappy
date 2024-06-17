@@ -10,20 +10,20 @@
 
 void send_start_incantation_to_graphicals(client_t *client, server_t *server)
 {
-    char *uuids = NULL;
+    char *ids = NULL;
     client_list_t *list;
-    int ret = asprintf(&uuids, "%s", client->uuid);
+    int ret = asprintf(&ids, "%d", client->fd);
 
     TAILQ_FOREACH(list, &server->clients, entries) {
         if (list->client->x == client->x
             && list->client->y == client->y
             && list->client->is_incanting
             && list->client != client) {
-            ret = asprintf(&uuids, "%s %s", uuids, list->client->uuid);
+            ret = asprintf(&ids, "%s %d", ids, list->client->fd);
         }
     }
     if (ret == -1)
         return;
     message_to_graphicals(server, "pic %hhd %hhd %zu %s\n",
-        client->x, client->y, client->level, uuids);
+        client->x, client->y, client->level, ids);
 }

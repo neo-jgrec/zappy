@@ -22,13 +22,13 @@ Test(ppo, basics, .init = redirect_all_stdout)
     uuid_unparse_lower(binuuid, client.uuid);
     client.commands = calloc(2, sizeof(char *));
     client.commands[0] = strdup("ppo");
-    client.commands[1] = strdup(client.uuid);
+    client.commands[1] = strdup("1");
     TAILQ_INIT(&server.clients);
     client_list_t *client_list = calloc(1, sizeof(client_list_t));
     client_list->client = &client;
     TAILQ_INSERT_TAIL(&server.clients, client_list, entries);
     ppo(&client, &server);
     char expected[2550];
-    sprintf(expected, "ppo %s %u %u %u\n", client.uuid, client.x, client.y, client.orientation);
+    sprintf(expected, "ppo %d %u %u %u\n", client.fd, client.x, client.y, client.orientation);
     cr_assert_stdout_eq_str(expected);
 }
