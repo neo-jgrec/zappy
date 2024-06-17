@@ -98,7 +98,6 @@ protected:
 
     // Traning
     void normalizeProbabilities();
-    void exploreProbabilities();
 
     // Listeners
     void listenLookResponse(const std::string &response);
@@ -116,7 +115,6 @@ protected:
 
     // Paterns
     void testPatern();
-    void searchAndTake(std::string param);
     void survive();
     void searchAndTakeRessource(const std::string &ressource);
     void group();
@@ -126,10 +124,12 @@ protected:
     void searchMendiane();
     void searchPhiras();
     void searchThystame();
+    void trapMessage();
 
     // Debug
     void debugInitialisation();
     void debugProbabilities();
+    void debugState();
 
     // Probabilities
     Probability &getProbabilityByName(const std::string &name);

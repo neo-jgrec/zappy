@@ -26,3 +26,17 @@ void ABotProbabilistic::debugProbabilities()
     }
     printColor("========== [!Bot Probabilities] ==========\n", BLUE);
 }
+
+void ABotProbabilistic::debugState()
+{
+    printColor("========== [Bot State] ==========\n", BLUE);
+    printKeyValueColored("food", std::to_string(_state.ressources.food));
+    printKeyValueColored("linemate", std::to_string(_state.ressources.linemate));
+    printKeyValueColored("deraumere", std::to_string(_state.ressources.deraumere));
+    printKeyValueColored("sibur", std::to_string(_state.ressources.sibur));
+    printKeyValueColored("mendiane", std::to_string(_state.ressources.mendiane));
+    printKeyValueColored("phiras", std::to_string(_state.ressources.phiras));
+    printKeyValueColored("thystame", std::to_string(_state.ressources.thystame));
+    printKeyValueColored("level", std::to_string(_state.level));
+    printColor("========== [!Bot State] ==========\n", BLUE);
+}

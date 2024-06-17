@@ -23,7 +23,7 @@ void Bot::init(int sockfd, const std::string &teamName)
     }
     try
     {
-        loadConfig("./src/ai/config.txt");
+        loadConfig("./src/ai/config/config.txt");
     }
     catch (const std::exception &e)
     {

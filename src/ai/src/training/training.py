@@ -6,7 +6,7 @@ import random
 
 def start_server(port, width, height, team_names, client_count, freq):
     return subprocess.Popen(
-        ['./zappy_server', '-p', str(port), '-x', str(width), '-y', str(height), '-n'] + team_names + ['-c', str(client_count), '-f', str(freq)],
+        ['../zappy_server', '-p', str(port), '-x', str(width), '-y', str(height), '-n'] + team_names + ['-c', str(client_count), '-f', str(freq)],
         preexec_fn=os.setsid
     )
 
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     client_count = 2
     freq = 10
     host = '127.0.0.1'
-    config_file_path = "./src/ai/config.txt"
+    config_file_path = "./src/ai/config/config.txt"
 
     food_condition = random.randint(1, 10)
     linemate_condition = random.randint(1, 10)
