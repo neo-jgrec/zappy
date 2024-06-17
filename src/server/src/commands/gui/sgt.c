@@ -9,6 +9,5 @@
 
 void sgt(client_t *client, server_t *server)
 {
-    (void)client;
-    (void)server;
+    dprintf(client->fd, "sgt %d\n", server->proprieties.frequency);
 }

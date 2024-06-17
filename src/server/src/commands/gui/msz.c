@@ -9,6 +9,8 @@
 
 void msz(client_t *client, server_t *server)
 {
-    (void)client;
-    (void)server;
+    dprintf(client->fd, "msz %d %d\n",
+        server->proprieties.width,
+        server->proprieties.height
+    );
 }

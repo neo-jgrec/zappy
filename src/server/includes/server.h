@@ -245,29 +245,13 @@ void take(client_t *client, server_t *server);
 
 /* commands gui */
 void bct(client_t *client, server_t *server);
-void ebo(client_t *client, server_t *server);
-void edi(client_t *client, server_t *server);
-void enw(client_t *client, server_t *server);
 void mct(client_t *client, server_t *server);
 void msz(client_t *client, server_t *server);
-void pdi(client_t *client, server_t *server);
-void pdr(client_t *client, server_t *server);
-void pex(client_t *client, server_t *server);
-void pfk(client_t *client, server_t *server);
-void pgt(client_t *client, server_t *server);
-void pic(client_t *client, server_t *server);
-void pie(client_t *client, server_t *server);
 void pin(client_t *client, server_t *server);
 void plv(client_t *client, server_t *server);
-void pnc(client_t *client, server_t *server);
-void pnw(client_t *client, server_t *server);
 void ppo(client_t *client, server_t *server);
-void sbp(client_t *client, server_t *server);
-void seg(client_t *client, server_t *server);
 void sgt(client_t *client, server_t *server);
-void smg(client_t *client, server_t *server);
 void sst(client_t *client, server_t *server);
-void suc(client_t *client, server_t *server);
 void tna(client_t *client, server_t *server);
 
 /* map utils */
@@ -324,5 +308,7 @@ void print_tile(tile_t *tile);
  * @param ...
  */
 void message_to_graphicals(server_t *server, char *fmt, ...);
+
+void send_start_incantation_to_graphicals(client_t *client, server_t *server);
 
 #endif /* !SERVER_H_ */

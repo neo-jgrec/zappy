@@ -28,5 +28,7 @@ void forward(client_t *client, server_t *server)
     client->x = (client->x >= server->proprieties.width) ? 0 : client->x;
     client->x = (client->x < 0) ? server->proprieties.width - 1 : client->x;
     client->payload = strdup("ok\n");
+    message_to_graphicals(server, "ppo %d %d %d %d\n",
+        client->fd, client->x, client->y, client->orientation);
     client_time_handler(client, FORWARD);
 }

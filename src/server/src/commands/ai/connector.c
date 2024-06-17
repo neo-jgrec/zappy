@@ -52,5 +52,8 @@ bool connector(client_t *client, server_t *server)
     asign_egg_to_client(client, server, rand_idx);
     dprintf(client->fd, "%zu\n%u %u\n", (nb_slots - 1),
         server->proprieties.width, server->proprieties.height);
+    message_to_graphicals(server, "pnw %d %u %u %u %u %s\n",
+        client->fd, client->fd, client->x, client->y, client->orientation,
+        client->team_name);
     return true;
 }

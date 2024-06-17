@@ -134,26 +134,29 @@ void incantation(client_t *client, server_t *server)
     run_logic_on_group(client, server, required_level, callback_freeze);
     run_logic_on_group(client, server, required_level,
         callback_start_incantation_set_payload);
+    send_start_incantation_to_graphicals(client, server);
     client_time_handler(client, INCANTATION);
 }
 
-void incantation_callback_end_of_command(client_t *client, server_t *server)
+void incantation_callback_end_of_command(client_t *c, server_t *server)
 {
-    size_t required_level = client->level - 1;
-    size_t old_level = client->level;
+    size_t required_level = c->level - 1;
+    size_t old_level = c->level;
     size_t resource_count[8] = {0};
-    size_t players_on_tile = get_nb_players_on_tile(client, server);
+    size_t players_on_tile = get_nb_players_on_tile(c, server);
     tile_t *tile = &server
-        ->map[client->x + client->y * server->proprieties.width];
+        ->map[c->x + c->y * server->proprieties.width];
 
     count_resources(tile, resource_count);
-    if (!are_requierment_met_encapsulation(client, resource_count,
+    if (!are_requierment_met_encapsulation(c, resource_count,
         players_on_tile, required_level)) {
-        run_logic_on_group(client, server, required_level, callback_unfreeze);
+        run_logic_on_group(c, server, required_level, callback_unfreeze);
+        message_to_graphicals(server, "pie %hhd %hhd %d\n", c->x, c->y, 0);
         return;
     }
     remove_resources(tile, required_resources[old_level]);
-    run_logic_on_group(client, server, old_level, callback_level_up);
-    run_logic_on_group(client, server, old_level,
+    run_logic_on_group(c, server, old_level, callback_level_up);
+    run_logic_on_group(c, server, old_level,
         callback_end_incantation_set_payload);
+    message_to_graphicals(server, "pie %hhd %hhd %d\n", c->x, c->y, 1);
 }

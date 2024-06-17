@@ -9,9 +9,14 @@
 
 void sst(client_t *client, server_t *server)
 {
-    if (client->commands[1] == NULL) {
-        message_to_graphicals(server, "sbp\n");
+    if (!client->commands[1]) {
+        dprintf(client->fd, "sbp\n");
         return;
     }
-    (void)server;
+    server->proprieties.frequency = atoi(client->commands[1]);
+    if (server->proprieties.frequency < 1) {
+        dprintf(client->fd, "sbp\n");
+        return;
+    }
+    dprintf(client->fd, "sst %d\n", server->proprieties.frequency);
 }

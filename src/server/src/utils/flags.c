@@ -94,7 +94,10 @@ static bool check_number_flags(flags_t *flags, const char **args)
 
     if (!args)
         return false;
+    flags->is_iteration = false;
     for (size_t i = 0; args[i]; i++) {
+        if (strcmp(args[i], "--iteration") == 0)
+            flags->is_iteration = true;
         if (strlen(args[i]) != 2 || args[i][0] != '-')
             continue;
         fill_flags(flags_counter, flags, args, i);

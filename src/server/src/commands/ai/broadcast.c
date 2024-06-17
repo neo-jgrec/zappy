@@ -53,6 +53,22 @@ static int get_sound_direction(
     return 0;
 }
 
+static void send_broadcast_to_graphicals(client_t *client, server_t *server)
+{
+    client_list_t *client_list_entry;
+    client_t *receiver;
+
+    if (server->proprieties.is_iteration == true &&
+    strcmp(client->commands[1], "STOP") == 0)
+        exit(OK_STATUS);
+    TAILQ_FOREACH(client_list_entry, &server->clients, entries) {
+        receiver = client_list_entry->client;
+        if (receiver->is_graphic)
+            dprintf(receiver->fd, "pbc %d %s\n",
+                client->fd, client->commands[1]);
+    }
+}
+
 void broadcast(client_t *client, server_t *server)
 {
     client_list_t *client_list_entry;
@@ -73,5 +89,6 @@ void broadcast(client_t *client, server_t *server)
             direction, client->commands[1]);
     }
     asprintf(&client->payload, "ok\n");
+    send_broadcast_to_graphicals(client, server);
     client_time_handler(client, BROADCAST);
 }
