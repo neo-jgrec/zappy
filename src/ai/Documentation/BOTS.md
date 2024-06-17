@@ -36,3 +36,6 @@ Our models is ML trained by genetic algorithms.
 ### Protocol of messages
 
 - Messages are signed + encrypted.
+
+### References
+- [Remove ansi color on a string on python](https://stackoverflow.com/questions/14693701/how-can-i-remove-the-ansi-escape-sequences-from-a-string-in-python)

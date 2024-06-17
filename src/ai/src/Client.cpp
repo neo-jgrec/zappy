@@ -77,7 +77,6 @@ void Client::authenticate()
 
 void Client::loop()
 {
-    bool a = false;
     while (true)
     {
         FD_ZERO(&_readfds);

@@ -60,7 +60,7 @@ void ABotProbabilistic::run(const std::string &response)
     }
     _iteration++;
     printColor("========== [!Bot Run] ==========\n", BLUE);
-    if (_iteration == 200)
+    if (_iteration == 2)
     {
         debugState();
         exit(0);
