@@ -15,7 +15,7 @@ class Chunck {
         Chunck() {}
         ~Chunck() {}
 
-        sf::Vector2i _pos;
+        sf::Vector2f _pos;
         float _yOffset;
         bool _hover = false;
 

@@ -19,23 +19,27 @@ void World::init() {
         std::vector<Chunck> chuncks;
         for (int j = 0; j < _worldSize.y; j++) {
             Chunck chunck;
-            chunck._pos = sf::Vector2i(i, j);
-            chunck._yOffset = noise.noise(i * 0.1, j * 0.1);
+            chunck._pos = sf::Vector2f(
+                 i * 46 - j * 46 - TILE_SIZE_X / 4 * 3,
+                j * 27 + i * 27
+            );
+            chunck._yOffset = noise.noise(i * 0.1, j * 0.1) * 80;
             chuncks.push_back(chunck);
         }
         _chuncks.push_back(chuncks);
     }
     _sprite = std::make_shared<Sprite>("./assets/grass.png");
-    _tileSize = sf::Vector2f(
-        _sprite->_sprite.getTexture()->getSize().x,
-        _sprite->_sprite.getTexture()->getSize().y
-    );
-    _diamond = Diamond(_tileSize);
+    _diamond = Diamond(sf::Vector2f(TILE_SIZE_X, TILE_SIZE_Y));
     _sprites["halo1"] = std::make_shared<Sprite>("./assets/halo1.png");
     _view.setSize(sf::Vector2f(1920 , 1080));
 
-    _mapDiamond = Diamond(sf::Vector2f(95 * _worldSize.x - 95 * 2 , 97 * _worldSize.y));
-    _mapDiamond.setPosition(sf::Vector2f(- 95 * _worldSize.x / 2, 0));
+    _mapDiamond = Diamond(sf::Vector2f(TILE_SIZE_X * _worldSize.x - TILE_SIZE_X * 2 , TILE_SIZE_Y * _worldSize.y));
+    _mapDiamond.setPosition(sf::Vector2f(- TILE_SIZE_X * _worldSize.x / 2, 0));
+
+    _pos = sf::Vector2f(
+        (int)(_worldSize.x / 2) * TILE_SIZE_MX- (int)(_worldSize.x / 2) * TILE_SIZE_MX - TILE_SIZE_MY,
+        (int)(_worldSize.y / 2) * TILE_SIZE_MY + (int)(_worldSize.y / 2) * TILE_SIZE_MY - TILE_SIZE_Y
+    );
 }
 
 bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
@@ -51,8 +55,8 @@ bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
         for (int i = 0; i < _worldSize.x; i++) {
             for (int j = 0; j < _worldSize.y; j++) {
                 _diamond.setPosition(sf::Vector2f(
-                    i * 46 - j * 46 - _tileSize.x / 4 * 3,
-                    j * 27 + i * 27 + (int)(_chuncks[i][j]._yOffset * 80)
+                    _chuncks[i][j]._pos.x,
+                    _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset
                 ));
                 if (_diamond.checkCollision(_mousePos)) {
                     _hoveredTile = sf::Vector2f(i, j);
@@ -68,27 +72,27 @@ bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
 void World::draw(sf::RenderWindow &window)
 {
     _view.setCenter(sf::Vector2f(
-        10 * 46 - 10 * 46 - _tileSize.x / 4 * 3 + _tmpOffset.x + _offset.x,
-        10 * 27 + 10 * 27 + (int)(_chuncks[10][10]._yOffset * 80) - _tileSize.y + _tmpOffset.y + _offset.y
+        _pos.x + _tmpOffset.x + _offset.x,
+        _pos.y + _tmpOffset.y + _offset.y
     ));
     window.setView(_view);
     for (int i = 0; i < _worldSize.x; i++) {
         for (int j = 0; j < _worldSize.y; j++) {
             _sprite->_sprite.setPosition(
-                i * 46 - j * 46 - _tileSize.x / 4 * 3,
-                j * 27 + i * 27 + (int)(_chuncks[i][j]._yOffset * 80)
+                _chuncks[i][j]._pos.x,
+                _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset
             );
             window.draw(_sprite->_sprite);
             if (i == _hoveredTile.x && j == _hoveredTile.y && !_isDragging) {
                 _sprites["halo1"]->_sprite.setPosition(
-                    i * 46 - j * 46 - _tileSize.x / 4 * 3,
-                    j * 27 + i * 27 + (int)(_chuncks[i][j]._yOffset * 80) - _tileSize.y
+                    _chuncks[i][j]._pos.x,
+                    _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y
                 );
                 window.draw(_sprites["halo1"]->_sprite);
             }
         }
     }
-    _mapDiamond.draw(window);
+    // _mapDiamond.draw(window);
     window.setView(window.getDefaultView());
 }
 

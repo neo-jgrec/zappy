@@ -17,6 +17,11 @@
 
     #include "../../sprites/Sprite.hpp"
 
+static const int TILE_SIZE_X = 95;
+static const int TILE_SIZE_Y = 97;
+static const int TILE_SIZE_MX = 46;
+static const int TILE_SIZE_MY = 27;
+
 class Core;
 class World : public IScene {
     public:
@@ -31,23 +36,23 @@ class World : public IScene {
         bool update(sf::Event event, sf::RenderWindow &window) override;
         void draw(sf::RenderWindow &window) override;
 
-        sf::Vector2f _offset;
     private:
         std::shared_ptr<Sprite> _sprite;
         std::map<std::string, std::shared_ptr<Sprite>> _sprites;
-        sf::Vector2f _tileSize;
 
         sf::Vector2f _worldSize;
         std::vector<std::vector<Chunck>> _chuncks;
 
         sf::View _view;
-        float _zoom = 1;
-        float _zoomSpeed = 0.1;
-        float _moveSpeed = 10;
+        sf::Vector2f _pos = sf::Vector2f(0, 0);
+        sf::Vector2f _offset;
+        sf::Vector2f _tmpOffset = sf::Vector2f(0, 0);
 
         bool _isDragging = false;
         sf::Vector2f _dragStart = sf::Vector2f(0, 0);
-        sf::Vector2f _tmpOffset = sf::Vector2f(0, 0);
+        float _zoom = 1;
+        float _zoomSpeed = 0.1;
+        float _moveSpeed = 10;
 
         Core *_core;
         sf::Vector2f _hoveredTile;
