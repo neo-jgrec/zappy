@@ -18,7 +18,8 @@
 
 int main(int argc, char **argv) {
     try {
-        Core core;
+        debug_print("Starting GUI", "");
+        Core core(argv, argc);
         core.run();
     } catch (const guiException& e) {
         std::cerr << e.what() << std::endl;
@@ -29,7 +30,6 @@ int main(int argc, char **argv) {
     }
     return 0;
 
-    debug_print("Starting GUI", "");
 
     CommandLineParser cmdParser(argc, argv);
     cmdParser.addOption("--ip", "-i", "The ip to connect to");

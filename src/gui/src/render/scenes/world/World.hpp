@@ -20,8 +20,7 @@
 
 class World : public IScene {
     public:
-        World(Zappy &zappy, sf::Vector2f gameSize) : _gameSize(gameSize), _zappy(zappy) {
-            _worldSize = sf::Vector2f(_gameSize.x + 10, _gameSize.y + 10);
+        World(Zappy &zappy, sf::Vector2f worldSize) : _worldSize(worldSize), _zappy(zappy) {
             init();
         }
         ~World() {}
@@ -38,9 +37,7 @@ class World : public IScene {
         std::map<std::string, std::shared_ptr<Sprite>> _sprites;
         sf::Vector2f _tileSize;
 
-        sf::Vector2f _gameSize;
         sf::Vector2f _worldSize;
-        // sf::Vector2f _viewSize;
         std::vector<std::vector<Chunck>> _chuncks;
 
         sf::View _view;
@@ -56,6 +53,7 @@ class World : public IScene {
         sf::Vector2f _hoveredTile;
         Diamond _diamond;
         sf::Vector2f _mousePos;
+        Diamond _mapDiamond;
 };
 
 
