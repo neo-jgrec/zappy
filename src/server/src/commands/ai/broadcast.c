@@ -53,15 +53,6 @@ static int get_sound_direction(
     return 0;
 }
 
-static char *get_message_from_complete_command(char *message)
-{
-    char *ret = strstr(message, " ");
-
-    if (ret == NULL)
-        return "";
-    return ret + 1;
-}
-
 void broadcast(client_t *client, server_t *server)
 {
     client_list_t *client_list_entry;
@@ -78,10 +69,9 @@ void broadcast(client_t *client, server_t *server)
             server->proprieties.width,
             server->proprieties.height
         );
-        if (asprintf(&client->payload, "message %d, %s\n",
-            direction,
-            get_message_from_complete_command(client->message)) == -1)
-            dprintf(client->fd, "ko\n");
+        asprintf(&receiver->payload, "message %d, %s\n",
+            direction, client->commands[1]);
     }
+    asprintf(&client->payload, "ok\n");
     client_time_handler(client, BROADCAST);
 }
