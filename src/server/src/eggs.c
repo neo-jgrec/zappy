@@ -13,7 +13,7 @@ egg_t *init_egg(int width, int height)
 
     if (egg == NULL)
         return NULL;
-    egg->x = rand() % width;
-    egg->y = rand() % height;
+    egg->x = width == 0 ? 0 : rand() % width;
+    egg->y = height == 0 ? 0 :  rand() % height;
     return egg;
 }

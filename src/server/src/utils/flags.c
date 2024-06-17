@@ -94,7 +94,10 @@ static bool check_number_flags(flags_t *flags, const char **args)
 
     if (!args)
         return false;
+    flags->is_iteration = false;
     for (size_t i = 0; args[i]; i++) {
+        if (strcmp(args[i], "--iteration") == 0)
+            flags->is_iteration = true;
         if (strlen(args[i]) != 2 || args[i][0] != '-')
             continue;
         fill_flags(flags_counter, flags, args, i);
@@ -149,10 +152,28 @@ static bool check_error_flags(flags_t *flags)
     return true;
 }
 
+/**
+ * TODO: add getoptlong, -f is optional, default value = 100
+ * @param flags
+ * @param args
+ * @return
+ */
 bool init_flags(flags_t *flags, const char **args)
 {
+    double width;
+    double height;
+
     flags->names = NULL;
     if (!check_number_flags(flags, args) || !check_error_flags(flags))
         return false;
+    width = (double)flags->width;
+    height = (double)flags->height;
+    flags->max_map.food = (int)(width * height * FOOD_DENSITY);
+    flags->max_map.linemate = (int)(width * height * LINEMATE_DENSITY);
+    flags->max_map.deraumere = (int)(width * height * DERAUMERE_DENSITY);
+    flags->max_map.sibur = (int)(width * height * SIBUR_DENSITY);
+    flags->max_map.mendiane = (int)(width * height * MENDIANE_DENSITY);
+    flags->max_map.phiras = (int)(width * height * PHIRAS_DENSITY);
+    flags->max_map.thystame = (int)(width * height * THYSTAME_DENSITY);
     return true;
 }
