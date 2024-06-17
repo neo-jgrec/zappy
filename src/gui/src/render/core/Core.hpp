@@ -26,7 +26,7 @@ enum GameState {
 };
 class Core {
     public:
-        Core(char **argv, int argc);
+        Core(int port, std::string ip);
         ~Core() {};
 
         void update();
@@ -52,7 +52,6 @@ class Core {
         sf::Vector2f _mousePos;
 
         ServerConnect _server;
-        CommandLineParser _cmdParser;
         Data _data;
         Parser _parser;
 

@@ -26,6 +26,7 @@ class Menu : public IScene {
     private:
         std::vector<std::shared_ptr<Button>> _resolutionButtons;
         std::shared_ptr<Button> _fullscreenButton;
+        std::shared_ptr<Button> _quitButton;
         Core *_core;
 };
 

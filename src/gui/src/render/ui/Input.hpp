@@ -13,7 +13,8 @@
 
 class Input {
     public:
-        Input(sf::Vector2f pos, sf::Vector2f size, std::string text, sf::Font &font);
+        Input(sf::Vector2f pos, sf::Vector2f size, std::string text, sf::Font &font,
+            std::string accept = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
         ~Input() {};
 
         bool update(sf::Event event, sf::RenderWindow &window);
@@ -23,6 +24,9 @@ class Input {
         std::string getInput() {
             return _input;
         }
+        void setInput(std::string input) {
+            _input = input;
+        }
 
     protected:
     private:
@@ -30,6 +34,7 @@ class Input {
         std::string _input = "";
         std::string _placeHolder = "";
         sf::Text _text;
+        std::string _accept;
 
         float _time = 0;
 };

@@ -2,7 +2,7 @@
 #include "../core/Core.hpp"
 
 Quit::Quit(Core *core) : _core(core) {
-    _quitButton = std::make_shared<Button>(sf::Vector2f(1080 / 2, 720 / 2),
+    _quitButton = std::make_shared<Button>(sf::Vector2f(100, 500),
     sf::Vector2f(100, 100), "Quit", _core->getFont());
 }
 

@@ -5,7 +5,7 @@
 #include "../scenes/Quit.hpp"
 #include "../scenes/Menu.hpp"
 
-Core::Core(char **argv, int argc) : _cmdParser(argc, argv) {
+Core::Core(int port, std::string ip) {
     _window.create(
         sf::VideoMode(_resolution.x , _resolution.y),
         "Zappy",
@@ -14,15 +14,11 @@ Core::Core(char **argv, int argc) : _cmdParser(argc, argv) {
     _state = GameState::HOME;
     _upperState = GameState::DEFAULT;
 
-    _scenes[GameState::HOME] = std::make_shared<Home>(this);
+    _scenes[GameState::HOME] = std::make_shared<Home>(this, port, ip);
     _scenes[GameState::END] = std::make_shared<Quit>(this);
     _scenes[GameState::GAME] = std::make_shared<World>(this, sf::Vector2f(15, 15));
     _scenes[GameState::MENU] = std::make_shared<Menu>(this);
     _clock.restart();
-
-    _cmdParser.addOption("--ip", "-i", "The ip to connect to");
-    _cmdParser.addOption("--port", "-p", "The port to connect to");
-    _cmdParser.addOption("--help", "-h", "Display this help message");
 }
 
 void Core::update() {

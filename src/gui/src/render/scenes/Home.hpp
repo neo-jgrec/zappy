@@ -17,7 +17,7 @@
 class Core;
 class Home : public IScene {
     public:
-        Home(Core *core);
+        Home(Core *core, int port, std::string ip);
         ~Home() {}
 
         bool update(sf::Event event, sf::RenderWindow &window) override;

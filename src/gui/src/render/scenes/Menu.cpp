@@ -2,14 +2,16 @@
 #include "../core/Core.hpp"
 
 Menu::Menu(Core *core) : _core(core) {
-    _fullscreenButton = std::make_shared<Button>(sf::Vector2f(1080 / 2, 720 / 2),
+    _fullscreenButton = std::make_shared<Button>(sf::Vector2f(100, 100),
     sf::Vector2f(100, 100), "Fullscreen", _core->getFont());
-    _resolutionButtons.push_back(std::make_shared<Button>(sf::Vector2f(1080 / 2, 720 / 2 + 100),
+    _resolutionButtons.push_back(std::make_shared<Button>(sf::Vector2f(100, 200),
     sf::Vector2f(100, 100), "3840*2160", _core->getFont()));
-    _resolutionButtons.push_back(std::make_shared<Button>(sf::Vector2f(1080 / 2 + 100, 720 / 2 + 100),
+    _resolutionButtons.push_back(std::make_shared<Button>(sf::Vector2f(300, 200),
     sf::Vector2f(100, 100), "1920x1080", _core->getFont()));
-    _resolutionButtons.push_back(std::make_shared<Button>(sf::Vector2f(1080 / 2 + 200, 720 / 2 + 100),
+    _resolutionButtons.push_back(std::make_shared<Button>(sf::Vector2f(500, 200),
     sf::Vector2f(100, 100), "1280x720", _core->getFont()));
+    _quitButton = std::make_shared<Button>(sf::Vector2f(100, 500), sf::Vector2f(100, 100), "Quit", _core->getFont());
+
 }
 
 bool Menu::update(sf::Event event, sf::RenderWindow &window) {
@@ -31,6 +33,8 @@ bool Menu::update(sf::Event event, sf::RenderWindow &window) {
         _core->newResolution(sf::Vector2f(1280, 720));
         return true;
     }
+    if (_quitButton->update(event, window))
+        window.close();
     return true;
 }
 
@@ -38,4 +42,5 @@ void Menu::draw(sf::RenderWindow &window) {
     _fullscreenButton->draw(window);
     for (auto &button : _resolutionButtons)
         button->draw(window);
+    _quitButton->draw(window);
 }

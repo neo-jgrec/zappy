@@ -7,7 +7,9 @@
 
 #include "Input.hpp"
 
-Input::Input(sf::Vector2f pos, [[maybe_unused]] sf::Vector2f size, std::string text, sf::Font &font) {
+Input::Input(sf::Vector2f pos, [[maybe_unused]] sf::Vector2f size, std::string text, sf::Font &font, std::string accept)
+    : _accept(accept)
+{
     _placeHolder = text;
     _text.setFont(font);
     _text.setString(text);
@@ -34,7 +36,8 @@ bool Input::update(sf::Event event, sf::RenderWindow &window) {
             } else if (event.text.unicode == 13) {
                 _isFocused = false;
             } else {
-                _input += event.text.unicode;
+                if (_accept.find(event.text.unicode) != std::string::npos)
+                    _input += event.text.unicode;
             }
         }
         if (event.type == sf::Event::KeyPressed) {
