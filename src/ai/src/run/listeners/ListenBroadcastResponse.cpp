@@ -9,16 +9,19 @@
 
 void ABotProbabilistic::listenBroadcastResponse(const std::string &response)
 {
-    std::string message = getElementAfter(response, ',');
-    _message._content = message;
-    std::string signature = getElementAfter(_message._content, ':');
+    std::string signature = getElementAfter(response, ':');
+    Message tempMessage;
     if (signature != _signature) {
         _enemyMessage = _message._content;
         std::cout << "Enemy message: " << _enemyMessage._content << std::endl;
         return;
     } else {
-        _message._content = getElementBefore(_message._content, ':');
-        _message.vigenereDecrypt();
-        printKeyValueColored("Message", _message._content);
+        std::string temp = getElementBefore(response, ':');
+        tempMessage._content = getElementAfter(temp, ',');
+        direction = getElementBefore(temp, ',');
+        direction = getElementAfter(direction, ' ');
+        tempMessage.vigenereDecrypt();
+        printKeyValueColored("Message", tempMessage._content);
+        printKeyValueColored("Direction", direction);
     }
 }

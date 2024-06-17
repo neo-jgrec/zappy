@@ -57,10 +57,17 @@ protected:
         {{-1, 1}, {"FORWARD", "LEFT", "FORWARD"}},
         {{0, 1}, {"FORWARD"}},
         {{1, 1}, {"FORWARD", "RIGHT", "FORWARD"}},
-        {{1, 2}, {"FORWARD", "RIGHT", "FORWARD"}},
+        {{1, 2}, {"RIGHT", "FORWARD", "LEFT", "FORWARD", "FORWARD"}},
+        {{1, 3}, {"RIGHT", "FORWARD", "LEFT", "FORWARD", "FORWARD", "FORWARD"}},
+        {{2, 2}, {"RIGHT", "FORWARD", "FORWARD", "LEFT", "FORWARD", "FORWARD"}},
+        {{2, 3}, {"RIGHT", "FORWARD", "FORWARD", "LEFT", "FORWARD", "FORWARD", "FORWARD"}},
+        {{3, 3}, {"RIGHT", "FORWARD", "FORWARD", "FORWARD", "LEFT", "FORWARD", "FORWARD", "FORWARD"}},
         {{0, 2}, {"FORWARD", "FORWARD"}},
-        {{1, 2}, {"FORWARD", "FORWARD", "RIGHT"}},
-        {{2, 2}, {"FORWARD", "FORWARD", "RIGHT", "RIGHT"}},
+        {{-1, 2}, {"LEFT", "FORWARD", "RIGHT", "FORWARD", "FORWARD"}},
+        {{-1, 3}, {"LEFT", "FORWARD", "RIGHT", "FORWARD", "FORWARD", "FORWARD"}},
+        {{-2, 2}, {"LEFT", "FORWARD", "FORWARD", "RIGHT", "FORWARD", "FORWARD"}},
+        {{-2, 3}, {"LEFT", "FORWARD", "FORWARD", "RIGHT", "FORWARD", "FORWARD", "FORWARD"}},
+        {{-3, 3}, {"LEFT", "FORWARD", "FORWARD", "FORWARD", "RIGHT", "FORWARD", "FORWARD", "FORWARD"}},
         {{0, 3}, {"FORWARD", "FORWARD", "FORWARD"}},
     };
 
@@ -77,6 +84,7 @@ protected:
 
     // Messages
     Message _message;
+    std::string direction;
     Message _enemyMessage;
     std::string _signature = "bFNneQbXQkyJHGEQd";
 
