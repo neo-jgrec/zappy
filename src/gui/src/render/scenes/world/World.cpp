@@ -13,13 +13,13 @@
 
 void World::init()
 {
-    while (_core->_data.getMap().getSize() == 0) {
+    while (_core->_data.getMap().getSize()[0] == 0) {
         _core->_parser.updateData(_core->_data, _core->_server);
         std::cout << "Waiting for map size" << std::endl;
     }
     _worldSize = sf::Vector2f(
-        _core->_data.getMap().getSize(),
-        _core->_data.getMap().getSize()
+        _core->_data.getMap().getSize()[0],
+        _core->_data.getMap().getSize()[1]
     );
     std::cout << "World size: " << _worldSize.x << "x" << _worldSize.y << std::endl;
     PerlinNoise noise;
