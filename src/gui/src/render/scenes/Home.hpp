@@ -9,7 +9,6 @@
     #define HOME_HPP_
 
     #include "IScene.hpp"
-    #include "../core/Zappy.hpp"
     #include "../ui/Button.hpp"
     #include "../ui/Input.hpp"
 

@@ -15,12 +15,12 @@
     #include "../IScene.hpp"
     #include "shape/diamond.hpp"
 
-    #include "../../core/Zappy.hpp"
     #include "../../sprites/Sprite.hpp"
 
+class Core;
 class World : public IScene {
     public:
-        World(Zappy &zappy, sf::Vector2f worldSize) : _worldSize(worldSize), _zappy(zappy) {
+        World(Core *core, sf::Vector2f worldSize) : _worldSize(worldSize), _core(core) {
             init();
         }
         ~World() {}
@@ -49,7 +49,7 @@ class World : public IScene {
         sf::Vector2f _dragStart = sf::Vector2f(0, 0);
         sf::Vector2f _tmpOffset = sf::Vector2f(0, 0);
 
-        Zappy &_zappy;
+        Core *_core;
         sf::Vector2f _hoveredTile;
         Diamond _diamond;
         sf::Vector2f _mousePos;

@@ -12,11 +12,11 @@
 
     #include "IScene.hpp"
     #include "../ui/Button.hpp"
-    #include "../core/Zappy.hpp"
 
+class Core;
 class Menu : public IScene {
     public:
-        Menu(Zappy &zappy);
+        Menu(Core *core);
         ~Menu() {}
 
         bool update(sf::Event event, sf::RenderWindow &window) override;
@@ -26,7 +26,7 @@ class Menu : public IScene {
     private:
         std::vector<std::shared_ptr<Button>> _resolutionButtons;
         std::shared_ptr<Button> _fullscreenButton;
-        Zappy &_zappy;
+        Core *_core;
 };
 
 #endif /* !MENU_HPP_ */

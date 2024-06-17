@@ -1,33 +1,34 @@
 #include "Menu.hpp"
+#include "../core/Core.hpp"
 
-Menu::Menu(Zappy &zappy) : _zappy(zappy) {
+Menu::Menu(Core *core) : _core(core) {
     _fullscreenButton = std::make_shared<Button>(sf::Vector2f(1080 / 2, 720 / 2),
-    sf::Vector2f(100, 100), "Fullscreen", zappy.getFont());
+    sf::Vector2f(100, 100), "Fullscreen", _core->getFont());
     _resolutionButtons.push_back(std::make_shared<Button>(sf::Vector2f(1080 / 2, 720 / 2 + 100),
-    sf::Vector2f(100, 100), "3840*2160", zappy.getFont()));
+    sf::Vector2f(100, 100), "3840*2160", _core->getFont()));
     _resolutionButtons.push_back(std::make_shared<Button>(sf::Vector2f(1080 / 2 + 100, 720 / 2 + 100),
-    sf::Vector2f(100, 100), "1920x1080", zappy.getFont()));
+    sf::Vector2f(100, 100), "1920x1080", _core->getFont()));
     _resolutionButtons.push_back(std::make_shared<Button>(sf::Vector2f(1080 / 2 + 200, 720 / 2 + 100),
-    sf::Vector2f(100, 100), "1280x720", zappy.getFont()));
+    sf::Vector2f(100, 100), "1280x720", _core->getFont()));
 }
 
 bool Menu::update(sf::Event event, sf::RenderWindow &window) {
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-        _zappy._upperState = GameState::GAME;
+        _core->_upperState = GameState::GAME;
     if (_fullscreenButton->update(event, window)) {
-        _zappy._fullscreen = !_zappy._fullscreen;
+        _core->switchFullscreen();
         return true;
     }
     if (_resolutionButtons[0]->update(event, window)) {
-        _zappy._resolution = sf::Vector2f(3840, 2160);
+        _core->newResolution(sf::Vector2f(3840, 2160));
         return true;
     }
     if (_resolutionButtons[1]->update(event, window)) {
-        _zappy._resolution = sf::Vector2f(1920, 1080);
+        _core->newResolution(sf::Vector2f(1920, 1080));
         return true;
     }
     if (_resolutionButtons[2]->update(event, window)) {
-        _zappy._resolution = sf::Vector2f(1280, 720);
+        _core->newResolution(sf::Vector2f(1280, 720));
         return true;
     }
     return true;

@@ -8,6 +8,7 @@
 
 #include "World.hpp"
 #include "../../../utils/PerlinNoise.hpp"
+#include "../../core/Core.hpp"
 
 #include <iostream>
 
@@ -39,13 +40,13 @@ void World::init() {
 
 bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
 {
-    _mousePos = _zappy.getMousePos();
+    _mousePos = _core->getMousePos();
     _mousePos = sf::Vector2f(
         (_mousePos.x * _zoom + _view.getCenter().x - _view.getSize().x / 2),
         (_mousePos.y * _zoom + _view.getCenter().y - _view.getSize().y / 2)
     );
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-        _zappy._upperState = GameState::MENU;
+        _core->_upperState = GameState::MENU;
     if (event.type == sf::Event::MouseMoved) {
         for (int i = 0; i < _worldSize.x; i++) {
             for (int j = 0; j < _worldSize.y; j++) {
@@ -108,7 +109,7 @@ bool World::moveMap(sf::Event event)
     if (event.type == sf::Event::MouseButtonPressed &&
         event.mouseButton.button == sf::Mouse::Button::Left) {
             _isDragging = true;
-            _dragStart = _zappy.getMousePos();
+            _dragStart = _core->getMousePos();
     }
     if (event.type == sf::Event::MouseButtonReleased &&
         event.mouseButton.button == sf::Mouse::Button::Left) {
@@ -117,14 +118,14 @@ bool World::moveMap(sf::Event event)
             _tmpOffset = sf::Vector2f(0, 0);
     }
     if (_isDragging) {
-        if (_zappy.getMousePos().x < 0 || _zappy.getMousePos().x > 1920 ||
-            _zappy.getMousePos().y < 0 || _zappy.getMousePos().y > 1080) {
+        if (_core->getMousePos().x < 0 || _core->getMousePos().x > 1920 ||
+            _core->getMousePos().y < 0 || _core->getMousePos().y > 1080) {
                 _isDragging = false;
                 _offset += _tmpOffset;
                 _tmpOffset = sf::Vector2f(0, 0);
                 return true;
             }
-        _tmpOffset = - _zappy.getMousePos() + _dragStart;
+        _tmpOffset = - _core->getMousePos() + _dragStart;
     }
     return true;
 }

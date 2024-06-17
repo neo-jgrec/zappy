@@ -12,11 +12,11 @@
 
     #include "IScene.hpp"
     #include "../ui/Button.hpp"
-    #include "../core/Zappy.hpp"
 
+class Core;
 class Quit : public IScene {
     public:
-        Quit(Zappy &zappy);
+        Quit(Core *core);
         ~Quit() {}
 
         bool update(sf::Event event, sf::RenderWindow &window) override;
@@ -27,7 +27,7 @@ class Quit : public IScene {
     protected:
     private:
         std::shared_ptr<Button> _quitButton;
-        Zappy &_zappy;
+        Core *_core;
 };
 
 #endif /* !QUIT_HPP_ */
