@@ -323,4 +323,6 @@ void print_tile(tile_t *tile);
  */
 void message_to_graphicals(server_t *server, char *fmt, ...);
 
+void send_start_incantation_to_graphicals(client_t *client, server_t *server);
+
 #endif /* !SERVER_H_ */

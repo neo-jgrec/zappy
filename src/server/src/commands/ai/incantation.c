@@ -134,6 +134,7 @@ void incantation(client_t *client, server_t *server)
     run_logic_on_group(client, server, required_level, callback_freeze);
     run_logic_on_group(client, server, required_level,
         callback_start_incantation_set_payload);
+    send_start_incantation_to_graphicals(client, server);
     client_time_handler(client, INCANTATION);
 }
 
