@@ -8,6 +8,23 @@
 #include "server.h"
 #include <time.h>
 
+static info_map_t get_tile(server_t *server, size_t x, size_t y)
+{
+    tile_t tile = server->map[x + y * server->proprieties.width];
+    info_map_t info = {0};
+
+    for (size_t i = 0; i < tile.num_objects; i++) {
+        info.food += tile.objects[i] == FOOD;
+        info.linemate += tile.objects[i] == LINEMATE;
+        info.deraumere += tile.objects[i] == DERAUMERE;
+        info.sibur += tile.objects[i] == SIBUR;
+        info.mendiane += tile.objects[i] == MENDIANE;
+        info.phiras += tile.objects[i] == PHIRAS;
+        info.thystame += tile.objects[i] == THYSTAME;
+    }
+    return info;
+}
+
 static int handle_connections(server_t *server, int fd)
 {
     if (FD_ISSET(fd, &server->ready_sockets)) {
@@ -93,6 +110,8 @@ static void add_object(server_t *server, int max, int value, int obj_enum)
 
 static void fill_objects(server_t *server, info_map_t *max, info_map_t *map)
 {
+    info_map_t info;
+
     add_object(server, max->food, map->food, FOOD);
     add_object(server, max->linemate, map->linemate, LINEMATE);
     add_object(server, max->deraumere, map->deraumere, DERAUMERE);
@@ -100,6 +119,15 @@ static void fill_objects(server_t *server, info_map_t *max, info_map_t *map)
     add_object(server, max->mendiane, map->mendiane, MENDIANE);
     add_object(server, max->phiras, map->phiras, PHIRAS);
     add_object(server, max->thystame, map->thystame, THYSTAME);
+    for (size_t y = 0; y < (size_t)server->proprieties.height; y++) {
+        for (size_t x = 0; x < (size_t)server->proprieties.width; x++) {
+            info = get_tile(server, x, y);
+            message_to_graphicals(server, "bct %ld %ld %d %d %d %d %d %d %d\n",
+                x, y, info.food, info.linemate, info.deraumere, info.sibur,
+                info.mendiane, info.phiras, info.thystame
+            );
+        }
+    }
 }
 
 static void handle_meteors(server_t *server)
