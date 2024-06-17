@@ -54,7 +54,7 @@ static bool execute_command(client_t *client, server_t *server)
         return true;
     }
     if (client->is_graphic)
-        dprintf(client->fd, "suc\n");
+        message_to_graphicals(server, "sbp\n");
     return false;
 }
 

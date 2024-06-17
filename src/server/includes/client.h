@@ -57,6 +57,7 @@ typedef struct client_s {
     size_t level;
     bool is_incanting;
     bool is_graphic;
+    size_t egg_id;
 } client_t;
 
 typedef struct client_list_s {

@@ -10,7 +10,7 @@
 void bct(client_t *client, server_t *server)
 {
     if (client->commands[1] == NULL || client->commands[2] == NULL) {
-        dprintf(client->fd, "sbp\n");
+        message_to_graphicals(server, "sbp\n");
         return;
     }
     (void)server;
