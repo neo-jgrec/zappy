@@ -6,6 +6,10 @@
 
 void Player::setPosition(std::vector<int> newPos) {
     nextPositions.push_back(newPos);
+    if (!events.empty() && events.back().action == PUSHED) {
+        events.back().params = newPos;
+        return;
+    }
     events.push_back(Event(MOVING, newPos));
 };
 
@@ -21,8 +25,8 @@ void Player::setEgging() {
     events.push_back(Event(EGGING));
 };
 
-void Player::setPushing() {
-    events.push_back(Event(PUSHING));
+void Player::setPushed() {
+    events.push_back(Event(PUSHED));
 };
 
 void Player::setPickup(int res) {
@@ -63,6 +67,8 @@ Event Player::getNextEvent() {
         return NONE;
     Event event = events.front();
     if (event.action == MOVING)
+        popNextPosition();
+    if (event.action == PUSHED)
         popNextPosition();
     events.erase(events.begin());
     return event;

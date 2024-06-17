@@ -1,6 +1,18 @@
 #include "Map.hpp"
 #include "GuiException.hpp"
+#include <vector>
 
+std::vector<int> Map::getSize()
+{
+    if (this->map.size() == 0) {
+        return {0, 0};
+    }
+    int x = static_cast<int>(this->map.size());
+    int y = static_cast<int>(this->map.at(0).size());
+    std::vector<int> size = {x, y};
+
+    return size;
+}
 
 void Map::updateTile(int x, int y, std::vector<int> values)
 {

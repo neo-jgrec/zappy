@@ -9,7 +9,7 @@
 enum Actions
 {
     EGGING,
-    PUSHING,
+    PUSHED,
     INCANTATING,
     PICKUP,
     DROP,
@@ -63,7 +63,7 @@ class Player
         void setOrientation(int newOrientation);
         void setIncanting();
         void setEgging();
-        void setPushing();
+        void setPushed();
         void setPickup(int res);
         void setDrop(int res);
         void setAlive(bool alive);

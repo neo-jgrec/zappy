@@ -36,6 +36,7 @@ class Data
         */
         void setTickRate(int rate) { this->tickRate = rate; };
         int getTickRate() { return this->tickRate; };
+        int requestTickRate() { return 0; };
 
 
         void setRunning(bool state) { this->isRunning = state; };

@@ -26,7 +26,8 @@ class Map
     public:
         Map() {};
         ~Map() {};
-        int getSize() { return this->map.size();};
+
+        std::vector<int> getSize();
         /**
         * @brief Updates a tile on the map
         * @param x The x position of the tile
