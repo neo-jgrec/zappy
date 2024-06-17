@@ -25,5 +25,7 @@ void left(client_t *client, server_t *server)
             break;
     }
     client->payload = strdup("ok\n");
+    message_to_graphicals(server, "ppo %d %d %d %d\n",
+        client->fd, client->x, client->y, client->orientation);
     client_time_handler(client, LEFT);
 }

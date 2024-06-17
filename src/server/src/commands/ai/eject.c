@@ -39,19 +39,6 @@ static void set_dx_and_dy(
         *dx = 1;
 }
 
-static void send_player_expulsion_to_graphicals(
-    server_t *s,
-    client_t *c
-)
-{
-    client_list_t *n;
-
-    TAILQ_FOREACH(n, &s->clients, entries) {
-        if (n->client->is_graphic)
-            dprintf(n->client->fd, "pex %d\n", c->fd);
-    }
-}
-
 void eject(client_t *c, server_t *s)
 {
     signed char dx = 0;
@@ -70,7 +57,7 @@ void eject(client_t *c, server_t *s)
             n->client->y = new_y;
             asprintf(&n->client->payload,
                 "eject: %d\n", reverse_orientation(c->orientation));
-            send_player_expulsion_to_graphicals(s, n->client);
+            message_to_graphicals(s, "pex %d\n", n->client->fd);
         }
     }
     asprintf(&c->payload, "ok\n");
