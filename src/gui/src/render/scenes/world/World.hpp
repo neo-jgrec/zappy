@@ -28,22 +28,7 @@ static const int TILE_SIZE_MY = 27;
 class Core;
 class World : public IScene {
     public:
-        World(Core *core, sf::Vector2f worldSize) : _worldSize(worldSize), _core(core) {
-            PerlinNoise noise;
-
-            for (int i = 0; i < _worldSize.x; i++) {
-                std::vector<Chunck> chuncks;
-                for (int j = 0; j < _worldSize.y; j++) {
-                    Chunck chunck;
-                    chunck._pos = sf::Vector2f(
-                        i * 46 - j * 46 - TILE_SIZE_X / 4 * 3,
-                        j * 27 + i * 27
-                    );
-                    chunck._yOffset = noise.noise(i * 0.1, j * 0.1) * 80;
-                    chuncks.push_back(chunck);
-                }
-                _chuncks.push_back(chuncks);
-            }
+        World(Core *core) : _core(core) {
             _sprite = std::make_shared<Sprite>("./assets/grass.png");
             _diamond = Diamond(sf::Vector2f(TILE_SIZE_X, TILE_SIZE_Y));
             _sprites["halo1"] = std::make_shared<Sprite>("./assets/halo1.png");
@@ -52,28 +37,22 @@ class World : public IScene {
             _sprites["trantorian"] = std::make_shared<Sprite>("./assets/trantorian.png");
             _view.setSize(sf::Vector2f(1920 , 1080));
 
-            _mapDiamond = Diamond(sf::Vector2f(TILE_SIZE_X * _worldSize.x - TILE_SIZE_X * 2 , TILE_SIZE_Y * _worldSize.y));
-            _mapDiamond.setPosition(sf::Vector2f(- TILE_SIZE_X * _worldSize.x / 2, 0));
-
-            _pos = sf::Vector2f(
-                (int)(_worldSize.x / 2) * TILE_SIZE_MX- (int)(_worldSize.x / 2) * TILE_SIZE_MX - TILE_SIZE_MY,
-                (int)(_worldSize.y / 2) * TILE_SIZE_MY + (int)(_worldSize.y / 2) * TILE_SIZE_MY - TILE_SIZE_Y
-            );
-
-            for (int i = 0; i < 10; i++) {
-                Trantorian trantorian(*_sprites["trantorian"]);
-                trantorian._tile = sf::Vector2f(rand() % (int)_worldSize.x, rand() % (int)_worldSize.y);
-                _trantorians.push_back(trantorian);
-            }
+            // for (int i = 0; i < 10; i++) {
+            //     Trantorian trantorian(*_sprites["trantorian"]);
+            //     trantorian._tile = sf::Vector2f(rand() % (int)_worldSize.x, rand() % (int)_worldSize.y);
+            //     _trantorians.push_back(trantorian);
+            // }
         }
         ~World() {}
 
-        void init();
+        void init() override;
         bool moveMap(sf::Event event);
 
         bool update(sf::Event event, sf::RenderWindow &window) override;
         void draw(sf::RenderWindow &window) override;
         void drawChunck(sf::RenderWindow &window, int i, int j);
+
+        void updateTrantorians();
 
     private:
         std::shared_ptr<Sprite> _sprite;

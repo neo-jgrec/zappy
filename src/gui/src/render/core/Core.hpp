@@ -39,23 +39,23 @@ class Core {
         GameState _state;
         GameState _upperState;
 
+        std::map<GameState, std::shared_ptr<IScene>> _scenes;
         float getDeltaTime() { return _deltaTime; };
         sf::Font &getFont() { return _font; };
         sf::Vector2f getMousePos() { return _mousePos; };
 
         bool connectToServer(int port, std::string ip);
+        Data _data;
+        Parser _parser;
+        ServerConnect _server;
     private:
-        std::map<GameState, std::shared_ptr<IScene>> _scenes;
 
         sf::RenderWindow _window;
         sf::Event _event;
         sf::Clock _clock;
         float _deltaTime;
         sf::Vector2f _mousePos;
-        ServerConnect _server;
 
-        Data _data;
-        Parser _parser;
 
         sf::Font _font;
         sf::Vector2f _resolution = sf::Vector2f(1280, 720);

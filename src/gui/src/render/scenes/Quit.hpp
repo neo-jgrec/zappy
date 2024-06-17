@@ -23,6 +23,7 @@ class Quit : public IScene {
         void draw(sf::RenderWindow &window) override {
             _quitButton->draw(window);
         }
+        void init() override {}
 
     protected:
     private:

@@ -26,6 +26,10 @@ class Button {
         void draw(sf::RenderWindow &window);
         void setEvent(std::function<void()> event) { _event = event; }
 
+        void setFontSize(int size) {
+            _text.setCharacterSize(size);
+        }
+
     protected:
     private:
         sf::Text _text;

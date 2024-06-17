@@ -22,7 +22,9 @@ class Home : public IScene {
 
         bool update(sf::Event event, sf::RenderWindow &window) override;
         void draw(sf::RenderWindow &window) override;
+        void init() override {}
         bool connectToServer();
+
 
     protected:
     private:

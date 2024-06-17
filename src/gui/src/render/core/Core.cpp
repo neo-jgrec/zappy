@@ -17,7 +17,7 @@ Core::Core(int port, std::string ip) {
 
     _scenes[GameState::HOME] = std::make_shared<Home>(this, port, ip);
     _scenes[GameState::END] = std::make_shared<Quit>(this);
-    _scenes[GameState::GAME] = std::make_shared<World>(this, sf::Vector2f(25, 25));
+    _scenes[GameState::GAME] = std::make_shared<World>(this);
     _scenes[GameState::MENU] = std::make_shared<Menu>(this);
     _clock.restart();
 }
@@ -48,7 +48,7 @@ void Core::run() {
     while (_window.isOpen()) {
         update();
         draw();
-        parser.updateData(gameData, server);
+        _parser.updateData(_data, _server);
     }
 }
 

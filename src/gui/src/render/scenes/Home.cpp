@@ -33,6 +33,7 @@ bool Home::update(sf::Event event, sf::RenderWindow &window) {
     if (_startButton->update(event, window)) {
         if (!_core->connectToServer(std::stoi(_portButton->getInput()), _ipButton->getInput()))
             return false;
+        _core->_scenes[GameState::GAME]->init();
         _core->_state = GameState::GAME;
     }
     _ipButton->update(event, window);

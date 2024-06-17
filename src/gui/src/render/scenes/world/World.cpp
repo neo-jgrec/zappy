@@ -11,12 +11,44 @@
 
 #include <iostream>
 
-void World::init() {
+void World::init()
+{
+    while (_core->_data.getMap().getSize() == 0) {
+        _core->_parser.updateData(_core->_data, _core->_server);
+        std::cout << "Waiting for map size" << std::endl;
+    }
+    _worldSize = sf::Vector2f(
+        _core->_data.getMap().getSize(),
+        _core->_data.getMap().getSize()
+    );
+    std::cout << "World size: " << _worldSize.x << "x" << _worldSize.y << std::endl;
+    PerlinNoise noise;
 
+    for (int i = 0; i < _worldSize.x; i++) {
+        std::vector<Chunck> chuncks;
+        for (int j = 0; j < _worldSize.y; j++) {
+            Chunck chunck;
+            chunck._pos = sf::Vector2f(
+                i * 46 - j * 46 - TILE_SIZE_X / 4 * 3,
+                j * 27 + i * 27
+            );
+            chunck._yOffset = noise.noise(i * 0.1, j * 0.1) * 80;
+            chuncks.push_back(chunck);
+        }
+        _chuncks.push_back(chuncks);
+    }
+    _mapDiamond = Diamond(sf::Vector2f(TILE_SIZE_X * _worldSize.x - TILE_SIZE_X * 2 , TILE_SIZE_Y * _worldSize.y));
+    _mapDiamond.setPosition(sf::Vector2f(- TILE_SIZE_X * _worldSize.x / 2, 0));
+
+    _pos = sf::Vector2f(
+        (int)(_worldSize.x / 2) * TILE_SIZE_MX- (int)(_worldSize.x / 2) * TILE_SIZE_MX - TILE_SIZE_MY,
+        (int)(_worldSize.y / 2) * TILE_SIZE_MY + (int)(_worldSize.y / 2) * TILE_SIZE_MY - TILE_SIZE_Y
+    );
 }
 
 bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
 {
+    updateTrantorians();
     _mousePos = _core->getMousePos();
     _mousePos = sf::Vector2f(
         (_mousePos.x * _zoom + _view.getCenter().x - _view.getSize().x / 2),
@@ -137,4 +169,29 @@ bool World::moveMap(sf::Event event)
         _tmpOffset = - _core->getMousePos() + _dragStart;
     }
     return true;
+}
+
+void World::updateTrantorians()
+{
+    std::map<int, Player> players;
+    bool exisitingPlayers = false;
+
+    players = _core->_data.getPlayers();
+    for (auto &player : players) {
+        exisitingPlayers = false;
+        for (auto &trantorian : _trantorians) {
+            if (trantorian._id == player.first) {
+                exisitingPlayers = true;
+                // trantorian._tile = sf::Vector2f(player.second._pos[0], player.second._pos[1]);
+                break;
+            }
+        }
+        if (!exisitingPlayers) {
+            Trantorian trantorian(*_sprites["trantorian"]);
+            trantorian._id = player.first;
+            // trantorian._tile = sf::Vector2f(player.second._pos[0], player.second._pos[1]);
+            _trantorians.push_back(trantorian);
+        }
+
+    }
 }

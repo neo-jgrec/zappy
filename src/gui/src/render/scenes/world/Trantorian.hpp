@@ -26,6 +26,7 @@ class Trantorian {
         void draw(sf::RenderWindow &window) { _sprite.draw(window); }
 
         sf::Vector2f _tile;
+        int _id;
     protected:
     private:
         Sprite _sprite;
