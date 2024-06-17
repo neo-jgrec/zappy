@@ -20,5 +20,6 @@ void fork_z(client_t *client, server_t *server)
         return;
     TAILQ_INSERT_TAIL(&team->eggs, new_egg, entries);
     asprintf(&client->payload, "ok\n");
+    message_to_graphicals(server, "pfk %s\n", client->uuid);
     client_time_handler(client, FORK);
 }

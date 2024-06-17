@@ -50,26 +50,26 @@ static void add_element_to_tile(tile_t *tile, object_t object)
     tile->objects[tile->num_objects - 1] = object;
 }
 
-void set(client_t *client, server_t *server)
+void set(client_t *c, server_t *s)
 {
-    object_t object = -1;
+    object_t o = -1;
 
-    if (client->commands[1] == NULL) {
-        dprintf(client->fd, "ko\n");
+    if (c->commands[1] == NULL) {
+        dprintf(c->fd, "ko\n");
         return;
     }
     for (size_t i = 0; i < 7; i++) {
-        if (strcmp(object_handlers[i].name, client->commands[1]) == 0) {
-            object = object_handlers[i].type;
+        if (strcmp(object_handlers[i].name, c->commands[1]) == 0) {
+            o = object_handlers[i].type;
             break;
         }
     }
-    if ((int)object != -1 && client->inventory.food != 0) {
-        remove_element_from_inventory(client, FOOD);
-        add_element_to_tile(&server->map[client->y * server->proprieties.width
-        + client->x], object);
-        asprintf(&client->payload, "ok\n");
-        client_time_handler(client, SET);
+    if ((int)o != -1 && c->inventory.food != 0) {
+        remove_element_from_inventory(c, FOOD);
+        add_element_to_tile(&s->map[c->y * s->proprieties.width + c->x], o);
+        asprintf(&c->payload, "ok\n");
+        message_to_graphicals(s, "pdr %s %d\n", c->uuid, o);
+        client_time_handler(c, SET);
     }
-    dprintf(client->fd, "ko\n");
+    dprintf(c->fd, "ko\n");
 }
