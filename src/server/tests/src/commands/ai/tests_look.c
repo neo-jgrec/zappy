@@ -9,6 +9,7 @@ Test(look, basic_test)
     server.map = calloc(server.proprieties.height * server.proprieties.width, sizeof(tile_t));
 
     server.map[5].num_objects = 2;
+    server.map[5].objects = malloc(sizeof(object_t) * 2);
     server.map[5].objects[0] = FOOD;
     server.map[5].objects[1] = LINEMATE;
 
