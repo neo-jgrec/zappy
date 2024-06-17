@@ -72,7 +72,7 @@ void Parser::ppo (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     checkType(tokens, std::vector<Type>(4, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
         debug_print("\nppo", "");
-        Player player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
+        Player &player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
         int x = std::get<int>(tokens.at(2));
         int y = std::get<int>(tokens.at(3));
         int orientation = std::get<int>(tokens.at(4));
@@ -87,7 +87,7 @@ void Parser::plv (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     checkType(tokens, std::vector<Type>(2, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
         debug_print("\nplv", "");
-        Player player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
+        Player &player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
         int lvl = std::get<int>(tokens.at(2));
         player.setLvl(lvl);
         debug_print("\\plv", "");
@@ -99,7 +99,7 @@ void Parser::pin (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     checkType(tokens, std::vector<Type>(10, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
         debug_print("\npin", "");
-        Player player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
+        Player &player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
         std::vector<int> inventory;
         for (int i = 4; i < 11; i++)
             inventory.push_back(std::get<int>(tokens.at(i)));
@@ -113,7 +113,7 @@ void Parser::pex (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     checkType(tokens, std::vector<Type>(1, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData, &server]() {
         int playerNb = std::get<int>(tokens.at(1));
-        Player& player = gameData.getPlayerById(playerNb);
+        Player &player = gameData.getPlayerById(playerNb);
         player.setPushed();
         server.sendToServer("ppo " + std::to_string(playerNb) + "\n");
     };
@@ -144,7 +144,7 @@ void Parser::pic (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
 
         for (size_t i = 4; i < tokens.size(); i++) {
             int playerNb = std::get<int>(tokens.at(i));
-            Player& player = gameData.getPlayerById(playerNb);
+            Player &player = gameData.getPlayerById(playerNb);
             player.setIncanting();
             playersId.push_back(playerNb);
         }
@@ -172,7 +172,7 @@ void Parser::pfk (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     auto lambda = [tokens, &gameData]() {
         debug_print("\npfk", "");
         int playerNb = std::get<int>(tokens.at(1));
-        Player& player = gameData.getPlayerById(playerNb);
+        Player &player = gameData.getPlayerById(playerNb);
         player.setEgging();
         debug_print("\\pfk", "");
     };
@@ -184,7 +184,7 @@ void Parser::pdr (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     auto lambda = [tokens, &gameData, &server]() {
         int playerNb = std::get<int>(tokens.at(1));
         int resource = std::get<int>(tokens.at(2));
-        Player& player = gameData.getPlayerById(playerNb);
+        Player &player = gameData.getPlayerById(playerNb);
         player.setDrop(resource);
         server.sendToServer("pin " + std::to_string(playerNb) + "\n");
         server.sendToServer("ppo " + std::to_string(playerNb) + "\n");

@@ -161,11 +161,15 @@ Test(Parser, ppoNormal)
     std::vector<std::variant<std::string, int>> args = { "pnw", 1, 1, 1, 1, 1, "team1" };
     parser.parse(args, data, server);
 
-    std::vector<std::variant<std::string, int>> args2 = { "ppo", 1, 1, 1, 1 };
+    std::vector<std::variant<std::string, int>> args2 = { "ppo", 1, 2, 2, 1 };
 
     parser.parse(args2, data, server);
     parser.execute();
-    cr_assert_eq(data.getPlayerById(1).getPosition(), std::vector<int>({1, 1}));
+    Player p = data.getPlayerById(1);
+    p.getNextEvent();
+    std::vector<int> position = p.getPosition();
+    cr_assert_eq(position[0], 2, "Expected 2, got %d", position[0]);
+    cr_assert_eq(position[1], 2, "Expected 2, got %d", position[1]);
 }
 
 Test(Parser, ppoWrongArgs)
