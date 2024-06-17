@@ -20,7 +20,7 @@ void ABotProbabilistic::testPatern()
                      { doAction(RIGHT, ""); }, "RIGHT"});
 }
 
-void Bot::trapMessage()
+void ABotProbabilistic::trapMessage()
 {
     std::string trapMessage = replaceNumbersInString(_enemyMessage._content, 1200);
     if (trapMessage.empty())
