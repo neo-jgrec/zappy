@@ -11,11 +11,24 @@
 #include "Parser.hpp"
 #include "GuiException.hpp"
 #include "Data.hpp"
+#include "core/Core.hpp"
 
 #include "utils/Debug.hpp"
 #include "utils/CommandLineParser.hpp"
 
 int main(int argc, char **argv) {
+    try {
+        Core core;
+        core.run();
+    } catch (const guiException& e) {
+        std::cerr << e.what() << std::endl;
+        return 84;
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return 84;
+    }
+    return 0;
+
     debug_print("Starting GUI", "");
 
     CommandLineParser cmdParser(argc, argv);

@@ -23,14 +23,17 @@ static const struct {
     {0, NULL}
 };
 
-static tile_t *copy_map(tile_t *dest, tile_t *src, int height, int width)
+static tile_t *copy_map(tile_t *dest, tile_t *src, server_t *server)
 {
-    for (int i = 0; i < height; i++) {
-        dest[i].objects = malloc(sizeof(object_t) * width);
+    if (dest == NULL)
+        return NULL;
+    for (int i = 0; i < server->
+        proprieties.width * server->proprieties.height; i++) {
+        dest[i].num_objects = src[i].num_objects;
+        dest[i].objects = malloc(sizeof(object_t) * src[i].num_objects);
         if (dest[i].objects == NULL)
             return NULL;
-        dest[i].num_objects = src[i].num_objects;
-        for (int j = 0; j < width; j++)
+        for (size_t j = 0; j < src[i].num_objects; j++)
             dest[i].objects[j] = src[i].objects[j];
     }
     return dest;
@@ -47,6 +50,8 @@ static void populate_map_with_players(
     TAILQ_FOREACH(tmp, &server->clients, entries) {
         client = tmp->client;
         map[client->y].num_objects++;
+        map[client->y].objects = realloc(map[client->y].objects,
+            map[client->y].num_objects * sizeof(object_t));
         map[client->y].objects[map[client->y].num_objects - 1] = PLAYER;
     }
 }
@@ -76,10 +81,9 @@ static void object_to_string(client_t *client, tile_t tile)
 
 void look(client_t *client, server_t *server)
 {
-    tile_t *map = copy_map(
-        malloc(sizeof(tile_t *) * server->proprieties.height),
-        server->map, server->proprieties.height, server->proprieties.width
-    );
+    tile_t *map = copy_map(calloc(
+        server->proprieties.width * server->proprieties.height,
+        sizeof(tile_t)), server->map, server);
     tile_t tile;
 
     if (map == NULL)

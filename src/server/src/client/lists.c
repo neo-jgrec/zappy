@@ -22,7 +22,9 @@ client_t *init_client(int client_fd)
         client->tclient[i].available_request = false;
         client->tclient[i].command = -1;
     }
+    client->level = 1;
     client->is_connected = false;
+    client->is_graphic = false;
     return client;
 }
 
@@ -46,7 +48,6 @@ void remove_client_by_fd(struct client_tailq *clients, int fd)
         if (item->client->fd == fd) {
             TAILQ_REMOVE(clients, item, entries);
             secure_free(item->client);
-            item->client = NULL;
             break;
         }
     }

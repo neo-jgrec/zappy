@@ -31,7 +31,9 @@
     #define TAKE_TLIMIT 7.0f
     #define SET_TLIMIT 7.0f
     #define INCANTATION_TLIMIT 300.0f
-    #define NB_COMMANDS 12
+    #define METEORS_LIMIT 20.0f
+    #define NB_AI_COMMANDS 12
+    #define NB_GUI_COMMANDS 9
     #define MAX_CAPACITY_TEAM 200
     #include <stdlib.h>
     #include <stdio.h>
@@ -61,8 +63,8 @@ TAILQ_HEAD(eggs_tailq, eggs_list_s);
 TAILQ_HEAD(teams_tailq, team_list_s);
 
 typedef struct egg_s {
-    unsigned char x;
-    unsigned char y;
+    int x;
+    int y;
 } egg_t;
 
 typedef struct eggs_list_s {
@@ -112,6 +114,7 @@ typedef struct server_s {
     struct client_tailq clients;
     struct teams_tailq teams;
     struct timespec current_time;
+    struct timespec meteor_last_time;
     struct timeval timeout;
     tile_t *map;
 } server_t;
@@ -128,6 +131,20 @@ egg_t *init_egg(int width, int height);
 team_t *init_team(const char *team_name, int nb_client, int width, int height);
 void print_teams_infos(struct teams_tailq *teams);
 void remove_client_by_fd(struct client_tailq *clients, int fd);
+void execute_commands_ai(client_t *client, server_t *server);
+
+/**
+ * returns the rand() % val, don't forger to srand(time(NULL))
+ * @param val
+ * @return
+ */
+int rand_p(int val);
+
+/**
+ * Check resources, if not equitable
+ * @param server
+ */
+void check_available_resources(server_t *server);
 
 typedef struct commands_s {
     char *name;
@@ -204,7 +221,7 @@ void client_time_handler(client_t *client, int command);
 bool connector(client_t *client, server_t *server);
 
 
-/* commands */
+/* commands ai */
 void handle_client_message(client_t *client, server_t *server);
 void broadcast(client_t *client, server_t *server);
 void connect_nbr(client_t *client, server_t *server);
@@ -224,4 +241,78 @@ void look(client_t *client, server_t *server);
 void right(client_t *client, server_t *server);
 void set(client_t *client, server_t *server);
 void take(client_t *client, server_t *server);
+
+/* commands gui */
+void bct(client_t *client, server_t *server);
+void ebo(client_t *client, server_t *server);
+void edi(client_t *client, server_t *server);
+void enw(client_t *client, server_t *server);
+void mct(client_t *client, server_t *server);
+void msz(client_t *client, server_t *server);
+void pdi(client_t *client, server_t *server);
+void pdr(client_t *client, server_t *server);
+void pex(client_t *client, server_t *server);
+void pfk(client_t *client, server_t *server);
+void pgt(client_t *client, server_t *server);
+void pic(client_t *client, server_t *server);
+void pie(client_t *client, server_t *server);
+void pin(client_t *client, server_t *server);
+void plv(client_t *client, server_t *server);
+void pnc(client_t *client, server_t *server);
+void pnw(client_t *client, server_t *server);
+void ppo(client_t *client, server_t *server);
+void sbp(client_t *client, server_t *server);
+void seg(client_t *client, server_t *server);
+void sgt(client_t *client, server_t *server);
+void smg(client_t *client, server_t *server);
+void sst(client_t *client, server_t *server);
+void suc(client_t *client, server_t *server);
+void tna(client_t *client, server_t *server);
+
+/* map utils */
+
+/**
+ * @brief Get the map density object
+ *
+ * @param server
+ * @param x
+ * @param y
+ * @param object
+ */
+void add_element_to_map(server_t *server, int x, int y, object_t object);
+
+/**
+ * @brief Remove an element from the map
+ *
+ * @param server
+ * @param x
+ * @param y
+ * @param object
+ */
+void remove_element_from_map(server_t *server, int x, int y, object_t object);
+
+/**
+ * @brief Get the map density object
+ *
+ * @param server
+ * @param x
+ * @param y
+ * @return info_map_t
+ */
+info_map_t get_map_density(server_t *server);
+
+/**
+ * @brief
+ *
+ * @param server
+ */
+void print_map(server_t *server);
+
+/**
+ * @brief
+ *
+ * @param tile
+ */
+void print_tile(tile_t *tile);
+
 #endif /* !SERVER_H_ */

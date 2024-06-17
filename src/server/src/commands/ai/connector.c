@@ -37,8 +37,13 @@ bool connector(client_t *client, server_t *server)
     size_t nb_slots;
     size_t rand_idx;
 
-    if (client->is_connected)
+    if (client->is_connected == true)
         return false;
+    if (strcmp(client->commands[0], "GRAPHIC") == 0) {
+        client->is_graphic = true;
+        client->is_connected = true;
+        return true;
+    }
     nb_slots = team_nb_slots(&server->teams, client->commands[0]);
     if (nb_slots == 0)
         return false;
