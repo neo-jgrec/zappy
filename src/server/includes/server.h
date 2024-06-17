@@ -259,7 +259,6 @@ void pie(client_t *client, server_t *server);
 void pin(client_t *client, server_t *server);
 void plv(client_t *client, server_t *server);
 void pnc(client_t *client, server_t *server);
-void pnw(client_t *client, server_t *server);
 void ppo(client_t *client, server_t *server);
 void sbp(client_t *client, server_t *server);
 void seg(client_t *client, server_t *server);
