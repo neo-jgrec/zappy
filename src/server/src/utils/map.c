@@ -11,7 +11,6 @@ static const struct {
     object_t type;
     char *name;
 } object_handlers[] = {
-    {EMPTY, ""},
     {FOOD, "food"},
     {LINEMATE, "linemate"},
     {DERAUMERE, "deraumere"},
@@ -20,6 +19,7 @@ static const struct {
     {PHIRAS, "phiras"},
     {THYSTAME, "thystame"},
     {PLAYER, "player"},
+    {EMPTY, ""},
     {0, NULL}
 };
 
