@@ -6,7 +6,7 @@
 
 void Player::setPosition(std::vector<int> newPos) {
     nextPositions.push_back(newPos);
-    if (events.back().action == PUSHED) {
+    if (!events.empty() && events.back().action == PUSHED) {
         events.back().params = newPos;
         return;
     }
