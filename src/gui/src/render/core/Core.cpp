@@ -30,12 +30,12 @@ void Core::update() {
         if (_event.type == sf::Event::Closed)
             _upperState = GameState::END;
         if (_event.type == sf::Event::MouseMoved) {
-            if (_state == GameState::GAME)
+            if (_state == GameState::GAME) {
                 _mousePos = sf::Vector2f(
                     _event.mouseMove.x * 1920 / _window.getSize().x,
                     _event.mouseMove.y * 1080 / _window.getSize().y
                 );
-            else
+            } else
                 _mousePos = sf::Vector2f(_event.mouseMove.x, _event.mouseMove.y);
         }
         _scenes[

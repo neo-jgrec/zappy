@@ -109,20 +109,13 @@ void World::drawChunck(sf::RenderWindow &window, int i, int j)
         window.draw(_sprites["hover1"]->_sprite);
     }
     for (auto &trantorian : _trantorians) {
-        if (trantorian._tile.x == i && trantorian._tile.y == j) {
+        if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
             trantorian.setPosition(sf::Vector2f(
                 _chuncks[i][j]._pos.x,
                 _chuncks[i][j]._pos.y
             ));
             trantorian.draw(window);
         }
-    }
-    if (i == _hoveredTile.x && j == _hoveredTile.y && !_isDragging) {
-        _sprites["hover2"]->_sprite.setPosition(
-            _chuncks[i][j]._pos.x,
-            _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset
-        );
-        window.draw(_sprites["hover2"]->_sprite);
     }
     if (_selectedTile.x == i && _selectedTile.y == j) {
         _sprites["halo1"]->_sprite.setPosition(
@@ -178,18 +171,21 @@ void World::updateTrantorians()
 
     players = _core->_data.getPlayers();
     for (auto &player : players) {
+        player.second.getNextEvent();
+
         exisitingPlayers = false;
+                // std::cout << "Player " << player.first << " is at " << player.second.getPosition()[0] << "x" << player.second.getPosition()[1] << std::endl;
         for (auto &trantorian : _trantorians) {
             if (trantorian._id == player.first) {
                 exisitingPlayers = true;
-                // trantorian._tile = sf::Vector2f(player.second._pos[0], player.second._pos[1]);
+                trantorian.setTile(sf::Vector2f(player.second.getPosition()[0], player.second.getPosition()[1]));
+                // std::cout << "Player " << player.first << " is at " << player.second.getPosition()[0] << "x" << player.second.getPosition()[1] << std::endl;
                 break;
             }
         }
         if (!exisitingPlayers) {
-            Trantorian trantorian(*_sprites["trantorian"]);
+            Trantorian trantorian(*_sprites["trantorian"], sf::Vector2f(player.second.getPosition()[0], player.second.getPosition()[1]));
             trantorian._id = player.first;
-            // trantorian._tile = sf::Vector2f(player.second._pos[0], player.second._pos[1]);
             _trantorians.push_back(trantorian);
         }
 

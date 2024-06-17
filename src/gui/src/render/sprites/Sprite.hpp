@@ -21,6 +21,7 @@ class Sprite {
         ~Sprite() {};
 
         void setPosition(sf::Vector2f pos) { _sprite.setPosition(pos); }
+        sf::Vector2f getPosition() { return _sprite.getPosition(); }
         void setSize(sf::Vector2f size) { _sprite.setScale(size); }
         void draw(sf::RenderWindow &window) { window.draw(_sprite); }
         void update();

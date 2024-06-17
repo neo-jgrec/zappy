@@ -18,12 +18,7 @@
     #include "shape/diamond.hpp"
 
     #include "../../sprites/Sprite.hpp"
-
-
-static const int TILE_SIZE_X = 95;
-static const int TILE_SIZE_Y = 97;
-static const int TILE_SIZE_MX = 46;
-static const int TILE_SIZE_MY = 27;
+    #include "../../core/Setting.hpp"
 
 class Core;
 class World : public IScene {
@@ -33,7 +28,6 @@ class World : public IScene {
             _diamond = Diamond(sf::Vector2f(TILE_SIZE_X, TILE_SIZE_Y));
             _sprites["halo1"] = std::make_shared<Sprite>("./assets/halo1.png");
             _sprites["hover1"] = std::make_shared<Sprite>("./assets/hover1.png");
-            _sprites["hover2"] = std::make_shared<Sprite>("./assets/hover2.png");
             _sprites["trantorian"] = std::make_shared<Sprite>("./assets/trantorian.png");
             _view.setSize(sf::Vector2f(1920 , 1080));
 

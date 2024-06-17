@@ -71,7 +71,7 @@ class Player
         void setTeam(std::string newTeam);
         void setPlayerNb(int newId);
         void setInventory(std::vector<int> inventoryVals);
-        
+
         std::vector<int> getInventory();
         std::vector<int> getPosition();
         int getOrientation();
