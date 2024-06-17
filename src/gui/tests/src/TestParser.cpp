@@ -19,7 +19,7 @@ Test(Parser, mszNormal)
 
     parser.parse(args, data, server);
     parser.execute();
-    cr_assert_eq(data.getMap().getSize(), 10);
+    cr_assert_eq(data.getMap().getMap().size(), 10);
 }
 
 Test(Parser, mszWrongArgs)

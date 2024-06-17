@@ -22,7 +22,7 @@
 void Parser::msz (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_unused]] ServerConnect &server) {
     checkType(tokens, std::vector<Type>(2, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
-        if (gameData.getMap().getSize() > 0)
+        if (gameData.getMap().getMap().size() > 0)
             return;
         int x = std::get<int>(tokens.at(1));
         int y = std::get<int>(tokens.at(2));
