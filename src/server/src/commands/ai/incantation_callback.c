@@ -22,6 +22,12 @@ void callback_level_up(
 )
 {
     client->level++;
+    message_to_graphicals(
+        server,
+        "plv %d %d\n",
+        client->fd,
+        client->level
+    );
 }
 
 void callback_unfreeze(
