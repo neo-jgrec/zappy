@@ -59,7 +59,7 @@ static void send_broadcast_to_graphicals(client_t *client, server_t *server)
     client_t *receiver;
 
     if (server->proprieties.is_iteration == true &&
-    strcmp(client->commands[0], "STOP") == 0)
+    strcmp(client->commands[1], "STOP") == 0)
         exit(OK_STATUS);
     TAILQ_FOREACH(client_list_entry, &server->clients, entries) {
         receiver = client_list_entry->client;
