@@ -41,23 +41,24 @@ static void set_dx_and_dy(
 
 void eject(client_t *c, server_t *s)
 {
-    signed char dx = 0;
-    signed char dy = 0;
+    signed char x = 0;
+    signed char y = 0;
     client_list_t *n;
     signed char new_x;
     signed char new_y;
 
-    set_dx_and_dy(c->orientation, &dx, &dy);
+    set_dx_and_dy(c->orientation, &x, &y);
     TAILQ_FOREACH(n, &s->clients, entries) {
         if (n->client->x == c->x && n->client->y == c->y && n->client != c) {
-            new_x = (c->x + dx + s->proprieties.width) % s->proprieties.width;
-            new_y = (c->y + dy + s->proprieties.height)
-                % s->proprieties.height;
+            new_x = (c->x + x + s->proprieties.width) % s->proprieties.width;
+            new_y = (c->y + y + s->proprieties.height) % s->proprieties.height;
             n->client->x = new_x;
             n->client->y = new_y;
             asprintf(&n->client->payload,
-                "eject: %d\n", reverse_orientation(c->orientation));
+                    "eject: %d\n", reverse_orientation(c->orientation));
             message_to_graphicals(s, "pex %d\n", n->client->fd);
+            message_to_graphicals(s, "ppo %d %d %d %d\n", n->client->fd,
+                n->client->x, n->client->y, n->client->orientation);
         }
     }
     asprintf(&c->payload, "ok\n");
