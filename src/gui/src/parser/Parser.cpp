@@ -72,12 +72,12 @@ void Parser::ppo (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     checkType(tokens, std::vector<Type>(4, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
         debug_print("\nppo", "");
-        Player &player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
+        std::shared_ptr<Player> player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
         int x = std::get<int>(tokens.at(2));
         int y = std::get<int>(tokens.at(3));
         int orientation = std::get<int>(tokens.at(4));
-        player.setPosition(std::vector<int>({x, y}));
-        player.setOrientation(orientation);
+        player->setPosition(std::vector<int>({x, y}));
+        player->setOrientation(orientation);
         debug_print("\\ppo", "");
     };
     _queue.push(lambda);
@@ -87,9 +87,9 @@ void Parser::plv (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     checkType(tokens, std::vector<Type>(2, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
         debug_print("\nplv", "");
-        Player &player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
+        std::shared_ptr<Player> player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
         int lvl = std::get<int>(tokens.at(2));
-        player.setLvl(lvl);
+        player->setLvl(lvl);
         debug_print("\\plv", "");
     };
     _queue.push(lambda);
@@ -99,11 +99,11 @@ void Parser::pin (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     checkType(tokens, std::vector<Type>(10, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
         debug_print("\npin", "");
-        Player &player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
+        std::shared_ptr<Player> player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
         std::vector<int> inventory;
         for (int i = 4; i < 11; i++)
             inventory.push_back(std::get<int>(tokens.at(i)));
-        player.setInventory(inventory);
+        player->setInventory(inventory);
         debug_print("\\pin", "");
     };
     _queue.push(lambda);
@@ -113,8 +113,8 @@ void Parser::pex (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     checkType(tokens, std::vector<Type>(1, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData, &server]() {
         int playerNb = std::get<int>(tokens.at(1));
-        Player &player = gameData.getPlayerById(playerNb);
-        player.setPushed();
+        std::shared_ptr<Player> player = gameData.getPlayerById(playerNb);
+        player->setPushed();
         server.sendToServer("ppo " + std::to_string(playerNb) + "\n");
     };
     _queue.push(lambda);
@@ -125,8 +125,8 @@ void Parser::pbc (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     auto lambda = [tokens, &gameData]() {
         debug_print("\npbc", "");
         int playerNb = std::get<int>(tokens.at(1));
-        Player player = gameData.getPlayerById(playerNb);
-        std::vector<int> pos = player.getPosition();
+        std::shared_ptr<Player> player = gameData.getPlayerById(playerNb);
+        std::vector<int> pos = player->getPosition();
         std::string msg = std::get<std::string>(tokens.at(2));
         gameData.addBroadcast(playerNb, pos, msg);
         debug_print("\\pbc", "");
@@ -144,8 +144,8 @@ void Parser::pic (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
 
         for (size_t i = 4; i < tokens.size(); i++) {
             int playerNb = std::get<int>(tokens.at(i));
-            Player &player = gameData.getPlayerById(playerNb);
-            player.setIncanting();
+            std::shared_ptr<Player> player = gameData.getPlayerById(playerNb);
+            player->setIncanting();
             playersId.push_back(playerNb);
         }
         gameData.addIncantation(pos, lvl, playersId);
@@ -172,8 +172,8 @@ void Parser::pfk (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     auto lambda = [tokens, &gameData]() {
         debug_print("\npfk", "");
         int playerNb = std::get<int>(tokens.at(1));
-        Player &player = gameData.getPlayerById(playerNb);
-        player.setEgging();
+        std::shared_ptr<Player> player = gameData.getPlayerById(playerNb);
+        player->setEgging();
         debug_print("\\pfk", "");
     };
     _queue.push(lambda);
@@ -184,8 +184,8 @@ void Parser::pdr (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     auto lambda = [tokens, &gameData, &server]() {
         int playerNb = std::get<int>(tokens.at(1));
         int resource = std::get<int>(tokens.at(2));
-        Player &player = gameData.getPlayerById(playerNb);
-        player.setDrop(resource);
+        std::shared_ptr<Player> player = gameData.getPlayerById(playerNb);
+        player->setDrop(resource);
         server.sendToServer("pin " + std::to_string(playerNb) + "\n");
         server.sendToServer("ppo " + std::to_string(playerNb) + "\n");
     };
@@ -197,8 +197,8 @@ void Parser::pgt (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     auto lambda = [tokens, &gameData, &server]() {
         int playerNb = std::get<int>(tokens.at(1));
         int resource = std::get<int>(tokens.at(2));
-        Player& player = gameData.getPlayerById(playerNb);
-        player.setPickup(resource);
+        std::shared_ptr<Player> player = gameData.getPlayerById(playerNb);
+        player->setPickup(resource);
         server.sendToServer("pin " + std::to_string(playerNb) + "\n");
         server.sendToServer("ppo " + std::to_string(playerNb) + "\n");
     };
@@ -210,8 +210,8 @@ void Parser::pdi (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     auto lambda = [tokens, &gameData]() {
         debug_print("\npdi", "");
         int playerNb = std::get<int>(tokens.at(1));
-        Player& player = gameData.getPlayerById(playerNb);
-        player.setAlive(false);
+        std::shared_ptr<Player> player = gameData.getPlayerById(playerNb);
+        player->setAlive(false);
         debug_print("\\pdi", "");
     };
     _queue.push(lambda);

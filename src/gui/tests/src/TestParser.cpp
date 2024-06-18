@@ -1,13 +1,14 @@
 #include <criterion/criterion.h>
 #include <criterion/internal/assert.h>
 #include <criterion/redirect.h>
+#include <memory>
 #include <string>
 #include <variant>
 #include <vector>
 
-#include "../../src/Parser.hpp"
-#include "../../src/Incantation.hpp"
-#include "../../src/GuiException.hpp"
+#include "../../src/parser/Parser.hpp"
+#include "../../src/parser/Incantation.hpp"
+#include "../../src/utils/GuiException.hpp"
 
 Test(Parser, mszNormal)
 {
@@ -165,11 +166,13 @@ Test(Parser, ppoNormal)
 
     parser.parse(args2, data, server);
     parser.execute();
-    Player p = data.getPlayerById(1);
-    p.getNextEvent();
-    std::vector<int> position = p.getPosition();
+    std::shared_ptr<Player> p = data.getPlayerById(1);
+    p->getNextEvent();
+    std::vector<int> position = p->getPosition();
     cr_assert_eq(position[0], 2, "Expected 2, got %d", position[0]);
     cr_assert_eq(position[1], 2, "Expected 2, got %d", position[1]);
+
+    cr_assert_eq(p->getNextEvent().action, NONE);
 }
 
 Test(Parser, ppoWrongArgs)
@@ -248,13 +251,13 @@ Test(Parser, pinNormal)
     parser.parse(args2, data, server);
 
     parser.execute();
-    int q0 = data.getPlayerById(1).getInventory().at(0);
-    int q1 = data.getPlayerById(1).getInventory().at(1);
-    int q2 = data.getPlayerById(1).getInventory().at(2);
-    int q3 = data.getPlayerById(1).getInventory().at(3);
-    int q4 = data.getPlayerById(1).getInventory().at(4);
-    int q5 = data.getPlayerById(1).getInventory().at(5);
-    int q6 = data.getPlayerById(1).getInventory().at(6);
+    int q0 = data.getPlayerById(1)->getInventory().at(0);
+    int q1 = data.getPlayerById(1)->getInventory().at(1);
+    int q2 = data.getPlayerById(1)->getInventory().at(2);
+    int q3 = data.getPlayerById(1)->getInventory().at(3);
+    int q4 = data.getPlayerById(1)->getInventory().at(4);
+    int q5 = data.getPlayerById(1)->getInventory().at(5);
+    int q6 = data.getPlayerById(1)->getInventory().at(6);
 
     
     cr_assert_eq(q0, 0, "Expected 0, got %d", q0);
@@ -301,7 +304,7 @@ Test(Parser, pexNormal)
 
     parser.parse(args2, data, server);
     parser.execute();
-    cr_assert_eq(data.getPlayerById(1).getNextEvent().action, PUSHED);
+    cr_assert_eq(data.getPlayerById(1)->getNextEvent().action, PUSHED);
 }
 
 Test(Parser, pexWrongArgs)
@@ -436,7 +439,7 @@ Test(Parser, pfkNormal)
 
     parser.parse(args2, data, server);
     parser.execute();
-    cr_assert_eq(data.getPlayerById(1).getNextEvent().action, EGGING);
+    cr_assert_eq(data.getPlayerById(1)->getNextEvent().action, EGGING);
 }
 
 Test(Parser, pfkWrongArgs)
@@ -561,7 +564,7 @@ Test(Parser, pdiNormal)
 
     parser.parse(args2, data, server);
     parser.execute();
-    cr_assert_eq(data.getPlayerById(1).getAlive(), false);
+    cr_assert_eq(data.getPlayerById(1)->getAlive(), false);
 }
 
 Test(Parser, pdiWrongArgs)

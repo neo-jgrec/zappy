@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include <iostream>
 
 //-----------------------------------------------------------------//
 //----------------------------SETTERS------------------------------//
@@ -62,14 +63,18 @@ void Player::setInventory(std::vector<int> inventoryVals) {
 //----------------------------GETTERS------------------------------//
 //-----------------------------------------------------------------//
 
+#include <iostream>
+
 Event Player::getNextEvent() {
     if (events.empty())
         return NONE;
+    std::cout << "oui " << oui << std::endl;
     Event event = events.front();
     if (event.action == MOVING)
         popNextPosition();
     if (event.action == PUSHED)
         popNextPosition();
+    oui++;
     events.erase(events.begin());
     return event;
 };

@@ -7,6 +7,7 @@
     #include "Incantation.hpp"
     #include "Broadcast.hpp"
 
+    #include <memory>
     #include <string>
     #include <vector>
     #include <map>
@@ -19,7 +20,7 @@ class Data
         std::vector<std::string> teamNames = {};
         bool isRunning = false;
         std::map<int, Egg> eggs = {};
-        std::map<int, Player> players = {};
+        std::map<int, std::shared_ptr<Player>> players = {};
         std::map<std::vector<int>, Incantation> incantations = {};
         std::vector<Broadcast> broadcasts = {};
         std::optional<std::string> winner = std::nullopt;
@@ -64,7 +65,7 @@ class Data
 
 
         void addPlayer(std::vector<int> values, std::string teamName);
-        std::map<int, Player> &getPlayers() { return this->players; };
+        std::map<int, std::shared_ptr<Player>> getPlayers() { return players; };
 
         /**
          * @brief Get the player corresponding to the given id
@@ -72,7 +73,7 @@ class Data
          * @return a reference to the player
          * @throw guiException if the player does not exist
         */
-        Player &getPlayerById(int id);
+        std::shared_ptr<Player> getPlayerById(int id);
         bool playerExists(int id);
 
         std::map<std::vector<int>, Incantation> &getIncantations() { return this->incantations; };
