@@ -58,9 +58,15 @@ void ABotProbabilistic::run(const std::string &response)
     }
     _iteration++;
     printColor("========== [!Bot Run] ==========\n", BLUE);
+    if (_iteration % 15 == 0) // TODO: make it when flag --save-data is entered
+    {
+        std::cout << "store data\n";
+        saveData("./src/ai/dataSaved/behaviors.txt");
+    }
     if (_iteration == 100)
     {
         debugState();
+        saveData("./src/ai/dataSaved/behaviors.txt");
         exit(0);
     }
 }
@@ -120,5 +126,18 @@ void ABotProbabilistic::act()
     if (bestBehavior)
     {
         bestBehavior->act();
+        bestBehavior->count++;
     }
+}
+
+void ABotProbabilistic::saveData(const std::string &filename)
+{
+    std::ofstream out(filename, std::ios_base::app);
+
+    out << "iteration:" << _iteration << "\n";
+    for (const auto &behavior : _behaviors)
+    {
+        out << behavior->name << ":" << behavior->count << "\n";
+    }
+    out << "\n";
 }

@@ -23,6 +23,7 @@
 #include <ctime>
 #include <cmath>
 #include <random>
+#include <fstream>
 
 #include "state/BotState.hpp"
 #include "behaviors/Behavior.hpp"
@@ -142,6 +143,9 @@ protected:
     void debugInitialisation();
     void debugTrainedVariables();
     void debugState();
+
+    // Save Data
+    void saveData(const std::string &filename);
 
     // Probabilities
     const double &getTrainedVariableValueByName(const std::string &name) const;

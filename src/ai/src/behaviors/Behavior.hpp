@@ -20,6 +20,7 @@ public:
     double probability;
     std::function<void()> act;
     std::string name;
+    unsigned int count = 0;
 };
 
 #endif // BEHAVIORS_HPP_

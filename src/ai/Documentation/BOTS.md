@@ -3,10 +3,28 @@
 ## Scope
 
 Here is the documentation about zappy's bots:
+- Usage
 - Functionning
 - Machine Learning
 - Strategies
 🤖<br>
+
+## Usage 👨‍💻
+**Run theses commands at root of projets**
+- Run server:
+```sh
+./zappy_ai -p port -n team -h address
+```
+
+- Run the machine learning training:
+```sh
+python3 ./src/ai/src/training/training.py
+```
+
+- Run the graph for behaviors:
+```sh
+python3 ./src/ai/bonus/printBehaviorsGraph.py
+```
 
 ## Functionning 🧑‍💼
 
