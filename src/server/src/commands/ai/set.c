@@ -42,14 +42,6 @@ static void remove_element_from_inventory(client_t *c, object_t object)
     }
 }
 
-static void add_element_to_tile(tile_t *tile, object_t object)
-{
-    tile->num_objects++;
-    tile->objects = realloc(tile->objects,
-    sizeof(object_t) * tile->num_objects);
-    tile->objects[tile->num_objects - 1] = object;
-}
-
 void set(client_t *c, server_t *s)
 {
     object_t o = -1;
@@ -66,10 +58,11 @@ void set(client_t *c, server_t *s)
     }
     if ((int)o != -1 && c->inventory.food != 0) {
         remove_element_from_inventory(c, FOOD);
-        add_element_to_tile(&s->map[c->y * s->proprieties.width + c->x], o);
+        add_element_to_map(s, c->x, c->y, o);
         asprintf(&c->payload, "ok\n");
         message_to_graphicals(s, "pdr %d %d\n", c->fd, o);
         client_time_handler(c, SET);
+        return;
     }
     dprintf(c->fd, "ko\n");
 }
