@@ -21,5 +21,5 @@ For 2D renders, we greatly encourage you to use the SFML because you should alre
 :::
 
 :::note
-To know more about our GUI, I invite you to read the [GUI documentation](/docs/Programs/GUI).
+To know more about our GUI, I invite you to read the [GUI documentation](/category/GUI).
 :::
