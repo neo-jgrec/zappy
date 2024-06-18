@@ -18,8 +18,14 @@ class Trantorian {
             : _sprite(sprite), _tile(tile)
         {
             // _sprite.setSize(sf::Vector2f(TILE_SIZE_X, TILE_SIZE_Y));
-            _sprite.setPosition(sf::Vector2f(tile.x * TILE_SIZE_X, tile.y * TILE_SIZE_Y));
-            _targetPos = sf::Vector2f(tile.x * TILE_SIZE_X, tile.y * TILE_SIZE_Y);
+            _sprite.setPosition(sf::Vector2f(
+                _tile.x * TILE_SIZE_MX - _tile.y * TILE_SIZE_MX - TILE_SIZE_X / 4 * 3,
+                _tile.y * TILE_SIZE_MY + _tile.x * TILE_SIZE_MY
+            ));
+            _targetPos = sf::Vector2f(
+                _tile.x * TILE_SIZE_MX - _tile.y * TILE_SIZE_MX - TILE_SIZE_X / 4 * 3,
+                _tile.y * TILE_SIZE_MY + _tile.x * TILE_SIZE_MY
+            );
         }
         ~Trantorian() {
         }
@@ -36,7 +42,13 @@ class Trantorian {
         }
         void setTile(sf::Vector2f tile) {
             _tile = tile;
-            _targetPos = sf::Vector2f(tile.x * TILE_SIZE_X, tile.y * TILE_SIZE_Y);
+            _targetPos = sf::Vector2f(
+                _tile.x * TILE_SIZE_MX - _tile.y * TILE_SIZE_MX - TILE_SIZE_X / 4 * 3,
+                _tile.y * TILE_SIZE_MY + _tile.x * TILE_SIZE_MY
+            );
+            if (sqrt(pow(_sprite.getPosition().x - _targetPos.x, 2) + pow(_sprite.getPosition().y - _targetPos.y, 2)) > 10) {
+                _sprite.setPosition(_targetPos);
+            }
         }
         sf::Vector2f getTile() { return _tile; }
 

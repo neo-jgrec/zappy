@@ -8,8 +8,32 @@
 
 #include "World.hpp"
 #include "../../core/Core.hpp"
+#include "../../../utils/Random.hpp"
 
 #include <iostream>
+
+static const std::vector<std::string> _elements = {
+    "tree2", "tree4", "stone1", "grass", "grass2"
+};
+
+World::World(Core *core)
+    : _core(core)
+{
+
+    _sprite = std::make_shared<Sprite>("./assets/grass.png");
+    _diamond = Diamond(sf::Vector2f(TILE_SIZE_X, TILE_SIZE_Y));
+    _sprites["halo1"] = std::make_shared<Sprite>("./assets/halo1.png");
+    _sprites["hover1"] = std::make_shared<Sprite>("./assets/hover1.png");
+    _sprites["trantorian"] = std::make_shared<Sprite>("./assets/trantorian.png");
+    _sprites["grass"] = std::make_shared<Sprite>("./assets/grass_detail(1).png");
+    _sprites["grass2"] = std::make_shared<Sprite>("./assets/stone(1).png");
+    _sprites["tree2"] = std::make_shared<Sprite>("./assets/trees/tree(2).png");
+    _sprites["tree4"] = std::make_shared<Sprite>("./assets/trees/tree(4).png");
+    _sprites["stone1"] = std::make_shared<Sprite>("./assets/stone(1).png");
+    _view.setSize(sf::Vector2f(1920 , 1080));
+    _chat = std::make_shared<Chat>(_core->getFont(), 7);
+    _chat->setPosition(sf::Vector2f(50, 720 - 50));
+}
 
 void World::init()
 {
@@ -23,16 +47,28 @@ void World::init()
     );
     std::cout << "World size: " << _worldSize.x << "x" << _worldSize.y << std::endl;
     PerlinNoise noise;
+    _chat->addMessage("Connection to server established");
+    _chat->addMessage("World size: " + std::to_string(_worldSize.x) + "x" + std::to_string(_worldSize.y));
 
     for (int i = 0; i < _worldSize.x; i++) {
         std::vector<Chunck> chuncks;
         for (int j = 0; j < _worldSize.y; j++) {
             Chunck chunck;
             chunck._pos = sf::Vector2f(
-                i * 46 - j * 46 - TILE_SIZE_X / 4 * 3,
-                j * 27 + i * 27
+                i * TILE_SIZE_MX - j * TILE_SIZE_MX - TILE_SIZE_X / 4 * 3,
+                j * TILE_SIZE_MY + i * TILE_SIZE_MY
             );
             chunck._yOffset = noise.noise(i * 0.1, j * 0.1) * 80;
+            int nbElements = rand() % 2;
+            for (int k = 0; k < nbElements; k++) {
+                sf::Vector2f offset = sf::Vector2f(
+                    Random::random(0, 10) - 5,
+                    Random::random(0, 10) - 5
+                );
+                int element = rand() % _elements.size();
+                chunck.addElement(_sprites[_elements[element]], offset);
+            }
+
             chuncks.push_back(chunck);
         }
         _chuncks.push_back(chuncks);
@@ -92,6 +128,7 @@ void World::draw(sf::RenderWindow &window)
     }
     // _mapDiamond.draw(window);
     window.setView(window.getDefaultView());
+    _chat->draw(window);
 }
 
 void World::drawChunck(sf::RenderWindow &window, int i, int j)
@@ -108,19 +145,14 @@ void World::drawChunck(sf::RenderWindow &window, int i, int j)
         );
         window.draw(_sprites["hover1"]->_sprite);
     }
-    for (auto &trantorian : _trantorians) {
-        if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
-            trantorian.setPosition(sf::Vector2f(
-                _chuncks[i][j]._pos.x,
-                _chuncks[i][j]._pos.y
-            ));
+    _chuncks[i][j].draw(window);
+    for (auto &trantorian : _trantorians)
+        if (trantorian.getTile().x == i && trantorian.getTile().y == j)
             trantorian.draw(window);
-        }
-    }
     if (_selectedTile.x == i && _selectedTile.y == j) {
         _sprites["halo1"]->_sprite.setPosition(
             _chuncks[i][j]._pos.x,
-            _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y
+            _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y / 3
         );
         window.draw(_sprites["halo1"]->_sprite);
     }
@@ -172,14 +204,13 @@ void World::updateTrantorians()
     players = _core->_data.getPlayers();
     for (auto &player : players) {
         player.second.getNextEvent();
-
         exisitingPlayers = false;
                 // std::cout << "Player " << player.first << " is at " << player.second.getPosition()[0] << "x" << player.second.getPosition()[1] << std::endl;
         for (auto &trantorian : _trantorians) {
             if (trantorian._id == player.first) {
                 exisitingPlayers = true;
                 trantorian.setTile(sf::Vector2f(player.second.getPosition()[0], player.second.getPosition()[1]));
-                // std::cout << "Player " << player.first << " is at " << player.second.getPosition()[0] << "x" << player.second.getPosition()[1] << std::endl;
+                std::cout << "Player " << player.first << " is at " << player.second.getPosition()[0] << "x" << player.second.getPosition()[1] << std::endl;
                 break;
             }
         }
@@ -188,6 +219,8 @@ void World::updateTrantorians()
             trantorian._id = player.first;
             _trantorians.push_back(trantorian);
         }
-
+    }
+    for (auto &trantorian : _trantorians) {
+        trantorian.update();
     }
 }

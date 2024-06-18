@@ -19,24 +19,12 @@
 
     #include "../../sprites/Sprite.hpp"
     #include "../../core/Setting.hpp"
+    #include "../../ui/Chat.hpp"
 
 class Core;
 class World : public IScene {
     public:
-        World(Core *core) : _core(core) {
-            _sprite = std::make_shared<Sprite>("./assets/grass.png");
-            _diamond = Diamond(sf::Vector2f(TILE_SIZE_X, TILE_SIZE_Y));
-            _sprites["halo1"] = std::make_shared<Sprite>("./assets/halo1.png");
-            _sprites["hover1"] = std::make_shared<Sprite>("./assets/hover1.png");
-            _sprites["trantorian"] = std::make_shared<Sprite>("./assets/trantorian.png");
-            _view.setSize(sf::Vector2f(1920 , 1080));
-
-            // for (int i = 0; i < 10; i++) {
-            //     Trantorian trantorian(*_sprites["trantorian"]);
-            //     trantorian._tile = sf::Vector2f(rand() % (int)_worldSize.x, rand() % (int)_worldSize.y);
-            //     _trantorians.push_back(trantorian);
-            // }
-        }
+        World(Core *core);
         ~World() {}
 
         void init() override;
@@ -71,6 +59,7 @@ class World : public IScene {
         sf::Vector2f _hoveredTile;
         sf::Vector2f _selectedTile = sf::Vector2f(-1, -1);
         sf::Vector2f _mousePos;
+        std::shared_ptr<Chat> _chat;
 
         // ----- this is temporary -----
         Diamond _mapDiamond;

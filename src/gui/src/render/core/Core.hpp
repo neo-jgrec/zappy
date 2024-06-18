@@ -60,6 +60,7 @@ class Core {
         sf::Font _font;
         sf::Vector2f _resolution = sf::Vector2f(1280, 720);
         bool _fullscreen = false;
+        sf::RectangleShape _shade;
 };
 
 #endif /* !CORE_HPP_ */

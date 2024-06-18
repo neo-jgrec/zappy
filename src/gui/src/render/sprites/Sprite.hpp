@@ -17,6 +17,8 @@ class Sprite {
             if (!_texture.loadFromFile(path))
                 throw std::runtime_error("Cannot load texture");
             _sprite.setTexture(_texture);
+            sf::Vector2u size = _sprite.getTexture()->getSize();
+            _sprite.setOrigin(size.x / 2, size.y / 2);
         }
         ~Sprite() {};
 

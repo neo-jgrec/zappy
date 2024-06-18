@@ -15,6 +15,8 @@ Core::Core(int port, std::string ip) {
     _font.loadFromFile("assets/BadComic-Regular.ttf");
     _state = GameState::HOME;
     _upperState = GameState::DEFAULT;
+    _shade = sf::RectangleShape(sf::Vector2f(1920, 1080));
+    _shade.setFillColor(sf::Color(0, 0, 0, 75));
 
     _scenes[GameState::HOME] = std::make_shared<Home>(this, port, ip);
     _scenes[GameState::END] = std::make_shared<Quit>(this);
@@ -57,8 +59,10 @@ void Core::draw() {
     _window.clear(sf::Color(82,198,255));
 
     _scenes[_state]->draw(_window);
-    if (_upperState != GameState::DEFAULT)
+    if (_upperState != GameState::DEFAULT) {
+        _window.draw(_shade);
         _scenes[_upperState]->draw(_window);
+    }
     _window.display();
 }
 

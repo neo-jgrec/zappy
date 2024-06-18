@@ -11,12 +11,14 @@ Menu::Menu(Core *core) : _core(core) {
     _resolutionButtons.push_back(std::make_shared<Button>(sf::Vector2f(500, 150),
     sf::Vector2f(100, 100), "1280x720", _core->getFont()));
     _quitButton = std::make_shared<Button>(sf::Vector2f(100, 500), sf::Vector2f(100, 100), "Quit", _core->getFont());
+    _homeButton = std::make_shared<Button>(sf::Vector2f(100, 450), sf::Vector2f(100, 100), "Home", _core->getFont());
+    _homeButton->setCallBack(std::bind(&Menu::getBackHome, this));
     createHzButtons();
 }
 
 bool Menu::update(sf::Event event, sf::RenderWindow &window) {
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-        _core->_upperState = GameState::GAME;
+        _core->_upperState = GameState::DEFAULT;
     if (_fullscreenButton->update(event, window)) {
         _core->switchFullscreen();
         return true;
@@ -35,6 +37,7 @@ bool Menu::update(sf::Event event, sf::RenderWindow &window) {
     }
     if (_quitButton->update(event, window))
         window.close();
+    _homeButton->update(event, window);
     _hzInput->update(event, window);
     return true;
 }
@@ -44,7 +47,7 @@ void Menu::draw(sf::RenderWindow &window) {
     for (auto &button : _resolutionButtons)
         button->draw(window);
     _quitButton->draw(window);
-
+    _homeButton->draw(window);
     window.draw(_hzText);
     _hzInput->draw(window, _core->getDeltaTime());
 }
@@ -55,4 +58,9 @@ void Menu::createHzButtons() {
     _hzText.setFont(_core->getFont());
     _hzText.setString("Hz");
     _hzText.setPosition(100, 200);
+}
+
+void Menu::getBackHome() {
+    _core->_upperState = GameState::DEFAULT;
+    _core->_state = GameState::HOME;
 }

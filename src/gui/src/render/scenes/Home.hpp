@@ -11,6 +11,7 @@
     #include "IScene.hpp"
     #include "../ui/Button.hpp"
     #include "../ui/Input.hpp"
+    #include "../ui/Chat.hpp"
 
     #include <memory>
 
@@ -37,6 +38,8 @@ class Home : public IScene {
         std::shared_ptr<Input> _portButton;
 
         Core *_core;
+
+        std::shared_ptr<Chat> _chat;
 };
 
 #endif /* !HOME_HPP_ */
