@@ -1,7 +1,7 @@
 #include <criterion/criterion.h>
 #include <vector>
 
-#include "../../src/Broadcast.hpp"
+#include "../../src/parser/Broadcast.hpp"
 
 Test(Broadcast, constructor)
 {
