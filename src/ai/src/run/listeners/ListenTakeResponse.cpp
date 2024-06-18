@@ -7,7 +7,7 @@
 
 #include "../../ABotProbabilistic.hpp"
 
-// TODO: make others ressources
+// TODO: find a cleaner way to do this
 void ABotProbabilistic::listenTakeResponse(const std::string &response)
 {
     if (_state.lastAction.parameter == "food")
@@ -17,11 +17,25 @@ void ABotProbabilistic::listenTakeResponse(const std::string &response)
             _state.ressources.food += 1;
         }
     }
-    if (_state.lastAction.parameter == "linemate")
+    else if (_state.lastAction.parameter == "linemate")
     {
         if (response == "ok")
         {
             _state.ressources.linemate += 1;
+        }
+    }
+    else if (_state.lastAction.parameter == "deraumere")
+    {
+        if (response == "ok")
+        {
+            _state.ressources.deraumere += 1;
+        }
+    }
+    else if (_state.lastAction.parameter == "sibur")
+    {
+        if (response == "ok")
+        {
+            _state.ressources.sibur += 1;
         }
     }
 }

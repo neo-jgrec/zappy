@@ -23,7 +23,7 @@ python3 ./src/ai/src/training/training.py
 
 - Run the graph for behaviors:
 ```sh
-python3 ./src/ai/bonus/printBehaviorsGraph.py
+rm ./src/ai/dataSaved/behaviors.txt && ./src/ai/bonus/printBehaviorsGraph.py
 ```
 
 ## Functionning 🧑‍💼

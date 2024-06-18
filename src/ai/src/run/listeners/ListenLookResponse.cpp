@@ -56,19 +56,18 @@ void ABotProbabilistic::listenLookResponse(const std::string &response)
             addLimit += 2;
         }
     }
+    // debug
+    //  for (auto &tile : _state.environment.tiles)
+    //  {
+    //      std::cout << "Tile: x:" << tile.x << " y: " << tile.y << " distance: " << tile.distance << std::endl;
+    //      std::cout << "Ressources: " << std::endl;
+    //      std::cout << "food: " << tile.ressources.food << std::endl;
+    //      std::cout << "linemate: " << tile.ressources.linemate << std::endl;
+    //      std::cout << "deraumere: " << tile.ressources.deraumere << std::endl;
+    //      std::cout << "sibur: " << tile.ressources.sibur << std::endl;
+    //      std::cout << "mendiane: " << tile.ressources.mendiane << std::endl;
+    //      std::cout << "phiras: " << tile.ressources.phiras << std::endl;
+    //      std::cout << "thystame: " << tile.ressources.thystame << std::endl;
+    //      std::cout << "player: " << tile.ressources.player << std::endl;
+    //  }
 }
-
-// debug
-// for (auto &tile : state.environment.tiles)
-// {
-//     std::cout << "Tile: x:" << tile.x << " y: " << tile.y << " distance: " << tile.distance << std::endl;
-//     std::cout << "Ressources: " << std::endl;
-//     std::cout << "food: " << tile.ressources.food << std::endl;
-//     std::cout << "linemate: " << tile.ressources.linemate << std::endl;
-//     std::cout << "deraumere: " << tile.ressources.deraumere << std::endl;
-//     std::cout << "sibur: " << tile.ressources.sibur << std::endl;
-//     std::cout << "mendiane: " << tile.ressources.mendiane << std::endl;
-//     std::cout << "phiras: " << tile.ressources.phiras << std::endl;
-//     std::cout << "thystame: " << tile.ressources.thystame << std::endl;
-//     std::cout << "player: " << tile.ressources.player << std::endl;
-// }
