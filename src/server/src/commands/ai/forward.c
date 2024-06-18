@@ -12,8 +12,8 @@ void forward(client_t *client, server_t *server)
     int width = server->proprieties.width;
     int height = server->proprieties.height;
     int direction = client->orientation % 4;
-    int dx[] = {0, 1, 0, -1};
-    int dy[] = {-1, 0, 1, 0};
+    int dx[] = {0, 0, -1, 1};
+    int dy[] = {-1, 1, 0, 0};
 
     client->x = (client->x + dx[direction] + width) % width;
     client->y = (client->y + dy[direction] + height) % height;
