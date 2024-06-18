@@ -20,7 +20,9 @@ std::map<actions, ActionInfo> actionMap = {
     {EJECT, ActionInfo("Eject", 7)},
     {TAKE, ActionInfo("Take", 7)},
     {SET, ActionInfo("Set", 7)},
-    {INCANTATION, ActionInfo("Incantation", 300)}};
+    {INCANTATION, ActionInfo("Incantation", 300)},
+    {LISTENING, ActionInfo("Listening", 0)},
+};
 
 ActionInfo::ActionInfo(const std::string &name, int value) : name(name), value(value)
 {

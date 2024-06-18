@@ -45,13 +45,16 @@ void ABotProbabilistic::run(const std::string &response)
     // if (responseCopy.find("message") != std::string::npos)
     //     _doNothing = true;
     listen(responseCopy);
-    updateProbabilities();
-    if (queue.empty())
-        act(); // -> fait l'action la plus rentable
-    if (!queue.empty())
+    if (_state.lastAction.action != LISTENING)
     {
-        queue.front().first();
-        queue.erase(queue.begin());
+        updateProbabilities();
+        if (queue.empty())
+            act(); // -> fait l'action la plus rentable
+        if (!queue.empty())
+        {
+            queue.front().first();
+            queue.erase(queue.begin());
+        }
     }
     _iteration++;
     printColor("========== [!Bot Run] ==========\n", BLUE);
@@ -70,6 +73,8 @@ void ABotProbabilistic::listen(const std::string &response)
         listenTakeResponse(response);
     else if (_state.lastAction.action == INCANTATION)
         listenIncantationResponse(response);
+    else if (_state.lastAction.action == LISTENING)
+        listenIncantationReturnResponse(response);
     if (response.find("message") != std::string::npos)
     {
         listenBroadcastResponse(response);

@@ -25,7 +25,9 @@ enum actions
     EJECT,
     TAKE,
     SET,
-    INCANTATION
+    INCANTATION,
+    // Indicate that the bot don't act but listen
+    LISTENING,
 };
 
 class ActionInfo
