@@ -33,6 +33,7 @@ void Core::update() {
         if (_event.type == sf::Event::Closed)
             _upperState = GameState::END;
         if (_event.type == sf::Event::MouseMoved) {
+            _realMousePos = sf::Vector2f(_event.mouseMove.x, _event.mouseMove.y);
             if (_state == GameState::GAME) {
                 _mousePos = sf::Vector2f(
                     _event.mouseMove.x * 1920 / _window.getSize().x,

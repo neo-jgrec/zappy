@@ -25,6 +25,7 @@ World::World(Core *core)
     _sprites["halo1"] = std::make_shared<Sprite>("./assets/halo1.png");
     _sprites["hover1"] = std::make_shared<Sprite>("./assets/hover1.png");
     _sprites["trantorian"] = std::make_shared<Sprite>("./assets/trantorian.png");
+    _sprites["trantorian_run"] = std::make_shared<Sprite>("./assets/trantorian_run.png");
     _sprites["grass"] = std::make_shared<Sprite>("./assets/grass_detail(1).png");
     _sprites["grass2"] = std::make_shared<Sprite>("./assets/stone(1).png");
     _sprites["tree2"] = std::make_shared<Sprite>("./assets/trees/tree(2).png");
@@ -92,6 +93,11 @@ bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
     );
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
         _core->_upperState = GameState::MENU;
+    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
+        _isDragging = false;
+        _offset = sf::Vector2f(0, 0);
+        _tmpOffset = sf::Vector2f(0, 0);
+    }
     if (event.type == sf::Event::MouseMoved ||
         event.type == sf::Event::MouseButtonPressed) {
         for (int i = 0; i < _worldSize.x; i++) {
@@ -162,12 +168,12 @@ bool World::moveMap(sf::Event event)
 {
     if (event.type == sf::Event::MouseWheelScrolled) {
         if (event.mouseWheelScroll.delta > 0) {
-            _zoom += 0.1;
+            _zoom -= 65 * _core->getDeltaTime();
         } else {
-            _zoom -= 0.1;
+            _zoom += 65 * _core->getDeltaTime();
         }
-        if (_zoom < 0.5f)
-            _zoom = 0.5f;
+        if (_zoom < 0.25f)
+            _zoom = 0.25f;
         if (_zoom > 2)
             _zoom = 2;
         _view.setSize(sf::Vector2f(1920 * _zoom, 1080 * _zoom));
@@ -191,7 +197,7 @@ bool World::moveMap(sf::Event event)
                 _tmpOffset = sf::Vector2f(0, 0);
                 return true;
             }
-        _tmpOffset = - _core->getMousePos() + _dragStart;
+        _tmpOffset = (- _core->getMousePos() + _dragStart) * _zoom;
     }
     return true;
 }
@@ -215,12 +221,12 @@ void World::updateTrantorians()
             }
         }
         if (!exisitingPlayers) {
-            Trantorian trantorian(*_sprites["trantorian"], sf::Vector2f(player.second.getPosition()[0], player.second.getPosition()[1]));
+            Trantorian trantorian(*_sprites["trantorian"], *_sprites["trantorian_run"], sf::Vector2f(player.second.getPosition()[0], player.second.getPosition()[1]));
             trantorian._id = player.first;
             _trantorians.push_back(trantorian);
         }
     }
     for (auto &trantorian : _trantorians) {
-        trantorian.update();
+        trantorian.update(_core->getDeltaTime());
     }
 }
