@@ -41,13 +41,10 @@ void ABotProbabilistic::run(const std::string &response)
     {
         responseCopy.pop_back();
     }
-    if (_state.lastAction.action == LOOK || _state.lastAction.action == TAKE)
-    {
-        printKeyValueColored("Bot listens", responseCopy);
-        if (responseCopy.find("message") != std::string::npos)
-            _doNothing = true;
-        listen(responseCopy);
-    }
+    printKeyValueColored("Bot listens", responseCopy);
+    // if (responseCopy.find("message") != std::string::npos)
+    //     _doNothing = true;
+    listen(responseCopy);
     updateProbabilities();
     if (queue.empty())
         act(); // -> fait l'action la plus rentable
@@ -68,21 +65,11 @@ void ABotProbabilistic::run(const std::string &response)
 void ABotProbabilistic::listen(const std::string &response)
 {
     if (_state.lastAction.action == LOOK)
-    {
         listenLookResponse(response);
-    }
-    else if (_state.lastAction.action == FORK)
-    {
-        listenForkResponse(response);
-    }
     else if (_state.lastAction.action == TAKE)
-    {
         listenTakeResponse(response);
-    }
-    else if (_state.lastAction.action == FORWARD)
-    {
-        listenForwardResponse(response);
-    }
+    else if (_state.lastAction.action == INCANTATION)
+        listenIncantationResponse(response);
     if (response.find("message") != std::string::npos)
     {
         listenBroadcastResponse(response);
@@ -94,7 +81,6 @@ void ABotProbabilistic::doAction(actions action, const std::string &parameter)
     ActionInfo actionInfo = getActionInfo(action);
 
     std::string finalAction = actionInfo.getName();
-
     if (parameter != "")
         finalAction += " " + parameter;
     printKeyValueColored("Bot does", finalAction);

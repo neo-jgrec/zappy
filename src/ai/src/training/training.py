@@ -19,16 +19,23 @@ def stop_server(server_process):
 def run_bot(port, team_name, host):
     return subprocess.Popen(['./zappy_ai', str(port), team_name, host], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-def write_config(file_path, food_importance, food_probability, linemate_probability):
+def write_config(file_path, food_importance, food_probability, linemate_probability, incantation_probability):
     with open(file_path, 'w') as f:
         f.write(f"food_importance={food_importance}\n")
         f.write(f"food_probability={food_probability}\n")
         f.write(f"linemate_probability={linemate_probability}\n")
+        f.write(f"incantation_probability={incantation_probability}\n")
 
 def generate_probabilities():
     food_probability = round(random.uniform(0, 1), 2)
-    linemate_probability = round(1 - food_probability, 2)
-    return food_probability, linemate_probability
+    linemate_probability = round(random.uniform(0, 1), 2)
+    incantation_probability = round(1 - (food_probability + linemate_probability), 2)
+    if incantation_probability < 0:
+        incantation_probability = 0
+        total = food_probability + linemate_probability
+        food_probability = round(food_probability / total, 2)
+        linemate_probability = round(1 - food_probability, 2)
+    return food_probability, linemate_probability, incantation_probability
 
 def mutate_probability(prob):
     mutation = random.uniform(-0.1, 0.1)
@@ -38,6 +45,7 @@ def mutate_importance(importance):
     mutation = random.randint(-2, 2)
     return max(1, importance + mutation)
 
+# Look at documentation for more information
 def strip_ansi_escape_codes(s):
     ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
     return ansi_escape.sub('', s)
@@ -73,8 +81,8 @@ def parse_bot_output(output):
     return bot_state
 
 def print_best_bot_graph(bot):
-    labels = ['food_probability', 'linemate_probability']
-    probabilities = [bot['config']['food_probability'], bot['config']['linemate_probability']]
+    labels = ['food_probability', 'linemate_probability', 'incantation_probability']
+    probabilities = [bot['config']['food_probability'], bot['config']['linemate_probability'], bot['config']['incantation_probability']]
     plt.bar(labels, probabilities)
     plt.ylim(0, 1)
     plt.title('Best Bot Probabilities')
@@ -94,23 +102,22 @@ if __name__ == "__main__":
     num_generations = 5
     population_size = 3
 
-    # Initialize population
     population = []
     for _ in range(population_size):
         food_importance = random.randint(1, 10)
-        food_probability, linemate_probability = generate_probabilities()
+        food_probability, linemate_probability, incantation_probability = generate_probabilities()
         population.append({
             "config": {
                 "food_importance": food_importance,
                 "food_probability": food_probability,
-                "linemate_probability": linemate_probability
+                "linemate_probability": linemate_probability,
+                "incantation_probability": incantation_probability
             }
         })
 
     for generation in range(num_generations):
         print(colored(f"Generation {generation + 1}", 'blue'))
 
-        # Start the server
         server_process = start_server(port, width, height, team_names, client_count, freq)
         time.sleep(2)
 
@@ -120,7 +127,8 @@ if __name__ == "__main__":
                 write_config(config_file_path,
                              bot['config']['food_importance'],
                              bot['config']['food_probability'],
-                             bot['config']['linemate_probability'])
+                             bot['config']['linemate_probability'],
+                             bot['config']['incantation_probability'])
 
                 bot_process = run_bot(port, team_names[0], host)
                 bot_processes.append((bot_process, bot))
@@ -132,7 +140,6 @@ if __name__ == "__main__":
         finally:
             stop_server(server_process)
 
-        # Sort bots by performance
         population.sort(key=lambda x: (
             x['state']['level'],
             x['state']['thystame'],
@@ -146,14 +153,14 @@ if __name__ == "__main__":
 
         best_bot = population[0]
 
-        # Generate new population based on the best bot
         new_population = [best_bot]
         for _ in range(population_size - 1):
             new_bot = {
                 "config": {
                     "food_importance": mutate_importance(best_bot['config']['food_importance']),
                     "food_probability": mutate_probability(best_bot['config']['food_probability']),
-                    "linemate_probability": mutate_probability(best_bot['config']['linemate_probability'])
+                    "linemate_probability": mutate_probability(best_bot['config']['linemate_probability']),
+                    "incantation_probability": mutate_probability(best_bot['config']['incantation_probability'])
                 }
             }
             new_population.append(new_bot)
@@ -165,6 +172,7 @@ if __name__ == "__main__":
         f.write(f"food_importance={best_bot['config']['food_importance']}\n")
         f.write(f"food_probability={best_bot['config']['food_probability']}\n")
         f.write(f"linemate_probability={best_bot['config']['linemate_probability']}\n")
+        f.write(f"incantation_probability={best_bot['config']['incantation_probability']}\n")
     print_best_bot_graph(best_bot)
 
     print(colored("Best bot configurations:", 'blue'))

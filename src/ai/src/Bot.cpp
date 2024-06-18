@@ -18,6 +18,8 @@ void Bot::init(int sockfd, const std::string &teamName)
                                                     { survive(); }, "survive"));
     _behaviors.push_back(std::make_unique<Behavior>(0, [&]()
                                                     { searchLinemate(); }, "searchLinemate"));
+    _behaviors.push_back(std::make_unique<Behavior>(0, [&]()
+                                                    { incantation({"linemate"}); }, "incantationLvl1"));
 
     for (auto &behavior : _behaviors)
     {
@@ -63,6 +65,7 @@ void Bot::loadConfig(const std::string &filename)
     _trainedVariables.push_back(std::make_unique<TrainedVariable>(configValues["food_importance"], "food_importance"));
     _trainedVariables.push_back(std::make_unique<TrainedVariable>(configValues["food_probability"], "food_probability"));
     _trainedVariables.push_back(std::make_unique<TrainedVariable>(configValues["linemate_probability"], "linemate_probability"));
+    _trainedVariables.push_back(std::make_unique<TrainedVariable>(configValues["incantation_probability"], "incantation_probability"));
 }
 
 // TODO: verify it with Garance
@@ -89,6 +92,13 @@ void Bot::updateProbabilities()
         {
             if (_state.level == 1 && _state.ressources.linemate != 1)
                 newProbability += getTrainedVariableValueByName("linemate_probability") * std::log(1 + _state.ressources.linemate);
+            else
+                newProbability = baseline;
+        }
+        if (behavior->name == "incantationLvl1")
+        {
+            if (_state.ressources.linemate == 1 && _state.level == 1)
+                newProbability = 1; // to verify: test incant getTrainedVariableValueByName("incantation_probability");
             else
                 newProbability = baseline;
         }

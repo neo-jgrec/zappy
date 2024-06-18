@@ -114,6 +114,7 @@ protected:
     void listenTakeResponse(const std::string &response);
     void listenForwardResponse(const std::string &response);
     void listenBroadcastResponse(const std::string &response);
+    void listenIncantationResponse(const std::string &response);
 
     // Logic
     void findPath(std::pair<int, int> start, const std::pair<int, int> &end);
@@ -134,6 +135,7 @@ protected:
     void searchPhiras();
     void searchThystame();
     void trapMessage();
+    void incantation(std::vector<std::string> objs);
 
     // Debug
     void debugInitialisation();
