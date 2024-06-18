@@ -86,7 +86,7 @@ static void send_command(
         nsec_sus = (current->tv_nsec + cmd_start_time.tv_nsec);
         elapsed = sec_sus + nsec_sus / NANOSECONDS_IN_SECOND;
         if (elapsed >= interval && client->tclient[i].command == INCANTATION)
-            incantation_callback_end_of_command(client, NULL);
+            incantation_callback_end_of_command(client, server);
         if (elapsed >= interval)
             print_egg_graphic(client, i, server);
     }
