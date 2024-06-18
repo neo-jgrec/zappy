@@ -5,9 +5,9 @@
 #include <variant>
 #include <vector>
 
-#include "../../src/Parser.hpp"
-#include "../../src/Incantation.hpp"
-#include "../../src/GuiException.hpp"
+#include "../../src/parser/Parser.hpp"
+#include "../../src/parser/Incantation.hpp"
+#include "../../src/utils/GuiException.hpp"
 
 Test(Parser, mszNormal)
 {
