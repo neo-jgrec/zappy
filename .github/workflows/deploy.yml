@@ -60,17 +60,17 @@ jobs:
       - name: Generate coverage report
         working-directory: ${{ github.workspace }}
         run: |
-          mkdir -p coverage
+          mkdir -p _coverage
           for project in $PROJECTS; do
-            gcovr . -r $project --html --html-nested -o coverage/${project##*/}.html --exclude $project/tests --html-theme github.dark-blue --html-title "Coverage report for ${project##*/}"
+            gcovr . -r $project --html --html-nested -o _coverage/${project##*/}.html --exclude $project/tests --html-theme github.dark-blue --html-title "Coverage report for ${project##*/}"
           done
 
       - name: Switch to `docs` branch with coverage report
         working-directory: ${{ github.workspace }}
         run: |
           git checkout docs
-          mkdir -p static/coverage
-          mv coverage/* static/coverage
+          mkdir -p static/_coverage
+          mv _coverage/* static/_coverage
 
       - name: Set up Node
         uses: actions/setup-node@v3
