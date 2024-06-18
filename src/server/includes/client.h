@@ -54,6 +54,7 @@ typedef struct client_s {
     inventory_t inventory;
     tclient_t tclient[NB_REQUESTS_HANDLEABLE];
     char *payload;
+    struct timespec live_time;
     size_t level;
     bool is_incanting;
     bool is_graphic;

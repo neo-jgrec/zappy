@@ -22,8 +22,10 @@ static void asign_egg_to_client(
             client->is_connected = true;
             client->x = item->egg->x;
             client->y = item->egg->y;
+            clock_gettime(CLOCK_REALTIME, &client->live_time);
             client->egg_id = team->nb_eggs;
             TAILQ_REMOVE(&team->eggs, item, entries);
+            message_to_graphicals(server, "edi %d\n", item->egg->id);
             asprintf(&client->team_name, "%s", client->commands[0]);
             secure_free(item->egg);
             secure_free(item);
