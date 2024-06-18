@@ -43,7 +43,7 @@ void callback_start_incantation_set_payload(
     UNUSED server_t *server
 )
 {
-    asprintf(&client->payload, "Elevation underway\n");
+    dprintf(client->fd, "Elevation underway\n");
 }
 
 void callback_end_incantation_set_payload(
