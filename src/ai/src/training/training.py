@@ -181,3 +181,5 @@ if __name__ == "__main__":
     for key, value in best_bot['state'].items():
         print(colored(f"{key}: ", 'green') + colored(f"{value}", 'yellow'))
     print()
+
+# Landmark: 3. Finish simulation when the best bot is the same for 30 generations

@@ -22,6 +22,7 @@ void ABotProbabilistic::incantation(std::vector<std::string> objs)
     queue.push_back({[&]()
                      { doAction(SET, "linemate"); }, "SET"});
     // Landmark: 2. Fix queue and this. When it listen Incant it is in two steps.
+    // Dont do action after first listen of incantation
     queue.push_back({[&]()
                      { doAction(INCANTATION, ""); }, "INCANTATION"});
 }
