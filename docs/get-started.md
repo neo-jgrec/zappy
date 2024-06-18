@@ -75,3 +75,7 @@ May the best team win! 🏆
 ---
 
 For more detailed information on gameplay mechanics and commands, please refer to the respective sections on our documentation.
+
+:::note
+The project also includes unit tests, and so coverage, you can find them [here](/coverage).
+:::
