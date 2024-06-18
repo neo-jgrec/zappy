@@ -1,15 +1,16 @@
 #include <criterion/criterion.h>
 #include <vector>
 
-#include "../../src/Map.hpp"
-#include "../../src/GuiException.hpp"
+#include "../../src/parser/Map.hpp"
+#include "../../src/utils/GuiException.hpp"
 
 Test(Map, constructor)
 {
     Map map;
 
-    int size = map.getSize();
-    cr_assert_eq(size, 0, "Map size, Expected 0, got %d", size);
+    std::vector<int> size = map.getSize();
+    cr_assert_eq(size[0], 0, "Map size, Expected 0, got %d", size[0]);
+    cr_assert_eq(size[1], 0, "Map size, Expected 0, got %d", size[1]);
 }
 
 Test(Map, fillMap)
@@ -17,8 +18,9 @@ Test(Map, fillMap)
     Map map;
 
     map.fillMap(5, 5);
-    int size = map.getSize();
-    cr_assert_eq(size, 5, "Map size, Expected 5, got %d", size);
+    std::vector<int> size = map.getSize();
+    cr_assert_eq(size[0], 5, "Map size, Expected 5, got %d", size[0]);
+    cr_assert_eq(size[1], 5, "Map size, Expected 5, got %d", size[1]);
 }
 
 Test(Map, updateTile)

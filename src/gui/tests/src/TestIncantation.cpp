@@ -1,7 +1,7 @@
 #include <criterion/criterion.h>
 #include <vector>
 
-#include "../../src/Incantation.hpp"
+#include "../../src/parser/Incantation.hpp"
 
 Test(Incantation, setStatus)
 {

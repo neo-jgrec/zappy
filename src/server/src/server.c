@@ -54,7 +54,8 @@ static double get_interval(int command, double freq)
 
 static void print_egg_graphic(
     client_t *client,
-    unsigned char i
+    unsigned char i,
+    server_t *server
 )
 {
     dprintf(client->fd, "%s", client->payload);
@@ -87,7 +88,7 @@ static void send_command(
         if (elapsed >= interval && client->tclient[i].command == INCANTATION)
             incantation_callback_end_of_command(client, NULL);
         if (elapsed >= interval)
-            print_egg_graphic(client, i);
+            print_egg_graphic(client, i, server);
     }
 }
 
