@@ -70,18 +70,27 @@ static int handle_quit_client(
 
     if (check_read != 0)
         return NEUTRAL_VALUE;
-    if (client->is_graphic == false) {
+    printf("----------------1-----------------\n");
+    if (client->is_graphic == false && client->is_connected == true) {
+        printf("----------------2-----------------\n");
         egg = init_egg(client->x, client->y);
+        printf("----------------3-----------------\n");
         item_e = malloc(sizeof(eggs_list_t));
         if (item_e == NULL)
             return ERROR_STATUS;
+        printf("----------------4-----------------\n");
         team = get_team_by_name(&server->teams, client->team_name);
+        printf("----------------5-----------------\n");
         item_e->egg = egg;
+        printf("----------------6-----------------\n");
         TAILQ_INSERT_TAIL(&team->eggs, item_e, entries);
+        printf("----------------7-----------------\n");
     }
     close(client_fd);
     FD_CLR(client_fd, &server->current_sockets);
+    printf("----------------8-----------------\n");
     remove_client_by_fd(&server->clients, client_fd);
+    printf("----------------9-----------------\n");
     return OK_STATUS;
 }
 
