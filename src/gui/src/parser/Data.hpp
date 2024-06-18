@@ -6,6 +6,7 @@
     #include "Player.hpp"
     #include "Incantation.hpp"
     #include "Broadcast.hpp"
+#include "ServerConnect.hpp"
 
     #include <memory>
     #include <string>
@@ -37,7 +38,7 @@ class Data
         */
         void setTickRate(int rate) { this->tickRate = rate; };
         int getTickRate() { return this->tickRate; };
-        int requestTickRate() { return 0; };
+        void requestNewTickRate(int rate, ServerConnect server) { server.sendToServer("sst" + std::to_string(rate)); };
 
 
         void setRunning(bool state) { this->isRunning = state; };
