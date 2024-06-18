@@ -5,6 +5,7 @@
 #include "../scenes/Quit.hpp"
 #include "../scenes/Menu.hpp"
 #include <iostream>
+#include "../../utils/GuiException.hpp"
 
 Core::Core(int port, std::string ip) {
     _window.create(
@@ -82,7 +83,7 @@ void Core::switchFullscreen() {
 bool Core::connectToServer(int port, std::string ip) {
     try {
         _server.connectToServer(port, ip.c_str());
-    } catch (...) {
+    } catch (guiException &e) {
         return false;
     }
     return true;
