@@ -92,7 +92,7 @@ if __name__ == "__main__":
     host = '127.0.0.1'
     config_file_path = "./src/ai/config/config.txt"
 
-    num_generations = 5
+    num_generations = 50
     population_size = 3
     max_stagnant_generations = 30
     stagnant_generations = 0

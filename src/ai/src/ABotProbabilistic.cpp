@@ -58,12 +58,12 @@ void ABotProbabilistic::run(const std::string &response)
     }
     _iteration++;
     printColor("========== [!Bot Run] ==========\n", BLUE);
-    if (_iteration % 15 == 0) // TODO: make it when flag --save-data is entered
+    if (_iteration % 20 == 0) // TODO: make it when flag --save-data is entered
     {
         std::cout << "store data\n";
         saveData("./src/ai/dataSaved/behaviors.txt");
     }
-    if (_iteration == 100)
+    if (_iteration == 200)
     {
         debugState();
         saveData("./src/ai/dataSaved/behaviors.txt");

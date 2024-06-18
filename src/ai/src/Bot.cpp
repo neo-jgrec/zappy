@@ -31,8 +31,8 @@ void Bot::init(int sockfd, const std::string &teamName)
     }
     try
     {
-        // loadConfig("./src/ai/config/config.txt"); to train model
-        loadConfig("./src/ai/config/config_trained.txt");
+        loadConfig("./src/ai/config/config.txt");
+        // loadConfig("./src/ai/config/config_trained.txt");
     }
     catch (const std::exception &e)
     {
@@ -107,14 +107,14 @@ void Bot::updateProbabilities()
         }
         else if (behavior->name == "searchDeraumere")
         {
-            if (_state.ressources.deraumere != 1)
+            if (_state.level == 2 && _state.ressources.deraumere != 1)
                 newProbability += getTrainedVariableValueByName("deraumere_probability") * std::log(1 + _state.ressources.deraumere);
             else
                 newProbability = baseline;
         }
         else if (behavior->name == "searchSibur")
         {
-            if (_state.ressources.sibur != 1)
+            if (_state.level == 2 && _state.ressources.sibur != 1)
                 newProbability += getTrainedVariableValueByName("sibur_probability") * std::log(1 + _state.ressources.sibur);
             else
                 newProbability = baseline;
