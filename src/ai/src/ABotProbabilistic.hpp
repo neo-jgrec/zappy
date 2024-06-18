@@ -116,6 +116,7 @@ protected:
     void listenBroadcastResponse(const std::string &response);
     void listenIncantationResponse(const std::string &response);
     void listenIncantationReturnResponse(const std::string &response);
+
     // Logic
     void findPath(std::pair<int, int> start, const std::pair<int, int> &end);
     void turnToDirection(std::pair<int, int> &pos, Orientation targetDir);
