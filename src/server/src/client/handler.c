@@ -7,6 +7,7 @@
 
 #include "server.h"
 #include <string.h>
+#include <sys/types.h>
 
 static int accept_new_client(server_t *server)
 {
@@ -84,6 +85,29 @@ static int handle_quit_client(
     return OK_STATUS;
 }
 
+static ssize_t read_until_newline(
+    int client_fd,
+    char *buffer,
+    size_t buffer_size
+)
+{
+    ssize_t total_read = 0;
+    ssize_t bytes_read;
+
+    while (total_read < (ssize_t)buffer_size - 1) {
+        bytes_read = read(client_fd, buffer + total_read, 1);
+        if (bytes_read < 0)
+            return -1;
+        if (bytes_read == 0)
+            break;
+        total_read += bytes_read;
+        if (buffer[total_read - 1] == '\n')
+            break;
+    }
+    buffer[total_read] = '\0';
+    return total_read;
+}
+
 int handle_client_data(server_t *server, int client_fd)
 {
     client_t *client = get_client(&server->clients, client_fd);
@@ -95,7 +119,7 @@ int handle_client_data(server_t *server, int client_fd)
         return ERROR_STATUS;
     }
     memset(client->message, '\0', sizeof(client->message));
-    check_read = read(client_fd, client->message, sizeof(client->message));
+    check_read = read_until_newline(client_fd, client->message, sizeof(client->message));
     if (check_read < 0) {
         close(client_fd);
         return ERROR_STATUS;

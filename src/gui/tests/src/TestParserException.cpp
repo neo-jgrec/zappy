@@ -1,7 +1,7 @@
 #include <criterion/criterion.h>
 #include <criterion/internal/assert.h>
 
-#include "../../src/Parser.hpp"
+#include "../../src/parser/Parser.hpp"
 
 Test(ParserException, constructor)
 {
@@ -19,11 +19,12 @@ Test(ParserException, what)
 {
     Parser parser;
     Data gameData;
+    ServerConnect server;
 
     std::vector<std::variant<std::string, int>> values = {"msz"};
 
     try {
-        parser.parse(values, gameData);
+        parser.parse(values, gameData, server);
     } catch (const Parser::ParserException &e) {
         cr_assert_str_eq(e.what(), "Invalid number of arguments for command msz", "got %s, expected \"Invalid number of arguments for command msz\"", e.what());
     }

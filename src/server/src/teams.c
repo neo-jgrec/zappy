@@ -17,6 +17,7 @@ static void *create_eggs(team_t *team, int nb_client, int width, int height)
             return NULL;
         new_egg->egg = init_egg(width, height);
         TAILQ_INSERT_TAIL(&team->eggs, new_egg, entries);
+        team->nb_eggs++;
     }
     return new_egg;
 }
@@ -29,6 +30,7 @@ team_t *init_team(const char *team_name, int nb_client, int width, int height)
         return NULL;
     team->capacity = 0;
     team->is_complete = false;
+    team->nb_eggs = 0;
     for (unsigned char i = 0; i < MAX_CAPACITY_TEAM; i++)
         team->client_ids[i] = NULL;
     team->name = malloc(sizeof(char) * (strlen(team_name) + 1));

@@ -18,6 +18,7 @@
     #define PHIRAS_DENSITY 0.08f
     #define THYSTAME_DENSITY 0.05f
     #define NANOSECONDS_IN_SECOND 1.0e9
+    #define PLAYER_LIFE_LIMIT 126.0f
 
     // Time limits
     #define FORWARD_TLIMIT 7.0f
@@ -65,6 +66,7 @@ TAILQ_HEAD(teams_tailq, team_list_s);
 typedef struct egg_s {
     int x;
     int y;
+    int id;
 } egg_t;
 
 typedef struct eggs_list_s {
@@ -79,8 +81,8 @@ typedef struct team_s {
     bool is_complete;
     unsigned char capacity;
     struct eggs_tailq eggs;
+    size_t nb_eggs;
 } team_t;
-
 
 typedef struct team_list_s {
     team_t *team;
@@ -132,6 +134,20 @@ team_t *init_team(const char *team_name, int nb_client, int width, int height);
 void print_teams_infos(struct teams_tailq *teams);
 void remove_client_by_fd(struct client_tailq *clients, int fd);
 void execute_commands_ai(client_t *client, server_t *server);
+
+
+/**
+ * Handle meteors
+ * @param server
+ */
+void handle_meteors(server_t *server);
+
+/**
+ * handle food and time units for the player
+ * @param s
+ * @return
+ */
+bool handle_client_life(server_t *s);
 
 /**
  * returns the rand() % val, don't forger to srand(time(NULL))

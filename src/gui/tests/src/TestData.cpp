@@ -2,8 +2,8 @@
 #include <criterion/internal/assert.h>
 #include <optional>
 
-#include "../../src/Data.hpp"
-#include "../../src/GuiException.hpp"
+#include "../../src/parser/Data.hpp"
+#include "../../src/utils/GuiException.hpp"
 
 
 Test(Data, getTickRate)
@@ -207,13 +207,12 @@ Test(Data, getMap)
 {
     Data data;
 
-    cr_assert_eq(data.getMap().getSize(), 0, "got %d, expected 0", data.getMap().getSize());
-    cr_assert_eq(data.getMap().getMap().size(), 0, "got %ld, expected 0", data.getMap().getMap().size());
+    cr_assert_eq(data.getMap().getSize()[0], 0, "got %d, expected 0", data.getMap().getSize()[0]);
+    cr_assert_eq(data.getMap().getSize()[1], 0, "got %d, expected 0", data.getMap().getSize()[1]);
 
     data.getMap().fillMap(5, 5);
-    cr_assert_eq(data.getMap().getSize(), 5, "got %d, expected 5", data.getMap().getSize());
-    cr_assert_eq(data.getMap().getMap().size(), 5, "got %ld, expected 5", data.getMap().getMap().size());
-    cr_assert_eq(data.getMap().getMap().at(0).size(), 5, "got %ld, expected 5", data.getMap().getMap().at(0).size());
+    cr_assert_eq(data.getMap().getSize()[0], 5, "got %d, expected 5", data.getMap().getSize()[0]);
+    cr_assert_eq(data.getMap().getSize()[1], 5, "got %d, expected 5", data.getMap().getSize()[1]);
 
     data.getMap().updateTile(1, 1, {1, 2, 3, 4, 5, 6, 7});
     cr_assert_eq(data.getMap().getTileAt(1, 1).getResAt(0), 1, "got %d, expected 1", data.getMap().getTileAt(1, 1).getResAt(0));

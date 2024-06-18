@@ -17,7 +17,7 @@ static void init_inventory(inventory_t *inv)
     inv->sibur = 0;
     inv->deraumere = 0;
     inv->linemate = 0;
-    inv->food = 0;
+    inv->food = 10;
 }
 
 client_t *init_client(int client_fd)
@@ -42,6 +42,7 @@ client_t *init_client(int client_fd)
     client->orientation = orientations[rand_p(4)];
     client->payload = NULL;
     init_inventory(&client->inventory);
+    client->egg_id = 0;
     return client;
 }
 

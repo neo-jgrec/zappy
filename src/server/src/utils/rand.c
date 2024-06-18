@@ -9,5 +9,5 @@
 
 int rand_p(int val)
 {
-    return val == 0  ? 0 : rand() % val;
+    return val == 0 ? 0 : rand() % val;
 }
