@@ -13,6 +13,8 @@
     #include "../../sprites/Sprite.hpp"
     #include <memory>
     #include <utility>
+    #include "../../core/Setting.hpp"
+    #include "../../../utils/Random.hpp"
 
 class Chunck {
     public:
@@ -23,16 +25,36 @@ class Chunck {
         float _yOffset;
         bool _hover = false;
 
-        void addElement(std::shared_ptr<Sprite> element, sf::Vector2f offset) {
-            _enviromentElements.push_back(std::make_pair(element, offset));
+        void addElement(std::shared_ptr<Sprite> element) {
+            sf::Vector2f offset = sf::Vector2f(
+                    Random::random(0, 26) - 13,
+                    Random::random(0, 26) - 13
+                );
+            sf::Vector2f pos = sf::Vector2f(
+                _pos.x + offset.x,
+                _pos.y + offset.y  + _yOffset - TILE_SIZE_MY
+            );
+            _enviromentElements.push_back(std::make_pair(element, pos));
         }
         void draw(sf::RenderWindow &window) {
-            for (auto element : _enviromentElements) {
-                element.first->setPosition(sf::Vector2f(
-                    _pos.x + element.second.x,
-                    _pos.y + element.second.y - element.first->_sprite.getTexture()->getSize().y / 2 + _yOffset
-                ));
+            if (_enviromentElements.size() == 1) {
+                auto element = _enviromentElements[0];
+                element.first->setPosition(element.second);
                 element.first->draw(window);
+            }
+            else if (_enviromentElements.size() == 2) {
+                auto element1 = _enviromentElements[0];
+                auto element2 = _enviromentElements[1];
+                element1.first->setPosition(element1.second);
+                element2.first->setPosition(element2.second);
+
+                if (element1.second.y < element2.second.y) {
+                    element1.first->draw(window);
+                    element2.first->draw(window);
+                } else {
+                    element2.first->draw(window);
+                    element1.first->draw(window);
+                }
             }
         }
 

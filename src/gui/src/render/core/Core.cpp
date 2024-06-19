@@ -56,10 +56,9 @@ void Core::run() {
         _parser.updateData(_data, _server);
         auto players = _data.getPlayers();
         for (auto &player : players)
-            player.second.getNextEvent();
+            player.second->getNextEvent();
         update();
         draw();
-        std::cout << _deltaTime << std::endl;
     }
 }
 

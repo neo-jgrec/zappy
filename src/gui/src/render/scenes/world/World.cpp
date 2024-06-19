@@ -60,15 +60,12 @@ void World::init()
                 j * TILE_SIZE_MY + i * TILE_SIZE_MY
             );
             chunck._yOffset = noise.noise(i * 0.1, j * 0.1) * 80;
-            int nbElements = rand() % 2;
-            for (int k = 0; k < nbElements; k++) {
-                sf::Vector2f offset = sf::Vector2f(
-                    Random::random(0, 10) - 5,
-                    Random::random(0, 10) - 5
-                );
-                int element = rand() % _elements.size();
-                chunck.addElement(_sprites[_elements[element]], offset);
-            }
+            int nbElements = rand() % 3;
+
+            if (rand() % 2 == 0)
+                chunck.addElement(_sprites[_elements[rand() % _elements.size()]]);
+            if (chunck._yOffset > 0 && rand() % 2 == 0)
+                chunck.addElement(_sprites[_elements[rand() % 2]]);
 
             chuncks.push_back(chunck);
         }
@@ -208,7 +205,7 @@ bool World::moveMap(sf::Event event)
 
 void World::updateTrantorians()
 {
-    std::map<int, Player> players;
+    std::map<int, std::shared_ptr<Player>> players;
     bool exisitingPlayers = false;
 
     players = _core->_data.getPlayers();
@@ -219,13 +216,13 @@ void World::updateTrantorians()
         for (auto &trantorian : _trantorians) {
             if (trantorian._id == player.first) {
                 exisitingPlayers = true;
-                trantorian.setTile(sf::Vector2f(player.second.getPosition()[0], player.second.getPosition()[1]));
-                std::cout << "Player " << player.first << " is at " << player.second.getPosition()[0] << "x" << player.second.getPosition()[1] << std::endl;
+                trantorian.setTile(sf::Vector2f(player.second->getPosition()[0], player.second->getPosition()[1]));
+                std::cout << "Player " << player.first << " is at " << player.second->getPosition()[0] << "x" << player.second->getPosition()[1] << std::endl;
                 break;
             }
         }
         if (!exisitingPlayers) {
-            Trantorian trantorian(*_sprites["trantorian"], *_sprites["trantorian_run"], sf::Vector2f(player.second.getPosition()[0], player.second.getPosition()[1]));
+            Trantorian trantorian(*_sprites["trantorian"], *_sprites["trantorian_run"], sf::Vector2f(player.second->getPosition()[0], player.second->getPosition()[1]));
             trantorian._id = player.first;
             _trantorians.push_back(trantorian);
         }
