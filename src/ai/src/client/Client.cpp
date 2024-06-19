@@ -7,9 +7,14 @@
 
 #include "Client.hpp"
 
-Client::Client(const std::string &host, const std::string &teamName, int port)
+Client::Client(const std::string &host, const std::string &teamName, int port, bool arg)
     : _host(host), _teamName(teamName), _port(port)
 {
+    _arg = arg;
+    if (_arg)
+        printf("Arg is true\n");
+    else 
+        printf("Arg is false\n");
     setupConnection();
 }
 
@@ -72,7 +77,7 @@ void Client::authenticate()
         close(_sockfd);
         exit(EXIT_FAILURE);
     }
-    _bot->init(_sockfd, _teamName);
+    _bot->init(_sockfd, _teamName, _arg);
 }
 
 void Client::loop()

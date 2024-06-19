@@ -46,7 +46,7 @@ public:
     ABot();
     ~ABot();
     virtual void run(const std::string &response) = 0;
-    virtual void init(int sockfd, const std::string &teamName) = 0;
+    virtual void init(int sockfd, const std::string &teamName, bool arg) = 0;
 
 protected:
     // TODO: move

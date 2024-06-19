@@ -11,9 +11,4 @@
 void ABotProbabilistic::survive()
 {
     searchAndTakeRessource("food");
-    _message._content = "group_24";
-    _message.vigenereEncrypt();
-    _message.generateMessage();
-    queue.push_back({[&]()
-                     { doAction(BROADCAST, _message._content); }, "BROADCAST"});
 }
