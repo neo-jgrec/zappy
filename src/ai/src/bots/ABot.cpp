@@ -35,6 +35,6 @@ void ABot::doAction(actions action, const std::string &parameter)
     _state.lastAction.action = action;
     _state.lastAction.parameter = parameter;
     _timeUnit -= actionInfo.getValue();
-    if (_timeUnit % 126 == 0)
+    if (_timeUnit % 126 == 0 && _state.ressources.food > 0)
         _state.ressources.food -= 1;
 }
