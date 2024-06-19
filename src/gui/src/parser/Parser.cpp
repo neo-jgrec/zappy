@@ -325,6 +325,9 @@ void Parser::updateData(Data &gameData, ServerConnect &server)
 
     if (data.compare(std::string("WELCOME\n")) == 0) {
         server.sendToServer("GRAPHIC\n");
+        server.sendToServer("msz\n");
+        server.sendToServer("mct\n");
+        server.sendToServer("tna\n");
         return;
     }
 
