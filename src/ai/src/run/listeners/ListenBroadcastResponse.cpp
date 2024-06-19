@@ -5,17 +5,20 @@
 ** ListenBroadcastResponse.cpp
 */
 
-#include "../../ABotProbabilistic.hpp"
+#include "../../bots/ABotProbabilistic.hpp"
 
 void ABotProbabilistic::listenBroadcastResponse(const std::string &response)
 {
     std::string signature = getElementAfter(response, ':');
     Message tempMessage;
-    if (signature != _signature) {
+    if (signature != _signature)
+    {
         _enemyMessage = _message._content;
         std::cout << "Enemy message: " << _enemyMessage._content << std::endl;
         return;
-    } else {
+    }
+    else
+    {
         std::string temp = getElementBefore(response, ':');
         tempMessage._content = getElementAfter(temp, ',');
         direction = getElementBefore(temp, ',');

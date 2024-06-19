@@ -5,7 +5,7 @@
 ** Survive.cpp
 */
 
-#include "../../ABotProbabilistic.hpp"
+#include "../../bots/ABotProbabilistic.hpp"
 #include <functional>
 
 void ABotProbabilistic::turnLeft(std::pair<int, int> &pos)

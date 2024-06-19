@@ -4,7 +4,7 @@
 ** File description:
 ** Debug.cpp
 */
-#include "../ABotProbabilistic.hpp"
+#include "../bots/ABotProbabilistic.hpp"
 
 void ABot::debugInitialisation()
 {

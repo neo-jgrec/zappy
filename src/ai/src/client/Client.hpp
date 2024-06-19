@@ -18,8 +18,8 @@
 #include <cstring>
 #include <memory>
 
-#include "botFactory/BotFactory.hpp"
-#include "Constants.hpp"
+#include "../botFactory/BotFactory.hpp"
+#include "../constant/Constants.hpp"
 
 class Client
 {

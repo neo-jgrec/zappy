@@ -5,8 +5,8 @@
 ** Survive.cpp
 */
 
-#include "../../../ABotProbabilistic.hpp"
-#include "../../../Constants.hpp"
+#include "../../../bots/ABotProbabilistic.hpp"
+#include "../../../constant/Constants.hpp"
 #include <functional>
 
 void ABotProbabilistic::searchAndTakeRessource(const std::string &ressource)

@@ -5,7 +5,7 @@
 ** ListenForwardeResponse.cpp
 */
 
-#include "../../ABotProbabilistic.hpp"
+#include "../../bots/ABotProbabilistic.hpp"
 
 void ABotProbabilistic::listenForwardResponse(const std::string &response)
 {

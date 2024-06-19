@@ -5,7 +5,7 @@
 ** ListenTakeResponse.cpp
 */
 
-#include "../../ABotProbabilistic.hpp"
+#include "../../bots/ABotProbabilistic.hpp"
 
 // TODO: find a cleaner way to do this
 void ABotProbabilistic::listenTakeResponse(const std::string &response)

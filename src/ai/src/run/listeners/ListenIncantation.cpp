@@ -5,7 +5,7 @@
 ** ListenIncantationResponse.cpp
 */
 
-#include "../../ABotProbabilistic.hpp"
+#include "../../bots/ABotProbabilistic.hpp"
 
 void ABotProbabilistic::listenIncantationResponse(const std::string &response)
 {

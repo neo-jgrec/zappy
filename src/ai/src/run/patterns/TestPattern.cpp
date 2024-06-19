@@ -5,7 +5,7 @@
 ** TestPattern.cpp
 */
 
-#include "../../ABotProbabilistic.hpp"
+#include "../../bots/ABotProbabilistic.hpp"
 #include <functional>
 
 void ABotProbabilistic::testPatern()

@@ -26,8 +26,8 @@
 #include <fstream>
 
 #include "ABot.hpp"
-#include "pattern/Pattern.hpp"
-#include "training/TrainedVariable.hpp"
+#include "../pattern/Pattern.hpp"
+#include "../training/TrainedVariable.hpp"
 
 class ABotProbabilistic : public ABot
 {

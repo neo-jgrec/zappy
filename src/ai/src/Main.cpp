@@ -6,7 +6,7 @@
 */
 
 #include <iostream>
-#include "Client.hpp"
+#include "client/Client.hpp"
 #include "utils/DisplayHelp.hpp"
 
 // to verify: make a parser with flags

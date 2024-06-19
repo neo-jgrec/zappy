@@ -9,7 +9,7 @@
 #define BOT_HPP_
 
 #include "ABotProbabilistic.hpp"
-#include "Constants.hpp"
+#include "../constant/Constants.hpp"
 #include <fstream>
 #include <iostream>
 #include <sstream>

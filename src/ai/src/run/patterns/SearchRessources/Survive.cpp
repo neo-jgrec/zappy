@@ -5,7 +5,7 @@
 ** Survive.cpp
 */
 
-#include "../../../ABotProbabilistic.hpp"
+#include "../../../bots/ABotProbabilistic.hpp"
 #include <functional>
 
 void ABotProbabilistic::survive()
@@ -14,5 +14,6 @@ void ABotProbabilistic::survive()
     _message._content = "group_24";
     _message.vigenereEncrypt();
     _message.generateMessage();
-    queue.push_back({[&]() { doAction(BROADCAST, _message._content); }, "BROADCAST"});
+    queue.push_back({[&]()
+                     { doAction(BROADCAST, _message._content); }, "BROADCAST"});
 }

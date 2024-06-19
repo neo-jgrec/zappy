@@ -25,12 +25,12 @@
 #include <random>
 #include <fstream>
 
-#include "state/BotState.hpp"
-#include "utils/PrintColor.hpp"
-#include "message/Message.hpp"
-#include "utils/StringUtils.hpp"
+#include "../state/BotState.hpp"
+#include "../utils/PrintColor.hpp"
+#include "../message/Message.hpp"
+#include "../utils/StringUtils.hpp"
+#include "../hash/Pairhash.hpp"
 #include "IBot.hpp"
-#include "hash/Pairhash.hpp"
 
 enum Orientation
 {

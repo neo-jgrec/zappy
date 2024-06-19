@@ -5,7 +5,7 @@
 ** Incantation.cpp
 */
 
-#include "../../ABotProbabilistic.hpp"
+#include "../../bots/ABotProbabilistic.hpp"
 
 void ABotProbabilistic::incantation(std::vector<std::string> objs)
 {

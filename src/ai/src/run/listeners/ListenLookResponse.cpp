@@ -5,7 +5,7 @@
 ** ListenLookResponse.cpp
 */
 
-#include "../../ABotProbabilistic.hpp"
+#include "../../bots/ABotProbabilistic.hpp"
 
 void ABotProbabilistic::listenLookResponse(const std::string &response)
 {
