@@ -10,12 +10,15 @@
 void client_time_handler(client_t *client, int command)
 {
     signed char index = -1;
+    char *tmp;
 
     for (unsigned char i = 0; i < NB_REQUESTS_HANDLEABLE; i++) {
         if (client->tclient[i].available_request == false) {
             index = i;
             client->tclient[i].available_request = true;
             client->tclient[i].command = command;
+            asprintf(&tmp, "%s", client->payload);
+            client->tclient[i].payload = tmp;
             break;
         }
     }

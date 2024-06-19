@@ -39,6 +39,7 @@ typedef struct tclient_s {
     bool available_request;
     struct timespec future_time;
     int command;
+    char *payload;
 } tclient_t;
 
 typedef struct client_s {
@@ -53,9 +54,9 @@ typedef struct client_s {
     unsigned char orientation;
     inventory_t inventory;
     tclient_t tclient[NB_REQUESTS_HANDLEABLE];
-    char *payload;
     struct timespec live_time;
     size_t level;
+    char *payload;
     bool is_incanting;
     bool is_graphic;
     size_t egg_id;
