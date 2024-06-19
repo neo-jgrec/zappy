@@ -18,8 +18,6 @@ static bool handle_client_death(
     double interval = PLAYER_LIFE_LIMIT / (double)s->proprieties.frequency;
 
     if (elapsed >= interval) {
-        printf("1 - CURRENT(%ld)\n", s->current_time.tv_nsec);
-        printf("FOOD -= 1\n");
         client->inventory.food -= 1;
         clock_gettime(CLOCK_REALTIME, &client->live_time);
     }
