@@ -6,20 +6,26 @@
 */
 
 #include "Bot.hpp"
+#include<unistd.h> 
 
-void Bot::init(int sockfd, const std::string &teamName)
+
+void Bot::init(int sockfd, const std::string &teamName, bool arg)
 {
     srand(static_cast<unsigned int>(time(nullptr)));
     _sockfd = sockfd;
     _teamName = teamName;
     sendMessage(teamName);
-
-    _behaviors.push_back(std::make_unique<Behavior>(0, [&]()
-                                                    { survive(); }, "survive"));
-    _behaviors.push_back(std::make_unique<Behavior>(0, [&]()
+    if (arg) {
+        printf("DEDQZDQD\n");
+        _behaviors.push_back(std::make_unique<Behavior>(0, [&]()
+                                                        { joinGroup(); }, "joinGroup"));
+    } else
+        _behaviors.push_back(std::make_unique<Behavior>(0, [&]()
+                                                        { group(); }, "group"));
+    /*_behaviors.push_back(std::make_unique<Behavior>(0, [&]()
                                                     { searchLinemate(); }, "searchLinemate"));
     _behaviors.push_back(std::make_unique<Behavior>(0, [&]()
-                                                    { incantation({"linemate"}); }, "incantationLvl1"));
+                                                    { incantation({"linemate"}); }, "incantationLvl1"));*/
 
     for (auto &behavior : _behaviors)
     {
@@ -36,6 +42,22 @@ void Bot::init(int sockfd, const std::string &teamName)
     }
     debugInitialisation();
     debugTrainedVariables();
+}
+
+void Bot::listen(const std::string &response)
+{
+    if (_state.lastAction.action == LOOK)
+        listenLookResponse(response);
+    else if (_state.lastAction.action == TAKE)
+        listenTakeResponse(response);
+    else if (_state.lastAction.action == INCANTATION)
+        listenIncantationResponse(response);
+    else if (_state.lastAction.action == LISTENING)
+        listenIncantationReturnResponse(response);
+    if (response.find("message") != std::string::npos)
+    {
+        listenBroadcastResponse(response);   
+    }
 }
 
 void Bot::loadConfig(const std::string &filename)

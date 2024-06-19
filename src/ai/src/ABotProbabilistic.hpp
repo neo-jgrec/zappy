@@ -32,6 +32,7 @@
 #include "IBot.hpp"
 #include "hash/Pairhash.hpp"
 #include "training/TrainedVariable.hpp"
+#include "Constants.hpp"
 
 enum Orientation
 {
@@ -47,7 +48,7 @@ public:
     ABotProbabilistic();
     ~ABotProbabilistic();
     void run(const std::string &response) override;
-    virtual void init(int sockfd, const std::string &teamName) = 0;
+    virtual void init(int sockfd, const std::string &teamName, bool arg) = 0;
 
     // Probabilities
     virtual void updateProbabilities() = 0;
@@ -76,6 +77,7 @@ protected:
 
     // Client
     int _sockfd;
+    int _level = 2;
     std::string _teamName;
 
     // Game
@@ -85,6 +87,7 @@ protected:
 
     // Messages
     Message _message;
+    Message _allyMessage;
     std::string direction;
     Message _enemyMessage;
     std::string _signature = "bFNneQbXQkyJHGEQd";
@@ -98,7 +101,7 @@ protected:
     std::vector<std::pair<std::function<void()>, std::string>> queue;
 
     // Interract with server
-    void listen(const std::string &response);
+    virtual void listen(const std::string &response) = 0;
     void sendMessage(const std::string &message);
 
     // Actions
@@ -128,6 +131,7 @@ protected:
     void survive();
     void searchAndTakeRessource(const std::string &ressource);
     void group();
+    void joinGroup();
     void searchLinemate();
     void searchDeraumere();
     void searchSibur();
@@ -136,6 +140,7 @@ protected:
     void searchThystame();
     void trapMessage();
     void incantation(std::vector<std::string> objs);
+    bool canLvlUp(int lvl);
 
     // Debug
     void debugInitialisation();

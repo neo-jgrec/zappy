@@ -42,8 +42,8 @@ void ABotProbabilistic::run(const std::string &response)
         responseCopy.pop_back();
     }
     printKeyValueColored("Bot listens", responseCopy);
-    // if (responseCopy.find("message") != std::string::npos)
-    //     _doNothing = true;
+    //if (responseCopy.find("message") != std::string::npos)
+    //    _doNothing = true;
     listen(responseCopy);
     if (_state.lastAction.action != LISTENING)
     {
@@ -62,22 +62,6 @@ void ABotProbabilistic::run(const std::string &response)
     {
         debugState();
         exit(0);
-    }
-}
-
-void ABotProbabilistic::listen(const std::string &response)
-{
-    if (_state.lastAction.action == LOOK)
-        listenLookResponse(response);
-    else if (_state.lastAction.action == TAKE)
-        listenTakeResponse(response);
-    else if (_state.lastAction.action == INCANTATION)
-        listenIncantationResponse(response);
-    else if (_state.lastAction.action == LISTENING)
-        listenIncantationReturnResponse(response);
-    if (response.find("message") != std::string::npos)
-    {
-        listenBroadcastResponse(response);
     }
 }
 
