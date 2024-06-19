@@ -57,23 +57,25 @@ static void print_egg_graphic(client_t *client, server_t *server)
     unsigned char cmd_idx = 0;
 
     printf("COMMANDS QUEUE:\n");
-    for (unsigned char j = 0; j < NB_REQUESTS_HANDLEABLE; j++) {
-        printf("([%s][%ld])\n", client->tclient[j].available_request == true ? "TRUE" : "FALSE", client->tclient[j].future_time.tv_sec);
-    }
+    for (unsigned char j = 0; j < NB_REQUESTS_HANDLEABLE; j++)
+        printf("([%s][%ld])\n", client->tclient[j].available_request ? "TRUE" : "FALSE", client->tclient[j].future_time.tv_sec);
     printf("\n\n");
-    dprintf(client->fd, "%s", client->tclient[cmd_idx].payload);
+    if (client->tclient[cmd_idx].available_request) {
+        printf("Sending payload: %s\n", client->tclient[cmd_idx].payload);
+        dprintf(client->fd, "%s", client->tclient[cmd_idx].payload);
+    }
     printf("2 - CURRENT(%ld)\n", server->current_time.tv_nsec);
     if (client->tclient[cmd_idx].command == FORK)
-        message_to_graphicals(server, "enw %d %s %d %d\n",
-        client->egg_id, client->uuid, client->x, client->y);
+        message_to_graphicals(server, "enw %d %s %d %d\n", client->egg_id,
+            client->uuid, client->x, client->y);
     for (unsigned char idx = 0; idx < NB_REQUESTS_HANDLEABLE; idx++) {
-        if (idx + 1 < NB_REQUESTS_HANDLEABLE) {
+        if (idx + 1 < NB_REQUESTS_HANDLEABLE)
             client->tclient[idx] = client->tclient[idx + 1];
-        } else {
-            client->tclient[idx + 1].command = -1;
-            client->tclient[idx + 1].available_request = false;
+        else {
+            client->tclient[idx].command = -1;
+            client->tclient[idx].available_request = false;
         }
-        if (client->tclient[idx].available_request == true)
+        if (client->tclient[idx].available_request)
             clock_gettime(CLOCK_REALTIME, &client->tclient[idx].future_time);
         else
             client->tclient[idx].command = 0;
@@ -118,16 +120,10 @@ static void check_response_client_time(
 
 static int start_server(server_t *server)
 {
-    struct timespec last_check_time;
-    clock_gettime(CLOCK_REALTIME, &last_check_time);
-
     while (true) {
         server->ready_sockets = server->current_sockets;
         clock_gettime(CLOCK_REALTIME, &server->current_time);
-        if (difftime(server->current_time.tv_sec, last_check_time.tv_sec) >= 1) {
-            handle_client_life(server);
-            last_check_time = server->current_time;
-        }
+        handle_client_life(server);
         handle_meteors(server);
         check_response_client_time(&server->clients, server, &server->current_time);
         if (select(FD_SETSIZE, &server->ready_sockets, NULL, NULL, &server->timeout) < 0) {

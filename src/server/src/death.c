@@ -19,6 +19,7 @@ static bool handle_client_death(
 
     if (elapsed >= interval) {
         client->inventory.food -= 1;
+        printf("Client %d has %d food left\n", client->fd, client->inventory.food);
         clock_gettime(CLOCK_REALTIME, &client->live_time);
     }
     if (client->inventory.food == 0) {
