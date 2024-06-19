@@ -7,9 +7,6 @@
 
 #include <iostream>
 
-#include "parser/ServerConnect.hpp"
-#include "parser/Parser.hpp"
-#include "parser/Data.hpp"
 #include "render/core/Core.hpp"
 
 #include "utils/Debug.hpp"
