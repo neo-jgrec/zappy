@@ -141,9 +141,9 @@ static bool check_error_flags(flags_t *flags)
     if (flags->frequency < 2 || flags->frequency > 10000) {
         dprintf(2, "Frequency can only be between 2 and 10000\n");
         return false;
-    } else if (flags->width < 10 || flags->width > 30 ||
-            flags->height < 10 || flags->height > 30) {
-        dprintf(2, "Map values need to be between 10 and 30\n");
+    } else if (flags->width < 10 || flags->width > 1000 ||
+            flags->height < 10 || flags->height > 1000) {
+        dprintf(2, "Map values need to be between 10 and 1000\n");
         return false;
     }
     if (flags->nb_clients < 1 || flags->nb_clients > 200) {
