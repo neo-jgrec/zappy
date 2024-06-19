@@ -6,6 +6,7 @@
 */
 
 #include "../../bots/ABotProbabilistic.hpp"
+#include "../../constant/Constants.hpp"
 #include <functional>
 
 void ABotProbabilistic::turnLeft(std::pair<int, int> &pos)
@@ -114,11 +115,10 @@ void ABotProbabilistic::joinGroup()
     std::cout << _allyMessage._content << std::endl;
     std::string level = getElementAfter(_allyMessage._content, '_');
     std::cout << level << std::endl;
-    if (getElementBefore(_allyMessage._content, '_') == "group"
-        && std::stoi(level) == _level + 1
-        && canLvlUp(_level + 1))
+    if (getElementBefore(_allyMessage._content, '_') == "group" && std::stoi(level) == _level + 1 && canLvlUp(_level + 1))
     {
-        if (direction == "0") {
+        if (direction == "0")
+        {
             _message._content = "group_joined";
             _message.vigenereEncrypt();
             _message.generateMessage();
@@ -128,19 +128,27 @@ void ABotProbabilistic::joinGroup()
         }
 
         static const std::unordered_map<std::string, std::pair<std::string, std::function<void()>>> directionActions = {
-            {"2", {"Forward", [&]() { doAction(FORWARD, ""); }}},
-            {"1", {"Forward", [&]() { doAction(FORWARD, ""); }}},
-            {"8", {"Forward", [&]() { doAction(FORWARD, ""); }}},
-            {"5", {"Right", [&]() { doAction(RIGHT, ""); }}},
-            {"6", {"Right", [&]() { doAction(RIGHT, ""); }}},
-            {"7", {"Right", [&]() { doAction(RIGHT, ""); }}},
-            {"3", {"Left", [&]() { doAction(LEFT, ""); }}},
-            {"4", {"Left", [&]() { doAction(LEFT, ""); }}}
-        };
+            {"2", {"Forward", [&]()
+                   { doAction(FORWARD, ""); }}},
+            {"1", {"Forward", [&]()
+                   { doAction(FORWARD, ""); }}},
+            {"8", {"Forward", [&]()
+                   { doAction(FORWARD, ""); }}},
+            {"5", {"Right", [&]()
+                   { doAction(RIGHT, ""); }}},
+            {"6", {"Right", [&]()
+                   { doAction(RIGHT, ""); }}},
+            {"7", {"Right", [&]()
+                   { doAction(RIGHT, ""); }}},
+            {"3", {"Left", [&]()
+                   { doAction(LEFT, ""); }}},
+            {"4", {"Left", [&]()
+                   { doAction(LEFT, ""); }}}};
 
         auto it = directionActions.find(direction);
-        if (it != directionActions.end()) {
-            const auto& action = it->second;
+        if (it != directionActions.end())
+        {
+            const auto &action = it->second;
             printf("%s\n", action.first.c_str());
             queue.push_back({action.second, action.first});
         }
