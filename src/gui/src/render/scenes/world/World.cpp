@@ -85,7 +85,6 @@ void World::init()
 
 bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
 {
-    updateTrantorians();
     _mousePos = _core->getMousePos();
     _mousePos = sf::Vector2f(
         (_mousePos.x * _zoom + _view.getCenter().x - _view.getSize().x / 2),
@@ -118,6 +117,11 @@ bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
     }
     moveMap(event);
     return true;
+}
+
+void World::update(float fElapsedTime)
+{
+    updateTrantorians();
 }
 
 void World::draw(sf::RenderWindow &window)
@@ -158,7 +162,7 @@ void World::drawChunck(sf::RenderWindow &window, int i, int j)
     if (_selectedTile.x == i && _selectedTile.y == j) {
         _sprites["halo1"]->_sprite.setPosition(
             _chuncks[i][j]._pos.x,
-            _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y / 3
+            _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y / 2
         );
         window.draw(_sprites["halo1"]->_sprite);
     }
@@ -209,7 +213,7 @@ void World::updateTrantorians()
 
     players = _core->_data.getPlayers();
     for (auto &player : players) {
-        player.second.getNextEvent();
+        // player.second.getNextEvent();
         exisitingPlayers = false;
                 // std::cout << "Player " << player.first << " is at " << player.second.getPosition()[0] << "x" << player.second.getPosition()[1] << std::endl;
         for (auto &trantorian : _trantorians) {

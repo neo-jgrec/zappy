@@ -37,12 +37,12 @@ class Trantorian {
             _sprite.update();
         }
         void draw(sf::RenderWindow &window) {
-            if (_sprite.getPosition() != _targetPos) {
-                _trantorian_run.setPosition(_sprite.getPosition());
-                _trantorian_run.draw(window);
-            } else {
+            // if (_sprite.getPosition() != _targetPos) {
+            //     _trantorian_run.setPosition(_sprite.getPosition());
+            //     _trantorian_run.draw(window);
+            // } else {
                 _sprite.draw(window);
-            }
+            // }
         }
         void setTile(sf::Vector2f tile) {
             _tile = tile;
@@ -50,9 +50,9 @@ class Trantorian {
                 _tile.x * TILE_SIZE_MX - _tile.y * TILE_SIZE_MX - TILE_SIZE_X / 4 * 3,
                 _tile.y * TILE_SIZE_MY + _tile.x * TILE_SIZE_MY
             );
-            if (sqrt(pow(_sprite.getPosition().x - _targetPos.x, 2) + pow(_sprite.getPosition().y - _targetPos.y, 2)) > 10) {
-                _sprite.setPosition(_targetPos);
-            }
+            // if (sqrt(pow(_sprite.getPosition().x - _targetPos.x, 2) + pow(_sprite.getPosition().y - _targetPos.y, 2)) > 10) {
+            //     _sprite.setPosition(_targetPos);
+            // }
         }
         sf::Vector2f getTile() { return _tile; }
 

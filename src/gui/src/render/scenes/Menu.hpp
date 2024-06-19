@@ -21,6 +21,7 @@ class Menu : public IScene {
         ~Menu() {}
 
         bool update(sf::Event event, sf::RenderWindow &window) override;
+        void update(float fElapsedTime) override {}
         void draw(sf::RenderWindow &window) override;
         void init() override  {}
         void createHzButtons();

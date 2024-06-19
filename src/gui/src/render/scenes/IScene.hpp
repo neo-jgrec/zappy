@@ -15,6 +15,7 @@ class IScene {
         virtual ~IScene() = default;
 
         virtual bool update(sf::Event event, sf::RenderWindow &window) = 0;
+        virtual void update(float fElapsedTime) = 0;
         virtual void draw(sf::RenderWindow &window) = 0;
         virtual void init() = 0;
 

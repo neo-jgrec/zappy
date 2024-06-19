@@ -27,13 +27,14 @@ class World : public IScene {
         World(Core *core);
         ~World() {}
 
+
         void init() override;
-        bool moveMap(sf::Event event);
-
         bool update(sf::Event event, sf::RenderWindow &window) override;
+        void update(float fElapsedTime) override;
         void draw(sf::RenderWindow &window) override;
-        void drawChunck(sf::RenderWindow &window, int i, int j);
 
+        void drawChunck(sf::RenderWindow &window, int i, int j);
+        bool moveMap(sf::Event event);
         void updateTrantorians();
 
     private:

@@ -46,13 +46,20 @@ void Core::update() {
             ((_upperState != GameState::DEFAULT) ? _upperState : _state)
             ]->update(_event, _window);
     }
+    _scenes[
+            ((_upperState != GameState::DEFAULT) ? _upperState : _state)
+            ]->update(_deltaTime);
 }
 
 void Core::run() {
     while (_window.isOpen()) {
+        _parser.updateData(_data, _server);
+        auto players = _data.getPlayers();
+        for (auto &player : players)
+            player.second.getNextEvent();
         update();
         draw();
-        _parser.updateData(_data, _server);
+        std::cout << _deltaTime << std::endl;
     }
 }
 
