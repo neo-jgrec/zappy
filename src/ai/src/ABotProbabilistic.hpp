@@ -26,7 +26,7 @@
 #include <fstream>
 
 #include "state/BotState.hpp"
-#include "behaviors/Behavior.hpp"
+#include "pattern/Pattern.hpp"
 #include "utils/PrintColor.hpp"
 #include "message/Message.hpp"
 #include "utils/StringUtils.hpp"
@@ -92,7 +92,7 @@ protected:
 
     // Material of training
     BotState _state;
-    std::vector<std::unique_ptr<Behavior>> _behaviors;
+    std::vector<std::unique_ptr<Pattern>> _patterns;
     std::vector<std::unique_ptr<TrainedVariable>> _trainedVariables;
 
     // Actions

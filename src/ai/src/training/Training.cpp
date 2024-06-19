@@ -12,16 +12,16 @@ void ABotProbabilistic::normalizeProbabilities()
 {
     double sum = 0.0;
 
-    for (const auto &behavior : _behaviors)
+    for (const auto &pattern : _patterns)
     {
-        sum += behavior->probability;
+        sum += pattern->probability;
     }
 
     if (sum > 0.0)
     {
-        for (auto &behavior : _behaviors)
+        for (auto &pattern : _patterns)
         {
-            behavior->probability /= sum;
+            pattern->probability /= sum;
         }
     }
 }
@@ -36,5 +36,5 @@ const double &ABotProbabilistic::getTrainedVariableValueByName(const std::string
         return it->get()->value;
     }
 
-    throw std::runtime_error("Behavior not found");
+    throw std::runtime_error("pattern not found");
 }

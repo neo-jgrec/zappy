@@ -26,8 +26,8 @@ void ABotProbabilistic::sendMessage(const std::string &message)
 
 // if (_doNothing)
 // {
-//     _behaviors.erase(_behaviors.begin());
-//     _behaviors.push_back(std::make_unique<Behavior>(0.4, [&]()
+//     _patterns.erase(_patterns.begin());
+//     _patterns.push_back(std::make_unique<Behavior>(0.4, [&]()
 //                                                     { trapMessage(); }, "trap Message"));
 //     _doNothing = false;
 // }
@@ -105,28 +105,28 @@ void ABotProbabilistic::doAction(actions action, const std::string &parameter)
 
 void ABotProbabilistic::act()
 {
-    Behavior *bestBehavior = nullptr;
+    Pattern *bestPattern = nullptr;
 
     double maxProbability = -1;
 
-    if (!_behaviors.empty())
+    if (!_patterns.empty())
     {
-        maxProbability = _behaviors[0]->probability;
-        bestBehavior = _behaviors[0].get();
+        maxProbability = _patterns[0]->probability;
+        bestPattern = _patterns[0].get();
     }
-    for (auto &behavior : _behaviors)
+    for (auto &behavior : _patterns)
     {
         if (behavior->probability > maxProbability)
         {
             maxProbability = behavior->probability;
-            bestBehavior = behavior.get();
+            bestPattern = behavior.get();
         }
     }
-    printColor("Behavior choosen: " + bestBehavior->name + "\n", BOLD);
-    if (bestBehavior)
+    printColor("Pattern choosen: " + bestPattern->name + "\n", BOLD);
+    if (bestPattern)
     {
-        bestBehavior->act();
-        bestBehavior->count++;
+        bestPattern->act();
+        bestPattern->count++;
     }
 }
 
@@ -135,9 +135,9 @@ void ABotProbabilistic::saveData(const std::string &filename)
     std::ofstream out(filename, std::ios_base::app);
 
     out << "iteration:" << _iteration << "\n";
-    for (const auto &behavior : _behaviors)
+    for (const auto &pattern : _patterns)
     {
-        out << behavior->name << ":" << behavior->count << "\n";
+        out << pattern->name << ":" << pattern->count << "\n";
     }
     out << "\n";
 }

@@ -2,20 +2,20 @@
 ** EPITECH PROJECT, 2024
 ** zappy/ai
 ** File description:
-** Behaviors.hpp
+** Pattern.hpp
 */
 
-#ifndef BEHAVIORS_HPP_
-#define BEHAVIORS_HPP_
+#ifndef Pattern_HPP_
+#define Pattern_HPP_
 
 #include <iostream>
 #include <functional>
 
-class Behavior
+class Pattern
 {
 public:
-    Behavior(double probability, std::function<void()> act, std::string name);
-    ~Behavior();
+    Pattern(double probability, std::function<void()> act, std::string name);
+    ~Pattern();
 
     double probability;
     std::function<void()> act;
@@ -23,4 +23,4 @@ public:
     unsigned int count = 0;
 };
 
-#endif // BEHAVIORS_HPP_
+#endif // Pattern_HPP_

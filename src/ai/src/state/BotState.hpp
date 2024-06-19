@@ -11,7 +11,6 @@
 #include "../environement/Environement.hpp"
 #include "../ressources/Ressources.hpp"
 #include "../actions/LastAction.hpp"
-#include "../behaviors/Behavior.hpp"
 
 #include <vector>
 #include <memory>
