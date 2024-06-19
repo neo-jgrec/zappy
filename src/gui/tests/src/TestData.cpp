@@ -133,9 +133,9 @@ Test(Data, getIncantationByPos)
     Data data;
 
     data.addIncantation({1, 2}, 1, {1, 2, 3});
-    Incantation incantation = data.getIncantationByPos({1, 2});
-    cr_assert_eq(incantation.getPosition()[0], 1, "got %d, expected 1", incantation.getPosition()[0]);
-    cr_assert_eq(incantation.getPosition()[1], 2, "got %d, expected 2", incantation.getPosition()[1]);
+    std::shared_ptr<Incantation> incantation = data.getIncantationByPos({1, 2});
+    cr_assert_eq(incantation->getPosition()[0], 1, "got %d, expected 1", incantation->getPosition()[0]);
+    cr_assert_eq(incantation->getPosition()[1], 2, "got %d, expected 2", incantation->getPosition()[1]);
 }
 
 Test(Data, getIncantationByPosWrong)

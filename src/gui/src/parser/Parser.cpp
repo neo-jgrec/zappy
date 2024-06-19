@@ -162,8 +162,8 @@ void Parser::pie (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
         std::vector<int> pos = std::vector<int>({x, y});
 
         debug_print << "pie result:" << result << " X:" << x << " Y:" << y << std::endl;
-        Incantation incantation = gameData.getIncantationByPos(pos);
-        incantation.setStatus(result == 0 ? FAILURE : SUCCESS);
+        std::shared_ptr<Incantation> incantation = gameData.getIncantationByPos(pos);
+        incantation->setStatus(result == 0 ? FAILURE : SUCCESS);
     };
     _queue.push(lambda);
 };

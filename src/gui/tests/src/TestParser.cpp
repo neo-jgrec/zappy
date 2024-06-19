@@ -380,7 +380,7 @@ Test(Parser, picNormal)
 
     parser.parse(args2, data, server);
     parser.execute();
-    cr_assert_eq(data.getIncantationByPos(std::vector<int>({1, 1})).getLvl(), 4);
+    cr_assert_eq(data.getIncantationByPos(std::vector<int>({1, 1}))->getLvl(), 4);
 }
 
 Test(Parser, pieNormal)
@@ -399,9 +399,9 @@ Test(Parser, pieNormal)
 
     parser.parse(args3, data, server);
     parser.execute();
-    std::map <std::vector<int>, Incantation> incantations = data.getIncantations();
-    Incantation incantation = incantations.at(std::vector<int>({1, 1}));
-    cr_assert_eq(incantation.getStatus(), SUCCESS, "Expected %d, got %d", SUCCESS, incantation.getStatus());
+    std::map <std::vector<int>, std::shared_ptr<Incantation>> incantations = data.getIncantations();
+    std::shared_ptr<Incantation> incantation = incantations.at(std::vector<int>({1, 1}));
+    cr_assert_eq(incantation->getStatus(), SUCCESS, "Expected %d, got %d", SUCCESS, incantation->getStatus());
 }
 
 Test(Parser, pieWrongArgs)

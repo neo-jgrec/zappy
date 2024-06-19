@@ -198,3 +198,16 @@ Test(Event, construction)
     cr_assert_eq(test.params[0], 1, "Expected , got %d", test.params[0]);
     cr_assert_eq(test2.action, PICKUP, "Expected PICKUP, got %d", test2.action);
 }
+
+Test(Event, pushed)
+{
+    Player player;
+    player.setPushed();
+    std::vector<int> newPos = {2, 2};
+    player.setPosition(newPos);
+
+    player.getNextEvent();
+    std::vector<int> pPos = player.getPosition();
+
+    cr_assert_eq(pPos, newPos, "Expected {%i, %i}, got {%i, %i}", pPos.at(0), pPos.at(1), newPos.at(0), newPos.at(1));
+}

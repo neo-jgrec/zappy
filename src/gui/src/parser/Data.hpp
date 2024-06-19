@@ -22,7 +22,7 @@ class Data
         bool isRunning = false;
         std::map<int, Egg> eggs = {};
         std::map<int, std::shared_ptr<Player>> players = {};
-        std::map<std::vector<int>, Incantation> incantations = {};
+        std::map<std::vector<int>, std::shared_ptr<Incantation>> incantations = {};
         std::vector<Broadcast> broadcasts = {};
         std::optional<std::string> winner = std::nullopt;
         Map map = Map();
@@ -77,8 +77,8 @@ class Data
         std::shared_ptr<Player> getPlayerById(int id);
         bool playerExists(int id);
 
-        std::map<std::vector<int>, Incantation> &getIncantations() { return this->incantations; };
-        Incantation &getIncantationByPos(std::vector<int> pos);
+        std::map<std::vector<int>, std::shared_ptr<Incantation>> getIncantations() { return this->incantations; };
+        std::shared_ptr<Incantation> getIncantationByPos(std::vector<int> pos);
         void addIncantation(std::vector<int> pos, int lvl, std::vector<int> playersId);
 
         std::vector<Broadcast> &getBroadcasts() { return this->broadcasts; };

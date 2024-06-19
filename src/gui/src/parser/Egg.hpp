@@ -22,7 +22,7 @@ class Egg
         ~Egg() {};
 
         void setState(EggStatus newState) { state = newState; }
-        
+
         EggStatus getState() { return state; }
         std::vector<int> getPos() { return pos; }
         int getId() { return nb; }
