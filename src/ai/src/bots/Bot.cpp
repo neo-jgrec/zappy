@@ -108,31 +108,31 @@ void Bot::updateProbabilities()
 
         if (pattern->name == "survive")
         {
-            if (_state.ressources.food < getTrainedVariableValueByName("food_importance"))
-                newProbability += getTrainedVariableValueByName("food_probability") * std::log(1 + _state.ressources.food);
+            if (_state.ressources.food < 10)
+                newProbability = getTrainedVariableValueByName("food_probability") * std::log(1 + _state.ressources.food);
             else
                 newProbability = baseline;
         }
         else if (pattern->name == "searchLinemate")
         {
             if (_state.level == 1 && _state.ressources.linemate != 1)
-                newProbability += getTrainedVariableValueByName("linemate_probability") * std::log(1 + _state.ressources.linemate);
+                newProbability = getTrainedVariableValueByName("linemate_probability") * std::log(1 + _state.ressources.linemate);
             else if (_state.level == 2 && _state.ressources.linemate != 1)
-                newProbability += getTrainedVariableValueByName("linemate_probability_2") * std::log(1 + _state.ressources.linemate);
+                newProbability = getTrainedVariableValueByName("linemate_probability_2") * std::log(1 + _state.ressources.linemate);
             else
                 newProbability = baseline;
         }
         else if (pattern->name == "searchDeraumere")
         {
             if (_state.level == 2 && _state.ressources.deraumere != 1)
-                newProbability += getTrainedVariableValueByName("deraumere_probability") * std::log(1 + _state.ressources.deraumere);
+                newProbability = getTrainedVariableValueByName("deraumere_probability") * std::log(1 + _state.ressources.deraumere);
             else
                 newProbability = baseline;
         }
         else if (pattern->name == "searchSibur")
         {
             if (_state.level == 2 && _state.ressources.sibur != 1)
-                newProbability += getTrainedVariableValueByName("sibur_probability") * std::log(1 + _state.ressources.sibur);
+                newProbability = getTrainedVariableValueByName("sibur_probability") * std::log(1 + _state.ressources.sibur);
             else
                 newProbability = baseline;
         }
