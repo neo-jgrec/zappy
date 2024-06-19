@@ -5,11 +5,11 @@
 ** Survive.cpp
 */
 
-#include "../../../bots/ABotProbabilistic.hpp"
+#include "../../../bots/ABotPattern.hpp"
 #include "../../../constant/Constants.hpp"
 #include <functional>
 
-void ABotProbabilistic::searchAndTakeRessource(const std::string &ressource)
+void ABotPattern::searchAndTakeRessource(const std::string &ressource)
 {
     if (_state.environment.tiles.empty())
     {

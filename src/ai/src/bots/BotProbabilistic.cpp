@@ -2,12 +2,12 @@
 ** EPITECH PROJECT, 2024
 ** zappy/ai
 ** File description:
-** Bot.cpp
+** BotProbabilistic.cpp
 */
 
-#include "Bot.hpp"
+#include "BotProbabilistic.hpp"
 
-void Bot::init(int sockfd, const std::string &teamName, bool arg)
+void BotProbabilistic::init(int sockfd, const std::string &teamName, bool arg)
 {
     srand(static_cast<unsigned int>(time(nullptr)));
     _sockfd = sockfd;
@@ -61,7 +61,7 @@ void Bot::init(int sockfd, const std::string &teamName, bool arg)
     debugTrainedVariables();
 }
 
-void Bot::loadConfig(const std::string &filename)
+void BotProbabilistic::loadConfig(const std::string &filename)
 {
     std::ifstream configStream(filename);
 
@@ -97,7 +97,7 @@ void Bot::loadConfig(const std::string &filename)
 // TODO: verify it with Garance
 // Update patterns depending on the state of the bot
 // MACHINE LEARNING OF IA: The bot whill choose itself the numbers here
-void Bot::updateProbabilities()
+void BotProbabilistic::updateProbabilities()
 {
     // double baseline_survive = 0.5;
     // double baseline_searchLinemate = 0.5;

@@ -53,7 +53,7 @@ void ABotProbabilistic::run(const std::string &response)
         if (_state.lastAction.action != LISTENING)
         {
             if (queue.empty())
-                act(); // -> fait l'action la plus rentable
+                updateStrategy(); // -> fait l'action la plus rentable
             if (!queue.empty() && _canAct)
             {
                 queue.front().first();
@@ -76,23 +76,7 @@ void ABotProbabilistic::run(const std::string &response)
     }
 }
 
-void ABotProbabilistic::listen(const std::string &response)
-{
-    if (_state.lastAction.action == LOOK)
-        listenLookResponse(response);
-    else if (_state.lastAction.action == TAKE)
-        listenTakeResponse(response);
-    else if (_state.lastAction.action == INCANTATION)
-        listenIncantationResponse(response);
-    else if (_state.lastAction.action == LISTENING)
-        listenIncantationReturnResponse(response);
-    if (response.find("message") != std::string::npos)
-    {
-        listenBroadcastResponse(response);
-    }
-}
-
-void ABotProbabilistic::act()
+void ABotProbabilistic::updateStrategy()
 {
     PatternProbabilistic *bestPattern = nullptr;
 

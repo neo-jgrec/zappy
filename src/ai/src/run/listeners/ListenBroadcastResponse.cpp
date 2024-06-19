@@ -5,9 +5,9 @@
 ** ListenBroadcastResponse.cpp
 */
 
-#include "../../bots/ABotProbabilistic.hpp"
+#include "../../bots/ABotPattern.hpp"
 
-void ABotProbabilistic::listenBroadcastResponse(const std::string &response)
+void ABotPattern::listenBroadcastResponse(const std::string &response)
 {
     std::string signature = getElementAfter(response, ':');
     if (signature != _signature)

@@ -9,9 +9,9 @@
 
 std::unique_ptr<IBot> BotFactory::createBot(const std::string &type)
 {
-    if (type == "Bot")
+    if (type == "BotProbabilistic")
     {
-        return std::make_unique<Bot>();
+        return std::make_unique<BotProbabilistic>();
     }
 
     throw std::runtime_error("Invalid bot type: " + type);

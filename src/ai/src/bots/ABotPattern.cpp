@@ -6,3 +6,92 @@
 */
 
 #include "ABotPattern.hpp"
+
+ABotPattern::ABotPattern()
+{
+}
+
+ABotPattern::~ABotPattern()
+{
+}
+
+void ABotPattern::run(const std::string &response)
+{
+    std::string responseCopy = response;
+    _message._content = "";
+    static bool _canAct = true;
+
+    if (!responseCopy.empty() && responseCopy.back() == '\n')
+    {
+        responseCopy.pop_back();
+    }
+    printKeyValueColored("Bot listens", responseCopy);
+    // TODO: it is a action response, _canAct == true
+    if (responseCopy.find("message") == std::string::npos || responseCopy.find("ok") != std::string::npos || responseCopy.find("ko") != std::string::npos)
+    {
+        _canAct = true;
+        std::cout << "canAct: " << _canAct << std::endl;
+    }
+    else
+    {
+        std::cout << "canAct: " << _canAct << std::endl;
+    }
+    listen(responseCopy);
+
+    if (_canAct)
+    {
+        printColor("========== [Bot Run] ==========\n", BLUE);
+        printKeyValueColored("Iteration", std::to_string(_iteration));
+        if (_state.lastAction.action != LISTENING)
+        {
+            if (queue.empty())
+                updateStrategy(); // -> fait l'action la plus rentable
+            if (!queue.empty() && _canAct)
+            {
+                queue.front().first();
+                _canAct = false;
+                queue.erase(queue.begin());
+            }
+        }
+        _iteration++;
+        printColor("========== [!Bot Run] ==========\n", BLUE);
+        if (_iteration % 20 == 0) // TODO: make it when flag --save-data is entered
+        {
+            saveData("./src/ai/dataSaved/behaviors.txt");
+        }
+    }
+    if (_iteration == 200 || (responseCopy.find("dead") != std::string::npos))
+    {
+        debugState();
+        saveData("./src/ai/dataSaved/behaviors.txt");
+        exit(0);
+    }
+}
+
+void ABotPattern::listen(const std::string &response)
+{
+    if (_state.lastAction.action == LOOK)
+        listenLookResponse(response);
+    else if (_state.lastAction.action == TAKE)
+        listenTakeResponse(response);
+    else if (_state.lastAction.action == INCANTATION)
+        listenIncantationResponse(response);
+    else if (_state.lastAction.action == LISTENING)
+        listenIncantationReturnResponse(response);
+    if (response.find("message") != std::string::npos)
+    {
+        listenBroadcastResponse(response);
+    }
+}
+
+void ABotPattern::saveData(const std::string &filename)
+{
+    std::ofstream out(filename, std::ios_base::app);
+
+    out << "iteration:" << _iteration << "\n";
+    for (const auto &pattern : _patterns)
+    {
+        out << pattern->name << ":" << pattern->count << "\n";
+    }
+    out << "\n";
+}

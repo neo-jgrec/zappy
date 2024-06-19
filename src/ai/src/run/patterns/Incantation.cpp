@@ -5,9 +5,9 @@
 ** Incantation.cpp
 */
 
-#include "../../bots/ABotProbabilistic.hpp"
+#include "../../bots/ABotPattern.hpp"
 
-void ABotProbabilistic::incantation(std::vector<std::string> objs)
+void ABotPattern::incantation(std::vector<std::string> objs)
 {
     // Landmark: 1. Fix this.
     // for (auto &obj : objs)

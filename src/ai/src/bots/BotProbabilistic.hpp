@@ -5,8 +5,8 @@
 ** Bot.hpp
 */
 
-#ifndef BOT_HPP_
-#define BOT_HPP_
+#ifndef BOT_PROBABILISTIC_HPP_
+#define BOT_PROBABILISTIC_HPP_
 
 #include "ABotProbabilistic.hpp"
 #include "../constant/Constants.hpp"
@@ -14,11 +14,11 @@
 #include <iostream>
 #include <sstream>
 
-class Bot : public ABotProbabilistic
+class BotProbabilistic : public ABotProbabilistic
 {
 public:
     void init(int sockfd, const std::string &teamName, bool arg) override;
     void updateProbabilities() override;
     void loadConfig(const std::string &filename);
 };
-#endif // BOT_HPP_
+#endif // BOT_PROBABILISTIC_HPP_

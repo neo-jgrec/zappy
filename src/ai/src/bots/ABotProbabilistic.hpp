@@ -25,11 +25,11 @@
 #include <random>
 #include <fstream>
 
-#include "ABot.hpp"
+#include "ABotPattern.hpp"
 #include "../pattern/PatternProbabilistic.hpp"
 #include "../training/TrainedVariable.hpp"
 
-class ABotProbabilistic : public ABot
+class ABotProbabilistic : public ABotPattern
 {
 public:
     ABotProbabilistic();
@@ -45,41 +45,14 @@ protected:
     std::vector<std::unique_ptr<PatternProbabilistic>> _patterns;
     std::vector<std::unique_ptr<TrainedVariable>> _trainedVariables;
 
-    // Interract with server
-    void listen(const std::string &response);
-
     // Actions
-    void act();
+    void updateStrategy() override;
 
     // Traning
     void normalizeProbabilities();
 
-    // Listeners
-    void listenLookResponse(const std::string &response);
-    void listenForkResponse(const std::string &response);
-    void listenTakeResponse(const std::string &response);
-    void listenForwardResponse(const std::string &response);
-    void listenBroadcastResponse(const std::string &response);
-    void listenIncantationResponse(const std::string &response);
-    void listenIncantationReturnResponse(const std::string &response);
-
     // Logic
     bool canLvlUp(int lvl);
-
-    // Paterns
-    void testPatern();
-    void survive();
-    void searchAndTakeRessource(const std::string &ressource);
-    void group();
-    void searchLinemate();
-    void searchDeraumere();
-    void searchSibur();
-    void searchMendiane();
-    void searchPhiras();
-    void searchThystame();
-    void trapMessage();
-    void incantation(std::vector<std::string> objs);
-    void joinGroup();
 
     // debug
     void debugTrainedVariables();
@@ -88,7 +61,7 @@ protected:
     const double &getTrainedVariableValueByName(const std::string &name) const;
 
     // data
-    void saveData(const std::string &path);
+    void saveData(const std::string &path) override;
 };
 
 #endif // ABOT_PROBABILITIS_HPP_

@@ -5,7 +5,7 @@
 ** Traning.cpp
 */
 
-#include "../bots/Bot.hpp"
+#include "../bots/BotProbabilistic.hpp"
 
 // It redistributes the probabilities so that they sum to 1
 void ABotProbabilistic::normalizeProbabilities()

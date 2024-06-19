@@ -8,7 +8,7 @@
 #ifndef BOTFACTORY_HPP_
 #define BOTFACTORY_HPP_
 
-#include "../bots/Bot.hpp"
+#include "../bots/BotProbabilistic.hpp"
 #include <memory>
 
 class BotFactory

@@ -5,10 +5,10 @@
 ** TestPattern.cpp
 */
 
-#include "../../bots/ABotProbabilistic.hpp"
+#include "../../bots/ABotPattern.hpp"
 #include <functional>
 
-void ABotProbabilistic::testPatern()
+void ABotPattern::testPatern()
 {
     queue.push_back({[&]()
                      { doAction(LOOK, ""); }, "LOOK"});
@@ -20,7 +20,7 @@ void ABotProbabilistic::testPatern()
                      { doAction(RIGHT, ""); }, "RIGHT"});
 }
 
-void ABotProbabilistic::trapMessage()
+void ABotPattern::trapMessage()
 {
     std::string trapMessage = replaceNumbersInString(_enemyMessage._content, 1200);
     if (trapMessage.empty())

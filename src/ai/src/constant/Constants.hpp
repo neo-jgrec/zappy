@@ -13,7 +13,7 @@
 #include <vector>
 #include "../hash/Pairhash.hpp"
 
-const std::array<std::array<int, 6>, 9> levelRequirements = {{
+const std::array<std::array<unsigned int, 6>, 9> levelRequirements = {{
     {0, 0, 0, 0, 0, 0}, // Level 0
     {0, 0, 0, 0, 0, 0}, // Level 1
     {1, 0, 0, 0, 0, 0}, // Level 2

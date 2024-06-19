@@ -13,7 +13,7 @@ Client::Client(const std::string &host, const std::string &teamName, int port, b
     _arg = arg;
     if (_arg)
         printf("Arg is true\n");
-    else 
+    else
         printf("Arg is false\n");
     setupConnection();
 }
@@ -69,7 +69,7 @@ void Client::authenticate()
     recvMessage(buffer);
     try
     {
-        _bot = BotFactory::createBot("Bot");
+        _bot = BotFactory::createBot("BotProbabilistic");
     }
     catch (const std::exception &e)
     {

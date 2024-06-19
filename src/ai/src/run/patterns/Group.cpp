@@ -5,11 +5,12 @@
 ** Survive.cpp
 */
 
+#include "../../bots/ABotPattern.hpp"
 #include "../../bots/ABotProbabilistic.hpp"
 #include "../../constant/Constants.hpp"
 #include <functional>
 
-void ABotProbabilistic::group()
+void ABotPattern::group()
 {
     if (_state.level == 2)
         _message._content = "group_3";
@@ -29,7 +30,7 @@ void ABotProbabilistic::group()
                      { doAction(BROADCAST, _message._content); }, "BROADCAST"});
 }
 
-void ABotProbabilistic::joinGroup()
+void ABotPattern::joinGroup()
 {
     std::cout << _allyMessage._content << std::endl;
     std::string level = getElementAfter(_allyMessage._content, '_');

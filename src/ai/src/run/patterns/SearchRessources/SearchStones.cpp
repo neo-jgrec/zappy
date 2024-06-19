@@ -5,35 +5,35 @@
 ** Survive.cpp
 */
 
-#include "../../../bots/ABotProbabilistic.hpp"
+#include "../../../bots/ABotPattern.hpp"
 #include <functional>
 
-void ABotProbabilistic::searchLinemate()
+void ABotPattern::searchLinemate()
 {
     searchAndTakeRessource("linemate");
 }
 
-void ABotProbabilistic::searchDeraumere()
+void ABotPattern::searchDeraumere()
 {
     searchAndTakeRessource("deraumere");
 }
 
-void ABotProbabilistic::searchSibur()
+void ABotPattern::searchSibur()
 {
     searchAndTakeRessource("sibur");
 }
 
-void ABotProbabilistic::searchMendiane()
+void ABotPattern::searchMendiane()
 {
     searchAndTakeRessource("mendiane");
 }
 
-void ABotProbabilistic::searchPhiras()
+void ABotPattern::searchPhiras()
 {
     searchAndTakeRessource("phiras");
 }
 
-void ABotProbabilistic::searchThystame()
+void ABotPattern::searchThystame()
 {
     searchAndTakeRessource("thystame");
 }

@@ -5,10 +5,10 @@
 ** Survive.cpp
 */
 
-#include "../../../bots/ABotProbabilistic.hpp"
+#include "../../../bots/ABotPattern.hpp"
 #include <functional>
 
-void ABotProbabilistic::survive()
+void ABotPattern::survive()
 {
     searchAndTakeRessource("food");
 }

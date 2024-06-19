@@ -5,10 +5,10 @@
 ** ListenTakeResponse.cpp
 */
 
-#include "../../bots/ABotProbabilistic.hpp"
+#include "../../bots/ABotPattern.hpp"
 
 // TODO: find a cleaner way to do this
-void ABotProbabilistic::listenTakeResponse(const std::string &response)
+void ABotPattern::listenTakeResponse(const std::string &response)
 {
     if (_state.lastAction.parameter == "food")
     {

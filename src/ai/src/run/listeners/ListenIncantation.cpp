@@ -5,9 +5,9 @@
 ** ListenIncantationResponse.cpp
 */
 
-#include "../../bots/ABotProbabilistic.hpp"
+#include "../../bots/ABotPattern.hpp"
 
-void ABotProbabilistic::listenIncantationResponse(const std::string &response)
+void ABotPattern::listenIncantationResponse(const std::string &response)
 {
     if (response == "Elevation underway")
     {
@@ -16,7 +16,7 @@ void ABotProbabilistic::listenIncantationResponse(const std::string &response)
     }
 }
 
-void ABotProbabilistic::listenIncantationReturnResponse(const std::string &response)
+void ABotPattern::listenIncantationReturnResponse(const std::string &response)
 {
     if (response.find("Current level") != std::string::npos)
     {
