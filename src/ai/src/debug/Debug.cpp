@@ -6,7 +6,7 @@
 */
 #include "../ABotProbabilistic.hpp"
 
-void ABotProbabilistic::debugInitialisation()
+void ABot::debugInitialisation()
 {
     printColor("========== [Bot initiation] ==========\n", BLUE);
     printKeyValueColored("sockfd", std::to_string(_sockfd));
@@ -27,7 +27,7 @@ void ABotProbabilistic::debugTrainedVariables()
     printColor("========== [!Bot Probabilities] ==========\n", BLUE);
 }
 
-void ABotProbabilistic::debugState()
+void ABot::debugState()
 {
     printColor("========== [Bot State] ==========\n", BLUE);
     printKeyValueColored("food", std::to_string(_state.ressources.food));

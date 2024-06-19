@@ -7,21 +7,12 @@
 
 #include "ABotProbabilistic.hpp"
 
-ABotProbabilistic::ABotProbabilistic() : _sockfd(-1), _teamName(""), _iteration(0)
+ABotProbabilistic::ABotProbabilistic()
 {
-    _orientation = NORTH;
-    _state.ressources.food = 9;
 }
 
 ABotProbabilistic::~ABotProbabilistic()
 {
-}
-
-void ABotProbabilistic::sendMessage(const std::string &message)
-{
-    std::string messageToSend = message + "\n";
-
-    send(_sockfd, messageToSend.c_str(), messageToSend.size(), 0);
 }
 
 // if (_doNothing)
@@ -85,22 +76,6 @@ void ABotProbabilistic::listen(const std::string &response)
     {
         listenBroadcastResponse(response);
     }
-}
-
-void ABotProbabilistic::doAction(actions action, const std::string &parameter)
-{
-    ActionInfo actionInfo = getActionInfo(action);
-
-    std::string finalAction = actionInfo.getName();
-    if (parameter != "")
-        finalAction += " " + parameter;
-    printKeyValueColored("Bot does", finalAction);
-    sendMessage(finalAction);
-    _state.lastAction.action = action;
-    _state.lastAction.parameter = parameter;
-    _timeUnit -= actionInfo.getValue();
-    if (_timeUnit % 126 == 0)
-        _state.ressources.food -= 1;
 }
 
 void ABotProbabilistic::act()
