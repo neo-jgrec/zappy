@@ -11,7 +11,6 @@
 
 void ABotProbabilistic::group()
 {
-    static int i = 0;
     if (_state.level == 1)
         _message._content = "group_3";
     else if (_state.level == 3)
