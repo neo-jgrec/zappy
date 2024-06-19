@@ -26,7 +26,7 @@
 #include <fstream>
 
 #include "ABot.hpp"
-#include "../pattern/Pattern.hpp"
+#include "../pattern/PatternProbabilistic.hpp"
 #include "../training/TrainedVariable.hpp"
 
 class ABotProbabilistic : public ABot
@@ -42,7 +42,7 @@ public:
 protected:
     bool _doNothing = false;
 
-    std::vector<std::unique_ptr<Pattern>> _patterns;
+    std::vector<std::unique_ptr<PatternProbabilistic>> _patterns;
     std::vector<std::unique_ptr<TrainedVariable>> _trainedVariables;
 
     // Interract with server

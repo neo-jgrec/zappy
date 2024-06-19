@@ -94,7 +94,7 @@ void ABotProbabilistic::listen(const std::string &response)
 
 void ABotProbabilistic::act()
 {
-    Pattern *bestPattern = nullptr;
+    PatternProbabilistic *bestPattern = nullptr;
 
     double maxProbability = -1;
 

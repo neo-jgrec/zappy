@@ -13,34 +13,35 @@ void Bot::init(int sockfd, const std::string &teamName, bool arg)
     _sockfd = sockfd;
     _teamName = teamName;
     sendMessage(teamName);
+    _state.level = 2;
 
-    if (arg)
-    {
-        _patterns.push_back(std::make_unique<Pattern>(0, [&]()
-                                                      { joinGroup(); }, "joinGroup"));
-    }
-    else
-    {
-        _patterns.push_back(std::make_unique<Pattern>(0, [&]()
-                                                      { group(); }, "group"));
-    }
+    // if (arg)
+    // {
+    //     _patterns.push_back(std::make_unique<PatternProbabilistic>(0, [&]()
+    //                                                   { joinGroup(); }, "joinGroup"));
+    // }
+    // else
+    // {
+    //     _patterns.push_back(std::make_unique<PatternProbabilistic>(0, [&]()
+    //                                                   { group(); }, "group"));
+    // }
 
-    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+    // _patterns.push_back(std::make_unique<PatternProbabilistic>(0, [&]()
     //                                               { survive(); }, "survive"));
-    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+    // _patterns.push_back(std::make_unique<PatternProbabilistic>(0, [&]()
     //                                               { searchLinemate(); }, "searchLinemate"));
-    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+    // _patterns.push_back(std::make_unique<PatternProbabilistic>(0, [&]()
     //                                               { incantation({"linemate"}); }, "incantationLvl1"));
-    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+    // _patterns.push_back(std::make_unique<PatternProbabilistic>(0, [&]()
     //                                               { incantation({"linemate", "deraumere", "sibur"}); }, "incantationLvl2"));
-    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+    // _patterns.push_back(std::make_unique<PatternProbabilistic>(0, [&]()
     //                                               { searchDeraumere(); }, "searchDeraumere"));
-    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+    // _patterns.push_back(std::make_unique<PatternProbabilistic>(0, [&]()
     //                                               { searchSibur(); }, "searchSibur"));
-    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
-    //                                               { group(); }, "group"));
-    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
-    //                                               { joinGroup(); }, "joinGroup"));
+    _patterns.push_back(std::make_unique<PatternProbabilistic>(0, [&]()
+                                                               { group(); }, "group"));
+    _patterns.push_back(std::make_unique<PatternProbabilistic>(0, [&]()
+                                                               { joinGroup(); }, "joinGroup"));
 
     for (auto &pattern : _patterns)
     {
