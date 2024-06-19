@@ -17,8 +17,10 @@
 class Bot : public ABotProbabilistic
 {
 public:
-    void init(int sockfd, const std::string &teamName) override;
+    void init(int sockfd, const std::string &teamName, bool arg) override;
     void updateProbabilities() override;
     void loadConfig(const std::string &filename);
+    void listen(const std::string &response) override;
+    bool _doNothing = false;
 };
 #endif // BOT_HPP_

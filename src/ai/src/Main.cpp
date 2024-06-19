@@ -12,7 +12,7 @@
 // to verify: make a parser with flags
 int main(int ac, char **av)
 {
-    if (ac != 7)
+    if (ac != 8 && ac != 7)
     {
         displayHelp();
         return 84;
@@ -20,6 +20,7 @@ int main(int ac, char **av)
     std::string host;
     int port = 0;
     std::string teamName;
+    bool flag = false;
 
     for (int i = 1; i < ac; i++)
     {
@@ -36,6 +37,10 @@ int main(int ac, char **av)
         else if (arg == "-h" && i + 1 < ac)
         {
             host = av[++i];
+        } 
+        else if (arg == "-t")
+        {
+            flag = true;
         }
         else
         {
@@ -48,8 +53,7 @@ int main(int ac, char **av)
         displayHelp();
         return 84;
     }
-
-    Client client(host, teamName, port);
+    Client client(host, teamName, port, flag);
     client.run();
 
     return 0;
