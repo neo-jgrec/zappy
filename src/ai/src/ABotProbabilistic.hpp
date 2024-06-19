@@ -67,8 +67,7 @@ protected:
     std::vector<std::unique_ptr<TrainedVariable>> _trainedVariables;
 
     // Interract with server
-    virtual void listen(const std::string &response) = 0;
-    void sendMessage(const std::string &message);
+    void listen(const std::string &response);
 
     // Actions
     void act();

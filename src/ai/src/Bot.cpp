@@ -15,19 +15,19 @@ void Bot::init(int sockfd, const std::string &teamName, bool arg)
     _sockfd = sockfd;
     _teamName = teamName;
     sendMessage(teamName);
-    if (arg) {
+    /*if (arg) {
         printf("DEDQZDQD\n");
         _patterns.push_back(std::make_unique<Pattern>(0, [&]()
                                                         { joinGroup(); }, "joinGroup"));
     } else
         _patterns.push_back(std::make_unique<Pattern>(0, [&]()
-                                                        { group(); }, "group"));
+                                                        { group(); }, "group"));*/
     /*_behaviors.push_back(std::make_unique<Behavior>(0, [&]()
                                                     { searchLinemate(); }, "searchLinemate"));
     _behaviors.push_back(std::make_unique<Behavior>(0, [&]()
                                                     { incantation({"linemate"}); }, "incantationLvl1"));*/
 
-    /*_patterns.push_back(std::make_unique<Pattern>(0, [&]()
+    _patterns.push_back(std::make_unique<Pattern>(0, [&]()
                                                   { survive(); }, "survive"));
     _patterns.push_back(std::make_unique<Pattern>(0, [&]()
                                                   { searchLinemate(); }, "searchLinemate"));
@@ -36,7 +36,7 @@ void Bot::init(int sockfd, const std::string &teamName, bool arg)
     _patterns.push_back(std::make_unique<Pattern>(0, [&]()
                                                   { searchDeraumere(); }, "searchDeraumere"));
     _patterns.push_back(std::make_unique<Pattern>(0, [&]()
-                                                  { searchSibur(); }, "searchSibur"));*/
+                                                  { searchSibur(); }, "searchSibur"));
 
     for (auto &pattern : _patterns)
     {
@@ -54,22 +54,6 @@ void Bot::init(int sockfd, const std::string &teamName, bool arg)
     }
     debugInitialisation();
     debugTrainedVariables();
-}
-
-void Bot::listen(const std::string &response)
-{
-    if (_state.lastAction.action == LOOK)
-        listenLookResponse(response);
-    else if (_state.lastAction.action == TAKE)
-        listenTakeResponse(response);
-    else if (_state.lastAction.action == INCANTATION)
-        listenIncantationResponse(response);
-    else if (_state.lastAction.action == LISTENING)
-        listenIncantationReturnResponse(response);
-    if (response.find("message") != std::string::npos)
-    {
-        listenBroadcastResponse(response);   
-    }
 }
 
 void Bot::loadConfig(const std::string &filename)

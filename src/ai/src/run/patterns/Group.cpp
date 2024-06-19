@@ -119,7 +119,11 @@ void ABotProbabilistic::joinGroup()
         && canLvlUp(_level + 1))
     {
         if (direction == "0") {
-            printf("I'm in the group\n");
+            _message._content = "group_joined";
+            _message.vigenereEncrypt();
+            _message.generateMessage();
+            queue.push_back({[&]()
+                             { doAction(BROADCAST, _message._content); }, "BROADCAST"});
             return;
         }
 
