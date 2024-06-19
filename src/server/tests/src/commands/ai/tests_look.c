@@ -8,10 +8,9 @@ Test(look, basic_test)
     server.proprieties.width = 10;
     server.map = calloc(server.proprieties.height * server.proprieties.width, sizeof(tile_t));
 
-    server.map[5].num_objects = 2;
-    server.map[5].objects = malloc(sizeof(object_t) * 2);
-    server.map[5].objects[0] = FOOD;
-    server.map[5].objects[1] = LINEMATE;
+    add_element_to_map(&server, 5, 5, FOOD);
+    add_element_to_map(&server, 5, 5, LINEMATE);
+    add_element_to_map(&server, 5, 5, DERAUMERE);
 
     client_t client;
     client.x = 5;
@@ -25,5 +24,5 @@ Test(look, basic_test)
 
     look(&client, &server);
 
-    cr_assert_str_eq(client.payload, "[ food linemate player,,,, ]\n");
+    cr_assert_str_eq(client.payload, "[food linemate deraumere player,,, ]\n");
 }

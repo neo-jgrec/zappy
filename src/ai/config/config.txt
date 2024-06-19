@@ -1,4 +1,7 @@
-food_importance=8
-food_probability=0.37
-linemate_probability=0.51
-incantation_probability=0
+food_importance=1
+food_probability=0.3
+linemate_probability=0.43
+incantation_probability=0.38
+linemate_probability_2=0.38
+deraumere_probability=0
+sibur_probability=0.61

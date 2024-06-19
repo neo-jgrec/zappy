@@ -22,6 +22,12 @@ void callback_level_up(
 )
 {
     client->level++;
+    message_to_graphicals(
+        server,
+        "plv %d %d\n",
+        client->fd,
+        client->level
+    );
 }
 
 void callback_unfreeze(
@@ -37,7 +43,7 @@ void callback_start_incantation_set_payload(
     UNUSED server_t *server
 )
 {
-    asprintf(&client->payload, "Elevation underway\n");
+    dprintf(client->fd, "Elevation underway\n");
 }
 
 void callback_end_incantation_set_payload(

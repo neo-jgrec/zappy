@@ -1,7 +1,7 @@
 #include <criterion/criterion.h>
 
-#include "../../src/Select.hpp"
-#include "../../src/GuiException.hpp"
+#include "../../src/parser/Select.hpp"
+#include "../../src/utils/GuiException.hpp"
 
 #include <fcntl.h>
 #include <unistd.h>

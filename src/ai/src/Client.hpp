@@ -24,7 +24,7 @@
 class Client
 {
 public:
-    Client(const std::string &host, const std::string &teamName, int port);
+    Client(const std::string &host, const std::string &teamName, int port, bool arg);
     ~Client();
 
     void run();
@@ -37,6 +37,7 @@ private:
     fd_set _readfds;
     struct timeval _tv;
     std::unique_ptr<IBot> _bot;
+    bool _arg;
 
     void setupConnection();
     void authenticate();

@@ -7,27 +7,18 @@
 
 #include "ABotProbabilistic.hpp"
 
-ABotProbabilistic::ABotProbabilistic() : _sockfd(-1), _teamName(""), _iteration(0)
+ABotProbabilistic::ABotProbabilistic()
 {
-    _orientation = NORTH;
-    _state.ressources.food = 9;
 }
 
 ABotProbabilistic::~ABotProbabilistic()
 {
 }
 
-void ABotProbabilistic::sendMessage(const std::string &message)
-{
-    std::string messageToSend = message + "\n";
-
-    send(_sockfd, messageToSend.c_str(), messageToSend.size(), 0);
-}
-
 // if (_doNothing)
 // {
-//     _behaviors.erase(_behaviors.begin());
-//     _behaviors.push_back(std::make_unique<Behavior>(0.4, [&]()
+//     _patterns.erase(_patterns.begin());
+//     _patterns.push_back(std::make_unique<Behavior>(0.4, [&]()
 //                                                     { trapMessage(); }, "trap Message"));
 //     _doNothing = false;
 // }
@@ -58,51 +49,70 @@ void ABotProbabilistic::run(const std::string &response)
     }
     _iteration++;
     printColor("========== [!Bot Run] ==========\n", BLUE);
-    if (_iteration == 100)
+    if (_iteration % 20 == 0) // TODO: make it when flag --save-data is entered
+    {
+        std::cout << "store data\n";
+        saveData("./src/ai/dataSaved/behaviors.txt");
+    }
+    if (_iteration == 200)
     {
         debugState();
+        saveData("./src/ai/dataSaved/behaviors.txt");
         exit(0);
     }
 }
 
-void ABotProbabilistic::doAction(actions action, const std::string &parameter)
+void ABotProbabilistic::listen(const std::string &response)
 {
-    ActionInfo actionInfo = getActionInfo(action);
-
-    std::string finalAction = actionInfo.getName();
-    if (parameter != "")
-        finalAction += " " + parameter;
-    printKeyValueColored("Bot does", finalAction);
-    sendMessage(finalAction);
-    _state.lastAction.action = action;
-    _state.lastAction.parameter = parameter;
-    _timeUnit -= actionInfo.getValue();
-    if (_timeUnit % 126 == 0)
-        _state.ressources.food -= 1;
+    if (_state.lastAction.action == LOOK)
+        listenLookResponse(response);
+    else if (_state.lastAction.action == TAKE)
+        listenTakeResponse(response);
+    else if (_state.lastAction.action == INCANTATION)
+        listenIncantationResponse(response);
+    else if (_state.lastAction.action == LISTENING)
+        listenIncantationReturnResponse(response);
+    if (response.find("message") != std::string::npos)
+    {
+        listenBroadcastResponse(response);
+    }
 }
 
 void ABotProbabilistic::act()
 {
-    Behavior *bestBehavior = nullptr;
+    Pattern *bestPattern = nullptr;
 
     double maxProbability = -1;
 
-    if (!_behaviors.empty())
+    if (!_patterns.empty())
     {
-        maxProbability = _behaviors[0]->probability;
-        bestBehavior = _behaviors[0].get();
+        maxProbability = _patterns[0]->probability;
+        bestPattern = _patterns[0].get();
     }
-    for (auto &behavior : _behaviors)
+    for (auto &behavior : _patterns)
     {
         if (behavior->probability > maxProbability)
         {
             maxProbability = behavior->probability;
-            bestBehavior = behavior.get();
+            bestPattern = behavior.get();
         }
     }
-    printColor("Behavior choosen: " + bestBehavior->name + "\n", BOLD);
-    if (bestBehavior)
+    printColor("Pattern choosen: " + bestPattern->name + "\n", BOLD);
+    if (bestPattern)
     {
-        bestBehavior->act();
+        bestPattern->act();
+        bestPattern->count++;
     }
+}
+
+void ABotProbabilistic::saveData(const std::string &filename)
+{
+    std::ofstream out(filename, std::ios_base::app);
+
+    out << "iteration:" << _iteration << "\n";
+    for (const auto &pattern : _patterns)
+    {
+        out << pattern->name << ":" << pattern->count << "\n";
+    }
+    out << "\n";
 }

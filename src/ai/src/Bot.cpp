@@ -17,23 +17,35 @@ void Bot::init(int sockfd, const std::string &teamName, bool arg)
     sendMessage(teamName);
     if (arg) {
         printf("DEDQZDQD\n");
-        _behaviors.push_back(std::make_unique<Behavior>(0, [&]()
+        _patterns.push_back(std::make_unique<Pattern>(0, [&]()
                                                         { joinGroup(); }, "joinGroup"));
     } else
-        _behaviors.push_back(std::make_unique<Behavior>(0, [&]()
+        _patterns.push_back(std::make_unique<Pattern>(0, [&]()
                                                         { group(); }, "group"));
     /*_behaviors.push_back(std::make_unique<Behavior>(0, [&]()
                                                     { searchLinemate(); }, "searchLinemate"));
     _behaviors.push_back(std::make_unique<Behavior>(0, [&]()
                                                     { incantation({"linemate"}); }, "incantationLvl1"));*/
 
-    for (auto &behavior : _behaviors)
+    /*_patterns.push_back(std::make_unique<Pattern>(0, [&]()
+                                                  { survive(); }, "survive"));
+    _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+                                                  { searchLinemate(); }, "searchLinemate"));
+    _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+                                                  { incantation({"linemate"}); }, "incantationLvl1"));
+    _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+                                                  { searchDeraumere(); }, "searchDeraumere"));
+    _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+                                                  { searchSibur(); }, "searchSibur"));*/
+
+    for (auto &pattern : _patterns)
     {
-        behavior->probability = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+        pattern->probability = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
     }
     try
     {
         loadConfig("./src/ai/config/config.txt");
+        // loadConfig("./src/ai/config/config_trained.txt");
     }
     catch (const std::exception &e)
     {
@@ -87,11 +99,14 @@ void Bot::loadConfig(const std::string &filename)
     _trainedVariables.push_back(std::make_unique<TrainedVariable>(configValues["food_importance"], "food_importance"));
     _trainedVariables.push_back(std::make_unique<TrainedVariable>(configValues["food_probability"], "food_probability"));
     _trainedVariables.push_back(std::make_unique<TrainedVariable>(configValues["linemate_probability"], "linemate_probability"));
+    _trainedVariables.push_back(std::make_unique<TrainedVariable>(configValues["linemate_probability_2"], "linemate_probability_2"));
     _trainedVariables.push_back(std::make_unique<TrainedVariable>(configValues["incantation_probability"], "incantation_probability"));
+    _trainedVariables.push_back(std::make_unique<TrainedVariable>(configValues["deraumere_probability"], "deraumere_probability"));
+    _trainedVariables.push_back(std::make_unique<TrainedVariable>(configValues["sibur_probability"], "sibur_probability"));
 }
 
 // TODO: verify it with Garance
-// Update behaviors depending on the state of the bot
+// Update patterns depending on the state of the bot
 // MACHINE LEARNING OF IA: The bot whill choose itself the numbers here
 void Bot::updateProbabilities()
 {
@@ -99,28 +114,44 @@ void Bot::updateProbabilities()
     // double baseline_searchLinemate = 0.5;
     double baseline = 0.05;
 
-    for (auto &behavior : _behaviors)
+    for (auto &pattern : _patterns)
     {
-        double newProbability = behavior->probability;
+        double newProbability = pattern->probability;
 
-        if (behavior->name == "survive")
+        if (pattern->name == "survive")
         {
             if (_state.ressources.food < getTrainedVariableValueByName("food_importance"))
                 newProbability += getTrainedVariableValueByName("food_probability") * std::log(1 + _state.ressources.food);
             else
                 newProbability = baseline;
         }
-        if (behavior->name == "searchLinemate")
+        else if (pattern->name == "searchLinemate")
         {
             if (_state.level == 1 && _state.ressources.linemate != 1)
                 newProbability += getTrainedVariableValueByName("linemate_probability") * std::log(1 + _state.ressources.linemate);
+            else if (_state.level == 2 && _state.ressources.linemate != 1)
+                newProbability += getTrainedVariableValueByName("linemate_probability_2") * std::log(1 + _state.ressources.linemate);
             else
                 newProbability = baseline;
         }
-        if (behavior->name == "incantationLvl1")
+        else if (pattern->name == "searchDeraumere")
+        {
+            if (_state.level == 2 && _state.ressources.deraumere != 1)
+                newProbability += getTrainedVariableValueByName("deraumere_probability") * std::log(1 + _state.ressources.deraumere);
+            else
+                newProbability = baseline;
+        }
+        else if (pattern->name == "searchSibur")
+        {
+            if (_state.level == 2 && _state.ressources.sibur != 1)
+                newProbability += getTrainedVariableValueByName("sibur_probability") * std::log(1 + _state.ressources.sibur);
+            else
+                newProbability = baseline;
+        }
+        else if (pattern->name == "incantationLvl1")
         {
             if (_state.ressources.linemate == 1 && _state.level == 1)
-                newProbability = 1; // to verify: test incant getTrainedVariableValueByName("incantation_probability");
+                newProbability = getTrainedVariableValueByName("incantation_probability");
             else
                 newProbability = baseline;
         }
@@ -134,7 +165,7 @@ void Bot::updateProbabilities()
             newProbability = 0;
         }
 
-        behavior->probability = newProbability;
+        pattern->probability = newProbability;
     }
     normalizeProbabilities();
 }
