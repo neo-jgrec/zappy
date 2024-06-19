@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
     }
 
     try {
-        debug_print("Starting GUI", "");
+        debug_print << "Starting GUI" << std::endl;
         Core core(port, ip);
         core.run();
     } catch (const guiException& e) {
