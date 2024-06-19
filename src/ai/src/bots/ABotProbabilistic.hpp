@@ -26,8 +26,8 @@
 #include <fstream>
 
 #include "ABot.hpp"
-#include "../pattern/Pattern.hpp"
-#include "../training/TrainedVariable.hpp"
+#include "pattern/Pattern.hpp"
+#include "training/TrainedVariable.hpp"
 
 class ABotProbabilistic : public ABot
 {
@@ -35,7 +35,7 @@ public:
     ABotProbabilistic();
     ~ABotProbabilistic();
     void run(const std::string &response) override;
-    virtual void init(int sockfd, const std::string &teamName, bool arg) = 0;
+    virtual void init(int sockfd, const std::string &teamName) = 0;
 
     // Probabilities
     virtual void updateProbabilities() = 0;
@@ -43,25 +43,6 @@ public:
 protected:
     bool _doNothing = false;
 
-    // Client
-    int _sockfd;
-    int _level = 2;
-    std::string _teamName;
-
-    // Game
-    unsigned int _iteration;
-    Orientation _orientation;
-    int _timeUnit;
-
-    // Messages
-    Message _message;
-    Message _allyMessage;
-    std::string direction;
-    Message _enemyMessage;
-    std::string _signature = "bFNneQbXQkyJHGEQd";
-
-    // Material of training
-    BotState _state;
     std::vector<std::unique_ptr<Pattern>> _patterns;
     std::vector<std::unique_ptr<TrainedVariable>> _trainedVariables;
 
@@ -95,7 +76,6 @@ protected:
     void survive();
     void searchAndTakeRessource(const std::string &ressource);
     void group();
-    void joinGroup();
     void searchLinemate();
     void searchDeraumere();
     void searchSibur();
@@ -104,7 +84,6 @@ protected:
     void searchThystame();
     void trapMessage();
     void incantation(std::vector<std::string> objs);
-    bool canLvlUp(int lvl);
 
     // debug
     void debugTrainedVariables();

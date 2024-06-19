@@ -6,26 +6,13 @@
 */
 
 #include "Bot.hpp"
-#include<unistd.h> 
 
-
-void Bot::init(int sockfd, const std::string &teamName, bool arg)
+void Bot::init(int sockfd, const std::string &teamName)
 {
     srand(static_cast<unsigned int>(time(nullptr)));
     _sockfd = sockfd;
     _teamName = teamName;
     sendMessage(teamName);
-    /*if (arg) {
-        printf("DEDQZDQD\n");
-        _patterns.push_back(std::make_unique<Pattern>(0, [&]()
-                                                        { joinGroup(); }, "joinGroup"));
-    } else
-        _patterns.push_back(std::make_unique<Pattern>(0, [&]()
-                                                        { group(); }, "group"));*/
-    /*_behaviors.push_back(std::make_unique<Behavior>(0, [&]()
-                                                    { searchLinemate(); }, "searchLinemate"));
-    _behaviors.push_back(std::make_unique<Behavior>(0, [&]()
-                                                    { incantation({"linemate"}); }, "incantationLvl1"));*/
 
     _patterns.push_back(std::make_unique<Pattern>(0, [&]()
                                                   { survive(); }, "survive"));

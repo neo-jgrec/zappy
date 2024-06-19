@@ -33,8 +33,8 @@ void ABotProbabilistic::run(const std::string &response)
         responseCopy.pop_back();
     }
     printKeyValueColored("Bot listens", responseCopy);
-    //if (responseCopy.find("message") != std::string::npos)
-    //    _doNothing = true;
+    // if (responseCopy.find("message") != std::string::npos)
+    //     _doNothing = true;
     listen(responseCopy);
     if (_state.lastAction.action != LISTENING)
     {
