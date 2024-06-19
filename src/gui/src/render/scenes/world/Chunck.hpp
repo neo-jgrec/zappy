@@ -30,10 +30,7 @@ class Chunck {
                     Random::random(0, 26) - 13,
                     Random::random(0, 26) - 13
                 );
-            sf::Vector2f pos = sf::Vector2f(
-                _pos.x + offset.x,
-                _pos.y + offset.y  + _yOffset - TILE_SIZE_MY
-            );
+            sf::Vector2f pos = getMiddle() + offset;
             _enviromentElements.push_back(std::make_pair(element, pos));
         }
         void draw(sf::RenderWindow &window) {
@@ -56,6 +53,13 @@ class Chunck {
                     element1.first->draw(window);
                 }
             }
+        }
+
+        sf::Vector2f getMiddle() {
+            return sf::Vector2f(
+                _pos.x,
+                _pos.y + _yOffset - TILE_SIZE_MY
+            );
         }
 
     private:

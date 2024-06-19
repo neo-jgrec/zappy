@@ -62,8 +62,6 @@ class World : public IScene {
         sf::Vector2f _mousePos;
         std::shared_ptr<Chat> _chat;
 
-        // ----- this is temporary -----
-        Diamond _mapDiamond;
         Diamond _diamond;
 };
 

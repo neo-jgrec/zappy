@@ -25,7 +25,7 @@ World::World(Core *core)
     _sprites["halo1"] = std::make_shared<Sprite>("./assets/halo1.png");
     _sprites["hover1"] = std::make_shared<Sprite>("./assets/hover1.png");
     _sprites["trantorian"] = std::make_shared<Sprite>("./assets/trantorian.png");
-    _sprites["trantorian_run"] = std::make_shared<Sprite>("./assets/trantorian_run.png");
+    _sprites["trantorian_run"] = std::make_shared<Sprite>("./assets/trantorian_run.png", 6, 1);
     _sprites["grass"] = std::make_shared<Sprite>("./assets/grass_detail(1).png");
     _sprites["grass2"] = std::make_shared<Sprite>("./assets/stone(1).png");
     _sprites["tree2"] = std::make_shared<Sprite>("./assets/trees/tree(2).png");
@@ -38,15 +38,12 @@ World::World(Core *core)
 
 void World::init()
 {
-    while (_core->_data.getMap().getSize()[0] == 0) {
+    while (_core->_data.getMap().getSize()[0] == 0)
         _core->_parser.updateData(_core->_data, _core->_server);
-        std::cout << "Waiting for map size" << std::endl;
-    }
     _worldSize = sf::Vector2f(
         _core->_data.getMap().getSize()[0],
         _core->_data.getMap().getSize()[1]
     );
-    std::cout << "World size: " << _worldSize.x << "x" << _worldSize.y << std::endl;
     PerlinNoise noise;
     _chat->addMessage("Connection to server established");
     _chat->addMessage("World size: " + std::to_string(_worldSize.x) + "x" + std::to_string(_worldSize.y));
@@ -71,8 +68,6 @@ void World::init()
         }
         _chuncks.push_back(chuncks);
     }
-    _mapDiamond = Diamond(sf::Vector2f(TILE_SIZE_X * _worldSize.x - TILE_SIZE_X * 2 , TILE_SIZE_Y * _worldSize.y));
-    _mapDiamond.setPosition(sf::Vector2f(- TILE_SIZE_X * _worldSize.x / 2, 0));
 
     _pos = sf::Vector2f(
         (int)(_worldSize.x / 2) * TILE_SIZE_MX- (int)(_worldSize.x / 2) * TILE_SIZE_MX - TILE_SIZE_MY,
@@ -133,7 +128,6 @@ void World::draw(sf::RenderWindow &window)
             drawChunck(window, i, j);
         }
     }
-    // _mapDiamond.draw(window);
     window.setView(window.getDefaultView());
     _chat->draw(window);
 }
@@ -210,19 +204,23 @@ void World::updateTrantorians()
 
     players = _core->_data.getPlayers();
     for (auto &player : players) {
-        // player.second.getNextEvent();
         exisitingPlayers = false;
-                // std::cout << "Player " << player.first << " is at " << player.second.getPosition()[0] << "x" << player.second.getPosition()[1] << std::endl;
+        auto tile = sf::Vector2f(player.second->getPosition()[0], player.second->getPosition()[1]);
         for (auto &trantorian : _trantorians) {
             if (trantorian._id == player.first) {
                 exisitingPlayers = true;
-                trantorian.setTile(sf::Vector2f(player.second->getPosition()[0], player.second->getPosition()[1]));
-                std::cout << "Player " << player.first << " is at " << player.second->getPosition()[0] << "x" << player.second->getPosition()[1] << std::endl;
+                trantorian.setTile(
+                    tile,
+                    _chuncks[tile.x][tile.y].getMiddle()
+                );
                 break;
             }
         }
         if (!exisitingPlayers) {
-            Trantorian trantorian(*_sprites["trantorian"], *_sprites["trantorian_run"], sf::Vector2f(player.second->getPosition()[0], player.second->getPosition()[1]));
+            Trantorian trantorian(*_sprites["trantorian"], *_sprites["trantorian_run"],
+                tile,
+                _chuncks[tile.x][tile.y].getMiddle()
+            );
             trantorian._id = player.first;
             _trantorians.push_back(trantorian);
         }

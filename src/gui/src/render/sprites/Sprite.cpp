@@ -1,29 +1,21 @@
 #include "Sprite.hpp"
 
-void Sprite::update() {
-    if (_clock.getElapsedTime().asSeconds() > _frameTime) {
+void Sprite::update(float fElapsedTime) {
+    _time += fElapsedTime;
+    std::cout << _time << std::endl;
+        // std::cout << _frame << std::endl;
+    if (_time > _frameTime) {
+        _time = 0;
         _frame++;
+        std::cout << _frame << std::endl;
         if (_frame >= _frameCount)
             _frame = 0;
         _sprite.setTextureRect(
             sf::IntRect(
-            _frame * _texture.getSize().x / _frameCount,
-            0, _texture.getSize().x / _frameCount,
-            _texture.getSize().y
+                _frame * _frameSize.x, 0,
+                _frameSize.x, _frameSize.y
             )
         );
-        _clock.restart();
-    }
-}
 
-void Sprite::setFrame(int frame) {
-    if (frame >= _frameCount)
-        frame = 0;
-    _frame = frame;
-    _sprite.setTextureRect(
-        sf::IntRect(
-            _frame * _texture.getSize().x / _frameCount, 0,
-            _texture.getSize().x / _frameCount, _texture.getSize().y
-        )
-    );
+    }
 }

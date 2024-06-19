@@ -11,45 +11,34 @@
 #include "../../sprites/Sprite.hpp"
 #include "../../core/Setting.hpp"
 #include "../../../utils/Lerp.hpp"
+#include <iostream>
 
 class Trantorian {
     public:
-        Trantorian(Sprite sprite, Sprite trantorian_run, sf::Vector2f tile)
+        Trantorian(Sprite sprite, Sprite trantorian_run, sf::Vector2f tile, sf::Vector2f targetPos)
             : _sprite(sprite), _tile(tile), _trantorian_run(trantorian_run)
         {
-            _sprite.setPosition(sf::Vector2f(
-                _tile.x * TILE_SIZE_MX - _tile.y * TILE_SIZE_MX - TILE_SIZE_X / 4 * 3,
-                _tile.y * TILE_SIZE_MY + _tile.x * TILE_SIZE_MY
-            ));
-            _targetPos = sf::Vector2f(
-                _tile.x * TILE_SIZE_MX - _tile.y * TILE_SIZE_MX - TILE_SIZE_X / 4 * 3,
-                _tile.y * TILE_SIZE_MY + _tile.x * TILE_SIZE_MY
-            );
+            _targetPos = _targetPos;
+            _sprite.setPosition(_targetPos);
         }
         ~Trantorian() {
         }
 
-        void setPosition(sf::Vector2f pos) { _sprite.setPosition(pos); }
-        void setSize(sf::Vector2f size) { _sprite.setSize(size); }
-
         void update(float deltaTime) {
-            _sprite.setPosition(Lerp::lerp(_sprite.getPosition(), _targetPos, 0.1f));
-            _sprite.update();
+            _sprite.setPosition(Lerp::lerp(_sprite.getPosition(), _targetPos, 0.5f));
+            // _trantorian_run.update(deltaTime);
         }
         void draw(sf::RenderWindow &window) {
             // if (_sprite.getPosition() != _targetPos) {
-            //     _trantorian_run.setPosition(_sprite.getPosition());
-            //     _trantorian_run.draw(window);
+                _trantorian_run.setPosition(_sprite.getPosition());
+                _trantorian_run.draw(window);
             // } else {
-                _sprite.draw(window);
+                // _sprite.draw(window);
             // }
         }
-        void setTile(sf::Vector2f tile) {
+        void setTile(sf::Vector2f tile, sf::Vector2f targetPos) {
             _tile = tile;
-            _targetPos = sf::Vector2f(
-                _tile.x * TILE_SIZE_MX - _tile.y * TILE_SIZE_MX - TILE_SIZE_X / 4 * 3,
-                _tile.y * TILE_SIZE_MY + _tile.x * TILE_SIZE_MY
-            );
+            _targetPos = targetPos;
             // if (sqrt(pow(_sprite.getPosition().x - _targetPos.x, 2) + pow(_sprite.getPosition().y - _targetPos.y, 2)) > 10) {
             //     _sprite.setPosition(_targetPos);
             // }
