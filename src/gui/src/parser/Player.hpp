@@ -59,8 +59,6 @@ class Player
         Player(int id, std::vector<int> position, int orientation, int lvl, std::string team) : position(position), orientation(orientation), lvl(lvl), id(id), team(team) {};
         ~Player() {};
 
-        int oui = 0;
-
         void setPosition(std::vector<int> newPos);
         void setOrientation(int newOrientation);
         void setIncanting();

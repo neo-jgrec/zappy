@@ -26,6 +26,7 @@ void Parser::msz (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
             return;
         int x = std::get<int>(tokens.at(1));
         int y = std::get<int>(tokens.at(2));
+        debug_print << "msz X:" << x << " Y:" << y << std::endl;
         gameData.getMap().fillMap(x, y);
     };
     _queue.push(lambda);
@@ -36,6 +37,7 @@ void Parser::bct (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     auto lambda = [tokens, &gameData]() {
         int x = std::get<int>(tokens.at(1));
         int y = std::get<int>(tokens.at(2));
+        // debug_print << "bct X:" << x << " Y:" << y << std::endl;
         std::vector<int> values;
         for (int i = 3; i < 10; i++)
             values.push_back(std::get<int>(tokens.at(i)));
@@ -48,6 +50,7 @@ void Parser::tna (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     checkType(tokens, std::vector<Type>(1, Parser::Type::STRING), __func__);
     auto lambda = [tokens, &gameData]() {
         std::string teamName = std::get<std::string>(tokens.at(1));
+        debug_print << "tna " << teamName << std::endl;
         if (!gameData.doesTeamExist(teamName))
             gameData.addTeam(teamName);
     };
@@ -57,13 +60,12 @@ void Parser::tna (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
 void Parser::pnw (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_unused]] ServerConnect &server) {
     checkType(tokens, std::vector<Type>({Parser::Type::INT, Parser::Type::INT, Parser::Type::INT, Parser::Type::INT, Parser::Type::INT, Parser::Type::STRING}), __func__);
     auto lambda = [tokens, &gameData]() {
-        // debug_print("\npnw", "");
         std::vector<int> values;
         for (int i = 1; i < 6; i++)
             values.push_back(std::get<int>(tokens.at(i)));
         std::string teamName = std::get<std::string>(tokens.at(6));
+        debug_print << "pnw inv:" << values.at(0) << " " << values.at(1) << " " << values.at(2) << " " << values.at(3) << " " << values.at(4) << " TeamName" << teamName << std::endl;
         gameData.addPlayer(values, teamName);
-        // debug_print("\\pnw", "");
     };
     _queue.push(lambda);
 };
@@ -71,14 +73,13 @@ void Parser::pnw (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
 void Parser::ppo (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_unused]] ServerConnect &server) {
     checkType(tokens, std::vector<Type>(4, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
-        // debug_print("\nppo", "");
         std::shared_ptr<Player> player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
         int x = std::get<int>(tokens.at(2));
         int y = std::get<int>(tokens.at(3));
         int orientation = std::get<int>(tokens.at(4));
+        debug_print << "ppo X:" << x << " Y:" << y << " O:" << orientation << std::endl;
         player->setPosition(std::vector<int>({x, y}));
         player->setOrientation(orientation);
-        // debug_print("\\ppo", "");
     };
     _queue.push(lambda);
 };
@@ -86,11 +87,10 @@ void Parser::ppo (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
 void Parser::plv (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_unused]] ServerConnect &server) {
     checkType(tokens, std::vector<Type>(2, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
-        // debug_print("\nplv", "");
         std::shared_ptr<Player> player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
         int lvl = std::get<int>(tokens.at(2));
+        debug_print << "plv lvl:" << lvl << std::endl;
         player->setLvl(lvl);
-        // debug_print("\\plv", "");
     };
     _queue.push(lambda);
 };
@@ -98,13 +98,12 @@ void Parser::plv (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
 void Parser::pin (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_unused]] ServerConnect &server) {
     checkType(tokens, std::vector<Type>(10, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
-        // debug_print("\npin", "");
         std::shared_ptr<Player> player = gameData.getPlayerById(std::get<int>(tokens.at(1)));
         std::vector<int> inventory;
         for (int i = 4; i < 11; i++)
             inventory.push_back(std::get<int>(tokens.at(i)));
+        debug_print << "pin inv:" << inventory.at(0) << " " << inventory.at(1) << " " << inventory.at(2) << " " << inventory.at(3) << " " << inventory.at(4) << " " << inventory.at(5) << " " << inventory.at(6) << std::endl;
         player->setInventory(inventory);
-        // debug_print("\\pin", "");
     };
     _queue.push(lambda);
 };
@@ -113,9 +112,10 @@ void Parser::pex (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     checkType(tokens, std::vector<Type>(1, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData, &server]() {
         int playerNb = std::get<int>(tokens.at(1));
+        debug_print << "pex " << playerNb << std::endl;
         std::shared_ptr<Player> player = gameData.getPlayerById(playerNb);
         player->setPushed();
-        server.sendToServer("ppo " + std::to_string(playerNb) + "\n");
+        server.sendToServer("ppo Pid:" + std::to_string(playerNb) + "\n");
     };
     _queue.push(lambda);
 };
@@ -123,13 +123,12 @@ void Parser::pex (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
 void Parser::pbc (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_unused]] ServerConnect &server) {
     checkType(tokens, std::vector<Type>({Parser::Type::INT, Parser::Type::STRING}), __func__);
     auto lambda = [tokens, &gameData]() {
-        // debug_print("\npbc", "");
         int playerNb = std::get<int>(tokens.at(1));
         std::shared_ptr<Player> player = gameData.getPlayerById(playerNb);
         std::vector<int> pos = player->getPosition();
         std::string msg = std::get<std::string>(tokens.at(2));
+        debug_print << "pbc Pid:" << playerNb << " X:" << pos.at(1) << " Y:" << pos.at(2) << " MSG:" << msg << std::endl;
         gameData.addBroadcast(playerNb, pos, msg);
-        // debug_print("\\pbc", "");
     };
     _queue.push(lambda);
 };
@@ -141,6 +140,7 @@ void Parser::pic (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
         std::vector<int> pos = std::vector<int>({x, y});
         int lvl = std::get<int>(tokens.at(3));
         std::vector<int> playersId;
+        debug_print << "pic X:" << x << " Y:" << y << " lvl:" << lvl <<  " Pid1:" << std::get<int>(tokens.at(4)) << std::endl;
 
         for (size_t i = 4; i < tokens.size(); i++) {
             int playerNb = std::get<int>(tokens.at(i));
@@ -161,6 +161,7 @@ void Parser::pie (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
         int result = std::get<int>(tokens.at(3));
         std::vector<int> pos = std::vector<int>({x, y});
 
+        debug_print << "pie result:" << result << " X:" << x << " Y:" << y << std::endl;
         Incantation incantation = gameData.getIncantationByPos(pos);
         incantation.setStatus(result == 0 ? FAILURE : SUCCESS);
     };
@@ -170,11 +171,10 @@ void Parser::pie (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
 void Parser::pfk (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_unused]] ServerConnect &server) {
     checkType(tokens, std::vector<Type>(1, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
-        // debug_print("\npfk", "");
         int playerNb = std::get<int>(tokens.at(1));
+        debug_print << "pfk Pid:" << playerNb << std::endl;
         std::shared_ptr<Player> player = gameData.getPlayerById(playerNb);
         player->setEgging();
-        // debug_print("\\pfk", "");
     };
     _queue.push(lambda);
 };
@@ -184,6 +184,7 @@ void Parser::pdr (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     auto lambda = [tokens, &gameData, &server]() {
         int playerNb = std::get<int>(tokens.at(1));
         int resource = std::get<int>(tokens.at(2));
+        debug_print << "pdr (drop) Pid:" << playerNb << " Res:" << resource << std::endl;
         std::shared_ptr<Player> player = gameData.getPlayerById(playerNb);
         player->setDrop(resource);
         server.sendToServer("pin " + std::to_string(playerNb) + "\n");
@@ -197,6 +198,7 @@ void Parser::pgt (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     auto lambda = [tokens, &gameData, &server]() {
         int playerNb = std::get<int>(tokens.at(1));
         int resource = std::get<int>(tokens.at(2));
+        debug_print << "pgt (take) Pid:" << playerNb << " Res:" << resource << std::endl;
         std::shared_ptr<Player> player = gameData.getPlayerById(playerNb);
         player->setPickup(resource);
         server.sendToServer("pin " + std::to_string(playerNb) + "\n");
@@ -208,11 +210,10 @@ void Parser::pgt (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
 void Parser::pdi (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_unused]] ServerConnect &server) {
     checkType(tokens, std::vector<Type>(1, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
-        // debug_print("\npdi", "");
         int playerNb = std::get<int>(tokens.at(1));
+        debug_print << "pdi (die) Pid:" << playerNb << std::endl;
         std::shared_ptr<Player> player = gameData.getPlayerById(playerNb);
         player->setAlive(false);
-        // debug_print("\\pdi", "");
     };
     _queue.push(lambda);
 };
@@ -220,14 +221,13 @@ void Parser::pdi (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
 void Parser::enw (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_unused]] ServerConnect &server) {
     checkType(tokens, std::vector<Type>(4, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
-        // debug_print("\nenw , """ + std::to_string((std::get<int>(tokens.at(2)))), "");
         int eggNb = std::get<int>(tokens.at(1));
         int playerNb = std::get<int>(tokens.at(2));
         int x = std::get<int>(tokens.at(3));
         int y = std::get<int>(tokens.at(4));
+        debug_print << "enw Eid:" << eggNb << " Pid:" << playerNb << " X:" << x << " Y:" << y << std::endl;
         std::vector<int> pos = std::vector<int>({x, y});
         gameData.addEgg(pos, eggNb, playerNb, INCUBATING);
-        // debug_print("\\enw", "");
     };
     _queue.push(lambda);
 };
@@ -236,6 +236,7 @@ void Parser::ebo (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     checkType(tokens, std::vector<Type>(1, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
         int eggNb = std::get<int>(tokens.at(1));
+        debug_print << "ebo Eid:" << eggNb << std::endl;
         gameData.getEggById(eggNb).setState(HATCHED);
     };
     _queue.push(lambda);
@@ -245,6 +246,7 @@ void Parser::edi (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     checkType(tokens, std::vector<Type>(1, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
         int eggNb = std::get<int>(tokens.at(1));
+        debug_print << "edi Eid:" << eggNb << std::endl;
         gameData.getEggById(eggNb).setState(DEAD);
     };
     _queue.push(lambda);
@@ -253,7 +255,9 @@ void Parser::edi (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
 void Parser::sst(const std::vector<TokenType>& tokens, Data& gameData, [[maybe_unused]] ServerConnect &server) {
     checkType(tokens, std::vector<Type>(1, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
-        gameData.setTickRate(std::get<int>(tokens.at(1)));
+        int tickRate = std::get<int>(tokens.at(1));
+        debug_print << "sst Tick rate:" << tickRate << std::endl;
+        gameData.setTickRate(tickRate);
     };
     _queue.push(lambda);
 };
@@ -262,6 +266,7 @@ void Parser::sgt(const std::vector<TokenType>& tokens, Data& gameData, [[maybe_u
     checkType(tokens, std::vector<Type>(1, Parser::Type::INT), __func__);
     auto lambda = [tokens, &gameData]() {
         int tickRate = std::get<int>(tokens.at(1));
+        debug_print << "sgt Tick rate:" << tickRate << std::endl;
         gameData.setTickRate(tickRate);
     };
     _queue.push(lambda);
@@ -272,6 +277,7 @@ void Parser::seg (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
     checkType(tokens, std::vector<Type>(1, Parser::Type::STRING), __func__);
     auto lambda = [tokens, &gameData]() {
         std::string teamName = std::get<std::string>(tokens.at(1));
+        debug_print << "seg TeamName:" << teamName << std::endl;
         gameData.setWinner(teamName);
     };
     _queue.push(lambda);
