@@ -57,7 +57,8 @@ static void get_names(size_t *flag_count, flags_t *flags, const char **args,
         if (flags->names[i] == NULL)
             break;
         strcpy(flags->names[i], args[(*idx)]);
-        if (strlen(args[(*idx) + 1]) == 2 && args[(*idx) + 1][0] == '-')
+        if (args[(*idx) + 1] != NULL && strlen(args[(*idx) + 1]) == 2
+            && args[(*idx) + 1][0] == '-')
             break;
         i++;
     }
