@@ -7,7 +7,7 @@
 
 #include "Bot.hpp"
 
-void Bot::init(int sockfd, const std::string &teamName)
+void Bot::init(int sockfd, const std::string &teamName, bool arg)
 {
     srand(static_cast<unsigned int>(time(nullptr)));
     _sockfd = sockfd;

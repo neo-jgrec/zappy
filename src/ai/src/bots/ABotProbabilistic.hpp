@@ -26,8 +26,8 @@
 #include <fstream>
 
 #include "ABot.hpp"
-#include "pattern/Pattern.hpp"
-#include "training/TrainedVariable.hpp"
+#include "../pattern/Pattern.hpp"
+#include "../training/TrainedVariable.hpp"
 
 class ABotProbabilistic : public ABot
 {
@@ -35,8 +35,7 @@ public:
     ABotProbabilistic();
     ~ABotProbabilistic();
     void run(const std::string &response) override;
-    virtual void init(int sockfd, const std::string &teamName) = 0;
-
+    virtual void init(int sockfd, const std::string &teamName, bool arg) = 0;
     // Probabilities
     virtual void updateProbabilities() = 0;
 
@@ -65,11 +64,7 @@ protected:
     void listenIncantationReturnResponse(const std::string &response);
 
     // Logic
-    void findPath(std::pair<int, int> start, const std::pair<int, int> &end);
-    void turnToDirection(std::pair<int, int> &pos, Orientation targetDir);
-    void moveForward(std::pair<int, int> &pos);
-    void turnLeft(std::pair<int, int> &pos);
-    void turnRight(std::pair<int, int> &pos);
+    bool canLvlUp(int lvl);
 
     // Paterns
     void testPatern();
@@ -84,6 +79,7 @@ protected:
     void searchThystame();
     void trapMessage();
     void incantation(std::vector<std::string> objs);
+    void joinGroup();
 
     // debug
     void debugTrainedVariables();

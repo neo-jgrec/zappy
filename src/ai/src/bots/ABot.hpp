@@ -25,20 +25,12 @@
 #include <random>
 #include <fstream>
 
-#include "state/BotState.hpp"
-#include "utils/PrintColor.hpp"
-#include "message/Message.hpp"
-#include "utils/StringUtils.hpp"
+#include "../state/BotState.hpp"
+#include "../utils/PrintColor.hpp"
+#include "../message/Message.hpp"
+#include "../utils/StringUtils.hpp"
 #include "IBot.hpp"
-#include "hash/Pairhash.hpp"
-
-enum Orientation
-{
-    NORTH,
-    EAST,
-    SOUTH,
-    WEST
-};
+#include "../hash/Pairhash.hpp"
 
 class ABot : public IBot
 {
@@ -46,7 +38,9 @@ public:
     ABot();
     ~ABot();
     virtual void run(const std::string &response) = 0;
-    virtual void init(int sockfd, const std::string &teamName) = 0;
+    virtual void init(int sockfd, const std::string &teamName, bool arg) = 0;
+    // TODO: prod way
+    //  virtual void init(int sockfd, const std::string &teamName) = 0;
 
 protected:
     // TODO: move
@@ -74,13 +68,13 @@ protected:
 
     // Game
     unsigned int _iteration;
-    Orientation _orientation;
     int _timeUnit;
 
     // Messages
     Message _message;
     std::string direction;
     Message _enemyMessage;
+    Message _allyMessage;
     std::string _signature = "bFNneQbXQkyJHGEQd";
 
     // Material of training

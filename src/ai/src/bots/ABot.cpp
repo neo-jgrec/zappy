@@ -9,7 +9,6 @@
 
 ABot::ABot() : _sockfd(-1), _teamName(""), _iteration(0)
 {
-    _orientation = NORTH;
     _state.ressources.food = 9;
 }
 
