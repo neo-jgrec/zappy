@@ -118,16 +118,19 @@ static void check_response_client_time(
 
 static int start_server(server_t *server)
 {
+    struct timespec last_check_time;
+    clock_gettime(CLOCK_REALTIME, &last_check_time);
+
     while (true) {
         server->ready_sockets = server->current_sockets;
         clock_gettime(CLOCK_REALTIME, &server->current_time);
+        if (difftime(server->current_time.tv_sec, last_check_time.tv_sec) >= 1) {
+            handle_client_life(server);
+            last_check_time = server->current_time;
+        }
         handle_meteors(server);
-        if (handle_client_life(server) == true)
-            continue;
-        check_response_client_time(&server->clients, server,
-            &server->current_time);
-        if (select(FD_SETSIZE, &server->ready_sockets, NULL, NULL,
-            &server->timeout) < 0) {
+        check_response_client_time(&server->clients, server, &server->current_time);
+        if (select(FD_SETSIZE, &server->ready_sockets, NULL, NULL, &server->timeout) < 0) {
             perror("There was an error in select");
             return ERROR_STATUS;
         }
