@@ -108,8 +108,8 @@ Test(Data, getPlayerById)
     Data data;
 
     data.addPlayer({1, 1, 1, UP, 1}, "test");
-    Player player = data.getPlayerById(1);
-    cr_assert_eq(player.getPlayerNb(), 1, "got %d, expected 1", player.getPlayerNb());
+    std::shared_ptr<Player> player = data.getPlayerById(1);
+    cr_assert_eq(player->getPlayerNb(), 1, "got %d, expected 1", player->getPlayerNb());
 }
 
 Test(Data, getPlayerByIdWrong)

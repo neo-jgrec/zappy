@@ -43,6 +43,7 @@ class Core {
         float getDeltaTime() { return _deltaTime; };
         sf::Font &getFont() { return _font; };
         sf::Vector2f getMousePos() { return _mousePos; };
+        sf::Vector2f getRealMousePos() { return _realMousePos; };
 
         bool connectToServer(int port, std::string ip);
         Data _data;
@@ -55,11 +56,13 @@ class Core {
         sf::Clock _clock;
         float _deltaTime;
         sf::Vector2f _mousePos;
+        sf::Vector2f _realMousePos;
 
 
         sf::Font _font;
         sf::Vector2f _resolution = sf::Vector2f(1280, 720);
         bool _fullscreen = false;
+        sf::RectangleShape _shade;
 };
 
 #endif /* !CORE_HPP_ */

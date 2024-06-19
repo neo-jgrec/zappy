@@ -67,7 +67,7 @@ class Diamond {
         }
 
         void setPosition(sf::Vector2f pos) {
-            _pos = pos;
+            _pos = sf::Vector2f(pos.x - _tileSize.x / 2, pos.y - _tileSize.y / 2);
             _triangle1.setPosition(_pos);
             _triangle2.setPosition(_pos);
         }

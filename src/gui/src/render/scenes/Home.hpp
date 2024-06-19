@@ -11,6 +11,7 @@
     #include "IScene.hpp"
     #include "../ui/Button.hpp"
     #include "../ui/Input.hpp"
+    #include "../ui/Chat.hpp"
 
     #include <memory>
 
@@ -21,6 +22,7 @@ class Home : public IScene {
         ~Home() {}
 
         bool update(sf::Event event, sf::RenderWindow &window) override;
+        void update(float fElapsedTime) override {}
         void draw(sf::RenderWindow &window) override;
         void init() override {}
         bool connectToServer();
@@ -37,6 +39,8 @@ class Home : public IScene {
         std::shared_ptr<Input> _portButton;
 
         Core *_core;
+
+        std::shared_ptr<Chat> _chat;
 };
 
 #endif /* !HOME_HPP_ */

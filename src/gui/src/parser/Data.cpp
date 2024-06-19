@@ -1,5 +1,7 @@
 #include "Data.hpp"
 #include "../utils/GuiException.hpp"
+#include <memory>
+#include <utility>
 
 // ------------------------------------------------------------------ //
 // ---------------------------- GETTERS ----------------------------- //
@@ -20,7 +22,7 @@ std::string Data::getTeamByName(std::string name)
     throw guiException("getTeamByName: Invalid team name(" + name + ")");
 };
 
-Player &Data::getPlayerById(int id)
+std::shared_ptr<Player> Data::getPlayerById(int id)
 {
     if (this->players.find(id) == this->players.end())
         throw guiException("getPlayerById: Invalid player id(" + std::to_string(id) + ")");
@@ -50,16 +52,19 @@ std::optional<Broadcast> Data::getNextBroadcast() {
 void Data::addPlayer(std::vector<int> values, std::string teamName)
 {
     std::vector<int> pos = {values[1], values[2]};
-    this->players.insert(std::make_pair(
-        values[0],
-        Player(
+    std::shared_ptr<Player> player = std::make_shared<Player>(
             values[0],
             pos,
             values[3],
             values[4],
             teamName
+        );
+    players.insert(
+        std::pair<int, std::shared_ptr<Player>>(
+            values[0],
+            player
         )
-    ));
+    );
 };
 
 

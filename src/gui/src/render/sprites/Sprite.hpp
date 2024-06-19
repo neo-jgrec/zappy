@@ -9,14 +9,20 @@
     #define SPRITE_HPP_
 
     #include <SFML/Graphics.hpp>
+    #include <iostream>
+
 
 class Sprite {
     public:
-        Sprite(const std::string &path, int frameCount = 1 , float frameTime = 0.1f) : _frame(0), _frameCount(frameCount), _frameTime(frameTime)
+        Sprite(const std::string &path, int frameCount = 1, float frameTime = 0.1f) : _frame(0), _frameCount(frameCount), _frameTime(frameTime)
         {
+            _path = path;
             if (!_texture.loadFromFile(path))
                 throw std::runtime_error("Cannot load texture");
             _sprite.setTexture(_texture);
+            _frameSize = sf::Vector2u(_texture.getSize().x / _frameCount, _texture.getSize().y);
+            _sprite.setOrigin(_frameSize.x / 2, _frameSize.y / 2);
+            _sprite.setTextureRect(sf::IntRect(0, 0, _frameSize.x, _frameSize.y));
         }
         ~Sprite() {};
 
@@ -24,18 +30,20 @@ class Sprite {
         sf::Vector2f getPosition() { return _sprite.getPosition(); }
         void setSize(sf::Vector2f size) { _sprite.setScale(size); }
         void draw(sf::RenderWindow &window) { window.draw(_sprite); }
-        void update();
-        void setFrame(int frame);
+        int update(float fElapsedTime);
+        void disableLooping() { _looping = false; }
 
         sf::Sprite _sprite;
     private:
         sf::Texture _texture;
+        sf::Vector2u _frameSize;
+        bool _looping = true;
 
         int _frame;
         int _frameCount;
         float _frameTime;
-        sf::Clock _clock;
-
+        float _time;
+        std::string _path;
 };
 
 #endif /* !SPRITE_HPP_ */
