@@ -24,8 +24,9 @@ World::World(Core *core)
     _diamond = Diamond(sf::Vector2f(TILE_SIZE_X, TILE_SIZE_Y));
     _sprites["halo1"] = std::make_shared<Sprite>("./assets/halo1.png");
     _sprites["hover1"] = std::make_shared<Sprite>("./assets/hover1.png");
-    _sprites["trantorian"] = std::make_shared<Sprite>("./assets/trantorian.png");
-    _sprites["trantorian_run"] = std::make_shared<Sprite>("./assets/trantorian_run.png", 6, 1);
+    // _sprites["trantorian"] = std::make_shared<Sprite>("./assets/trantorian.png");
+    _sprites["trantorian_run"] = std::make_shared<Sprite>("./assets/trantorian_run.png", 6, 0.1f);
+    _sprites["trantorian_spawn"] = std::make_shared<Sprite>("./assets/trantorian_spawn.png", 12, 0.1f);
     _sprites["grass"] = std::make_shared<Sprite>("./assets/grass_detail(1).png");
     _sprites["grass2"] = std::make_shared<Sprite>("./assets/stone(1).png");
     _sprites["tree2"] = std::make_shared<Sprite>("./assets/trees/tree(2).png");
@@ -123,9 +124,24 @@ void World::draw(sf::RenderWindow &window)
         _pos.y + _tmpOffset.y + _offset.y
     ));
     window.setView(_view);
+    for (int i = 0; i < _worldSize.x; i++)
+        for (int j = 0; j < _worldSize.y; j++)
+            drawChunck(window, i, j);
+
     for (int i = 0; i < _worldSize.x; i++) {
         for (int j = 0; j < _worldSize.y; j++) {
-            drawChunck(window, i, j);
+            _chuncks[i][j].draw(window);
+            for (auto &trantorian : _trantorians)
+                if (trantorian.getTile().x == i && trantorian.getTile().y == j)
+                    trantorian.draw(window);
+            if (_selectedTile.x == i && _selectedTile.y == j) {
+                _sprites["halo1"]->_sprite.setPosition(
+                    _chuncks[i][j]._pos.x,
+                    _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y / 2
+                );
+                window.draw(_sprites["halo1"]->_sprite);
+            }
+
         }
     }
     window.setView(window.getDefaultView());
@@ -146,17 +162,9 @@ void World::drawChunck(sf::RenderWindow &window, int i, int j)
         );
         window.draw(_sprites["hover1"]->_sprite);
     }
-    _chuncks[i][j].draw(window);
     for (auto &trantorian : _trantorians)
         if (trantorian.getTile().x == i && trantorian.getTile().y == j)
-            trantorian.draw(window);
-    if (_selectedTile.x == i && _selectedTile.y == j) {
-        _sprites["halo1"]->_sprite.setPosition(
-            _chuncks[i][j]._pos.x,
-            _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y / 2
-        );
-        window.draw(_sprites["halo1"]->_sprite);
-    }
+            return;
 }
 
 bool World::moveMap(sf::Event event)
@@ -209,18 +217,16 @@ void World::updateTrantorians()
         for (auto &trantorian : _trantorians) {
             if (trantorian._id == player.first) {
                 exisitingPlayers = true;
-                trantorian.setTile(
-                    tile,
-                    _chuncks[tile.x][tile.y].getMiddle()
-                );
+                trantorian.setTile(tile, _chuncks[tile.x][tile.y].getMiddle());
+                if (player.second->getAlive() == false)
+                    trantorian.kill();
                 break;
             }
         }
         if (!exisitingPlayers) {
-            Trantorian trantorian(*_sprites["trantorian"], *_sprites["trantorian_run"],
-                tile,
-                _chuncks[tile.x][tile.y].getMiddle()
-            );
+            std::vector<Sprite> trantorianSprites;
+
+            Trantorian trantorian(tile, _chuncks[tile.x][tile.y].getMiddle());
             trantorian._id = player.first;
             _trantorians.push_back(trantorian);
         }
