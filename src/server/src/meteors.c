@@ -62,12 +62,13 @@ void handle_meteors(server_t *server)
     struct timespec meteor_time = server->meteor_last_time;
     double interval = METEORS_LIMIT / (double)server->proprieties.frequency;
     time_t sec_sus = (current.tv_sec - meteor_time.tv_sec);
-    time_t nsec_sus = (current.tv_nsec + meteor_time.tv_nsec);
+    time_t nsec_sus = (current.tv_nsec - meteor_time.tv_nsec);
     double elapsed = sec_sus + nsec_sus / NANOSECONDS_IN_SECOND;
     info_map_t map;
     info_map_t max_map = server->proprieties.max_map;
 
     if (elapsed >= interval) {
+        printf("METEORS\n");
         map = get_map_density(server);
         clock_gettime(CLOCK_REALTIME, &server->meteor_last_time);
         if (map.thystame != max_map.thystame || map.phiras != max_map.phiras ||

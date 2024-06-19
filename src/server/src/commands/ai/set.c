@@ -50,6 +50,11 @@ void set(client_t *c, server_t *s)
         dprintf(c->fd, "ko\n");
         return;
     }
+    if (c->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == true) {
+        asprintf(&c->payload, "ko\n");
+        client_time_handler(c, SET);
+        return;
+    }
     for (size_t i = 0; i < 7; i++) {
         if (strcmp(object_handlers[i].name, c->commands[1]) == 0) {
             o = object_handlers[i].type;

@@ -135,6 +135,11 @@ void look(client_t *client, server_t *server)
 
     if (map == NULL)
         return;
+    if (client->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == true) {
+        asprintf(&client->payload, "ko\n");
+        client_time_handler(client, LOOK);
+        return;
+    }
     populate_map_with_players(map, server);
     handle_look(client, server, map);
     for (int i = 0; i < server->proprieties.width *

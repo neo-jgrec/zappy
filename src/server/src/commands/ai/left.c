@@ -24,8 +24,11 @@ void left(client_t *client, server_t *server)
             client->orientation = NORTH;
             break;
     }
-    client->payload = strdup("ok\n");
-    message_to_graphicals(server, "ppo %d %d %d %d\n",
+    if (client->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == false) {
+        message_to_graphicals(server, "ppo %d %d %d %d\n",
         client->fd, client->x, client->y, client->orientation);
+        asprintf(&client->payload, "ok\n");
+    } else
+        asprintf(&client->payload, "ko\n");
     client_time_handler(client, LEFT);
 }

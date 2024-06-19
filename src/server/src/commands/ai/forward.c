@@ -21,8 +21,11 @@ void forward(client_t *client, server_t *server)
         client->x += width;
     if (client->y < 0)
         client->y += height;
-    client->payload = strdup("ok\n");
-    message_to_graphicals(server, "ppo %d %d %d %d\n",
+    if (client->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == false) {
+        message_to_graphicals(server, "ppo %d %d %d %d\n",
         client->fd, client->x, client->y, client->orientation);
+        client->payload = strdup("ok\n");
+    } else
+        client->payload = strdup("ko\n");
     client_time_handler(client, FORWARD);
 }

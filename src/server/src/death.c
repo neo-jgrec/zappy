@@ -18,6 +18,8 @@ static bool handle_client_death(
     double interval = PLAYER_LIFE_LIMIT / (double)s->proprieties.frequency;
 
     if (elapsed >= interval) {
+        printf("1 - CURRENT(%ld)\n", s->current_time.tv_nsec);
+        printf("FOOD -= 1\n");
         client->inventory.food -= 1;
         clock_gettime(CLOCK_REALTIME, &client->live_time);
     }
@@ -46,11 +48,9 @@ bool handle_client_life(server_t *s)
         if (client->is_connected == false || client->is_graphic == true)
             continue;
         live_time = client->live_time;
+        sec_sus = (current.tv_sec - live_time.tv_sec);
         nsec_sus = (current.tv_nsec - live_time.tv_nsec);
-        sec_sus = nsec_sus < 0 ? (current.tv_sec - live_time.tv_sec) - 1 :
-        (current.tv_sec - live_time.tv_sec);
-        nsec_sus += nsec_sus < 0 ? NANOSECONDS_IN_SECOND : 0;
-        if (handle_client_death(client, s, sec_sus, nsec_sus))
+        if (handle_client_death(client, s, sec_sus, nsec_sus) == true)
             return true;
     }
     return false;
