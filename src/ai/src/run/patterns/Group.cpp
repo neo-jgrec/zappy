@@ -11,7 +11,8 @@
 
 void ABotProbabilistic::group()
 {
-    if (_state.level == 2)
+    static int i = 0;
+    if (_state.level == 1)
         _message._content = "group_3";
     else if (_state.level == 3)
         _message._content = "group_4";
@@ -34,43 +35,40 @@ void ABotProbabilistic::joinGroup()
     std::cout << _allyMessage._content << std::endl;
     std::string level = getElementAfter(_allyMessage._content, '_');
     std::cout << level << std::endl;
-    if (getElementBefore(_allyMessage._content, '_') == "group" && std::stoi(level) == _state.level + 1 && canLvlUp(_state.level + 1))
+    if (direction == "0")
     {
-        if (direction == "0")
-        {
-            _message._content = "group_joined";
-            _message.vigenereEncrypt();
-            _message.generateMessage();
-            queue.push_back({[&]()
-                             { doAction(BROADCAST, _message._content); }, "BROADCAST"});
-            return;
-        }
+        _message._content = "group_joined";
+        _message.vigenereEncrypt();
+        _message.generateMessage();
+        queue.push_back({[&]()
+                         { doAction(BROADCAST, _message._content); }, "BROADCAST"});
+        return;
+    }
 
-        static const std::unordered_map<std::string, std::pair<std::string, std::function<void()>>> directionActions = {
-            {"2", {"Forward", [&]()
-                   { doAction(FORWARD, ""); }}},
-            {"1", {"Forward", [&]()
-                   { doAction(FORWARD, ""); }}},
-            {"8", {"Forward", [&]()
-                   { doAction(FORWARD, ""); }}},
-            {"5", {"Right", [&]()
-                   { doAction(RIGHT, ""); }}},
-            {"6", {"Right", [&]()
-                   { doAction(RIGHT, ""); }}},
-            {"7", {"Right", [&]()
-                   { doAction(RIGHT, ""); }}},
-            {"3", {"Left", [&]()
-                   { doAction(LEFT, ""); }}},
-            {"4", {"Left", [&]()
-                   { doAction(LEFT, ""); }}}};
+    static const std::unordered_map<std::string, std::pair<std::string, std::function<void()>>> directionActions = {
+        {"2", {"Forward", [&]()
+               { doAction(FORWARD, ""); }}},
+        {"1", {"Forward", [&]()
+               { doAction(FORWARD, ""); }}},
+        {"8", {"Forward", [&]()
+               { doAction(FORWARD, ""); }}},
+        {"5", {"Right", [&]()
+               { doAction(RIGHT, ""); }}},
+        {"6", {"Right", [&]()
+               { doAction(RIGHT, ""); }}},
+        {"7", {"Right", [&]()
+               { doAction(RIGHT, ""); }}},
+        {"3", {"Left", [&]()
+               { doAction(LEFT, ""); }}},
+        {"4", {"Left", [&]()
+               { doAction(LEFT, ""); }}}};
 
-        auto it = directionActions.find(direction);
-        if (it != directionActions.end())
-        {
-            const auto &action = it->second;
-            printf("%s\n", action.first.c_str());
-            queue.push_back({action.second, action.first});
-        }
+    auto it = directionActions.find(direction);
+    if (it != directionActions.end())
+    {
+        const auto &action = it->second;
+        printf("%s\n", action.first.c_str());
+        queue.push_back({action.second, action.first});
     }
 }
 

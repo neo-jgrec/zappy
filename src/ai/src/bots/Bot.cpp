@@ -14,16 +14,33 @@ void Bot::init(int sockfd, const std::string &teamName, bool arg)
     _teamName = teamName;
     sendMessage(teamName);
 
-    _patterns.push_back(std::make_unique<Pattern>(0, [&]()
-                                                  { survive(); }, "survive"));
-    _patterns.push_back(std::make_unique<Pattern>(0, [&]()
-                                                  { searchLinemate(); }, "searchLinemate"));
-    _patterns.push_back(std::make_unique<Pattern>(0, [&]()
-                                                  { incantation({"linemate"}); }, "incantationLvl1"));
-    _patterns.push_back(std::make_unique<Pattern>(0, [&]()
-                                                  { searchDeraumere(); }, "searchDeraumere"));
-    _patterns.push_back(std::make_unique<Pattern>(0, [&]()
-                                                  { searchSibur(); }, "searchSibur"));
+    if (arg)
+    {
+        _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+                                                      { joinGroup(); }, "joinGroup"));
+    }
+    else
+    {
+        _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+                                                      { group(); }, "group"));
+    }
+
+    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+    //                                               { survive(); }, "survive"));
+    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+    //                                               { searchLinemate(); }, "searchLinemate"));
+    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+    //                                               { incantation({"linemate"}); }, "incantationLvl1"));
+    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+    //                                               { incantation({"linemate", "deraumere", "sibur"}); }, "incantationLvl2"));
+    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+    //                                               { searchDeraumere(); }, "searchDeraumere"));
+    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+    //                                               { searchSibur(); }, "searchSibur"));
+    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+    //                                               { group(); }, "group"));
+    // _patterns.push_back(std::make_unique<Pattern>(0, [&]()
+    //                                               { joinGroup(); }, "joinGroup"));
 
     for (auto &pattern : _patterns)
     {
@@ -123,6 +140,28 @@ void Bot::updateProbabilities()
         {
             if (_state.ressources.linemate == 1 && _state.level == 1)
                 newProbability = getTrainedVariableValueByName("incantation_probability");
+            else
+                newProbability = baseline;
+        }
+        else if (pattern->name == "incantationLvl2")
+        {
+            if (_state.ressources.linemate == 1 && _state.ressources.deraumere == 1 && _state.ressources.sibur == 1 && _state.level == 2 && _allyMessage._content == "group_joined")
+                newProbability = getTrainedVariableValueByName("incantation_probability");
+            else
+                newProbability = baseline;
+        }
+        else if (pattern->name == "joinGroup")
+        {
+            if (_allyMessage._content.find("group") != std::string::npos)
+                newProbability = 1; // TODO: make trained_variables
+            else
+                newProbability = baseline;
+        }
+        else if (pattern->name == "group")
+        {
+            // TODO: get state of all bots
+            if (_state.ressources.linemate == 1 && _state.ressources.deraumere == 1 && _state.ressources.sibur == 1)
+                newProbability = 1; // TODO: make trained_variables
             else
                 newProbability = baseline;
         }
