@@ -50,7 +50,13 @@
             * @return void
             */
             void connectToServer(int port, const char *ip);
-    
+
+            /**
+            * @brief disconect from the server
+            * @return bool true if the disconection was successful false otherwise
+            */
+            bool disconectFromServer();
+
             ServerConnect() {};
             ~ServerConnect() { if (this->fd >= 0) close(this->fd); };
     };

@@ -19,7 +19,6 @@ class Data
     private:
         int tickRate = 0;
         std::vector<std::string> teamNames = {};
-        bool isRunning = false;
         std::map<int, Egg> eggs = {};
         std::map<int, std::shared_ptr<Player>> players = {};
         std::map<std::vector<int>, std::shared_ptr<Incantation>> incantations = {};
@@ -39,10 +38,6 @@ class Data
         void setTickRate(int rate) { this->tickRate = rate; };
         int getTickRate() { return this->tickRate; };
         void requestNewTickRate(int rate, ServerConnect server) { server.sendToServer("sst" + std::to_string(rate)); };
-
-
-        void setRunning(bool state) { this->isRunning = state; };
-        bool getRunning() { return this->isRunning; };
 
         void setWinner(std::string team) { this->winner = team; };
         std::optional<std::string> getWinner() { return this->winner; };
@@ -86,6 +81,8 @@ class Data
         void addBroadcast(int playerNb, std::vector<int> pos, std::string msg);
 
         Map &getMap() { return this->map; };
+
+        void resetGame();
 };
 
 #endif // DATA_HPP

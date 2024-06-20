@@ -125,3 +125,18 @@ bool Data::playerExists(int id)
     return true;
 };
 
+// ------------------------------------------------------------------ //
+// ----------------------------  RESET ------------------------------ //
+// ------------------------------------------------------------------ //
+
+void Data::resetGame()
+{
+    this->eggs.clear();
+    this->players.clear();
+    this->incantations.clear();
+    this->broadcasts.clear();
+    this->winner = std::nullopt;
+    this->teamNames.clear();
+    this->map.resetMap();
+    this->tickRate = 100;
+};

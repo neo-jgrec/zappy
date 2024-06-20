@@ -71,3 +71,14 @@ void ServerConnect::sendToServer(std::string message)
     }
     std::cout << "Sent: " << message << std::endl;
 }
+
+bool ServerConnect::disconectFromServer()
+{
+    if (this->fd >= 0) {
+        close(this->fd);
+        this->fd = -1;
+        connectionState = NOTCONNECTED;
+        return true;
+    }
+    return false;
+}

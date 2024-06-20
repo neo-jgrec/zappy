@@ -21,21 +21,6 @@ Test(Data, setTickRate)
     cr_assert_eq(data.getTickRate(), 10, "got %d, expected 10", data.getTickRate());
 }
 
-Test(Data, setRunning)
-{
-    Data data;
-
-    data.setRunning(true);
-    cr_assert_eq(data.getRunning(), true, "got %d, expected 1", data.getRunning());
-}
-
-Test(Data, getRunning)
-{
-    Data data;
-
-    cr_assert_eq(data.getRunning(), false, "got %d, expected 0", data.getRunning());
-}
-
 Test(Data, setWinner)
 {
     Data data;
