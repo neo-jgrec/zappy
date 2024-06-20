@@ -28,10 +28,24 @@ class Sprite {
 
         void setPosition(sf::Vector2f pos) { _sprite.setPosition(pos); }
         sf::Vector2f getPosition() { return _sprite.getPosition(); }
-        void setSize(sf::Vector2f size) { _sprite.setScale(size); }
+        void setSize(sf::Vector2f size) {
+            _sprite.setScale(size);
+        }
         void draw(sf::RenderWindow &window) { window.draw(_sprite); }
         int update(float fElapsedTime);
         void disableLooping() { _looping = false; }
+        void setFrame(int frame) {
+            if (frame < _frameCount)
+                _frame = 0;
+            _sprite.setTextureRect(sf::IntRect(_frame * _frameSize.x, 0, _frameSize.x, _frameSize.y));
+            _sprite.setOrigin(_frameSize.x / 2, _frameSize.y / 2);
+        }
+        bool mouseOver(sf::RenderWindow &window) {
+            sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+            sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
+            sf::FloatRect bounds = _sprite.getGlobalBounds();
+            return bounds.contains(worldPos);
+        }
 
         sf::Sprite _sprite;
     private:

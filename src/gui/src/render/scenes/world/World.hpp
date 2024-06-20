@@ -27,7 +27,6 @@ class World : public IScene {
         World(Core *core);
         ~World() {}
 
-
         void init() override;
         bool update(sf::Event event, sf::RenderWindow &window) override;
         void update(float fElapsedTime) override;
@@ -38,6 +37,10 @@ class World : public IScene {
         void updateTrantorians();
 
     private:
+        void reset();
+        void getServerInit();
+        void initMap();
+
         std::shared_ptr<Sprite> _sprite;
         std::map<std::string, std::shared_ptr<Sprite>> _sprites;
 

@@ -5,7 +5,7 @@ Menu::Menu(Core *core) : _core(core) {
     _fullscreenButton = std::make_shared<Button>(sf::Vector2f(100, 100),
     sf::Vector2f(100, 100), "Fullscreen", _core->getFont());
     _resolutionButtons.push_back(std::make_shared<Button>(sf::Vector2f(100, 150),
-    sf::Vector2f(100, 100), "3840*2160", _core->getFont()));
+    sf::Vector2f(100, 100), "3840x2160", _core->getFont()));
     _resolutionButtons.push_back(std::make_shared<Button>(sf::Vector2f(300, 150),
     sf::Vector2f(100, 100), "1920x1080", _core->getFont()));
     _resolutionButtons.push_back(std::make_shared<Button>(sf::Vector2f(500, 150),

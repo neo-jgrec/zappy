@@ -19,12 +19,10 @@ static const std::vector<std::string> _elements = {
 World::World(Core *core)
     : _core(core)
 {
-
     _sprite = std::make_shared<Sprite>("./assets/grass.png");
     _diamond = Diamond(sf::Vector2f(TILE_SIZE_X, TILE_SIZE_Y));
     _sprites["halo1"] = std::make_shared<Sprite>("./assets/halo1.png");
     _sprites["hover1"] = std::make_shared<Sprite>("./assets/hover1.png");
-    // _sprites["trantorian"] = std::make_shared<Sprite>("./assets/trantorian.png");
     _sprites["trantorian_run"] = std::make_shared<Sprite>("./assets/trantorian_run.png", 6, 0.1f);
     _sprites["trantorian_spawn"] = std::make_shared<Sprite>("./assets/trantorian_spawn.png", 12, 0.1f);
     _sprites["grass"] = std::make_shared<Sprite>("./assets/grass_detail(1).png");
@@ -39,12 +37,8 @@ World::World(Core *core)
 
 void World::init()
 {
-    while (_core->_data.getMap().getSize()[0] == 0)
-        _core->_parser.updateData(_core->_data, _core->_server);
-    _worldSize = sf::Vector2f(
-        _core->_data.getMap().getSize()[0],
-        _core->_data.getMap().getSize()[1]
-    );
+    reset();
+    getServerInit();
     PerlinNoise noise;
     _chat->addMessage("Connection to server established");
     _chat->addMessage("World size: " + std::to_string(_worldSize.x) + "x" + std::to_string(_worldSize.y));
@@ -73,6 +67,33 @@ void World::init()
     _pos = sf::Vector2f(
         (int)(_worldSize.x / 2) * TILE_SIZE_MX- (int)(_worldSize.x / 2) * TILE_SIZE_MX - TILE_SIZE_MY,
         (int)(_worldSize.y / 2) * TILE_SIZE_MY + (int)(_worldSize.y / 2) * TILE_SIZE_MY - TILE_SIZE_Y
+    );
+}
+
+void World::reset()
+{
+    _trantorians.clear();
+    _chuncks.clear();
+    _worldSize = sf::Vector2f(0, 0);
+    _selectedTile = sf::Vector2f(-1, -1);
+    _hoveredTile = sf::Vector2f(-1, -1);
+    _offset = sf::Vector2f(0, 0);
+    _tmpOffset = sf::Vector2f(0, 0);
+    _isDragging = false;
+    _zoom = 1;
+    _view.setSize(sf::Vector2f(1920, 1080));
+    _view.setCenter(sf::Vector2f(1920 / 2, 1080 / 2));
+    _pos = sf::Vector2f(0, 0);
+    _dragStart = sf::Vector2f(0, 0);
+}
+
+void World::getServerInit()
+{
+    while (_core->_data.getMap().getSize()[0] == 0)
+        _core->_parser.updateData(_core->_data, _core->_server);
+    _worldSize = sf::Vector2f(
+        _core->_data.getMap().getSize()[0],
+        _core->_data.getMap().getSize()[1]
     );
 }
 
@@ -130,10 +151,14 @@ void World::draw(sf::RenderWindow &window)
 
     for (int i = 0; i < _worldSize.x; i++) {
         for (int j = 0; j < _worldSize.y; j++) {
-            _chuncks[i][j].draw(window);
+        bool isThereTrantorian = false;
             for (auto &trantorian : _trantorians)
-                if (trantorian.getTile().x == i && trantorian.getTile().y == j)
+                if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
                     trantorian.draw(window);
+                    isThereTrantorian = true;
+                }
+            if (!isThereTrantorian)
+                _chuncks[i][j].draw(window);
             if (_selectedTile.x == i && _selectedTile.y == j) {
                 _sprites["halo1"]->_sprite.setPosition(
                     _chuncks[i][j]._pos.x,
@@ -162,9 +187,6 @@ void World::drawChunck(sf::RenderWindow &window, int i, int j)
         );
         window.draw(_sprites["hover1"]->_sprite);
     }
-    for (auto &trantorian : _trantorians)
-        if (trantorian.getTile().x == i && trantorian.getTile().y == j)
-            return;
 }
 
 bool World::moveMap(sf::Event event)
