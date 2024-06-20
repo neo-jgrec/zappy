@@ -7,6 +7,16 @@
 
 #include "../../bots/ABotPattern.hpp"
 
+void ABotPattern::incantationLvl1()
+{
+    queue.push_back({[&]()
+                     { doAction(SET, "linemate"); }, "SET"});
+    _state.ressources.linemate--;
+    queue.push_back({[&]()
+                     { doAction(INCANTATION, ""); }, "INCANTATION"});
+}
+
+// Landmark: 1. Fix this i guess. objStr is empty
 void ABotPattern::incantation(std::vector<std::string> objs)
 {
     for (auto &obj : objs)

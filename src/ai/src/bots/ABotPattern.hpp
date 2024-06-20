@@ -60,6 +60,7 @@ protected:
     void incantation(std::vector<std::string> objs);
     void joinGroup();
     void forkBot(unsigned int idBot);
+    void incantationLvl1();
 
     // Data
     virtual void saveData(const std::string &path);

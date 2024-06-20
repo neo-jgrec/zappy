@@ -81,6 +81,7 @@ void ABotPattern::run(const std::string &response)
         saveData("./src/ai/dataSaved/behaviors.txt");
         exit(0);
     }
+    debugState();
 }
 
 void ABotPattern::listen(const std::string &response)

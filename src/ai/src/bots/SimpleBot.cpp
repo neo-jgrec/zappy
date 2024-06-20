@@ -23,5 +23,5 @@ void SimpleBot::updateStrategy()
     else if (_state.level == 1 && _state.ressources.linemate != 1)
         searchAndTakeRessource("linemate");
     else if (_state.ressources.linemate == 1 && _state.level == 1)
-        incantation({"linemate"});
+        incantationLvl1();
 }
