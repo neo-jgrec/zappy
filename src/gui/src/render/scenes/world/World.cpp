@@ -154,7 +154,8 @@ void World::update(float /*fElapsedTime*/)
         _core->backToHome();
         return;
     }
-    _sprites["aura"]->update(_core->getDeltaTime());
+    if (_worldUi._displayTeam != -1 || _worldUi._trantorianDisplayed != -1)
+        _sprites["aura"]->update(_core->getDeltaTime());
     updateTrantorians();
     updateChuncks();
 }
@@ -190,6 +191,8 @@ void World::layer1(int i, int j)
         );
         window.draw(_sprites["hover1"]->_sprite);
     }
+
+
     std::map<int, Egg> eggs = _core->_data.getEggs();
     for (auto &egg : eggs) {
         if (egg.second.getState() != EggStatus::HATCHED &&

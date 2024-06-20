@@ -47,7 +47,6 @@ class Trantorian {
                     Random::random(0, 26) - 13
                 );
                 _targetPos = targetPos + offset;
-                
             }
             _tile = tile;
         }

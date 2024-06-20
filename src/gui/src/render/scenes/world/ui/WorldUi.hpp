@@ -46,7 +46,7 @@ class WorldUi : public IScene {
         void drawInventoryTile(int nb, sf::RenderWindow &window, std::string name);
 
         int _teamDisplayed = -1;
-        int _trantorianDisplayed = -1;
+        int _trantorianDisplayed = 0;
         int _eggDisplayed = -1;
         int _displayTeam = 1;
 

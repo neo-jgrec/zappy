@@ -61,11 +61,11 @@ class Sprite {
         sf::Vector2u _frameSize;
         bool _looping = true;
 
-        int _frame;
-        int _frameCount;
-        float _frameTime;
-        float _time;
-        std::string _path;
+        int _frame = 0;
+        int _frameCount = 1;
+        float _frameTime = 0.1f;
+        float _time = 0;
+        std::string _path = "";
 };
 
 #endif /* !SPRITE_HPP_ */

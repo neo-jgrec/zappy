@@ -37,6 +37,7 @@ class World : public IScene {
         bool moveMap(sf::Event event);
         void updateTrantorians();
         void updateChuncks();
+        sf::Vector2f circularVector(sf::Vector2f tile);
 
         void iterateWorld(std::function<void(int, int)> func){
             for (int i = 0; i < _worldSize.x; i++) {
