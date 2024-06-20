@@ -22,14 +22,8 @@ bool Input::update(sf::Event event, sf::RenderWindow &window) {
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     if (!_isFocused)
         _hover = _text.getGlobalBounds().contains(mousePos.x, mousePos.y);
-    if (_text.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
-            _isFocused = true;
-    }
-    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-        if (!_text.getGlobalBounds().contains(mousePos.x, mousePos.y))
-            _isFocused = false;
-    }
+    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+        _isFocused = _text.getGlobalBounds().contains(mousePos.x, mousePos.y);
     if (_isFocused) {
         if (event.type == sf::Event::TextEntered) {
             if (event.text.unicode == 8) {

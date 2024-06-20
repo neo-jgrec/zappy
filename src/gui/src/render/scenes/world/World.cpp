@@ -17,7 +17,7 @@ static const std::vector<std::string> _elements = {
 };
 
 World::World(Core *core)
-    : _core(core)
+    : _core(core), _worldUi(WorldUi(this))
 {
     _sprite = std::make_shared<Sprite>("./assets/grass.png");
     _diamond = Diamond(sf::Vector2f(TILE_SIZE_X, TILE_SIZE_Y));
@@ -41,7 +41,7 @@ void World::init()
     getServerInit();
     PerlinNoise noise;
     _chat->addMessage("Connection to server established");
-    _chat->addMessage("World size: " + std::to_string(_worldSize.x) + "x" + std::to_string(_worldSize.y));
+    _chat->addMessage("World size: " + std::to_string((int)_worldSize.x) + "x" + std::to_string((int)_worldSize.y));
 
     for (int i = 0; i < _worldSize.x; i++) {
         std::vector<Chunck> chuncks;
@@ -52,8 +52,6 @@ void World::init()
                 j * TILE_SIZE_MY + i * TILE_SIZE_MY
             );
             chunck._yOffset = noise.noise(i * 0.1, j * 0.1) * 80;
-            int nbElements = rand() % 3;
-
             if (rand() % 2 == 0)
                 chunck.addElement(_sprites[_elements[rand() % _elements.size()]]);
             if (chunck._yOffset > 0 && rand() % 2 == 0)
@@ -127,7 +125,7 @@ bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
     return true;
 }
 
-void World::update(float fElapsedTime)
+void World::update(float /*fElapsedTime*/)
 {
     if (_core->_server.connectionState == ServerConnect::ConnectionState::SERVERDOWN
         || _core->_server.connectionState == ServerConnect::ConnectionState::NOTCONNECTED) {
@@ -149,6 +147,7 @@ void World::draw(sf::RenderWindow &window)
         layer2(i, j);
     });
     window.setView(window.getDefaultView());
+    _worldUi.draw(window);
     _chat->draw(window);
 }
 

@@ -20,6 +20,7 @@
     #include "../../sprites/Sprite.hpp"
     #include "../../core/Setting.hpp"
     #include "../../ui/Chat.hpp"
+    #include "ui/WorldUi.hpp"
 
 class Core;
 class World : public IScene {
@@ -76,6 +77,7 @@ class World : public IScene {
         std::shared_ptr<Chat> _chat;
 
         Diamond _diamond;
+        WorldUi _worldUi;
 };
 
 

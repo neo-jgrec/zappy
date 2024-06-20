@@ -16,7 +16,7 @@
 class Trantorian {
     public:
         Trantorian(sf::Vector2f tile, sf::Vector2f targetPos)
-            : _tile(tile), _targetPos(targetPos), _pos(targetPos)
+            : _pos(targetPos), _tile(tile), _targetPos(targetPos)
         {
             _sprites.push_back(std::make_shared<Sprite>("./assets/trantorian_spawn.png", 12, 0.1f));
             _sprites[0]->disableLooping();
