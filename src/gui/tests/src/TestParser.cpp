@@ -303,7 +303,7 @@ Test(Parser, pexNormal)
     std::vector<std::variant<std::string, int>> args2 = { "pex", 1 };
 
     parser.parse(args2, data, server);
-    parser.execute();
+    cr_assert_throw(parser.execute(), guiException);
     cr_assert_eq(data.getPlayerById(1)->getNextEvent().action, PUSHED);
 }
 
