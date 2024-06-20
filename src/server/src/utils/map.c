@@ -34,24 +34,27 @@ void add_element_to_map(server_t *server, int x, int y, object_t object)
     server->map[y * server->proprieties.width + x].num_objects++;
 }
 
-void remove_element_from_map(server_t *server, int x, int y, object_t object)
+void remove_element_from_map(server_t *s, int x, int y, object_t o)
 {
-    for (size_t i = 0; i < server->map[y * server->proprieties.width + x]
+    for (size_t i = 0; i < s->map[y * s->proprieties.width + x]
         .num_objects; i++) {
-        if (server->map[y * server->proprieties.width + x]
-            .objects[i] == object) {
-            server->map[y * server->proprieties.width + x].objects[i] =
-                server->map[y * server->proprieties.width + x]
-                    .objects[server->map[y * server->proprieties.width + x]
-                    .num_objects - 1];
-            server->map[y * server->proprieties.width + x].num_objects--;
-            server->map[y * server->proprieties.width + x].objects =
-                realloc(server->map[y * server->proprieties.width + x].objects,
-                    sizeof(object_t) * server
-                        ->map[y * server->proprieties.width + x]
+        if (s->map[y * s->proprieties.width + x].objects[i] != o)
+            continue;
+        s->map[y * s->proprieties.width + x].objects[i] =
+            s->map[y * s->proprieties.width + x]
+                .objects[s->map[y * s->proprieties.width + x]
+                .num_objects - 1];
+        s->map[y * s->proprieties.width + x].num_objects--;
+        if (s->map[y * s->proprieties.width + x].num_objects > 0) {
+            s->map[y * s->proprieties.width + x].objects =
+                realloc(s->map[y * s->proprieties.width + x].objects,
+                    sizeof(object_t) * s->map[y * s->proprieties.width + x]
                         .num_objects);
-            break;
+        } else {
+            free(s->map[y * s->proprieties.width + x].objects);
+            s->map[y * s->proprieties.width + x].objects = NULL;
         }
+        break;
     }
 }
 
