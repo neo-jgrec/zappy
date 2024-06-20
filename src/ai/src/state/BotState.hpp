@@ -47,6 +47,8 @@ public:
     unsigned int heightMap = 42;
 
     std::vector<std::string> exploredProbabilities;
+
+    std::vector<ActionInfo> actionsData;
 };
 
 #endif // BOTSTATE_HPP_

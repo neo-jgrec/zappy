@@ -40,3 +40,15 @@ void ABot::doAction(actions action, const std::string &parameter)
         _state.ressources.food -= 1;
     }
 }
+
+// TODO: finis this.
+// void ABot::saveDataActions(const std::string &filename)
+// {
+//     std::ofstream out(filename, std::ios_base::app);
+
+//     for (auto &action : _state.actionsData)
+//     {
+//         out << action.first << " " << action.second << std::endl;
+//     }
+//     out << "\n";
+// }

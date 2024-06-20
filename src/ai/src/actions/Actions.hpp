@@ -41,6 +41,7 @@ public:
 private:
     std::string name;
     int value;
+    unsigned int count = 0;
 };
 
 extern std::map<actions, ActionInfo> actionMap;

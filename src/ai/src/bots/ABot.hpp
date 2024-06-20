@@ -95,6 +95,9 @@ protected:
     // Debug
     void debugInitialisation();
     void debugState();
+
+    // Data
+    // void saveDataActions(const std::string &filename);
 };
 
 #endif // ABot_HPP_
