@@ -97,6 +97,7 @@ void Client::authenticate()
                 break;
             }
             timeToGetIdentity++;
+            messageToReadBeforeStart--;
         }
     }
     try
@@ -167,6 +168,24 @@ void Client::sendMessage(const std::string &message)
 
 void Client::loop()
 {
+    // clear messsages of servers before start
+    std::cout << "messageToReadBeforeStart: " << messageToReadBeforeStart << std::endl;
+    while (messageToReadBeforeStart > 0)
+    {
+        FD_ZERO(&_readfds);
+        FD_SET(_sockfd, &_readfds);
+        _tv.tv_sec = 0;
+        _tv.tv_usec = 10000;
+        int activity = select(_sockfd + 1, &_readfds, NULL, NULL, &_tv);
+
+        if (activity > 0 && FD_ISSET(_sockfd, &_readfds))
+        {
+            std::string response;
+            recvMessage(response);
+            messageToReadBeforeStart--;
+        }
+    }
+    _bot->run("start");
     while (true)
     {
         FD_ZERO(&_readfds);

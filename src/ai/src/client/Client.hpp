@@ -44,6 +44,8 @@ private:
     unsigned int _width = 42;
     unsigned int _height = 42;
 
+    int messageToReadBeforeStart = 3;
+
     void setupConnection();
     void authenticate();
     void loop();

@@ -10,7 +10,6 @@
 
 void Forker::initChild()
 {
-    doAction(INVENTORY, "");
     std::cout << "🍴 Forker initialized" << std::endl;
 }
 
