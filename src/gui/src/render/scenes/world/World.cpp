@@ -33,7 +33,8 @@ World::World(Core *core)
     _diamond = Diamond(sf::Vector2f(TILE_SIZE_X, TILE_SIZE_Y));
     _sprites["halo1"] = std::make_shared<Sprite>("./assets/halo1.png");
     _sprites["hover1"] = std::make_shared<Sprite>("./assets/hover1.png");
-    _sprites["hover2"] = std::make_shared<Sprite>("./assets/hover2.png");
+    _sprites["aura"] = std::make_shared<Sprite>("./assets/aura.png", 6, 0.1f);
+    _sprites["hoverEgg"] = std::make_shared<Sprite>("./assets/hoverEgg.png");
     _sprites["trantorian_run"] = std::make_shared<Sprite>("./assets/trantorian_run.png", 6, 0.1f);
     _sprites["trantorian_spawn"] = std::make_shared<Sprite>("./assets/trantorian_spawn.png", 12, 0.1f);
     _sprites["grass"] = std::make_shared<Sprite>("./assets/grass_detail(1).png");
@@ -45,8 +46,6 @@ World::World(Core *core)
     _view.setSize(sf::Vector2f(1920 , 1080));
     _chat = std::make_shared<Chat>(_core->getFont(), 7);
     _chat->setPosition(sf::Vector2f(50, 720 - 50));
-    
-
 }
 
 void World::init()
@@ -155,7 +154,9 @@ void World::update(float /*fElapsedTime*/)
         _core->backToHome();
         return;
     }
+    _sprites["aura"]->update(_core->getDeltaTime());
     updateTrantorians();
+    updateChuncks();
 }
 
 void World::draw(sf::RenderWindow &window)
@@ -189,17 +190,16 @@ void World::layer1(int i, int j)
         );
         window.draw(_sprites["hover1"]->_sprite);
     }
-    for (auto &trantorian : _trantorians) {
-        if (trantorian.isDead())
-            continue;
-        if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
-            _sprites["hover2"]->_sprite.setPosition(
+    std::map<int, Egg> eggs = _core->_data.getEggs();
+    for (auto &egg : eggs) {
+        if (egg.second.getState() != EggStatus::HATCHED &&
+            egg.second.getPos()[0] == i && egg.second.getPos()[1] == j) {
+            _sprites["hoverEgg"]->_sprite.setPosition(
                 _chuncks[i][j]._pos.x,
                 _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset
             );
-            _sprites["hover2"]->setColor(_teamsColor[0]);
-            if (trantorian._team == _teams[0])
-                window.draw(_sprites["hover2"]->_sprite);
+            _sprites["hoverEgg"]->setColor(sf::Color(98, 151, 50));
+            window.draw(_sprites["hoverEgg"]->_sprite);
         }
     }
 }
@@ -213,6 +213,14 @@ void World::layer2(int i, int j)
             trantorian.draw(window);
             isThereTrantorian = true;
             if (trantorian.isDead())
+                continue;
+            if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
+                _sprites["aura"]->_sprite.setPosition(trantorian.getPos());
+                _sprites["aura"]->setColor(_teamsColor[0]);
+                if (trantorian._team == _teams[0])
+                    window.draw(_sprites["aura"]->_sprite);
+            }
+            if (_zoom > 0.6f)
                 continue;
             _sprites["lvlbanner"]->_sprite.setPosition(trantorian.getPos());
             _sprites["lvlbanner"]->setFrame(trantorian._level - 1);
@@ -306,5 +314,27 @@ void World::updateTrantorians()
     }
     for (auto &trantorian : _trantorians) {
         trantorian.update(_core->getDeltaTime());
+    }
+}
+
+void World::updateChuncks()
+{
+    auto &map = _core->_data.getMap();
+    for (int i = 0; i < _worldSize.x; i++) {
+        for (int j = 0; j < _worldSize.y; j++) {
+            _chuncks[i][j]._food = map.getTileAt(i, j).getRessources()[0];
+            _chuncks[i][j]._linemate = map.getTileAt(i, j).getRessources()[1];
+            _chuncks[i][j]._deraumere = map.getTileAt(i, j).getRessources()[2];
+            _chuncks[i][j]._sibur = map.getTileAt(i, j).getRessources()[3];
+            _chuncks[i][j]._mendiane = map.getTileAt(i, j).getRessources()[4];
+            _chuncks[i][j]._phiras = map.getTileAt(i, j).getRessources()[5];
+            _chuncks[i][j]._thystame = map.getTileAt(i, j).getRessources()[6];
+            _chuncks[i][j]._nbTrantorians = 0;
+            for (auto &trantorian : _trantorians) {
+                if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
+                    _chuncks[i][j]._nbTrantorians++;
+                }
+            }
+        }
     }
 }

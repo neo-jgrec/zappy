@@ -10,6 +10,7 @@
 
     #include <SFML/Graphics.hpp>
     #include <memory>
+    #include <functional>
 
     #include "../../../utils/PerlinNoise.hpp"
     #include "Chunck.hpp"
@@ -35,6 +36,7 @@ class World : public IScene {
 
         bool moveMap(sf::Event event);
         void updateTrantorians();
+        void updateChuncks();
 
         void iterateWorld(std::function<void(int, int)> func){
             for (int i = 0; i < _worldSize.x; i++) {
@@ -44,6 +46,8 @@ class World : public IScene {
             }
         }
         std::vector<std::string> _teams;
+        sf::Vector2f _selectedTile = sf::Vector2f(-1, -1);
+        std::vector<std::vector<Chunck>> _chuncks;
     private:
         void reset();
         void getServerInit();
@@ -57,7 +61,6 @@ class World : public IScene {
 
         sf::Vector2f _worldSize;
         std::vector<Trantorian> _trantorians;
-        std::vector<std::vector<Chunck>> _chuncks;
 
         sf::View _view;
         sf::Vector2f _pos = sf::Vector2f(0, 0);
@@ -72,7 +75,6 @@ class World : public IScene {
 
         Core *_core;
         sf::Vector2f _hoveredTile;
-        sf::Vector2f _selectedTile = sf::Vector2f(-1, -1);
         sf::Vector2f _mousePos;
         std::shared_ptr<Chat> _chat;
 
