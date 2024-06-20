@@ -25,8 +25,8 @@ static bool handle_client_death(
         dprintf(client->fd, "dead\n");
         close(client->fd);
         FD_CLR(client->fd, &s->current_sockets);
-        remove_client_by_fd(&s->clients, client->fd);
         message_to_graphicals(s, "pdi %d\n", client->fd);
+        remove_client_by_fd(&s->clients, client->fd);
         return true;
     }
     return false;
@@ -46,11 +46,9 @@ bool handle_client_life(server_t *s)
         if (client->is_connected == false || client->is_graphic == true)
             continue;
         live_time = client->live_time;
+        sec_sus = (current.tv_sec - live_time.tv_sec);
         nsec_sus = (current.tv_nsec - live_time.tv_nsec);
-        sec_sus = nsec_sus < 0 ? (current.tv_sec - live_time.tv_sec) - 1 :
-        (current.tv_sec - live_time.tv_sec);
-        nsec_sus += nsec_sus < 0 ? NANOSECONDS_IN_SECOND : 0;
-        if (handle_client_death(client, s, sec_sus, nsec_sus))
+        if (handle_client_death(client, s, sec_sus, nsec_sus) == true)
             return true;
     }
     return false;

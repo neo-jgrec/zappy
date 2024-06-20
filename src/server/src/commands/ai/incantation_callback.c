@@ -23,10 +23,10 @@ void callback_level_up(
 {
     client->level++;
     message_to_graphicals(
-        server,
-        "plv %d %d\n",
-        client->fd,
-        client->level
+            server,
+            "plv %d %d\n",
+            client->fd,
+            client->level
     );
 }
 
@@ -51,5 +51,5 @@ void callback_end_incantation_set_payload(
     UNUSED server_t *server
 )
 {
-    asprintf(&client->payload, "Current level: %zu\n", client->level);
+    handle_response(&client->payload, "Current level: %zu\n", client->level);
 }

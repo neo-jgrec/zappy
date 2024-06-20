@@ -6,14 +6,12 @@
 */
 
 #include "Forker.hpp"
+#include "SimpleBot.hpp"
 
-void Forker::init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port)
+void Forker::initChild()
 {
-    _sockfd = sockfd;
-    _teamName = teamName;
-    sendMessage(teamName);
-    _host = host;
-    _port = port;
+    doAction(INVENTORY, "");
+    std::cout << "🍴 Forker initialized" << std::endl;
 }
 
 void Forker::forkNewBot()
@@ -28,15 +26,21 @@ void Forker::forkNewBot()
 
     if (pid == 0)
     {
-        // execl("./zappy_ai", "./zappy_ai", "-p", std::to_string(_port).c_str(), "-n", _teamName.c_str(), "-h", _host.c_str(), nullptr);
-        execl("/usr/bin/gnome-terminal", "/usr/bin/gnome-terminal", "--", "./zappy_ai", "-p", std::to_string(_port).c_str(), "-n", _teamName.c_str(), "-h", _host.c_str(), nullptr);
+        // without term
+        //  execl("./zappy_ai", "./zappy_ai", "-p", std::to_string(_port).c_str(), "-n", _teamName.c_str(), "-h", _host.c_str(), nullptr);
+        // with term that close
+        //  execl("/usr/bin/gnome-terminal", "/usr/bin/gnome-terminal", "--", "./zappy_ai", "-p", std::to_string(_port).c_str(), "-n", _teamName.c_str(), "-h", _host.c_str(), nullptr);
+        //  with term that stay open
+        execl("/usr/bin/gnome-terminal", "/usr/bin/gnome-terminal", "--", "bash", "-c",
+              ("trap 'echo \"[DEBUG]\"; kill -INT $$' SIGINT; ./zappy_ai -p " + std::to_string(_port) + " -n " + _teamName + " -h " + _host + "; exec bash").c_str(), nullptr);
 
         std::cerr << "execl failed" << std::endl;
-        exit(EXIT_FAILURE);
+        while (1)
+            ;
     }
     else
     {
-        _message.format("you_are_bot_" + std::to_string(_idBot) + "_and_your_job_is_" + jobMap[SIMPLE_BOY]);
+        _message.format("you_are_bot=" + std::to_string(_idBot) + "your_job=" + jobMap[SIMPLE_BOT] + "currentMessageId=" + std::to_string(_currentMessageId));
         queue.push_back(std::make_pair([&]()
                                        { doAction(BROADCAST, _message._content); }, "FORK"));
 
@@ -47,43 +51,30 @@ void Forker::forkNewBot()
 void Forker::updateStrategy()
 {
     static bool canFork = true; // TODO: it is to debug
-    static int timeToKnowHisIdentity = 0;
+    static bool verifySlot = true;
 
-    if (_state.job == SEARCH_IDENTITY)
+    std::cout << "🍴 Forker updateStrategy" << std::endl;
+    if (verifySlot)
     {
-        _message.format("I'm_searching_my_identity_🤔");
+        _state.slot = 0;
         queue.push_back(std::make_pair([&]()
-                                       { doAction(BROADCAST, _message._content); }, "BROADCAST"));
-        timeToKnowHisIdentity++;
+                                       { doAction(CONNECT_NBR, ""); }, "CONNECT_NBR"));
+        verifySlot = false;
     }
-    else if (_state.job != FORKER)
+    else if (_state.ressources.food < 5)
     {
-
-        std::cout << "I'm the bot: " << std::to_string(_id) << " and my job is " << jobMap[_state.job] << std::endl;
-        std::cout << "You can do my logic by adding a class ${JOBNAME} : ABotPattern" << std::endl;
-        // this = BOT then this->init() then update strategy ?
+        survive();
     }
-    else
+    else if ((_state.state == FORKED || _state.slot > 0) && canFork)
     {
-        if (_state.ressources.food < 1)
-        {
-            survive();
-        }
-        else if ((_state.state == FORKED || _state.slot > 0) && canFork)
-        {
-            forkNewBot();
-            _idBot++;
-            _state.slot--;
-            canFork = false;
-        }
-        else if (_state.slot == 0 && canFork)
-        {
-            queue.push_back(std::make_pair([&]()
-                                           { doAction(FORK, ""); }, "FORK"));
-        }
+        forkNewBot();
+        _idBot++;
+        _state.slot--;
+        canFork = false;
     }
-    if (timeToKnowHisIdentity == 2)
+    else if (_state.slot == 0 && canFork)
     {
-        _state.job = FORKER;
+        queue.push_back(std::make_pair([&]()
+                                       { doAction(FORK, ""); }, "FORK"));
     }
 }

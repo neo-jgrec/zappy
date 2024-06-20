@@ -15,6 +15,18 @@ ABotProbabilistic::~ABotProbabilistic()
 {
 }
 
+void ABotProbabilistic::init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port, int id, int idMessage)
+{
+    _sockfd = sockfd;
+    _teamName = teamName;
+    _host = host;
+    _port = port;
+    _currentMessageId = idMessage;
+    _idBot = id;
+    doAction(INVENTORY, "");
+    initChild();
+}
+
 // if (_doNothing)
 // {
 //     _patterns.erase(_patterns.begin());

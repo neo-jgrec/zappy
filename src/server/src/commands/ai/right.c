@@ -7,25 +7,30 @@
 
 #include "server.h"
 
-void right(client_t *client, server_t *server)
+static const struct {
+    int current_orientation;
+    int next_orientation;
+} next_orientation_table[] = {
+    {NORTH, EAST},
+    {EAST, SOUTH},
+    {SOUTH, WEST},
+    {WEST, NORTH},
+};
+
+void right(client_t *c, server_t *server)
 {
-    (void)server;
-    switch (client->orientation) {
-        case NORTH:
-            client->orientation = EAST;
+    for (int i = 0; i < 4; i++) {
+        if (next_orientation_table[i].current_orientation == c->orientation) {
+            c->orientation = next_orientation_table[i].next_orientation;
             break;
-        case EAST:
-            client->orientation = SOUTH;
-            break;
-        case SOUTH:
-            client->orientation = WEST;
-            break;
-        case WEST:
-            client->orientation = NORTH;
-            break;
+        }
     }
-    client->payload = strdup("ok\n");
-    message_to_graphicals(server, "ppo %d %d %d %d\n",
-        client->fd, client->x, client->y, client->orientation);
-    client_time_handler(client, RIGHT);
+    if (c->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == false) {
+        message_to_graphicals(server, "ppo %d %d %d %d\n",
+                            c->fd, c->x, c->y, c->orientation);
+        handle_response(&c->payload, "ok\n");
+    } else {
+        handle_response(&c->payload, "ko\n");
+    }
+    client_time_handler(c, RIGHT);
 }

@@ -24,9 +24,8 @@ enum State
 
 enum Job
 {
-    SEARCH_IDENTITY,
     FORKER,
-    SIMPLE_BOY,
+    SIMPLE_BOT,
 };
 
 extern std::map<Job, std::string> jobMap;
@@ -42,7 +41,6 @@ public:
     LastAction lastAction;
     std::string lastBehavior;
     State state = STANDART;
-    Job job = SEARCH_IDENTITY;
     unsigned int level = 1;
     unsigned int slot = 0;
     unsigned int widthMap = 42;

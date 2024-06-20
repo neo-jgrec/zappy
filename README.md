@@ -12,7 +12,7 @@ Welcome to **ZAPPY**, a network game where teams compete on a dynamic tile map r
 ### Programming Languages
 - **Server:** C
 - **GUI:** C++
-- **AI:** Free choice but we'll stick to C for this project
+- **AI:** Free choice but we'll stick to C++ for this project
 
 ## 🌍 Environment
 

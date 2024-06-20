@@ -10,6 +10,7 @@
 
 #include "../bots/BotProbabilistic.hpp"
 #include "../bots/Forker.hpp"
+#include "../bots/SimpleBot.hpp"
 #include <memory>
 
 class BotFactory

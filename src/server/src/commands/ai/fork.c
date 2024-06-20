@@ -5,12 +5,13 @@
 ** fork.c
 */
 
+#include "client.h"
 #include "server.h"
 
-void fork_z(client_t *client, server_t *server)
+void fork_z(client_t *c, server_t *server)
 {
     eggs_list_t *new_egg = malloc(sizeof(eggs_list_t));
-    team_t *team = get_team_by_name(&server->teams, client->team_name);
+    team_t *team = get_team_by_name(&server->teams, c->team_name);
 
     if (new_egg == NULL || team == NULL)
         return;
@@ -19,7 +20,10 @@ void fork_z(client_t *client, server_t *server)
     if (new_egg->egg == NULL)
         return;
     TAILQ_INSERT_TAIL(&team->eggs, new_egg, entries);
-    asprintf(&client->payload, "ok\n");
-    message_to_graphicals(server, "pfk %d\n", client->fd);
-    client_time_handler(client, FORK);
+    if (c->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == false) {
+        message_to_graphicals(server, "pfk %d\n", c->fd);
+        handle_response(&c->payload, "ok\n");
+    } else
+        handle_response(&c->payload, "ko\n");
+    client_time_handler(c, FORK);
 }

@@ -11,6 +11,16 @@ ABotPattern::ABotPattern()
 {
 }
 
+void ABotPattern::init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port, int id, int idMessage)
+{
+    _sockfd = sockfd;
+    _teamName = teamName;
+    _host = host;
+    _port = port;
+    _currentMessageId = idMessage;
+    initChild();
+}
+
 ABotPattern::~ABotPattern()
 {
 }
@@ -40,7 +50,7 @@ void ABotPattern::act()
 void ABotPattern::run(const std::string &response)
 {
     std::string responseCopy = response;
-    static bool _canAct = true;
+    static bool _canAct = false;
 
     _message._content = "";
 
@@ -75,9 +85,7 @@ void ABotPattern::run(const std::string &response)
 
 void ABotPattern::listen(const std::string &response)
 {
-    if (_iteration == 0)
-        listenFirstResponse(response);
-    else if (_state.lastAction.action == LOOK)
+    if (_state.lastAction.action == LOOK)
         listenLookResponse(response);
     else if (_state.lastAction.action == TAKE)
         listenTakeResponse(response);

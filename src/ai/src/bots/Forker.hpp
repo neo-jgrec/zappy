@@ -14,7 +14,7 @@
 class Forker : public ABotPattern
 {
 public:
-    void init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port) override;
+    void initChild() override;
     void updateStrategy() override;
 
 private:

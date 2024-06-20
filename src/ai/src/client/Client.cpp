@@ -64,13 +64,44 @@ void Client::setupConnection()
 void Client::authenticate()
 {
     std::string buffer;
-
     // to pass the first message welcome
     recvMessage(buffer);
+    Message _message;
+    unsigned int timeToGetIdentity = 0;
+
+    _message.format("I'm_searching_my_identity_🤔");
+    std::string askForIdentity = "Broadcast " + _message._content;
+    sendMessage(_teamName);
+    sendMessage(askForIdentity);
+    sendMessage(askForIdentity);
+    _message._content = "";
+
+    while (timeToGetIdentity < 3)
+    {
+        FD_ZERO(&_readfds);
+        FD_SET(_sockfd, &_readfds);
+        _tv.tv_sec = 0;
+        _tv.tv_usec = 10000;
+
+        int activity = select(_sockfd + 1, &_readfds, NULL, NULL, &_tv);
+
+        if (activity > 0 && FD_ISSET(_sockfd, &_readfds))
+        {
+            std::string response;
+            recvMessage(response);
+
+            if (response.find("message") != std::string::npos)
+            {
+                _message._content = response;
+                _message.vigenereDecrypt();
+                break;
+            }
+            timeToGetIdentity++;
+        }
+    }
     try
     {
-        // Landmark: 1. Save host and port to fork.
-        _bot = BotFactory::createBot("Forker");
+        initBot(_message._content);
     }
     catch (const std::exception &e)
     {
@@ -78,7 +109,60 @@ void Client::authenticate()
         close(_sockfd);
         exit(EXIT_FAILURE);
     }
-    _bot->init(_sockfd, _teamName, _arg, _host, _port);
+}
+
+void Client::initBot(const std::string identityMessage)
+{
+    unsigned int id = 0;
+    unsigned int currentMessageId = 0;
+
+    std::cout << "identityMessage: " << identityMessage << std::endl;
+    if (!identityMessage.empty())
+    {
+        std::string job = "";
+        std::string prefixId = "you_are_bot=";
+        std::string prefixJob = "your_job=";
+        std::string prefixCurrentMessageId = "currentMessageId=";
+        size_t pos = identityMessage.find(prefixId);
+        size_t posJob = identityMessage.find(prefixJob);
+        size_t posCurrentMessageId = identityMessage.find(prefixCurrentMessageId);
+
+        if (pos != std::string::npos)
+        {
+            std::string idStr = identityMessage.substr(pos + prefixId.size());
+            id = std::stoi(idStr);
+        }
+        if (posCurrentMessageId != std::string::npos)
+        {
+            std::string currentMessageIdStr = identityMessage.substr(posCurrentMessageId + prefixCurrentMessageId.size());
+            currentMessageId = std::stoi(currentMessageIdStr);
+        }
+        if (posJob != std::string::npos)
+        {
+            job = identityMessage.substr(posJob + prefixJob.size());
+            if (job.find("SIMPLE_BOT") != std::string::npos)
+                _bot = BotFactory::createBot("SimpleBot");
+        }
+    }
+    else
+    {
+        _bot = BotFactory::createBot("Forker");
+    }
+    if (_bot != nullptr)
+    {
+        _bot->init(_sockfd, _teamName, _arg, _host, _port, id, currentMessageId);
+    }
+    else
+    {
+        throw std::runtime_error("Bot is null");
+    }
+}
+
+void Client::sendMessage(const std::string &message)
+{
+    std::string messageToSend = message + "\n";
+
+    send(_sockfd, messageToSend.c_str(), messageToSend.size(), 0);
 }
 
 void Client::loop()
@@ -89,9 +173,8 @@ void Client::loop()
         FD_SET(_sockfd, &_readfds);
         _tv.tv_sec = 0;
         _tv.tv_usec = 10000;
-
         int activity = select(_sockfd + 1, &_readfds, NULL, NULL, &_tv);
-        // std::cout << "activity: " << activity << std::endl;
+
         if (activity > 0 && FD_ISSET(_sockfd, &_readfds))
         {
             std::string response;

@@ -9,5 +9,16 @@
 
 void ABotPattern::listenConnectNbrResponse(const std::string &response)
 {
-    _state.slot = std::stoi(response);
+    try
+    {
+        _state.slot = std::stoi(response);
+    }
+    catch (std::invalid_argument &e)
+    {
+        PRINT_ERROR("Invalid argument error: " << e.what());
+    }
+    catch (std::out_of_range &e)
+    {
+        PRINT_ERROR("Out of range error: " << e.what());
+    }
 }

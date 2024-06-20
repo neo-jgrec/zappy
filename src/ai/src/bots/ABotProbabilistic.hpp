@@ -35,12 +35,15 @@ public:
     ABotProbabilistic();
     ~ABotProbabilistic();
     void run(const std::string &response) override;
-    virtual void init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port) = 0;
+    void init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port, int id, int idMessage);
+    virtual void initChild() = 0;
     // Probabilities
     virtual void updateProbabilities() = 0;
 
 protected:
     bool _doNothing = false;
+    unsigned int _idBot = 0;
+    unsigned int _idCurrentMessage = 0;
 
     std::vector<std::unique_ptr<PatternProbabilistic>> _patterns;
     std::vector<std::unique_ptr<TrainedVariable>> _trainedVariables;

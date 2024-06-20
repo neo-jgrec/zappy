@@ -1,8 +1,15 @@
 #include <criterion/criterion.h>
 #include "server.h"
+#include <criterion/redirect.h>
 #include <string.h>
 
-Test(broadcast, message_format_test) {
+static void redirect_all_stdout(void)
+{
+    cr_redirect_stdout();
+    cr_redirect_stderr();
+}
+
+Test(broadcast, message_format_test, .init = redirect_all_stdout) {
     server_t server;
     server.proprieties.height = 10;
     server.proprieties.width = 10;
@@ -29,6 +36,7 @@ Test(broadcast, message_format_test) {
     }
 
     client_list_t *client2 = TAILQ_FIRST(&server.clients);
+    client2->client->fd = 1;
 
     client_list_t *client_list_entry;
     client_list_entry = malloc(sizeof(client_list_t));
@@ -36,10 +44,10 @@ Test(broadcast, message_format_test) {
     TAILQ_INSERT_TAIL(&server.clients, client_list_entry, entries);
 
     broadcast(&client, &server);
-    cr_assert_str_eq(client2->client->payload, "message 2, Hello, world!\n");
+    cr_assert_stdout_eq_str("message 2, Hello, world!\n");
 }
 
-Test(broadcast, from_east_to_west) {
+Test(broadcast, from_east_to_west, .init = redirect_all_stdout) {
     server_t server;
     server.proprieties.height = 10;
     server.proprieties.width = 10;
@@ -66,6 +74,7 @@ Test(broadcast, from_east_to_west) {
     }
 
     client_list_t *client2 = TAILQ_FIRST(&server.clients);
+    client2->client->fd = 1;
 
     client_list_t *client_list_entry;
     client_list_entry = malloc(sizeof(client_list_t));
@@ -73,10 +82,10 @@ Test(broadcast, from_east_to_west) {
     TAILQ_INSERT_TAIL(&server.clients, client_list_entry, entries);
 
     broadcast(&client, &server);
-    cr_assert_str_eq(client2->client->payload, "message 4, Hello, world!\n");
+    cr_assert_stdout_eq_str("message 4, Hello, world!\n");
 }
 
-Test(broadcast, from_west_to_east) {
+Test(broadcast, from_west_to_east, .init = redirect_all_stdout) {
     server_t server;
     server.proprieties.height = 10;
     server.proprieties.width = 10;
@@ -103,6 +112,7 @@ Test(broadcast, from_west_to_east) {
     }
 
     client_list_t *client2 = TAILQ_FIRST(&server.clients);
+    client2->client->fd = 1;
 
     client_list_t *client_list_entry;
     client_list_entry = malloc(sizeof(client_list_t));
@@ -110,10 +120,10 @@ Test(broadcast, from_west_to_east) {
     TAILQ_INSERT_TAIL(&server.clients, client_list_entry, entries);
 
     broadcast(&client, &server);
-    cr_assert_str_eq(client2->client->payload, "message 4, Hello, world!\n");
+    cr_assert_stdout_eq_str("message 4, Hello, world!\n");
 }
 
-Test(broadcast, from_north_to_south) {
+Test(broadcast, from_north_to_south, .init = redirect_all_stdout) {
     server_t server;
     server.proprieties.height = 10;
     server.proprieties.width = 10;
@@ -140,6 +150,7 @@ Test(broadcast, from_north_to_south) {
     }
 
     client_list_t *client2 = TAILQ_FIRST(&server.clients);
+    client2->client->fd = 1;
 
     client_list_t *client_list_entry;
     client_list_entry = malloc(sizeof(client_list_t));
@@ -147,10 +158,10 @@ Test(broadcast, from_north_to_south) {
     TAILQ_INSERT_TAIL(&server.clients, client_list_entry, entries);
 
     broadcast(&client, &server);
-    cr_assert_str_eq(client2->client->payload, "message 8, Hello, world!\n");
+    cr_assert_stdout_eq_str("message 8, Hello, world!\n");
 }
 
-Test(broadcast, from_south_to_north) {
+Test(broadcast, from_south_to_north, .init = redirect_all_stdout) {
     server_t server;
     server.proprieties.height = 10;
     server.proprieties.width = 10;
@@ -177,6 +188,7 @@ Test(broadcast, from_south_to_north) {
     }
 
     client_list_t *client2 = TAILQ_FIRST(&server.clients);
+    client2->client->fd = 1;
 
     client_list_t *client_list_entry;
     client_list_entry = malloc(sizeof(client_list_t));
@@ -184,5 +196,5 @@ Test(broadcast, from_south_to_north) {
     TAILQ_INSERT_TAIL(&server.clients, client_list_entry, entries);
 
     broadcast(&client, &server);
-    cr_assert_str_eq(client2->client->payload, "message 8, Hello, world!\n");
+    cr_assert_stdout_eq_str("message 8, Hello, world!\n");
 }
