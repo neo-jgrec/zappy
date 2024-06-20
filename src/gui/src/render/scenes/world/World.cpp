@@ -39,6 +39,7 @@ void World::init()
 {
     reset();
     getServerInit();
+    
     PerlinNoise noise;
     _chat->addMessage("Connection to server established");
     _chat->addMessage("World size: " + std::to_string((int)_worldSize.x) + "x" + std::to_string((int)_worldSize.y));
