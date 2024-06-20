@@ -9,43 +9,58 @@
 #define ADVANCEDBUTTON_HPP_
 
 #include <SFML/Graphics.hpp>
-#include "../sprites/Sprite.hpp"
 #include <memory>
 
 class AdvancedButton {
     public:
-        AdvancedButton(sf::Vector2f pos, sf::Vector2f size, std::shared_ptr<Sprite> sprite)
-            : _pos(pos), _size(size), _sprite(sprite)
+        AdvancedButton(std::string path, sf::Vector2f pos, sf::Vector2f size, float scale = 1)
         {
             _pos = pos;
             _size = size;
-            _sprite->setPosition(pos);
-            _sprite->setSize(size);
+            _texture.loadFromFile(path);
+            _sprite.setTexture(_texture);
+            _sprite.setPosition(pos);
+            _sprite.setScale(scale, scale);
         }
         ~AdvancedButton() {};
 
         bool update(sf::Event event, sf::RenderWindow &window)
         {
-            if (_sprite->mouseOver(window) &&
-                event.type == sf::Event::MouseButtonPressed &&
-                event.mouseButton.button == sf::Mouse::Left) {
-                    _sprite->setFrame(1);
+            if (_sprite.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window)))) {
+                if (event.type == sf::Event::MouseButtonPressed) {
+                    _state = CLICKED;
                     return true;
-            }
-            _sprite->setFrame(0);
+                }
+                if (_state == CLICKED)
+                    return false;
+                _state = HOVER;
+            } else if (_state != CLICKED)
+                _state = NORMAL;
             return false;
         }
 
         void draw(sf::RenderWindow &window)
         {
-            _sprite->draw(window);
+            _sprite.setTextureRect(sf::IntRect(_state * _size.x, 0, _size.x, _size.y));
+            window.draw(_sprite);
+        }
+
+        void release() {
+            _state = NORMAL;
         }
 
     protected:
     private:
+        enum ButtonState {
+            NORMAL,
+            HOVER,
+            CLICKED
+        };
+        ButtonState _state = NORMAL;
+        sf::Sprite _sprite;
+        sf::Texture _texture;
         sf::Vector2f _pos;
         sf::Vector2f _size;
-        std::shared_ptr<Sprite> _sprite;
 };
 
 #endif /* !ADVANCEDBUTTON_HPP_ */

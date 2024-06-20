@@ -35,16 +35,22 @@ class Sprite {
         int update(float fElapsedTime);
         void disableLooping() { _looping = false; }
         void setFrame(int frame) {
-            if (frame < _frameCount)
+            if (frame >= _frameCount)
                 _frame = 0;
+            std::cout << "frame: " << frame << std::endl;
             _sprite.setTextureRect(sf::IntRect(_frame * _frameSize.x, 0, _frameSize.x, _frameSize.y));
-            _sprite.setOrigin(_frameSize.x / 2, _frameSize.y / 2);
         }
         bool mouseOver(sf::RenderWindow &window) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(window);
             sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
             sf::FloatRect bounds = _sprite.getGlobalBounds();
             return bounds.contains(worldPos);
+        }
+        void resetOrigin() {
+            _sprite.setOrigin(0, 0);
+        }
+        void setScale(float scale) {
+            _sprite.setScale(scale, scale);
         }
 
         sf::Sprite _sprite;

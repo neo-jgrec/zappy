@@ -16,7 +16,6 @@ int Sprite::update(float fElapsedTime) {
             }
         }
         _sprite.setTextureRect(sf::IntRect(_frame * _frameSize.x, 0, _frameSize.x, _frameSize.y));
-        _sprite.setOrigin(_frameSize.x / 2, _frameSize.y / 2);
     }
     return ret;
 }

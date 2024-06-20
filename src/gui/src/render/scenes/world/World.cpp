@@ -39,7 +39,7 @@ void World::init()
 {
     reset();
     getServerInit();
-    
+
     PerlinNoise noise;
     _chat->addMessage("Connection to server established");
     _chat->addMessage("World size: " + std::to_string((int)_worldSize.x) + "x" + std::to_string((int)_worldSize.y));
@@ -95,6 +95,7 @@ void World::getServerInit()
 
 bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
 {
+    _worldUi.update(event, window);
     _mousePos = _core->getMousePos() * _zoom + _view.getCenter() - _view.getSize() * (1.f/2.f);
 
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
