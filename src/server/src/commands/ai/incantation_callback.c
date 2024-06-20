@@ -51,5 +51,5 @@ void callback_end_incantation_set_payload(
     UNUSED server_t *server
 )
 {
-    asprintf(&client->payload, "Current level: %zu\n", client->level);
+    handle_response(&client->payload, "Current level: %zu\n", client->level);
 }

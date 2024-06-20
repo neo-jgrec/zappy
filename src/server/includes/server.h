@@ -249,7 +249,8 @@ void incantation_callback_end_of_command(client_t *client, server_t *server);
 void callback_freeze(client_t *client, server_t *server);
 void callback_level_up(client_t *client, server_t *server);
 void callback_unfreeze(client_t *client, server_t *server);
-void callback_start_incantation_set_payload(client_t *client, server_t *server);
+void callback_start_incantation_set_payload(client_t *client,
+    server_t *server);
 void callback_end_incantation_set_payload(client_t *client, server_t *server);
 void inventory(client_t *client, server_t *server);
 void left(client_t *client, server_t *server);

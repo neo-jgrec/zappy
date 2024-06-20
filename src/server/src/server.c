@@ -75,27 +75,28 @@ static void print_egg_graphic(client_t *client, server_t *server)
     }
 }
 
-static bool send_command(client_t *client, struct timespec *current, server_t *server)
+static bool send_command(
+    client_t *client,
+    struct timespec *curr,
+    server_t *server
+)
 {
     struct timespec cmd_start_time;
     double interval;
     double elapsed;
-    time_t sec_sus;
-    time_t nsec_sus;
     unsigned char cmd_idx = 0;
 
     if (client->tclient[cmd_idx].available_request) {
         cmd_start_time = client->tclient[cmd_idx].future_time;
         interval = get_interval(client->tclient[cmd_idx].command,
         server->proprieties.frequency);
-        sec_sus = (current->tv_sec - cmd_start_time.tv_sec);
-        nsec_sus = (current->tv_nsec - cmd_start_time.tv_nsec);
-        elapsed = sec_sus + (nsec_sus / NANOSECONDS_IN_SECOND);
-        if (elapsed >= interval && client->tclient[cmd_idx].command == INCANTATION)
+        elapsed = (curr->tv_sec - cmd_start_time.tv_sec) + ((curr
+            ->tv_nsec - cmd_start_time.tv_nsec) / NANOSECONDS_IN_SECOND);
+        if (elapsed >= interval
+            && client->tclient[cmd_idx].command == INCANTATION)
             incantation_callback_end_of_command(client, NULL);
-        if (client->level == LAST_LEVEL) {
+        if (client->level == LAST_LEVEL)
             return true;
-        }
         if (elapsed >= interval)
             print_egg_graphic(client, server);
     }
@@ -125,9 +126,11 @@ static int start_server(server_t *server)
         if (handle_client_life(server) == true)
             continue;
         handle_meteors(server);
-        if (check_response_client_time(&server->clients, server, &server->current_time) == true)
+        if (check_response_client_time(&server->clients,
+            server, &server->current_time) == true)
             break;
-        if (select(FD_SETSIZE, &server->ready_sockets, NULL, NULL, &server->timeout) < 0) {
+        if (select(FD_SETSIZE, &server->ready_sockets,
+            NULL, NULL, &server->timeout) < 0) {
             perror("There was an error in select");
             return ERROR_STATUS;
         }
