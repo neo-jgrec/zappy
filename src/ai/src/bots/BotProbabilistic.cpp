@@ -7,14 +7,9 @@
 
 #include "BotProbabilistic.hpp"
 
-void BotProbabilistic::init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port)
+void BotProbabilistic::initChild()
 {
     srand(static_cast<unsigned int>(time(nullptr)));
-    _sockfd = sockfd;
-    _teamName = teamName;
-    sendMessage(teamName);
-    _host = host;
-    _port = port;
 
     // if (arg)
     // {

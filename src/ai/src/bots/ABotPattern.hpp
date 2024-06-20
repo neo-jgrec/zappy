@@ -19,11 +19,15 @@ public:
     ABotPattern();
     ~ABotPattern();
     void run(const std::string &response) override;
-    virtual void init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port) = 0;
+    void init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port, int id, int idMessage);
+    virtual void initChild() = 0;
+
+    virtual void updateStrategy() = 0;
 
 protected:
     std::vector<std::unique_ptr<Pattern>> _patterns;
     unsigned int _id = 0;
+    unsigned int _currentMessageId = 0;
     std::string filenameSave = "";
 
     // Interract with server
@@ -31,19 +35,14 @@ protected:
 
     // Actions
     void act();
-    virtual void updateStrategy() = 0;
 
     // Listeners
-    void listenFirstResponse(const std::string &response);
     void listenLookResponse(const std::string &response);
     void listenTakeResponse(const std::string &response);
     void listenBroadcastResponse(const std::string &response);
     void listenIncantationResponse(const std::string &response);
     void listenIncantationReturnResponse(const std::string &response);
     void listenConnectNbrResponse(const std::string &response);
-
-    // Listerners of broadcast
-    void listenJob();
 
     // Paterns
     void testPatern();

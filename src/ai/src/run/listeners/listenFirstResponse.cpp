@@ -5,9 +5,10 @@
 ** ListenFirstResponse.cpp
 */
 
-#include "../../bots/ABotPattern.hpp"
+#include "../../client/Client.hpp"
 
-void ABotPattern::listenFirstResponse(const std::string &response)
+// TODO: use it ?
+void Client::listenFirstResponse(const std::string &response)
 {
     int slot;
     unsigned int x;
@@ -18,7 +19,7 @@ void ABotPattern::listenFirstResponse(const std::string &response)
     std::istringstream iss(modifiedInput);
     iss >> slot >> x >> y;
 
-    _state.slot = slot;
-    _state.widthMap = x;
-    _state.heightMap = y;
+    _slot = slot;
+    _width = x;
+    _height = y;
 }

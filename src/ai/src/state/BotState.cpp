@@ -9,7 +9,7 @@
 
 std::map<Job, std::string> jobMap = {
     {FORKER, "FORKER"},
-    {SIMPLE_BOY, "SIMPLE_BOY"},
+    {SIMPLE_BOT, "SIMPLE_BOT"},
 };
 
 BotState::BotState() : lastAction(actions::DEFAULT, ""), lastBehavior("")
