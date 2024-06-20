@@ -47,6 +47,7 @@ class Core {
         sf::RenderWindow &getWindow() { return _window; };
 
         bool connectToServer(int port, std::string ip);
+        void backToHome();
         Data _data;
         Parser _parser;
         ServerConnect _server;

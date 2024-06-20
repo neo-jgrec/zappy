@@ -23,6 +23,6 @@ void WorldUi::update(float fElapsedTime)
 void WorldUi::draw(sf::RenderWindow &window)
 {
     for (auto &button : _layer1) {
-        button->draw(window);
+        // button->draw(window);
     }
 }

@@ -61,6 +61,8 @@ void Menu::createHzButtons() {
 }
 
 void Menu::getBackHome() {
+    if (_core->_server.disconectFromServer() == true)
+        _core->_data.resetGame();
     _core->_upperState = GameState::DEFAULT;
     _core->_state = GameState::HOME;
 }

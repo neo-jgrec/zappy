@@ -99,3 +99,10 @@ bool Core::connectToServer(int port, std::string ip) {
     }
     return true;
 }
+
+void Core::backToHome() {
+    if (_server.disconectFromServer() == true)
+        _data.resetGame();
+    _upperState = GameState::DEFAULT;
+    _state = GameState::HOME;
+}

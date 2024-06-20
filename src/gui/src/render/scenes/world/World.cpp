@@ -129,7 +129,7 @@ void World::update(float /*fElapsedTime*/)
 {
     if (_core->_server.connectionState == ServerConnect::ConnectionState::SERVERDOWN
         || _core->_server.connectionState == ServerConnect::ConnectionState::NOTCONNECTED) {
-        _core->_state = GameState::HOME;
+        _core->backToHome();
         return;
     }
     updateTrantorians();
