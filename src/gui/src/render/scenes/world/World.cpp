@@ -16,6 +16,16 @@ static const std::vector<std::string> _elements = {
     "tree2", "tree4", "stone1", "grass", "grass2"
 };
 
+static const std::vector<sf::Color> _teamsColor = {
+    sf::Color::Red,
+    sf::Color::Green,
+    sf::Color::Blue,
+    sf::Color::Yellow,
+    sf::Color(255, 165, 0),
+    sf::Color::Magenta,
+};
+
+
 World::World(Core *core)
     : _core(core), _worldUi(WorldUi(this))
 {
@@ -23,6 +33,7 @@ World::World(Core *core)
     _diamond = Diamond(sf::Vector2f(TILE_SIZE_X, TILE_SIZE_Y));
     _sprites["halo1"] = std::make_shared<Sprite>("./assets/halo1.png");
     _sprites["hover1"] = std::make_shared<Sprite>("./assets/hover1.png");
+    _sprites["hover2"] = std::make_shared<Sprite>("./assets/hover2.png");
     _sprites["trantorian_run"] = std::make_shared<Sprite>("./assets/trantorian_run.png", 6, 0.1f);
     _sprites["trantorian_spawn"] = std::make_shared<Sprite>("./assets/trantorian_spawn.png", 12, 0.1f);
     _sprites["grass"] = std::make_shared<Sprite>("./assets/grass_detail(1).png");
@@ -30,9 +41,12 @@ World::World(Core *core)
     _sprites["tree2"] = std::make_shared<Sprite>("./assets/trees/tree(2).png");
     _sprites["tree4"] = std::make_shared<Sprite>("./assets/trees/tree(4).png");
     _sprites["stone1"] = std::make_shared<Sprite>("./assets/stone(1).png");
+    _sprites["lvlbanner"] = std::make_shared<Sprite>("./assets/lvlBanner.png", 8, 0.1f);
     _view.setSize(sf::Vector2f(1920 , 1080));
     _chat = std::make_shared<Chat>(_core->getFont(), 7);
     _chat->setPosition(sf::Vector2f(50, 720 - 50));
+    
+
 }
 
 void World::init()
@@ -175,17 +189,37 @@ void World::layer1(int i, int j)
         );
         window.draw(_sprites["hover1"]->_sprite);
     }
+    for (auto &trantorian : _trantorians) {
+        if (trantorian.isDead())
+            continue;
+        if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
+            _sprites["hover2"]->_sprite.setPosition(
+                _chuncks[i][j]._pos.x,
+                _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset
+            );
+            _sprites["hover2"]->setColor(_teamsColor[0]);
+            if (trantorian._team == _teams[0])
+                window.draw(_sprites["hover2"]->_sprite);
+        }
+    }
 }
 
 void World::layer2(int i, int j)
 {
     sf::RenderWindow &window = _core->getWindow();
     bool isThereTrantorian = false;
-    for (auto &trantorian : _trantorians)
+    for (auto &trantorian : _trantorians) {
         if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
             trantorian.draw(window);
             isThereTrantorian = true;
+            if (trantorian.isDead())
+                continue;
+            _sprites["lvlbanner"]->_sprite.setPosition(trantorian.getPos());
+            _sprites["lvlbanner"]->setFrame(trantorian._level - 1);
+            _sprites["lvlbanner"]->setColor(_teamsColor[trantorian._teamIndex]);
+            window.draw(_sprites["lvlbanner"]->_sprite);
         }
+    }
     if (!isThereTrantorian)
         _chuncks[i][j].draw(window);
     if (_selectedTile.x == i && _selectedTile.y == j) {
@@ -248,6 +282,7 @@ void World::updateTrantorians()
             if (trantorian._id == player.first) {
                 exisitingPlayers = true;
                 trantorian.setTile(tile, _chuncks[tile.x][tile.y].getMiddle());
+                trantorian._level = player.second->getLvl();
                 if (player.second->getAlive() == false)
                     trantorian.kill();
                 break;
@@ -259,6 +294,13 @@ void World::updateTrantorians()
             Trantorian trantorian(tile, _chuncks[tile.x][tile.y].getMiddle());
             trantorian._id = player.first;
             trantorian._team = player.second->getTeam();
+            int teamIndex = 0;
+            for (auto &team : _teams) {
+                if (team == trantorian._team)
+                    break;
+                teamIndex++;
+            }
+            trantorian._teamIndex = teamIndex;
             _trantorians.push_back(trantorian);
         }
     }

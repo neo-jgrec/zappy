@@ -41,6 +41,7 @@ class WorldUi : public IScene {
         int _teamDisplayed = -1;
         int _trantorianDisplayed = -1;
         int _eggDisplayed = -1;
+        int _displayTeam = 1;
 
     protected:
     private:

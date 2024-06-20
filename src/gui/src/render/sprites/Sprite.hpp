@@ -37,7 +37,6 @@ class Sprite {
         void setFrame(int frame) {
             if (frame >= _frameCount)
                 _frame = 0;
-            std::cout << "frame: " << frame << std::endl;
             _sprite.setTextureRect(sf::IntRect(_frame * _frameSize.x, 0, _frameSize.x, _frameSize.y));
         }
         bool mouseOver(sf::RenderWindow &window) {
@@ -51,6 +50,9 @@ class Sprite {
         }
         void setScale(float scale) {
             _sprite.setScale(scale, scale);
+        }
+        void setColor(sf::Color color) {
+            _sprite.setColor(color);
         }
 
         sf::Sprite _sprite;

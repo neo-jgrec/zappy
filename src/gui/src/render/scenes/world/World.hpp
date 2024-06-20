@@ -22,15 +22,6 @@
     #include "../../ui/Chat.hpp"
     #include "ui/WorldUi.hpp"
 
-static const std::vector<sf::Color> teamsColor = {
-    sf::Color::Red,
-    sf::Color::Green,
-    sf::Color::Blue,
-    sf::Color::Yellow,
-    sf::Color(255, 165, 0),
-    sf::Color::Magenta,
-};
-
 class Core;
 class World : public IScene {
     public:

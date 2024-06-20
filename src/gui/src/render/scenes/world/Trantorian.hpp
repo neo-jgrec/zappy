@@ -41,14 +41,27 @@ class Trantorian {
             _sprites[_actualSprite]->draw(window);
         }
         void setTile(sf::Vector2f tile, sf::Vector2f targetPos) {
+            if ( tile != _tile) {
+                sf::Vector2f offset = sf::Vector2f(
+                    Random::random(0, 26) - 13,
+                    Random::random(0, 26) - 13
+                );
+                _targetPos = targetPos + offset;
+            }
             _tile = tile;
-            _targetPos = targetPos;
         }
         sf::Vector2f getTile() { return _tile; }
-        void kill() { _dead = true; }
+        void kill() { _dead = 1; }
+        bool isDead() {
+            return _dead;
+        }
+
+        sf::Vector2f getPos() { return _pos; }
 
         int _id;
         std::string _team;
+        int _teamIndex;
+        int _level;
     protected:
     private:
         int _actualSprite = 0;
