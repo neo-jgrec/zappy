@@ -127,7 +127,7 @@ static void handle_look(client_t *c, server_t *server, tile_t *map)
         c->payload = final_payload;
 }
 
-void look(client_t *client, server_t *server)
+void look(client_t *c, server_t *server)
 {
     tile_t *map = copy_map(calloc(server
         ->proprieties.width * server->proprieties.height,
@@ -135,16 +135,16 @@ void look(client_t *client, server_t *server)
 
     if (map == NULL)
         return;
-    if (client->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == true) {
-        asprintf(&client->payload, "ko\n");
-        client_time_handler(client, LOOK);
+    if (c->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == true) {
+        asprintf(&c->payload, "ko\n");
+        client_time_handler(c, LOOK);
         return;
     }
     populate_map_with_players(map, server);
-    handle_look(client, server, map);
+    handle_look(c, server, map);
     for (int i = 0; i < server->proprieties.width *
         server->proprieties.height; i++)
         free(map[i].objects);
     free(map);
-    client_time_handler(client, LOOK);
+    client_time_handler(c, LOOK);
 }

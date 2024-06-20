@@ -15,7 +15,7 @@ egg_t *init_egg(int width, int height)
     if (egg == NULL)
         return NULL;
     egg->x = width == 0 ? 0 : rand() % width;
-    egg->y = height == 0 ? 0 :  rand() % height;
+    egg->y = height == 0 ? 0 : rand() % height;
     egg->id = id;
     id++;
     return egg;

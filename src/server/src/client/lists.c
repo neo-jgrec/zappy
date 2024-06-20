@@ -20,6 +20,13 @@ static void init_inventory(inventory_t *inv)
     inv->food = 10;
 }
 
+static void init_bools(client_t *client)
+{
+    client->is_incanting = false;
+    client->is_connected = false;
+    client->is_graphic = false;
+}
+
 client_t *init_client(int client_fd)
 {
     uuid_t binuuid;
@@ -36,9 +43,7 @@ client_t *init_client(int client_fd)
         client->tclient[i].command = -1;
     }
     client->level = 1;
-    client->is_incanting = false;
-    client->is_connected = false;
-    client->is_graphic = false;
+    init_bools(client);
     client->orientation = orientations[rand_p(4)];
     client->payload = NULL;
     init_inventory(&client->inventory);

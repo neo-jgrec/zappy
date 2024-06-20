@@ -35,27 +35,26 @@ static void asign_egg_to_client(
     }
 }
 
-bool connector(client_t *client, server_t *server)
+bool connector(client_t *c, server_t *server)
 {
     size_t nb_slots;
     size_t rand_idx;
 
-    if (client->is_connected == true)
+    if (c->is_connected == true)
         return false;
-    if (strcmp(client->commands[0], "GRAPHIC") == 0) {
-        client->is_graphic = true;
-        client->is_connected = true;
+    if (strcmp(c->commands[0], "GRAPHIC") == 0) {
+        c->is_graphic = true;
+        c->is_connected = true;
         return true;
     }
-    nb_slots = team_nb_slots(&server->teams, client->commands[0]);
+    nb_slots = team_nb_slots(&server->teams, c->commands[0]);
     if (nb_slots == 0)
         return false;
     rand_idx = rand() % nb_slots;
-    asign_egg_to_client(client, server, rand_idx);
-    dprintf(client->fd, "%zu\n%u %u\n", (nb_slots - 1),
+    asign_egg_to_client(c, server, rand_idx);
+    dprintf(c->fd, "%zu\n%u %u\n", (nb_slots - 1),
         server->proprieties.width, server->proprieties.height);
-    message_to_graphicals(server, "pnw %d %u %u %u %u %s\n",
-        client->fd, client->fd, client->x, client->y, client->orientation,
-        client->team_name);
+    message_to_graphicals(server, "pnw %d %u %u %u %u %s\n", c->fd, c->fd,
+        c->x, c->y, c->orientation, c->team_name);
     return true;
 }
