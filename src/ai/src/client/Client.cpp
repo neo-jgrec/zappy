@@ -69,7 +69,8 @@ void Client::authenticate()
     recvMessage(buffer);
     try
     {
-        _bot = BotFactory::createBot("BotProbabilistic");
+        // Landmark: 1. Save host and port to fork.
+        _bot = BotFactory::createBot("Forker");
     }
     catch (const std::exception &e)
     {
@@ -77,7 +78,7 @@ void Client::authenticate()
         close(_sockfd);
         exit(EXIT_FAILURE);
     }
-    _bot->init(_sockfd, _teamName, _arg);
+    _bot->init(_sockfd, _teamName, _arg, _host, _port);
 }
 
 void Client::loop()

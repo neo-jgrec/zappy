@@ -38,4 +38,25 @@ void ABotPattern::listenTakeResponse(const std::string &response)
             _state.ressources.sibur += 1;
         }
     }
+    else if (_state.lastAction.parameter == "mendiane")
+    {
+        if (response == "ok")
+        {
+            _state.ressources.mendiane += 1;
+        }
+    }
+    else if (_state.lastAction.parameter == "phiras")
+    {
+        if (response == "ok")
+        {
+            _state.ressources.phiras += 1;
+        }
+    }
+    else if (_state.lastAction.parameter == "thystame")
+    {
+        if (response == "ok")
+        {
+            _state.ressources.thystame += 1;
+        }
+    }
 }

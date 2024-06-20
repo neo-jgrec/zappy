@@ -13,6 +13,10 @@ std::unique_ptr<IBot> BotFactory::createBot(const std::string &type)
     {
         return std::make_unique<BotProbabilistic>();
     }
+    if (type == "Forker")
+    {
+        return std::make_unique<Forker>();
+    }
 
     throw std::runtime_error("Invalid bot type: " + type);
 }

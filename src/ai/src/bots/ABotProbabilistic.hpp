@@ -35,7 +35,7 @@ public:
     ABotProbabilistic();
     ~ABotProbabilistic();
     void run(const std::string &response) override;
-    virtual void init(int sockfd, const std::string &teamName, bool arg) = 0;
+    virtual void init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port) = 0;
     // Probabilities
     virtual void updateProbabilities() = 0;
 

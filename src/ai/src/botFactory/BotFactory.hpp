@@ -9,6 +9,7 @@
 #define BOTFACTORY_HPP_
 
 #include "../bots/BotProbabilistic.hpp"
+#include "../bots/Forker.hpp"
 #include <memory>
 
 class BotFactory

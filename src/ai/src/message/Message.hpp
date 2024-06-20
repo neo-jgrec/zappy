@@ -16,20 +16,22 @@
 
 class Message
 {
-    public:
-        Message(const std::string &content);
-        Message();
-        ~Message();
-        void vigenereDecrypt();
-        void vigenereEncrypt();
-        std::string getCurrentTimeAsLetters();
-        void generateMessage();
-        std::string convertDigitsToLetters(const std::string& digits);
-        std::string _content;
-        int _id;
-    private:
-        std::string _conversionTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        std::string _signature = "bFNneQbXQkyJHGEQd";
+public:
+    Message(const std::string &content);
+    Message();
+    ~Message();
+    void vigenereDecrypt();
+    void vigenereEncrypt();
+    std::string getCurrentTimeAsLetters();
+    void generateMessage();
+    void format(const std::string &content);
+    std::string convertDigitsToLetters(const std::string &digits);
+    std::string _content;
+    int _id;
+
+private:
+    std::string _conversionTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    std::string _signature = "bFNneQbXQkyJHGEQd";
 };
 
 #endif // MESSAGE_HPP_

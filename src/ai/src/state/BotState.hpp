@@ -14,6 +14,23 @@
 
 #include <vector>
 #include <memory>
+
+enum State
+{
+    STANDART,
+    LISTENING,
+    FORKED,
+};
+
+enum Job
+{
+    SEARCH_IDENTITY,
+    FORKER,
+    SIMPLE_BOY,
+};
+
+extern std::map<Job, std::string> jobMap;
+
 class BotState
 {
 public:
@@ -24,7 +41,12 @@ public:
     Ressources ressources;
     LastAction lastAction;
     std::string lastBehavior;
-    unsigned int level;
+    State state = STANDART;
+    Job job = SEARCH_IDENTITY;
+    unsigned int level = 1;
+    unsigned int slot = 0;
+    unsigned int widthMap = 42;
+    unsigned int heightMap = 42;
 
     std::vector<std::string> exploredProbabilities;
 };

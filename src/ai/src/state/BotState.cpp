@@ -7,7 +7,12 @@
 
 #include "BotState.hpp"
 
-BotState::BotState() : lastAction(actions::DEFAULT, ""), lastBehavior(""), level(1)
+std::map<Job, std::string> jobMap = {
+    {FORKER, "FORKER"},
+    {SIMPLE_BOY, "SIMPLE_BOY"},
+};
+
+BotState::BotState() : lastAction(actions::DEFAULT, ""), lastBehavior("")
 {
 }
 

@@ -7,6 +7,7 @@
 
 #include "Actions.hpp"
 
+// TODO: put it in constant
 std::map<actions, ActionInfo> actionMap = {
     {DEFAULT, ActionInfo("Default", 0)},
     {FORWARD, ActionInfo("Forward", 7)},
@@ -21,7 +22,6 @@ std::map<actions, ActionInfo> actionMap = {
     {TAKE, ActionInfo("Take", 7)},
     {SET, ActionInfo("Set", 7)},
     {INCANTATION, ActionInfo("Incantation", 300)},
-    {LISTENING, ActionInfo("Listening", 0)},
 };
 
 ActionInfo::ActionInfo(const std::string &name, int value) : name(name), value(value)

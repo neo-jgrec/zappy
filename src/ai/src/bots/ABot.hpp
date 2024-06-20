@@ -38,7 +38,7 @@ public:
     ABot();
     ~ABot();
     virtual void run(const std::string &response) = 0;
-    virtual void init(int sockfd, const std::string &teamName, bool arg) = 0;
+    virtual void init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port) = 0;
     // TODO: prod way
     //  virtual void init(int sockfd, const std::string &teamName) = 0;
 
@@ -65,6 +65,8 @@ protected:
     // Client
     int _sockfd;
     std::string _teamName;
+    std::string _host = "";
+    int _port = 0;
 
     // Game
     unsigned int _iteration;

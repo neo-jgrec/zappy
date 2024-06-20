@@ -56,6 +56,13 @@ void Message::generateMessage()
     _content = _content + ":" + _signature;
 }
 
+void Message::format(const std::string &content)
+{
+    _content = content;
+    vigenereEncrypt();
+    generateMessage();
+}
+
 void Message::vigenereEncrypt()
 {
     std::string result = _content;

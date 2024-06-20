@@ -26,8 +26,6 @@ enum actions
     TAKE,
     SET,
     INCANTATION,
-    // Indicate that the bot don't act but listen
-    LISTENING,
 };
 
 class ActionInfo
@@ -38,7 +36,6 @@ public:
 
     std::string getName() const;
     int getValue() const;
-    actions getAction() const;
     std::string parameter;
 
 private:

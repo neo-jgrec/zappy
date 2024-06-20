@@ -14,19 +14,41 @@ ABotPattern::ABotPattern()
 ABotPattern::~ABotPattern()
 {
 }
+// Landmark: 1. Goes from homeless to jobfull. Wait the max limit unit time before going homeless.
+void ABotPattern::act()
+{
+    printColor("========== [Bot Run] ==========\n", BLUE);
+    printKeyValueColored("Iteration", std::to_string(_iteration));
+    if (_state.state != LISTENING)
+    {
+        if (queue.empty())
+            updateStrategy();
+        if (!queue.empty())
+        {
+            queue.front().first();
+            queue.erase(queue.begin());
+        }
+    }
+    _iteration++;
+    if (_iteration % 20 == 0 && !filenameSave.empty()) // TODO: make it when flag --save-data is entered
+    {
+        saveData(filenameSave);
+    }
+    _state.state = STANDART;
+}
 
 void ABotPattern::run(const std::string &response)
 {
     std::string responseCopy = response;
-    _message._content = "";
     static bool _canAct = true;
+
+    _message._content = "";
 
     if (!responseCopy.empty() && responseCopy.back() == '\n')
     {
         responseCopy.pop_back();
     }
     printKeyValueColored("Bot listens", responseCopy);
-    // TODO: it is a action response, _canAct == true
     if (responseCopy.find("message") == std::string::npos || responseCopy.find("ok") != std::string::npos || responseCopy.find("ko") != std::string::npos)
     {
         _canAct = true;
@@ -37,28 +59,11 @@ void ABotPattern::run(const std::string &response)
         std::cout << "canAct: " << _canAct << std::endl;
     }
     listen(responseCopy);
-
-    if (_canAct)
+    // Bot wait for a job
+    if (_canAct || _iteration == 0)
     {
-        printColor("========== [Bot Run] ==========\n", BLUE);
-        printKeyValueColored("Iteration", std::to_string(_iteration));
-        if (_state.lastAction.action != LISTENING)
-        {
-            if (queue.empty())
-                updateStrategy(); // -> fait l'action la plus rentable
-            if (!queue.empty() && _canAct)
-            {
-                queue.front().first();
-                _canAct = false;
-                queue.erase(queue.begin());
-            }
-        }
-        _iteration++;
-        printColor("========== [!Bot Run] ==========\n", BLUE);
-        if (_iteration % 20 == 0) // TODO: make it when flag --save-data is entered
-        {
-            saveData("./src/ai/dataSaved/behaviors.txt");
-        }
+        act();
+        _canAct = false;
     }
     if (_iteration == 200 || (responseCopy.find("dead") != std::string::npos))
     {
@@ -70,14 +75,18 @@ void ABotPattern::run(const std::string &response)
 
 void ABotPattern::listen(const std::string &response)
 {
-    if (_state.lastAction.action == LOOK)
+    if (_iteration == 0)
+        listenFirstResponse(response);
+    else if (_state.lastAction.action == LOOK)
         listenLookResponse(response);
     else if (_state.lastAction.action == TAKE)
         listenTakeResponse(response);
     else if (_state.lastAction.action == INCANTATION)
         listenIncantationResponse(response);
-    else if (_state.lastAction.action == LISTENING)
+    else if (_state.state == LISTENING)
         listenIncantationReturnResponse(response);
+    else if (_state.lastAction.action == CONNECT_NBR)
+        listenConnectNbrResponse(response);
     if (response.find("message") != std::string::npos)
     {
         listenBroadcastResponse(response);
@@ -95,3 +104,5 @@ void ABotPattern::saveData(const std::string &filename)
     }
     out << "\n";
 }
+
+// TODO: we can know the frequence by the time an action take

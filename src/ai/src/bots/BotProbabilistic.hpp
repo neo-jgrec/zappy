@@ -17,7 +17,7 @@
 class BotProbabilistic : public ABotProbabilistic
 {
 public:
-    void init(int sockfd, const std::string &teamName, bool arg) override;
+    void init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port) override;
     void updateProbabilities() override;
     void loadConfig(const std::string &filename);
 };

@@ -7,13 +7,14 @@
 
 #include "BotProbabilistic.hpp"
 
-void BotProbabilistic::init(int sockfd, const std::string &teamName, bool arg)
+void BotProbabilistic::init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port)
 {
     srand(static_cast<unsigned int>(time(nullptr)));
     _sockfd = sockfd;
     _teamName = teamName;
     sendMessage(teamName);
-    _state.level = 2;
+    _host = host;
+    _port = port;
 
     // if (arg)
     // {
