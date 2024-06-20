@@ -70,9 +70,10 @@ void Client::authenticate()
     unsigned int timeToGetIdentity = 0;
 
     _message.format("I'm_searching_my_identity_🤔");
+    std::string askForIdentity = "Broadcast " + _message._content;
     sendMessage(_teamName);
-    sendMessage("Broadcast " + _message._content);
-    sendMessage("Broadcast " + _message._content);
+    sendMessage(askForIdentity);
+    sendMessage(askForIdentity);
     _message._content = "";
 
     while (timeToGetIdentity < 3)

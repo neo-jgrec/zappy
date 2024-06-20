@@ -10,6 +10,7 @@
 
 #include "ABot.hpp"
 #include "../pattern/Pattern.hpp"
+#include "../constant/Constants.hpp"
 
 #include <memory>
 

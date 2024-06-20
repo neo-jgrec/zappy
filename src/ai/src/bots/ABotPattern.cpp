@@ -18,7 +18,6 @@ void ABotPattern::init(int sockfd, const std::string &teamName, bool arg, const 
     _host = host;
     _port = port;
     _currentMessageId = idMessage;
-    doAction(INVENTORY, "");
     initChild();
 }
 
@@ -51,7 +50,7 @@ void ABotPattern::act()
 void ABotPattern::run(const std::string &response)
 {
     std::string responseCopy = response;
-    static bool _canAct = true;
+    static bool _canAct = false;
 
     _message._content = "";
 
