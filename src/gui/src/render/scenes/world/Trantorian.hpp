@@ -48,6 +48,7 @@ class Trantorian {
         void kill() { _dead = true; }
 
         int _id;
+        std::string _team;
     protected:
     private:
         int _actualSprite = 0;

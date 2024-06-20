@@ -15,6 +15,10 @@ bool WorldUi::update(sf::Event event, sf::RenderWindow &window)
 {
     for (auto &button : _layer1) {
         if (button->update(event, window)) {
+            for (auto &button2 : _layer1) {
+                if (button2 != button)
+                    button2->release();
+            }
             return true;
         }
     }

@@ -38,6 +38,10 @@ class WorldUi : public IScene {
         void update(float fElapsedTime) override;
         void draw(sf::RenderWindow &window) override;
 
+        int _teamDisplayed = -1;
+        int _trantorianDisplayed = -1;
+        int _eggDisplayed = -1;
+
     protected:
     private:
         enum panelState {

@@ -38,11 +38,10 @@ World::World(Core *core)
 void World::init()
 {
     reset();
+    _chat->addMessage("Connection to server established");
     getServerInit();
 
     PerlinNoise noise;
-    _chat->addMessage("Connection to server established");
-    _chat->addMessage("World size: " + std::to_string((int)_worldSize.x) + "x" + std::to_string((int)_worldSize.y));
 
     for (int i = 0; i < _worldSize.x; i++) {
         std::vector<Chunck> chuncks;
@@ -91,6 +90,14 @@ void World::getServerInit()
     while (_core->_data.getMap().getSize()[0] == 0)
         _core->_parser.updateData(_core->_data, _core->_server);
     _worldSize = sf::Vector2f(_core->_data.getMap().getSize()[0], _core->_data.getMap().getSize()[1]);
+    _chat->addMessage("World size: " + std::to_string((int)_worldSize.x) + "x" + std::to_string((int)_worldSize.y));
+    while (_core->_data.getTeams().size() == 0)
+        _core->_parser.updateData(_core->_data, _core->_server);
+    _chat->addMessage("Teams: ");
+    for (auto &team : _core->_data.getTeams()) {
+        _teams.push_back(team);
+        _chat->addMessage(" - " + team);
+    }
 }
 
 bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
@@ -251,6 +258,7 @@ void World::updateTrantorians()
 
             Trantorian trantorian(tile, _chuncks[tile.x][tile.y].getMiddle());
             trantorian._id = player.first;
+            trantorian._team = player.second->getTeam();
             _trantorians.push_back(trantorian);
         }
     }
