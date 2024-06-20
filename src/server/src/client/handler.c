@@ -70,7 +70,7 @@ static int handle_quit_client(
 
     if (check_read != 0)
         return NEUTRAL_VALUE;
-    if (client->is_graphic == false) {
+    if (client->is_graphic == false && client->is_connected == true) {
         egg = init_egg(client->x, client->y);
         item_e = malloc(sizeof(eggs_list_t));
         if (item_e == NULL)
