@@ -85,10 +85,10 @@ void broadcast(client_t *client, server_t *server)
             server->proprieties.width,
             server->proprieties.height
         );
-        asprintf(&receiver->payload, "message %d, %s\n",
+        handle_response(&receiver->payload, "message %d, %s\n",
             direction, client->commands[1]);
     }
-    asprintf(&client->payload, "ok\n");
+    handle_response(&client->payload, "ok\n");
     send_broadcast_to_graphicals(client, server);
     client_time_handler(client, BROADCAST);
 }

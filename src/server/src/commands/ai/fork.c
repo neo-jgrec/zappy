@@ -5,6 +5,7 @@
 ** fork.c
 */
 
+#include "client.h"
 #include "server.h"
 
 void fork_z(client_t *c, server_t *server)
@@ -21,8 +22,8 @@ void fork_z(client_t *c, server_t *server)
     TAILQ_INSERT_TAIL(&team->eggs, new_egg, entries);
     if (c->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == false) {
         message_to_graphicals(server, "pfk %d\n", c->fd);
-        asprintf(&c->payload, "ok\n");
+        handle_response(&c->payload, "ok\n");
     } else
-        asprintf(&c->payload, "ko\n");
+        handle_response(&c->payload, "ko\n");
     client_time_handler(c, FORK);
 }
