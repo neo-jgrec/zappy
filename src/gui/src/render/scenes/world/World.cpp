@@ -129,6 +129,11 @@ bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
 
 void World::update(float fElapsedTime)
 {
+    if (_core->_server.connectionState == ServerConnect::ConnectionState::SERVERDOWN
+        || _core->_server.connectionState == ServerConnect::ConnectionState::NOTCONNECTED) {
+        _core->_state = GameState::HOME;
+        return;
+    }
     updateTrantorians();
 }
 
