@@ -42,29 +42,39 @@ static void remove_element_from_inventory(client_t *c, object_t object)
     }
 }
 
+static object_t find_object_type(const char *name)
+{
+    if (!name)
+        return -1;
+    for (size_t i = 0; i < 7; i++) {
+        if (strcmp(object_handlers[i].name, name) == 0) {
+            return object_handlers[i].type;
+        }
+    }
+    return -1;
+}
+
+static void handle_response(client_t *c, const char *response)
+{
+    char *buffer = NULL;
+
+    if (asprintf(&buffer, "%s", response) != -1)
+        c->payload = buffer;
+}
+
 void set(client_t *c, server_t *s)
 {
-    object_t o = -1;
+    object_t o = find_object_type(c->commands[1]);
 
-    if (c->commands[1] == NULL) {
-        dprintf(c->fd, "ko\n");
-        return;
-    }
-    if (c->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == true) {
-        asprintf(&c->payload, "ko\n");
+    if (c->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request) {
+        handle_response(c, "ko\n");
         client_time_handler(c, SET);
         return;
     }
-    for (size_t i = 0; i < 7; i++) {
-        if (strcmp(object_handlers[i].name, c->commands[1]) == 0) {
-            o = object_handlers[i].type;
-            break;
-        }
-    }
-    if ((int)o != -1 && c->inventory.food != 0) {
+    if ((int)o != -1 && c->inventory.food) {
         remove_element_from_inventory(c, FOOD);
         add_element_to_map(s, c->x, c->y, o);
-        asprintf(&c->payload, "ok\n");
+        handle_response(c, "ok\n");
         message_to_graphicals(s, "pdr %d %d\n", c->fd, o);
         client_time_handler(c, SET);
         return;

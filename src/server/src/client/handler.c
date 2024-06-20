@@ -114,12 +114,11 @@ int handle_client_data(server_t *server, int client_fd)
     ssize_t check_read;
     int quit_status;
 
-    if (!client) {
-        perror("Client not found");
+    if (!client)
         return ERROR_STATUS;
-    }
     memset(client->message, '\0', sizeof(client->message));
-    check_read = read_until_newline(client_fd, client->message, sizeof(client->message));
+    check_read = read_until_newline(client_fd,
+        client->message, sizeof(client->message));
     if (check_read < 0) {
         close(client_fd);
         return ERROR_STATUS;
