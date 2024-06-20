@@ -72,21 +72,20 @@ static void send_broadcast_to_graphicals(client_t *client, server_t *server)
 void broadcast(client_t *client, server_t *server)
 {
     client_list_t *client_list_entry;
-    int direction;
+    int d;
     client_t *receiver;
 
     TAILQ_FOREACH(client_list_entry, &server->clients, entries) {
         receiver = client_list_entry->client;
         if (receiver == client)
             continue;
-        direction = get_sound_direction(
+        d = get_sound_direction(
             client,
             receiver,
             server->proprieties.width,
             server->proprieties.height
         );
-        handle_response(&receiver->payload, "message %d, %s\n",
-            direction, client->commands[1]);
+        dprintf(receiver->fd, "message %d, %s\n", d, client->commands[1]);
     }
     handle_response(&client->payload, "ok\n");
     send_broadcast_to_graphicals(client, server);
