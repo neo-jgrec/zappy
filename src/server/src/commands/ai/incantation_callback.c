@@ -23,11 +23,12 @@ void callback_level_up(
 {
     client->level++;
     message_to_graphicals(
-        server,
-        "plv %d %d\n",
-        client->fd,
-        client->level
+            server,
+            "plv %d %d\n",
+            client->fd,
+            client->level
     );
+    message_to_graphicals(server, "seg %s\n", client->team_name);
 }
 
 void callback_unfreeze(

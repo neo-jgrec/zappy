@@ -46,12 +46,10 @@ static bool execute_command(client_t *client, server_t *server)
         name = client->is_graphic ? commands_gui[i].name : commands_ai[i].name;
         if (strcmp(client->commands[0], name) != 0)
             continue;
-        printf("Executing command: %s\n", name);
         if (client->is_graphic)
             commands_gui[i].command(client, server);
         else
             commands_ai[i].command(client, server);
-        printf("Payload after command execution: %s\n", client->payload);
         free_array((void **)client->commands);
         return true;
     }
@@ -66,11 +64,8 @@ void handle_client_message(client_t *client, server_t *server)
     if (client->commands == NULL || client->commands[0] == NULL)
         return;
 
-    if (execute_command(client, server) == true) {
-        printf("Sending payload: %s\n", client->payload);
+    if (execute_command(client, server) == true)
         return;
-    }
-
     if (connector(client, server) == false) {
         if (client->is_graphic == false)
             dprintf(client->fd, "ko\n");

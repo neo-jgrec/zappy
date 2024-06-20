@@ -10,6 +10,7 @@
     #define BUFFER_SIZE 1024
     #define NB_REQUESTS_HANDLEABLE 10
     #define NB_COMMANDS_TO_SEND 11
+    #define LAST_LEVEL 8
     #include <stdint.h>
     #include <stdlib.h>
     #include <stdio.h>
