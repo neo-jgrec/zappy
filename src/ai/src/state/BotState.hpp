@@ -18,7 +18,7 @@
 enum State
 {
     STANDART,
-    LISTENING,
+    INVOCATING,
     FORKED,
 };
 
@@ -39,14 +39,13 @@ public:
     Environement environment;
     Ressources ressources;
     LastAction lastAction;
-    std::string lastBehavior;
+    std::string lastPattern;
     State state = STANDART;
+
     unsigned int level = 1;
     unsigned int slot = 0;
     unsigned int widthMap = 42;
     unsigned int heightMap = 42;
-
-    std::vector<std::string> exploredProbabilities;
 
     std::vector<ActionInfo> actionsData;
 };

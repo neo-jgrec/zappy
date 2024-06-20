@@ -29,7 +29,6 @@ protected:
     std::vector<std::unique_ptr<Pattern>> _patterns;
     unsigned int _id = 0;
     unsigned int _currentMessageId = 0;
-    std::string filenameSave = "";
 
     // Interract with server
     virtual void listen(const std::string &response);
@@ -64,5 +63,9 @@ protected:
 
     // Data
     virtual void saveData(const std::string &path);
+
+private:
+    std::string savePatternsFile = "/src/ai/dataSaved/patterns";
+    std::string saveActionsFile = "./src/ai/dataSaved/actions";
 };
 #endif // ABotPattern_HPP_

@@ -12,7 +12,7 @@ std::map<Job, std::string> jobMap = {
     {SIMPLE_BOT, "SIMPLE_BOT"},
 };
 
-BotState::BotState() : lastAction(actions::DEFAULT, ""), lastBehavior("")
+BotState::BotState() : lastAction(actions::DEFAULT, ""), lastPattern("")
 {
 }
 

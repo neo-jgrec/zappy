@@ -19,6 +19,8 @@ void ABotPattern::init(int sockfd, const std::string &teamName, bool arg, const 
     _port = port;
     _currentMessageId = idMessage;
     initChild();
+    saveActionsFile += teamName + std::to_string(id) + ".txt";
+    savePatternsFile += teamName + std::to_string(id) + ".txt";
 }
 
 ABotPattern::~ABotPattern()
@@ -29,7 +31,7 @@ void ABotPattern::act()
 {
     printColor("========== [Bot Run] ==========\n", BLUE);
     printKeyValueColored("Iteration", std::to_string(_iteration));
-    if (_state.state != LISTENING)
+    if (_state.state != INVOCATING)
     {
         if (queue.empty())
             updateStrategy();
@@ -40,10 +42,8 @@ void ABotPattern::act()
         }
     }
     _iteration++;
-    if (_iteration % 20 == 0 && !filenameSave.empty()) // TODO: make it when flag --save-data is entered
-    {
-        saveData(filenameSave);
-    }
+    if (_iteration % 20 == 0)
+        saveDataActions(saveActionsFile);
     _state.state = STANDART;
 }
 
@@ -78,7 +78,7 @@ void ABotPattern::run(const std::string &response)
     if (_iteration == 200 || (responseCopy.find("dead") != std::string::npos))
     {
         debugState();
-        saveData("./src/ai/dataSaved/behaviors.txt");
+        saveData(saveActionsFile);
         exit(0);
     }
     debugState();
@@ -92,7 +92,7 @@ void ABotPattern::listen(const std::string &response)
         listenTakeResponse(response);
     else if (_state.lastAction.action == INCANTATION)
         listenIncantationResponse(response);
-    else if (_state.state == LISTENING)
+    else if (_state.state == INVOCATING)
         listenIncantationReturnResponse(response);
     else if (_state.lastAction.action == CONNECT_NBR)
         listenConnectNbrResponse(response);

@@ -39,7 +39,7 @@ public:
     ~ABot();
     virtual void run(const std::string &response) = 0;
     virtual void init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port, int id, int idMessage) = 0;
-    // TODO: prod way
+    // TODO: use this init
     //  virtual void init(int sockfd, const std::string &teamName) = 0;
 
 protected:
@@ -97,7 +97,7 @@ protected:
     void debugState();
 
     // Data
-    // void saveDataActions(const std::string &filename);
+    void saveDataActions(const std::string &filename);
 };
 
 #endif // ABot_HPP_

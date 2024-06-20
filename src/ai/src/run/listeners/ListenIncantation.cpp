@@ -11,7 +11,7 @@ void ABotPattern::listenIncantationResponse(const std::string &response)
 {
     if (response == "Elevation underway")
     {
-        _state.state = LISTENING;
+        _state.state = INVOCATING;
         _state.lastAction.parameter = "";
     }
 }

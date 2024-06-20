@@ -39,16 +39,40 @@ void ABot::doAction(actions action, const std::string &parameter)
     {
         _state.ressources.food -= 1;
     }
+
+    // push into _state.actionsData if new action
+    auto it = std::find_if(_state.actionsData.begin(), _state.actionsData.end(),
+                           [&actionInfo](const ActionInfo &ad)
+                           { return ad.getName() == actionInfo.getName(); });
+    if (it == _state.actionsData.end()) // if action not found in actionsData
+    {
+        // Add new action to actionsData
+        ActionInfo newActionInfo = actionInfo;
+        newActionInfo.parameter = parameter;
+        newActionInfo.count = 1;
+        _state.actionsData.push_back(newActionInfo);
+
+        // Print action and parameter
+        std::cout << "New action added: " << finalAction << std::endl;
+    }
+    else
+    {
+        it->count += 1;
+    }
 }
 
 // TODO: finis this.
-// void ABot::saveDataActions(const std::string &filename)
-// {
-//     std::ofstream out(filename, std::ios_base::app);
+void ABot::saveDataActions(const std::string &filename)
+{
+    std::ofstream out(filename, std::ios_base::app);
 
-//     for (auto &action : _state.actionsData)
-//     {
-//         out << action.first << " " << action.second << std::endl;
-//     }
-//     out << "\n";
-// }
+    out << "Iteration:" << _iteration << std::endl;
+    for (auto &action : _state.actionsData)
+    {
+        out << action.getName();
+        if (!action.parameter.empty())
+            out << " " << action.parameter;
+        out << ":" + std::to_string(action.count) << std::endl;
+    }
+    out << "\n";
+}

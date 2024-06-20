@@ -37,11 +37,11 @@ public:
     std::string getName() const;
     int getValue() const;
     std::string parameter;
+    unsigned int count = 0;
 
 private:
     std::string name;
     int value;
-    unsigned int count = 0;
 };
 
 extern std::map<actions, ActionInfo> actionMap;
