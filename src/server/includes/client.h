@@ -86,4 +86,18 @@ client_t *init_client(int client_fd);
  * @return false if allocation failed either true
  */
 bool push_client(client_t *client, int client_fd);
+
+
+/**
+ * @brief Send a bufferized response to the client
+ *
+ * @param dest destination of the response
+ * @param fmt format of the response
+ * @param ... arguments to format
+ *
+ * @note the __attribute__((format(printf, 2, 3)))
+ * is used to check the format params
+ */
+void handle_response(char **dest, const char *fmt, ...)
+__attribute__((format(printf, 2, 3)));
 #endif //ZAPPY_CLIENT_H

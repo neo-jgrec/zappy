@@ -28,8 +28,8 @@ void left(client_t *c, server_t *server)
     if (c->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == false) {
         message_to_graphicals(server, "ppo %d %d %d %d\n",
         c->fd, c->x, c->y, c->orientation);
-        asprintf(&c->payload, "ok\n");
+        handle_response(&c->payload, "ok\n");
     } else
-        asprintf(&c->payload, "ko\n");
+        handle_response(&c->payload, "ko\n");
     client_time_handler(c, LEFT);
 }

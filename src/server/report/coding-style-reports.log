@@ -1,0 +1,17 @@
+./CMakeLists.txt:51: illegal token in column 40, giving up (hint: fix the file or remove it from the working set)
+./src/commands/ai/broadcast.c:78: MAJOR:C-L1
+./src/commands/ai/connector.c:20: MAJOR:C-L1
+./src/commands/ai/eject.c:84: MAJOR:C-L1
+./src/commands/ai/look.c:54: MAJOR:C-L1
+./src/death.c:44: MAJOR:C-L1
+./src/teams.c:65: MAJOR:C-L1
+./src/teams.c:66: MAJOR:C-C2
+./src/teams.c:67: MAJOR:C-C2
+./src/teams.c:68: MAJOR:C-C2
+./src/teams.c:69: MAJOR:C-C2
+./src/teams.c:70: MAJOR:C-C2
+./src/teams.c:71: MAJOR:C-C2
+./src/teams.c:72: MAJOR:C-C2
+./src/teams.c:73: MAJOR:C-C2
+./src/teams.c:75: MAJOR:C-C2
+./src/utils/teams.c:32: MAJOR:C-L1

@@ -81,7 +81,7 @@ void take(client_t *client, server_t *s)
     if (does_object_exist_on_tile(tile, object)) {
         add_element_to_inventory(client, object);
         remove_element_from_map(s, client->x, client->y, object);
-        asprintf(&client->payload, "ok\n");
+        handle_response(&client->payload, "ok\n");
         message_to_graphicals(s, "pgt %d %d\n", client->fd, object);
         client_time_handler(client, TAKE);
     } else

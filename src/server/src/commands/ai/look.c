@@ -136,7 +136,7 @@ void look(client_t *c, server_t *server)
     if (map == NULL)
         return;
     if (c->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == true) {
-        asprintf(&c->payload, "ko\n");
+        handle_response(&c->payload, "ko\n");
         client_time_handler(c, LOOK);
         return;
     }

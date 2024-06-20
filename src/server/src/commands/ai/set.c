@@ -54,27 +54,19 @@ static object_t find_object_type(const char *name)
     return -1;
 }
 
-static void handle_response(client_t *c, const char *response)
-{
-    char *buffer = NULL;
-
-    if (asprintf(&buffer, "%s", response) != -1)
-        c->payload = buffer;
-}
-
 void set(client_t *c, server_t *s)
 {
     object_t o = find_object_type(c->commands[1]);
 
     if (c->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request) {
-        handle_response(c, "ko\n");
+        handle_response(&c->payload, "ko\n");
         client_time_handler(c, SET);
         return;
     }
     if ((int)o != -1 && c->inventory.food) {
         remove_element_from_inventory(c, FOOD);
         add_element_to_map(s, c->x, c->y, o);
-        handle_response(c, "ok\n");
+        handle_response(&c->payload, "ok\n");
         message_to_graphicals(s, "pdr %d %d\n", c->fd, o);
         client_time_handler(c, SET);
         return;
