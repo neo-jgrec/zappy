@@ -158,4 +158,6 @@ void incantation_callback_end_of_command(client_t *c, server_t *server)
     run_logic_on_group(c, server, old_level,
         callback_end_incantation_set_payload);
     message_to_graphicals(server, "pie %hhd %hhd %d\n", c->x, c->y, 1);
+    if (c->level == LAST_LEVEL)
+        message_to_graphicals(server, "seg %s\n", c->team_name);
 }
