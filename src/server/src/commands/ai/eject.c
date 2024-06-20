@@ -7,6 +7,28 @@
 
 #include "server.h"
 
+static void purge_eggs_from_team(team_t *team, int x, int y)
+{
+    eggs_list_t *egg;
+
+    TAILQ_FOREACH(egg, &team->eggs, entries) {
+        if (egg->egg->x == x && egg->egg->y == y) {
+            TAILQ_REMOVE(&team->eggs, egg, entries);
+            free(egg->egg);
+            free(egg);
+            team->nb_eggs--;
+        }
+    }
+}
+
+static void delete_eggs_on_tile(server_t *s, int x, int y)
+{
+    team_list_t *team;
+
+    TAILQ_FOREACH(team, &s->teams, entries)
+        purge_eggs_from_team(team->team, x, y);
+}
+
 static int reverse_orientation(int direction)
 {
     switch (direction) {
@@ -61,6 +83,7 @@ void eject(client_t *c, server_t *s)
                 n->client->x, n->client->y, n->client->orientation);
         }
     }
+    delete_eggs_on_tile(s, c->x, c->y);
     asprintf(&c->payload, "ok\n");
     client_time_handler(c, EJECT);
 }
