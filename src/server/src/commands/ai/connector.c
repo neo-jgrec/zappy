@@ -36,6 +36,22 @@ static void asign_egg_to_client(
     }
 }
 
+static void print_eggs(server_t *s)
+{
+    team_list_t *item_t;
+    eggs_list_t *item_e;
+    team_t *t;
+    egg_t *e;
+
+    TAILQ_FOREACH(item_t, &s->teams, entries) {
+        t = item_t->team;
+        TAILQ_FOREACH(item_e, &t->eggs, entries) {
+            e = item_e->egg;
+            message_to_graphicals(s, "enw %d %d %d %d\n", e->id, -1, e->x, e->y);
+        }
+    }
+}
+
 bool connector(client_t *c, server_t *server)
 {
     size_t nb_slots;
@@ -46,6 +62,7 @@ bool connector(client_t *c, server_t *server)
     if (strcmp(c->commands[0], "GRAPHIC") == 0) {
         c->is_graphic = true;
         c->is_connected = true;
+        print_eggs(server);
         return true;
     }
     nb_slots = team_nb_slots(&server->teams, c->commands[0]);
