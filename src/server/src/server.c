@@ -52,47 +52,58 @@ static double get_interval(int command, double freq)
     return -1.0f;
 }
 
-static void print_egg_graphic(
-    client_t *client,
-    unsigned char i,
-    server_t *server
-)
+static void print_egg_graphic(client_t *client, server_t *server)
 {
-    dprintf(client->fd, "%s", client->payload);
-    if (client->tclient[i].command == FORK)
-        message_to_graphicals(server, "enw %d %s %d %d\n",
-        client->egg_id, client->uuid, client->x, client->y);
-    client->tclient[i].available_request = false;
+    unsigned char cmd_idx = 0;
+
+    if (client->tclient[cmd_idx].available_request)
+        dprintf(client->fd, "%s", client->tclient[cmd_idx].payload);
+    if (client->tclient[cmd_idx].command == FORK)
+        message_to_graphicals(server, "enw %d %s %d %d\n", client->egg_id,
+            client->uuid, client->x, client->y);
+    for (unsigned char idx = 0; idx < NB_REQUESTS_HANDLEABLE; idx++) {
+        if (idx + 1 < NB_REQUESTS_HANDLEABLE)
+            client->tclient[idx] = client->tclient[idx + 1];
+        else {
+            client->tclient[idx].command = -1;
+            client->tclient[idx].available_request = false;
+        }
+        if (client->tclient[idx].available_request)
+            clock_gettime(CLOCK_REALTIME, &client->tclient[idx].future_time);
+        else
+            client->tclient[idx].command = 0;
+    }
 }
 
-static void send_command(
+static bool send_command(
     client_t *client,
-    unsigned char i,
-    struct timespec *current,
+    struct timespec *curr,
     server_t *server
 )
 {
     struct timespec cmd_start_time;
     double interval;
     double elapsed;
-    time_t sec_sus;
-    time_t nsec_sus;
+    unsigned char cmd_idx = 0;
 
-    if (client->tclient[i].available_request) {
-        cmd_start_time = client->tclient[i].future_time;
-        interval = get_interval(client->tclient[i].command,
+    if (client->tclient[cmd_idx].available_request) {
+        cmd_start_time = client->tclient[cmd_idx].future_time;
+        interval = get_interval(client->tclient[cmd_idx].command,
         server->proprieties.frequency);
-        sec_sus = (current->tv_sec - cmd_start_time.tv_sec);
-        nsec_sus = (current->tv_nsec + cmd_start_time.tv_nsec);
-        elapsed = sec_sus + nsec_sus / NANOSECONDS_IN_SECOND;
-        if (elapsed >= interval && client->tclient[i].command == INCANTATION)
-            incantation_callback_end_of_command(client, server);
+        elapsed = (curr->tv_sec - cmd_start_time.tv_sec) + ((curr
+            ->tv_nsec - cmd_start_time.tv_nsec) / NANOSECONDS_IN_SECOND);
+        if (elapsed >= interval
+            && client->tclient[cmd_idx].command == INCANTATION)
+            incantation_callback_end_of_command(client, NULL);
+        if (client->level == LAST_LEVEL)
+            return true;
         if (elapsed >= interval)
-            print_egg_graphic(client, i, server);
+            print_egg_graphic(client, server);
     }
+    return false;
 }
 
-static void check_response_client_time(
+static bool check_response_client_time(
     struct client_tailq *clients,
     server_t *server,
     struct timespec *current
@@ -101,10 +112,10 @@ static void check_response_client_time(
     client_list_t *item;
 
     TAILQ_FOREACH(item, clients, entries) {
-        for (unsigned char i = 0; i < NB_REQUESTS_HANDLEABLE; i++) {
-            send_command(item->client, i, current, server);
-        }
+        if (send_command(item->client, current, server) == true)
+            return true;
     }
+    return false;
 }
 
 static int start_server(server_t *server)
@@ -115,10 +126,11 @@ static int start_server(server_t *server)
         if (handle_client_life(server) == true)
             continue;
         handle_meteors(server);
-        check_response_client_time(&server->clients, server,
-            &server->current_time);
-        if (select(FD_SETSIZE, &server->ready_sockets, NULL, NULL,
-            &server->timeout) < 0) {
+        if (check_response_client_time(&server->clients,
+            server, &server->current_time) == true)
+            break;
+        if (select(FD_SETSIZE, &server->ready_sockets,
+            NULL, NULL, &server->timeout) < 0) {
             perror("There was an error in select");
             return ERROR_STATUS;
         }
@@ -128,9 +140,6 @@ static int start_server(server_t *server)
     return OK_STATUS;
 }
 
-/**
- * TODO: do buffer handling
- */
 int server(const char **args)
 {
     int status = OK_STATUS;

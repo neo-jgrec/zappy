@@ -7,22 +7,25 @@
 
 #include "server.h"
 
-void forward(client_t *client, server_t *server)
+void forward(client_t *c, server_t *server)
 {
     int width = server->proprieties.width;
     int height = server->proprieties.height;
-    int direction = client->orientation % 4;
+    int direction = c->orientation % 4;
     int dx[] = {0, 0, -1, 1};
     int dy[] = {-1, 1, 0, 0};
 
-    client->x = (client->x + dx[direction] + width) % width;
-    client->y = (client->y + dy[direction] + height) % height;
-    if (client->x < 0)
-        client->x += width;
-    if (client->y < 0)
-        client->y += height;
-    client->payload = strdup("ok\n");
-    message_to_graphicals(server, "ppo %d %d %d %d\n",
-        client->fd, client->x, client->y, client->orientation);
-    client_time_handler(client, FORWARD);
+    c->x = (c->x + dx[direction] + width) % width;
+    c->y = (c->y + dy[direction] + height) % height;
+    if (c->x < 0)
+        c->x += width;
+    if (c->y < 0)
+        c->y += height;
+    if (c->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == false) {
+        message_to_graphicals(server, "ppo %d %d %d %d\n",
+        c->fd, c->x, c->y, c->orientation);
+        c->payload = strdup("ok\n");
+    } else
+        c->payload = strdup("ko\n");
+    client_time_handler(c, FORWARD);
 }

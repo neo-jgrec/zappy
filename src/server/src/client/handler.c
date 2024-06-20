@@ -70,7 +70,7 @@ static int handle_quit_client(
 
     if (check_read != 0)
         return NEUTRAL_VALUE;
-    if (client->is_graphic == false) {
+    if (client->is_graphic == false && client->is_connected == true) {
         egg = init_egg(client->x, client->y);
         item_e = malloc(sizeof(eggs_list_t));
         if (item_e == NULL)
@@ -114,12 +114,11 @@ int handle_client_data(server_t *server, int client_fd)
     ssize_t check_read;
     int quit_status;
 
-    if (!client) {
-        perror("Client not found");
+    if (!client)
         return ERROR_STATUS;
-    }
     memset(client->message, '\0', sizeof(client->message));
-    check_read = read_until_newline(client_fd, client->message, sizeof(client->message));
+    check_read = read_until_newline(client_fd,
+        client->message, sizeof(client->message));
     if (check_read < 0) {
         close(client_fd);
         return ERROR_STATUS;
