@@ -32,14 +32,24 @@ class World : public IScene {
         void update(float fElapsedTime) override;
         void draw(sf::RenderWindow &window) override;
 
-        void drawChunck(sf::RenderWindow &window, int i, int j);
         bool moveMap(sf::Event event);
         void updateTrantorians();
+
+        void iterateWorld(std::function<void(int, int)> func){
+            for (int i = 0; i < _worldSize.x; i++) {
+                for (int j = 0; j < _worldSize.y; j++) {
+                    func(i, j);
+                }
+            }
+        }
 
     private:
         void reset();
         void getServerInit();
         void initMap();
+
+        void layer1(int i, int j);
+        void layer2(int i, int j);
 
         std::shared_ptr<Sprite> _sprite;
         std::map<std::string, std::shared_ptr<Sprite>> _sprites;

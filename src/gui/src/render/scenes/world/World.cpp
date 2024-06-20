@@ -91,19 +91,13 @@ void World::getServerInit()
 {
     while (_core->_data.getMap().getSize()[0] == 0)
         _core->_parser.updateData(_core->_data, _core->_server);
-    _worldSize = sf::Vector2f(
-        _core->_data.getMap().getSize()[0],
-        _core->_data.getMap().getSize()[1]
-    );
+    _worldSize = sf::Vector2f(_core->_data.getMap().getSize()[0], _core->_data.getMap().getSize()[1]);
 }
 
 bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
 {
-    _mousePos = _core->getMousePos();
-    _mousePos = sf::Vector2f(
-        (_mousePos.x * _zoom + _view.getCenter().x - _view.getSize().x / 2),
-        (_mousePos.y * _zoom + _view.getCenter().y - _view.getSize().y / 2)
-    );
+    _mousePos = _core->getMousePos() * _zoom + _view.getCenter() - _view.getSize() * (1.f/2.f);
+
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
         _core->_upperState = GameState::MENU;
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
@@ -140,41 +134,22 @@ void World::update(float fElapsedTime)
 
 void World::draw(sf::RenderWindow &window)
 {
-    _view.setCenter(sf::Vector2f(
-        _pos.x + _tmpOffset.x + _offset.x,
-        _pos.y + _tmpOffset.y + _offset.y
-    ));
+    _view.setCenter(_pos + _tmpOffset + _offset);
     window.setView(_view);
-    for (int i = 0; i < _worldSize.x; i++)
-        for (int j = 0; j < _worldSize.y; j++)
-            drawChunck(window, i, j);
 
-    for (int i = 0; i < _worldSize.x; i++) {
-        for (int j = 0; j < _worldSize.y; j++) {
-        bool isThereTrantorian = false;
-            for (auto &trantorian : _trantorians)
-                if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
-                    trantorian.draw(window);
-                    isThereTrantorian = true;
-                }
-            if (!isThereTrantorian)
-                _chuncks[i][j].draw(window);
-            if (_selectedTile.x == i && _selectedTile.y == j) {
-                _sprites["halo1"]->_sprite.setPosition(
-                    _chuncks[i][j]._pos.x,
-                    _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y / 2
-                );
-                window.draw(_sprites["halo1"]->_sprite);
-            }
-
-        }
-    }
+    iterateWorld([&](int i, int j) {
+        layer1(i, j);
+    });
+    iterateWorld([&](int i, int j) {
+        layer2(i, j);
+    });
     window.setView(window.getDefaultView());
     _chat->draw(window);
 }
 
-void World::drawChunck(sf::RenderWindow &window, int i, int j)
+void World::layer1(int i, int j)
 {
+    sf::RenderWindow &window = _core->getWindow();
     _sprite->_sprite.setPosition(
                 _chuncks[i][j]._pos.x,
                 _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset
@@ -186,6 +161,26 @@ void World::drawChunck(sf::RenderWindow &window, int i, int j)
             _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset
         );
         window.draw(_sprites["hover1"]->_sprite);
+    }
+}
+
+void World::layer2(int i, int j)
+{
+    sf::RenderWindow &window = _core->getWindow();
+    bool isThereTrantorian = false;
+    for (auto &trantorian : _trantorians)
+        if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
+            trantorian.draw(window);
+            isThereTrantorian = true;
+        }
+    if (!isThereTrantorian)
+        _chuncks[i][j].draw(window);
+    if (_selectedTile.x == i && _selectedTile.y == j) {
+        _sprites["halo1"]->_sprite.setPosition(
+            _chuncks[i][j]._pos.x,
+            _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y / 2
+        );
+        window.draw(_sprites["halo1"]->_sprite);
     }
 }
 
