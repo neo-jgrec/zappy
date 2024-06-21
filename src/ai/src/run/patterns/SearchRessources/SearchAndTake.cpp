@@ -11,46 +11,48 @@
 
 void ABotPattern::searchAndTakeRessource(const std::string &ressource)
 {
-    if (_state.environment.tiles.empty())
+
+    if (_state.metadata["should_update_env"] == "true")
     {
+        std::cout << "should update env" << std::endl;
         queue.push_back({[&]()
                          { doAction(LOOK, ""); }, "LOOK"});
         return;
     }
-
-    // TODO: find a way to add it to constant, this code is copy paste in RunToLinemate.cpp
-    std::unordered_map<std::string, std::function<void()>> actions = {
-        {"FORWARD", [&]()
-         { doAction(FORWARD, ""); }},
-        {"LEFT", [&]()
-         { doAction(LEFT, ""); }},
-        {"RIGHT", [&]()
-         { doAction(RIGHT, ""); }},
-        {"TAKE", [=]()
-         { doAction(TAKE, ressource); }}};
-
-    std::unique_ptr<Tile> tile = _state.environment.getTileByRessource(ressource);
-    if (tile != nullptr)
+    else
     {
-        std::pair<int, int> coord = {tile->x, tile->y};
-        std::cout << "tile = " << tile->x << " " << tile->y << std::endl;
-        if (movementMap.find(coord) != movementMap.end())
+        std::cout << "should not update env" << std::endl;
+        // TODO: find a way to add it to constant, this code is copy paste in RunToLinemate.cpp
+        std::unordered_map<std::string, std::function<void()>> actions = {
+            {"FORWARD", [&]()
+             { doAction(FORWARD, ""); }},
+            {"LEFT", [&]()
+             { doAction(LEFT, ""); }},
+            {"RIGHT", [&]()
+             { doAction(RIGHT, ""); }},
+            {"TAKE", [=]()
+             { doAction(TAKE, ressource); }}};
+
+        std::unique_ptr<Tile> tile = _state.environment.getTileByRessource(ressource);
+        if (tile != nullptr)
         {
-            for (const auto &move : movementMap[coord])
+            std::pair<int, int> coord = {tile->x, tile->y};
+            std::cout << "tile = " << tile->x << " " << tile->y << std::endl;
+            if (movementMap.find(coord) != movementMap.end())
             {
-                queue.push_back({actions[move], move});
-                std::cout << "movement to go the tile = " << move << std::endl;
+                for (const auto &move : movementMap[coord])
+                {
+                    queue.push_back({actions[move], move});
+                    std::cout << "movement to go the tile = " << move << std::endl;
+                }
             }
+            queue.push_back({actions["TAKE"], "TAKE"});
         }
-        queue.push_back({actions["TAKE"], "TAKE"});
-    }
 
-    if (tile == nullptr)
-    {
-        queue.push_back({[&]()
-                         { doAction(FORWARD, ""); }, "FORWARD"});
+        if (tile == nullptr)
+        {
+            queue.push_back({[&]()
+                             { doAction(FORWARD, ""); }, "FORWARD"});
+        }
     }
-    // This look is to update environment
-    queue.push_back({[&]()
-                     { doAction(LOOK, ""); }, "LOOK"});
 }

@@ -42,6 +42,7 @@ public:
     Environment environment;
     Ressources ressources;
     State state = STANDARD;
+    State prevState = STANDARD;
     ActionInfo lastAction;
     // TODO: to remove, it is to debug
     std::string pattern = "no pattern";
@@ -50,9 +51,12 @@ public:
     unsigned int slot = 0;
     unsigned int widthMap = 42;
     unsigned int heightMap = 42;
+    std::map<std::string, std::string> metadata = {
+        {"should_update_env", "true"}};
 
     // Metrics
-    std::vector<ActionInfo> actionsData;
+    std::vector<ActionInfo>
+        actionsData;
 };
 
 const std::string getStateName(State state);
