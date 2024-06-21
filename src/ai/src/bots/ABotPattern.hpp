@@ -38,6 +38,7 @@ protected:
     // Paterns
     void testPatern();
     void survive();
+    void runToLinemate();
     void searchAndTakeRessource(const std::string &ressource);
     void group();
     void searchLinemate();

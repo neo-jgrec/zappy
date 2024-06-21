@@ -43,6 +43,8 @@ public:
     Ressources ressources;
     State state = STANDARD;
     ActionInfo lastAction;
+    // TODO: to remove, it is to debug
+    std::string pattern = "no pattern";
 
     unsigned int level = 1;
     unsigned int slot = 0;

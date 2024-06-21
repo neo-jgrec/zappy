@@ -51,6 +51,7 @@ void ABotPattern::act()
 {
     printColor("========== [Bot Run] ==========\n", BRIGHT_BLUE);
     printKeyValueColored("Iteration", std::to_string(_iteration));
+    printKeyValueColored("Pattern:", _state.pattern);
 
     if (_state.state != INVOCATING)
     {

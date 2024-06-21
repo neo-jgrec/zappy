@@ -2,14 +2,12 @@
 ** EPITECH PROJECT, 2024
 ** zappy/ai
 ** File description:
-** Survive.cpp
+** RunToLinemate.cpp
 */
 
-#include "../../../bots/ABotPattern.hpp"
-#include "../../../constant/Constants.hpp"
-#include <functional>
+#include "../../bots/ABotPattern.hpp"
 
-void ABotPattern::searchAndTakeRessource(const std::string &ressource)
+void ABotPattern::runToLinemate()
 {
     if (_state.environment.tiles.empty())
     {
@@ -17,8 +15,6 @@ void ABotPattern::searchAndTakeRessource(const std::string &ressource)
                          { doAction(LOOK, ""); }, "LOOK"});
         return;
     }
-
-    // TODO: find a way to add it to constant, this code is copy paste in RunToLinemate.cpp
     std::unordered_map<std::string, std::function<void()>> actions = {
         {"FORWARD", [&]()
          { doAction(FORWARD, ""); }},
@@ -26,25 +22,21 @@ void ABotPattern::searchAndTakeRessource(const std::string &ressource)
          { doAction(LEFT, ""); }},
         {"RIGHT", [&]()
          { doAction(RIGHT, ""); }},
-        {"TAKE", [=]()
-         { doAction(TAKE, ressource); }}};
-
-    std::unique_ptr<Tile> tile = _state.environment.getTileByRessource(ressource);
+    };
+    std::unique_ptr<Tile> tile = _state.environment.getTileByRessource("linemate");
     if (tile != nullptr)
     {
         std::pair<int, int> coord = {tile->x, tile->y};
-        std::cout << "tile = " << tile->x << " " << tile->y << std::endl;
         if (movementMap.find(coord) != movementMap.end())
         {
             for (const auto &move : movementMap[coord])
             {
                 queue.push_back({actions[move], move});
-                std::cout << "movement to go the tile = " << move << std::endl;
             }
         }
-        queue.push_back({actions["TAKE"], "TAKE"});
+        queue.push_back({[&]()
+                         { doAction(INCANTATION, ""); }, "INCANTATION"});
     }
-
     if (tile == nullptr)
     {
         queue.push_back({[&]()
