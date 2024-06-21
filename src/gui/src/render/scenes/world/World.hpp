@@ -22,6 +22,7 @@
     #include "../../core/Setting.hpp"
     #include "../../ui/Chat.hpp"
     #include "ui/WorldUi.hpp"
+    #include "ui/Ranking.hpp"
 
 class Core;
 class World : public IScene {
@@ -39,6 +40,9 @@ class World : public IScene {
         void updateChuncks();
         sf::Vector2f circularVector(sf::Vector2f tile);
 
+        int getNbTrantorian() { return _trantorians.size(); }
+        Trantorian getTrantorian(int id) { return _trantorians[id]; }
+
         void iterateWorld(std::function<void(int, int)> func){
             for (int i = 0; i < _worldSize.x; i++) {
                 for (int j = 0; j < _worldSize.y; j++) {
@@ -49,6 +53,7 @@ class World : public IScene {
         std::vector<std::string> _teams;
         sf::Vector2f _selectedTile = sf::Vector2f(-1, -1);
         std::vector<std::vector<Chunck>> _chuncks;
+        std::vector<Ranking> _rankings;
     private:
         void reset();
         void getServerInit();
@@ -81,6 +86,8 @@ class World : public IScene {
 
         Diamond _diamond;
         WorldUi _worldUi;
+        float _rankTime = 0;
+
 };
 
 

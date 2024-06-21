@@ -16,7 +16,7 @@ Core::Core(int port, std::string ip) {
     _state = GameState::HOME;
     _upperState = GameState::DEFAULT;
     _shade = sf::RectangleShape(sf::Vector2f(1920, 1080));
-    _shade.setFillColor(sf::Color(0, 0, 0, 75));
+    _shade.setFillColor(sf::Color(0, 0, 0, 150));
 
     _scenes[GameState::HOME] = std::make_shared<Home>(this, port, ip);
     _scenes[GameState::END] = std::make_shared<Quit>(this);

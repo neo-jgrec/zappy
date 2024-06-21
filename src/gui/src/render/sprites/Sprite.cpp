@@ -2,14 +2,10 @@
 
 int Sprite::update(float fElapsedTime) {
     int ret = 0;
-    if (_path != "./assets/aura.png")
-        std::cout << "Sprite::update" << _path << fElapsedTime << std::endl;
     _time += fElapsedTime;
     if (_time > _frameTime) {
         _time = 0;
         _frame++;
-        if (_path != "./assets/aura.png")
-            std::cout << "Sprite::update" << _path << _frame << std::endl;
         if (_frame >= _frameCount) {
             if (_looping)
                 _frame = 0;

@@ -53,7 +53,9 @@ class Trantorian {
         sf::Vector2f getTile() { return _tile; }
         void kill() { _dead = 1; }
         bool isDead() {
-            return _dead;
+            if (_sprites[_actualSprite]->isFinished() && _actualSprite == 2)
+                return true;
+            return false;
         }
 
         sf::Vector2f getPos() { return _pos; }
@@ -62,6 +64,8 @@ class Trantorian {
         std::string _team;
         int _teamIndex;
         int _level;
+
+        std::vector<int> _inventory = {0, 0, 0, 0, 0, 0, 0};
     protected:
     private:
         int _actualSprite = 0;

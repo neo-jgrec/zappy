@@ -54,6 +54,11 @@ class Sprite {
         void setColor(sf::Color color) {
             _sprite.setColor(color);
         }
+        bool isFinished() {
+            if (_frame == _frameCount - 1)
+                return true;
+            return false;
+        }
 
         sf::Sprite _sprite;
     private:

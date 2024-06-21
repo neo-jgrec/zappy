@@ -111,6 +111,7 @@ void World::getServerInit()
         _teams.push_back(team);
         _chat->addMessage(" - " + team);
     }
+    Ranking::getRanking(_rankings, _core->_data);
 }
 
 bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
@@ -159,6 +160,9 @@ void World::update(float /*fElapsedTime*/)
         _sprites["aura"]->update(_core->getDeltaTime());
     updateTrantorians();
     updateChuncks();
+    _rankTime += _core->getDeltaTime();
+    if (_rankTime > 10)
+        Ranking::getRanking(_rankings, _core->_data);
 }
 
 void World::draw(sf::RenderWindow &window)
@@ -202,6 +206,10 @@ void World::layer1(int i, int j)
                 _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset
             );
             _sprites["hoverEgg"]->setColor(sf::Color(98, 151, 50));
+            // if (_worldUi.getPanelState() == WorldUi::panelState::FLAG) {
+            //     if (egg.second. == _teams[_worldUi._idTeam]) {
+            //         _sprites["hoverEgg"]->setColor(_teamsColor[_worldUi._idTeam]);
+            // }
             window.draw(_sprites["hoverEgg"]->_sprite);
         }
     }
@@ -211,17 +219,27 @@ void World::layer2(int i, int j)
 {
     sf::RenderWindow &window = _core->getWindow();
     bool isThereTrantorian = false;
+    int index = 0;
     for (auto &trantorian : _trantorians) {
         if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
             trantorian.draw(window);
-            isThereTrantorian = true;
             if (trantorian.isDead())
                 continue;
+            isThereTrantorian = true;
             if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
-                _sprites["aura"]->_sprite.setPosition(trantorian.getPos());
-                _sprites["aura"]->setColor(_teamsColor[0]);
-                if (trantorian._team == _teams[0])
-                    window.draw(_sprites["aura"]->_sprite);
+                if (_worldUi.getPanelState() == WorldUi::panelState::FLAG) {
+                    _sprites["aura"]->_sprite.setPosition(trantorian.getPos());
+                    _sprites["aura"]->setColor(_teamsColor[_worldUi._idTeam]);
+                    if (trantorian._team == _teams[_worldUi._idTeam])
+                        window.draw(_sprites["aura"]->_sprite);
+                }
+                if (_worldUi.getPanelState() == WorldUi::panelState::TRANTORIAN) {
+                    if (index == _worldUi._idPlayer) {
+                        _sprites["aura"]->_sprite.setPosition(trantorian.getPos());
+                        _sprites["aura"]->setColor(_teamsColor[trantorian._teamIndex]);
+                        window.draw(_sprites["aura"]->_sprite);
+                    }
+                }
             }
             if (_zoom > 0.6f)
                 continue;
@@ -230,6 +248,7 @@ void World::layer2(int i, int j)
             _sprites["lvlbanner"]->setColor(_teamsColor[trantorian._teamIndex]);
             window.draw(_sprites["lvlbanner"]->_sprite);
         }
+        index++;
     }
     if (!isThereTrantorian)
         _chuncks[i][j].draw(window);
@@ -293,6 +312,7 @@ void World::updateTrantorians()
                 exisitingPlayers = true;
                 trantorian.setTile(tile, _chuncks[tile.x][tile.y].getMiddle());
                 trantorian._level = player.second->getLvl();
+                trantorian._inventory = player.second->getInventory();
                 if (player.second->getAlive() == false)
                     trantorian.kill();
                 break;
@@ -314,9 +334,8 @@ void World::updateTrantorians()
             _trantorians.push_back(trantorian);
         }
     }
-    for (auto &trantorian : _trantorians) {
+    for (auto &trantorian : _trantorians)
         trantorian.update(_core->getDeltaTime());
-    }
 }
 
 void World::updateChuncks()

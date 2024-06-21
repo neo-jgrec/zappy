@@ -31,8 +31,6 @@ class AdvancedButton {
                     _state = CLICKED;
                     return true;
                 }
-                if (_state == CLICKED)
-                    return false;
                 _state = HOVER;
             } else if (_state != CLICKED)
                 _state = NORMAL;
@@ -43,10 +41,6 @@ class AdvancedButton {
         {
             _sprite.setTextureRect(sf::IntRect(_state * _size.x, 0, _size.x, _size.y));
             window.draw(_sprite);
-        }
-
-        void release() {
-            _state = NORMAL;
         }
 
     protected:
