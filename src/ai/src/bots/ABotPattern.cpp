@@ -108,3 +108,5 @@ bool ABotPattern::isServerResponse(const std::string &response) const
     //     return true;
     // return false;
 }
+
+// TODO: metrics, save proportions of state in the game, add state: searching, moving, etc...

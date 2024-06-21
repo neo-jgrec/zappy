@@ -20,6 +20,7 @@ void ABot::listenGroup(const std::string &message)
 
                 if (_state.level + 1 == askLevel)
                 {
+                    queue.clear();
                     _state.state = SHOULD_GROUP;
                 }
             }
