@@ -84,7 +84,12 @@ void Client::authenticate()
     {
         std::string response;
         recvMessage(response);
-
+        if (response.find("ko") != std::string::npos)
+        {
+            PRINT_ERROR("Authentication failed: verify teamName");
+            close(_sockfd);
+            exit(EXIT_FAILURE);
+        }
         if (response.find("message") != std::string::npos)
         {
             _message._content = response;
@@ -141,7 +146,7 @@ void Client::initBot(const std::string identityMessage)
     }
     else
     {
-        _bot = BotFactory::createBot("Forker");
+        _bot = BotFactory::createBot("SimpleBot"); // TODO: is forker normally
     }
     if (_bot != nullptr)
     {
@@ -162,6 +167,7 @@ void Client::sendMessage(const std::string &message)
 
 void Client::loop()
 {
+    std::cout << "do loop\n";
     // clear messsages of servers before start
     auto condition = [&]()
     { return _messageToReadBeforeStart > 0; };

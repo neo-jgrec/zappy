@@ -72,3 +72,12 @@ std::string replaceNumbersInString(const std::string &input, int offset)
 
     return output;
 }
+
+std::string cleanCarriageReturn(const std::string &input)
+{
+    std::string output = input;
+
+    if (!output.empty() && output.back() == '\n')
+        output.pop_back();
+    return output;
+}

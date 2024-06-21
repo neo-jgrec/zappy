@@ -13,35 +13,34 @@
 void ABotPattern::group()
 {
     if (_state.level == 2)
-        _message._content = "group_3";
+        _message.content = "group_3";
     else if (_state.level == 3)
-        _message._content = "group_4";
+        _message.content = "group_4";
     else if (_state.level == 4)
-        _message._content = "group_5";
+        _message.content = "group_5";
     else if (_state.level == 5)
-        _message._content = "group_6";
+        _message.content = "group_6";
     else if (_state.level == 6)
-        _message._content = "group_7";
+        _message.content = "group_7";
     else if (_state.level == 7)
-        _message._content = "group_8";
-    _message.vigenereEncrypt();
-    _message.generateMessage();
+        _message.content = "group_8";
+    _message.format(_message.content);
     queue.push_back({[&]()
-                     { doAction(BROADCAST, _message._content); }, "BROADCAST"});
+                     { doAction(BROADCAST, _message.content); }, "BROADCAST"});
 }
 
 void ABotPattern::joinGroup()
 {
-    std::cout << _allyMessage._content << std::endl;
-    std::string level = getElementAfter(_allyMessage._content, '_');
+    std::cout << _allyMessage.content << std::endl;
+    std::string level = getElementAfter(_allyMessage.content, '_');
     std::cout << level << std::endl;
     if (_direction == "0")
     {
-        _message._content = "group_joined";
+        _message.content = "group_joined";
         _message.vigenereEncrypt();
         _message.generateMessage();
         queue.push_back({[&]()
-                         { doAction(BROADCAST, _message._content); }, "BROADCAST"});
+                         { doAction(BROADCAST, _message.content); }, "BROADCAST"});
         return;
     }
 
@@ -93,6 +92,7 @@ bool ABotProbabilistic::canLvlUp(int lvl)
     }
     return false;
 }
+
 /*void Bot::findPath(std::pair<int, int> start, const std::pair<int, int> &end)
 {
     while (start.first != end.first || start.second != end.second) {

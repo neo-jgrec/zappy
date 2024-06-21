@@ -7,30 +7,46 @@
 
 #include "ABotPattern.hpp"
 
-ABotPattern::ABotPattern()
-{
-}
-
 void ABotPattern::init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port, int id, int idMessage)
 {
     _sockfd = sockfd;
     _teamName = teamName;
     _host = host;
     _port = port;
+    _id = id;
     _currentMessageId = idMessage;
     initChild();
     saveActionsFile += teamName + std::to_string(id) + ".txt";
-    savePatternsFile += teamName + std::to_string(id) + ".txt";
 }
 
-ABotPattern::~ABotPattern()
+void ABotPattern::run(const std::string &response)
 {
+    std::string responseCopy = cleanCarriageReturn(response);
+
+    _message.content = "";
+    printKeyValueColored("🤖👂 Bot listens: ", responseCopy);
+    if (isServerResponse(responseCopy))
+    {
+        _canAct = true;
+    }
+    listen(responseCopy);
+    if (_canAct)
+    {
+        act();
+        _canAct = false;
+    }
+    if (responseCopy.find("dead") != std::string::npos)
+    {
+        debugState();
+    }
+    // debugState();
 }
-// Landmark: 1. Goes from homeless to jobfull. Wait the max limit unit time before going homeless.
+
 void ABotPattern::act()
 {
-    printColor("========== [Bot Run] ==========\n", BLUE);
+    printColor("========== [Bot Run] ==========\n", BRIGHT_BLUE);
     printKeyValueColored("Iteration", std::to_string(_iteration));
+
     if (_state.state != INVOCATING)
     {
         if (queue.empty())
@@ -44,44 +60,7 @@ void ABotPattern::act()
     _iteration++;
     if (_iteration % 20 == 0)
         saveDataActions(saveActionsFile);
-    _state.state = STANDART;
-}
-
-void ABotPattern::run(const std::string &response)
-{
-    std::string responseCopy = response;
-    static bool _canAct = false;
-
-    _message._content = "";
-
-    if (!responseCopy.empty() && responseCopy.back() == '\n')
-    {
-        responseCopy.pop_back();
-    }
-    printKeyValueColored("Bot listens", responseCopy);
-    if (responseCopy.find("message") == std::string::npos || responseCopy.find("ok") != std::string::npos || responseCopy.find("ko") != std::string::npos)
-    {
-        _canAct = true;
-        std::cout << "canAct: " << _canAct << std::endl;
-    }
-    else
-    {
-        std::cout << "canAct: " << _canAct << std::endl;
-    }
-    listen(responseCopy);
-    // Bot wait for a job
-    if (_canAct || _iteration == 0)
-    {
-        act();
-        _canAct = false;
-    }
-    if (_iteration == 200 || (responseCopy.find("dead") != std::string::npos))
-    {
-        debugState();
-        saveData(saveActionsFile);
-        exit(0);
-    }
-    debugState();
+    _state.state = STANDARD;
 }
 
 void ABotPattern::listen(const std::string &response)
@@ -102,16 +81,18 @@ void ABotPattern::listen(const std::string &response)
     }
 }
 
-void ABotPattern::saveData(const std::string &filename)
+bool ABotPattern::isServerResponse(const std::string &response) const
 {
-    std::ofstream out(filename, std::ios_base::app);
+    return response.find("message") == std::string::npos;
+    // TODO: if message concat with server response do that:
+    //  std::vector<std::string> responses = {"ok", "ko", "dead", "[", "]", "Elevation underway", "Current level:"};
 
-    out << "iteration:" << _iteration << "\n";
-    for (const auto &pattern : _patterns)
-    {
-        out << pattern->name << ":" << pattern->count << "\n";
-    }
-    out << "\n";
+    // for (const auto &res : responses)
+    // {
+    //     if (response.find(res) != std::string::npos)
+    //         return true;
+    // }
+    // if (std::all_of(response.begin(), response.end(), ::isdigit))
+    //     return true;
+    // return false;
 }
-
-// TODO: we can know the frequence by the time an action take

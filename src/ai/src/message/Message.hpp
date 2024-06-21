@@ -26,8 +26,8 @@ public:
     void generateMessage();
     void format(const std::string &content);
     std::string convertDigitsToLetters(const std::string &digits);
-    std::string _content;
-    int _id;
+    std::string content;
+    int id;
 
 private:
     std::string _conversionTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

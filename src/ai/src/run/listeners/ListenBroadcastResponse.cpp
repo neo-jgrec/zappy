@@ -5,9 +5,9 @@
 ** ListenBroadcastResponse.cpp
 */
 
-#include "../../bots/ABotPattern.hpp"
+#include "../../bots/ABot.hpp"
 
-void ABotPattern::listenBroadcastResponse(const std::string &response)
+void ABot::listenBroadcastResponse(const std::string &response)
 {
     std::string signature = getElementAfter(response, ':');
 

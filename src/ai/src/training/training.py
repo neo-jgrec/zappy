@@ -190,3 +190,6 @@ if __name__ == "__main__":
     for key, value in best_bot['state'].items():
         print(colored(f"{key}: ", 'green') + colored(f"{value}", 'yellow'))
     print()
+
+# clean ansii
+# https://stackoverflow.com/questions/14693701/how-can-i-remove-the-ansi-escape-sequences-from-a-string-in-python

@@ -5,7 +5,7 @@
 ** Actions.cpp
 */
 
-#include "Actions.hpp"
+#include "Action.hpp"
 
 // TODO: how to put it in constant without conflict ?
 std::map<Action, ActionInfo> actionMap = {

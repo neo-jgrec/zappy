@@ -2,11 +2,11 @@
 ** EPITECH PROJECT, 2024
 ** zappy/ai
 ** File description:
-** Environement.hpp
+** Environment.hpp
 */
 
-#ifndef ENVIRONEMENT_HPP_
-#define ENVIRONEMENT_HPP_
+#ifndef Environment_HPP_
+#define Environment_HPP_
 
 #include "Tile.hpp"
 
@@ -15,11 +15,11 @@
 
 // to verify: must have x y, should be an array
 
-class Environement
+class Environment
 {
 public:
-    Environement();
-    ~Environement();
+    Environment();
+    ~Environment();
     std::vector<Tile> tiles;
     void clear();
     bool contains(std::string ressource);
@@ -27,4 +27,4 @@ public:
     // get coord (ressources)
 };
 
-#endif // ENVIRONEMENT_HPP_
+#endif // Environment_HPP_

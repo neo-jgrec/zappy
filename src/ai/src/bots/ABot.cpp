@@ -32,7 +32,7 @@ void ABot::doAction(Action action, const std::string &parameter)
 
         if (parameter != "")
             actionToServer += " " + parameter;
-        printKeyValueColored("🤖✅Bot does", actionToServer);
+        printKeyValueColored("🤖🤜 Bot does: ", actionToServer);
         sendMessage(actionToServer);
 
         _state.lastAction.action = action;
@@ -43,28 +43,30 @@ void ABot::doAction(Action action, const std::string &parameter)
             _state.ressources.food -= 1;
         }
 
-        // Metrics
-        auto it = std::find_if(_state.actionsData.begin(), _state.actionsData.end(),
-                               [&actionInfo](const ActionInfo &ad)
-                               { return ad.getName() == actionInfo.getName(); });
-        if (it == _state.actionsData.end())
-        {
-            ActionInfo newActionInfo = actionInfo;
-
-            newActionInfo.parameter = parameter;
-            newActionInfo.count = 1;
-            _state.actionsData.push_back(newActionInfo);
-
-            std::cout << "🗂️✅New action added to metrics: " << actionToServer << std::endl;
-        }
-        else
-        {
-            it->count += 1;
-        }
+        saveMetrics(actionInfo);
     }
     catch (const ActionInfoException &e)
     {
         PRINT_ERROR(e.what());
+    }
+}
+
+void ABot::saveMetrics(ActionInfo actionInfo)
+{
+    auto it = std::find_if(_state.actionsData.begin(), _state.actionsData.end(),
+                           [&actionInfo](const ActionInfo &ad)
+                           { return ad.getName() == actionInfo.getName(); });
+    if (it == _state.actionsData.end())
+    {
+        ActionInfo newActionInfo = actionInfo;
+
+        newActionInfo.parameter = actionInfo.parameter;
+        newActionInfo.count = 1;
+        _state.actionsData.push_back(newActionInfo);
+    }
+    else
+    {
+        it->count += 1;
     }
 }
 

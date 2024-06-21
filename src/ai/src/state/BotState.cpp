@@ -12,10 +12,21 @@ std::map<Job, std::string> jobMap = {
     {SIMPLE_BOT, "SIMPLE_BOT"},
 };
 
+std::map<State, std::string> stateMap = {
+    {STANDART, "STANDART"},
+    {INVOCATING, "INVOCATING"},
+    {FORKED, "FORKED"},
+};
+
 BotState::BotState() : lastAction("", 0), lastPattern("")
 {
 }
 
 BotState::~BotState()
 {
+}
+
+const std::string getStateName(State state)
+{
+    return stateMap[state];
 }

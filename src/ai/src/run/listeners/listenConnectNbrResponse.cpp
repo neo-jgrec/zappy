@@ -5,9 +5,9 @@
 ** ListenConnectNbrResponse.cpp
 */
 
-#include "../../bots/ABotPattern.hpp"
+#include "../../bots/ABot.hpp"
 
-void ABotPattern::listenConnectNbrResponse(const std::string &response)
+void ABot::listenConnectNbrResponse(const std::string &response)
 {
     try
     {

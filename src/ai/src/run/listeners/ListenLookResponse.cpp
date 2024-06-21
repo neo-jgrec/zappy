@@ -5,9 +5,9 @@
 ** ListenLookResponse.cpp
 */
 
-#include "../../bots/ABotPattern.hpp"
+#include "../../bots/ABot.hpp"
 
-void ABotPattern::listenLookResponse(const std::string &response)
+void ABot::listenLookResponse(const std::string &response)
 {
     // Remove brackets
     std::string cleanedResponse = response.substr(1, response.size() - 2);

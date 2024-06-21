@@ -2,26 +2,26 @@
 ** EPITECH PROJECT, 2024
 ** zappy/ai
 ** File description:
-** Environement.cpp
+** Environment.cpp
 */
 
-#include "Environement.hpp"
+#include "Environment.hpp"
 
-Environement::Environement()
+Environment::Environment()
 {
 }
 
-Environement::~Environement()
+Environment::~Environment()
 {
 }
 
-void Environement::clear()
+void Environment::clear()
 {
     tiles.clear();
 }
 
 // to verify: optimize it
-bool Environement::contains(std::string ressource)
+bool Environment::contains(std::string ressource)
 {
     if (ressource == "food")
     {
@@ -35,7 +35,7 @@ bool Environement::contains(std::string ressource)
     return false;
 }
 
-unsigned int Environement::getDistance(std::string ressource)
+unsigned int Environment::getDistance(std::string ressource)
 {
     unsigned int distance = 0;
 

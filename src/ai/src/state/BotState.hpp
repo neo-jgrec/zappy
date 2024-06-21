@@ -8,9 +8,9 @@
 #ifndef BOTSTATE_HPP_
 #define BOTSTATE_HPP_
 
-#include "../environement/Environement.hpp"
+#include "../environment/Environment.hpp"
 #include "../ressources/Ressources.hpp"
-#include "../actions/Actions.hpp"
+#include "../actions/Action.hpp"
 
 #include <vector>
 #include <memory>
@@ -18,7 +18,7 @@
 
 enum State
 {
-    STANDART,
+    STANDARD,
     INVOCATING,
     FORKED,
 };
@@ -29,6 +29,7 @@ enum Job
     SIMPLE_BOT,
 };
 
+extern std::map<State, std::string> stateMap;
 extern std::map<Job, std::string> jobMap;
 
 class BotState
@@ -37,12 +38,10 @@ public:
     BotState();
     ~BotState();
 
-    Environement environment;
+    Environment environment;
     Ressources ressources;
-    State state = STANDART;
+    State state = STANDARD;
     ActionInfo lastAction;
-
-    std::string lastPattern;
 
     unsigned int level = 1;
     unsigned int slot = 0;
@@ -52,5 +51,7 @@ public:
     // Metrics
     std::vector<ActionInfo> actionsData;
 };
+
+const std::string getStateName(State state);
 
 #endif // BOTSTATE_HPP_

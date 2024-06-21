@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** zappy/ai
 ** File description:
-** Actions.hpp
+** Action.hpp
 */
 
 #ifndef ACTIONS_HPP_

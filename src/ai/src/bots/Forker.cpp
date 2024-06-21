@@ -10,7 +10,7 @@
 
 void Forker::initChild()
 {
-    std::cout << "🍴 Forker initialized" << std::endl;
+    std::cout << "🍴✅ Forker initialized" << std::endl;
 }
 
 void Forker::forkNewBot()

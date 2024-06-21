@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2024
-** zappy/ai
+** zappy/ai/bots
 ** File description:
 ** ABotPattern.hpp
 */
@@ -11,38 +11,28 @@
 #include "ABot.hpp"
 #include "../pattern/Pattern.hpp"
 #include "../constant/Constants.hpp"
+#include "../utils/StringUtils.hpp"
 
 #include <memory>
 
 class ABotPattern : public ABot
 {
 public:
-    ABotPattern();
-    ~ABotPattern();
     void run(const std::string &response) override;
-    void init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port, int id, int idMessage);
-    virtual void initChild() = 0;
+    void init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port, int id, int idMessage) override;
 
+    virtual void initChild() = 0;
     virtual void updateStrategy() = 0;
 
 protected:
-    std::vector<std::unique_ptr<Pattern>> _patterns;
     unsigned int _id = 0;
     unsigned int _currentMessageId = 0;
 
     // Interract with server
     virtual void listen(const std::string &response);
 
-    // Actions
+    // Act
     void act();
-
-    // Listeners
-    void listenLookResponse(const std::string &response);
-    void listenTakeResponse(const std::string &response);
-    void listenBroadcastResponse(const std::string &response);
-    void listenIncantationResponse(const std::string &response);
-    void listenIncantationReturnResponse(const std::string &response);
-    void listenConnectNbrResponse(const std::string &response);
 
     // Paterns
     void testPatern();
@@ -61,11 +51,10 @@ protected:
     void forkBot(unsigned int idBot);
     void incantationLvl1();
 
-    // Data
-    virtual void saveData(const std::string &path);
-
 private:
-    std::string savePatternsFile = "/src/ai/dataSaved/patterns";
     std::string saveActionsFile = "./src/ai/dataSaved/actions";
+    bool _canAct = false;
+
+    bool isServerResponse(const std::string &response) const;
 };
 #endif // ABotPattern_HPP_
