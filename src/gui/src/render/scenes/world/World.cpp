@@ -207,7 +207,7 @@ void World::layer1(int i, int j)
             );
             _sprites["hoverEgg"]->setColor(sf::Color(98, 151, 50));
             // if (_worldUi.getPanelState() == WorldUi::panelState::FLAG) {
-            //     if (egg.second. == _teams[_worldUi._idTeam]) {
+            //     if (egg.second.getTeam() == _teams[_worldUi._idTeam]) {
             //         _sprites["hoverEgg"]->setColor(_teamsColor[_worldUi._idTeam]);
             // }
             window.draw(_sprites["hoverEgg"]->_sprite);
@@ -336,6 +336,10 @@ void World::updateTrantorians()
     }
     for (auto &trantorian : _trantorians)
         trantorian.update(_core->getDeltaTime());
+    std::optional<Broadcast> broadcast = _core->_data.getNextBroadcast();
+    if (broadcast.has_value())
+        _chat->addMessage(std::to_string(broadcast.value().getPlayerNb()) + " : " + broadcast.value().getMessage());
+
 }
 
 void World::updateChuncks()
