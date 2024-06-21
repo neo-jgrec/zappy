@@ -21,6 +21,9 @@ void ABotPattern::init(int sockfd, const std::string &teamName, bool arg, const 
 
 void ABotPattern::run(const std::string &response)
 {
+    // Mean server crashed
+    if (response.empty())
+        exit(0);
     std::string responseCopy = cleanCarriageReturn(response);
 
     _message.content = "";
