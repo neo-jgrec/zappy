@@ -14,14 +14,12 @@ void ABotPattern::searchAndTakeRessource(const std::string &ressource)
 
     if (_state.metadata["should_update_env"] == "true")
     {
-        std::cout << "should update env" << std::endl;
         queue.push_back({[&]()
                          { doAction(LOOK, ""); }, "LOOK"});
         return;
     }
     else
     {
-        std::cout << "should not update env" << std::endl;
         // TODO: find a way to add it to constant, this code is copy paste in RunToLinemate.cpp
         std::unordered_map<std::string, std::function<void()>> actions = {
             {"FORWARD", [&]()
