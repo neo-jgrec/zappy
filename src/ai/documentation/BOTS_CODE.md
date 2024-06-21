@@ -152,7 +152,8 @@ void ABot::listenConnectNbrResponse(const std::string &response)
 
 7. Use message:<br>
 We encrypt and sign message, if you want to send a message, you have to format it first.<br>
-don't use , and : in your message!
+Don't use <span style="color: red;">{"ok", "ko", "dead", "[", "]", "Elevation underway", "Current level:", ",", ":"}</span> in your message
+We separate response and broadcast messages.
 ```c++
 std::string myMessage = "hello";
 
