@@ -147,6 +147,8 @@ void Client::initBot(const std::string identityMessage)
     else
     {
         _bot = BotFactory::createBot("SimpleBot"); // TODO: is forker normally
+        if (_bot == nullptr)
+            throw ClientException("BotFactory failed");
     }
     if (_bot != nullptr)
     {

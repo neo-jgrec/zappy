@@ -22,5 +22,5 @@ std::unique_ptr<IBot> BotFactory::createBot(const std::string &type)
         return std::make_unique<SimpleBot>();
     }
 
-    throw std::runtime_error("Invalid bot type: " + type);
+    return nullptr;
 }
