@@ -31,6 +31,7 @@
 #include "../utils/StringUtils.hpp"
 #include "IBot.hpp"
 #include "../hash/Pairhash.hpp"
+#include "../constant/Constants.hpp"
 
 class ABot : public IBot
 {
@@ -38,12 +39,11 @@ public:
     ABot();
     ~ABot();
     virtual void run(const std::string &response) = 0;
+    // TODO: remove arg
     virtual void init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port, int id, int idMessage) = 0;
-    // TODO: use this init
-    //  virtual void init(int sockfd, const std::string &teamName) = 0;
 
 protected:
-    // TODO: move
+    // TODO: How to put it in constant without conflict ?
     std::unordered_map<std::pair<int, int>, std::vector<std::string>, PairHash> movementMap = {
         {{-1, 1}, {"FORWARD", "LEFT", "FORWARD"}},
         {{0, 1}, {"FORWARD"}},
@@ -63,23 +63,23 @@ protected:
     };
 
     // Client
-    int _sockfd;
-    std::string _teamName;
+    int _sockfd = -1;
+    std::string _teamName = "";
     std::string _host = "";
     int _port = 0;
 
     // Game
-    unsigned int _iteration;
-    int _timeUnit;
+    unsigned int _iteration = 0;
+    int _timeUnit = 10;
 
     // Messages
     Message _message;
-    std::string direction;
+    std::string _direction;
     Message _enemyMessage;
     Message _allyMessage;
     std::string _signature = "bFNneQbXQkyJHGEQd";
 
-    // Material of training
+    // State
     BotState _state;
 
     // Actions
@@ -90,7 +90,7 @@ protected:
     void sendMessage(const std::string &message);
 
     // Actions
-    void doAction(actions action, const std::string &parameter);
+    void doAction(Action action, const std::string &parameter);
 
     // Debug
     void debugInitialisation();

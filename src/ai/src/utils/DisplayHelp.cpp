@@ -32,5 +32,5 @@ static void printFileContentError(const std::string &filePath)
 
 void displayHelp()
 {
-    printFileContentError("../assets/help.txt");
+    printFileContentError("src/ai/assets/help.txt");
 }

@@ -56,7 +56,7 @@ void Client::setupConnection()
         exit(EXIT_FAILURE);
     }
     else
-        printColor("🚀 Connected to server: " + _host + ":" + std::to_string(_port) + " on team: " + _teamName + "\n", BRIGHT_BLUE);
+        printColor("🚀✅ Connected to server: " + _host + ":" + std::to_string(_port) + " on team: " + _teamName + "\n", BRIGHT_BLUE);
 }
 
 void Client::authenticate()

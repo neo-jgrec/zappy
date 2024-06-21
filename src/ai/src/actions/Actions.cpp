@@ -7,8 +7,8 @@
 
 #include "Actions.hpp"
 
-// TODO: put it in constant
-std::map<actions, ActionInfo> actionMap = {
+// TODO: how to put it in constant without conflict ?
+std::map<Action, ActionInfo> actionMap = {
     {DEFAULT, ActionInfo("Default", 0)},
     {FORWARD, ActionInfo("Forward", 7)},
     {RIGHT, ActionInfo("Right", 7)},
@@ -24,7 +24,7 @@ std::map<actions, ActionInfo> actionMap = {
     {INCANTATION, ActionInfo("Incantation", 300)},
 };
 
-ActionInfo::ActionInfo(const std::string &name, int value) : name(name), value(value)
+ActionInfo::ActionInfo(const std::string &name, unsigned int timeUnitCost) : _name(name), _timeUnitCost(timeUnitCost)
 {
 }
 
@@ -34,20 +34,25 @@ ActionInfo::~ActionInfo()
 
 std::string ActionInfo::getName() const
 {
-    return name;
+    return _name;
 }
 
-int ActionInfo::getValue() const
+unsigned int ActionInfo::getTimeUnitCost() const
 {
-    return value;
+    return _timeUnitCost;
 }
 
-ActionInfo getActionInfo(actions action)
+ActionInfo getActionInfo(Action action)
 {
     auto it = actionMap.find(action);
 
     if (it != actionMap.end())
-        return it->second;
+    {
+        ActionInfo actionInfo = it->second;
+
+        actionInfo.action = action;
+        return actionInfo;
+    }
     else
-        throw std::runtime_error("Action not found in actionMap"); // to verify: do a better throw
+        throw ActionInfoException("Action not found in actionMap");
 }

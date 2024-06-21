@@ -10,10 +10,11 @@
 
 #include "../environement/Environement.hpp"
 #include "../ressources/Ressources.hpp"
-#include "../actions/LastAction.hpp"
+#include "../actions/Actions.hpp"
 
 #include <vector>
 #include <memory>
+#include <map>
 
 enum State
 {
@@ -38,15 +39,17 @@ public:
 
     Environement environment;
     Ressources ressources;
-    LastAction lastAction;
-    std::string lastPattern;
     State state = STANDART;
+    ActionInfo lastAction;
+
+    std::string lastPattern;
 
     unsigned int level = 1;
     unsigned int slot = 0;
     unsigned int widthMap = 42;
     unsigned int heightMap = 42;
 
+    // Metrics
     std::vector<ActionInfo> actionsData;
 };
 

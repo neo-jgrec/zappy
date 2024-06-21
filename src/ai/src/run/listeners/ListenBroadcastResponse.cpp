@@ -21,10 +21,10 @@ void ABotPattern::listenBroadcastResponse(const std::string &response)
     {
         std::string temp = getElementBefore(response, ':');
         _allyMessage._content = getElementAfter(temp, ',');
-        direction = getElementBefore(temp, ',');
-        direction = getElementAfter(direction, ' ');
+        _direction = getElementBefore(temp, ',');
+        _direction = getElementAfter(_direction, ' ');
         _allyMessage.vigenereDecrypt();
         printKeyValueColored("Message", _allyMessage._content);
-        printKeyValueColored("Direction", direction);
+        printKeyValueColored("Direction", _direction);
     }
 }

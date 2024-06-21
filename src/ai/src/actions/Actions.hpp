@@ -11,7 +11,7 @@
 #include <iostream>
 #include <map>
 
-enum actions
+enum Action
 {
     DEFAULT,
     FORWARD,
@@ -28,24 +28,37 @@ enum actions
     INCANTATION,
 };
 
+class ActionInfoException : public std::exception
+{
+
+public:
+    ActionInfoException(const std::string &msg) : _msg(msg) {}
+    const char *what() const noexcept override { return _msg.c_str(); }
+
+private:
+    std::string _msg;
+};
+
 class ActionInfo
 {
 public:
-    ActionInfo(const std::string &name, int value);
+    ActionInfo(const std::string &name, unsigned int timeUnitCost);
     ~ActionInfo();
 
+    Action action = DEFAULT;
     std::string getName() const;
-    int getValue() const;
+    unsigned int getTimeUnitCost() const;
+
     std::string parameter;
     unsigned int count = 0;
 
 private:
-    std::string name;
-    int value;
+    std::string _name;
+    unsigned int _timeUnitCost;
 };
 
-extern std::map<actions, ActionInfo> actionMap;
+extern std::map<Action, ActionInfo> actionMap;
 
-ActionInfo getActionInfo(actions action);
+ActionInfo getActionInfo(Action action);
 
 #endif // ACTIONS_HPP_

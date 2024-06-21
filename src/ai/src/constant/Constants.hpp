@@ -11,7 +11,6 @@
 #include <array>
 #include <unordered_map>
 #include <vector>
-#include "../hash/Pairhash.hpp"
 
 const std::array<std::array<unsigned int, 6>, 9> levelRequirements = {{
     {0, 0, 0, 0, 0, 0}, // Level 0

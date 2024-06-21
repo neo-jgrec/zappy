@@ -35,7 +35,7 @@ void ABotPattern::joinGroup()
     std::cout << _allyMessage._content << std::endl;
     std::string level = getElementAfter(_allyMessage._content, '_');
     std::cout << level << std::endl;
-    if (direction == "0")
+    if (_direction == "0")
     {
         _message._content = "group_joined";
         _message.vigenereEncrypt();
@@ -63,7 +63,7 @@ void ABotPattern::joinGroup()
         {"4", {"Left", [&]()
                { doAction(LEFT, ""); }}}};
 
-    auto it = directionActions.find(direction);
+    auto it = directionActions.find(_direction);
     if (it != directionActions.end())
     {
         const auto &action = it->second;
