@@ -17,8 +17,13 @@ void SimpleBot::updateStrategy()
 {
     std::cout << "updateStrategy" << std::endl;
     int searchFood = 0;
-    const unsigned int limitFood = 10;
+    const unsigned int limitFood = 20;
 
+    if (_state.ressources.food < limitFood)
+        searchFood = 10;
+    std::cout << " limitFood = " << limitFood << std::endl;
+    std::cout << "food = " << _state.ressources.food << std::endl;
+    std::cout << "searchFood = " << searchFood << std::endl;
     if (searchFood > 0) // TODO: We can train an ia for this.
     {
         survive();
@@ -55,7 +60,4 @@ void SimpleBot::updateStrategy()
         group();
         _state.pattern = "group";
     }
-
-    if (_state.ressources.food < limitFood)
-        searchFood = 10;
 }
