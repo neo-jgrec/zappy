@@ -27,9 +27,10 @@ void ABotPattern::run(const std::string &response)
     printKeyValueColored("🤖👂 Bot listens: ", responseCopy);
     if (isServerResponse(responseCopy))
     {
+        listen(responseCopy);
         _canAct = true;
     }
-    listen(responseCopy);
+    listenBroadcast(responseCopy);
     if (_canAct)
     {
         act();
@@ -78,6 +79,10 @@ void ABotPattern::listen(const std::string &response)
         listenIncantationResponse(response);
     else if (_state.lastAction.action == CONNECT_NBR)
         listenConnectNbrResponse(response);
+}
+
+void ABotPattern::listenBroadcast(const std::string &response)
+{
     if (response.find("message") != std::string::npos)
     {
         listenBroadcastResponse(response);

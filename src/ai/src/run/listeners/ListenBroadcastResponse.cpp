@@ -7,30 +7,38 @@
 
 #include "../../bots/ABot.hpp"
 
-void ABot::listenGroup(const std::string &response)
+void ABot::listenGroup(const std::string &message)
 {
-    try
+    if (_state.state != SHOULD_GROUP)
     {
-        if (!response.empty())
+        try
         {
-            std::string lastChar(1, response.back());
-            int askLevel = std::stoi(lastChar);
-            std::cout << "response = " << response << std::endl;
-
-            if (_state.level == askLevel)
+            if (!message.empty())
             {
-                _state.state = SHOULD_GROUP;
+                std::string lastChar(1, message.back());
+                unsigned int askLevel = std::stoi(lastChar);
+
+                if (_state.level + 1 == askLevel)
+                {
+                    _state.state = SHOULD_GROUP;
+                }
             }
         }
+        catch (std::invalid_argument &e)
+        {
+            PRINT_ERROR(e.what());
+        }
+        catch (std::out_of_range &e)
+        {
+            PRINT_ERROR(e.what());
+        }
     }
-    catch (std::invalid_argument &e)
-    {
-        PRINT_ERROR(e.what());
-    }
-    catch (std::out_of_range &e)
-    {
-        PRINT_ERROR(e.what());
-    }
+}
+
+void ABot::listenGroupJoined(const std::string &message)
+{
+    std::cout << "GROUP JOIN" << std::endl;
+    exit(0);
 }
 
 void ABot::listenBroadcastResponse(const std::string &response)
@@ -53,8 +61,13 @@ void ABot::listenBroadcastResponse(const std::string &response)
         printKeyValueColored("Message", _allyMessage.content);
         printKeyValueColored("Direction", _direction);
     }
+    // Listeners Broadcast
     if (_allyMessage.content.find("group") != std::string::npos)
     {
-        listenGroup(response);
+        listenGroup(_allyMessage.content);
+    }
+    else if (_allyMessage.content.find("group_joined") != std::string::npos)
+    {
+        listenGroupJoined(_allyMessage.content);
     }
 }

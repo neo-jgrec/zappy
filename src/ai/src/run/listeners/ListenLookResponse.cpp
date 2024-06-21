@@ -64,17 +64,17 @@ void ABot::listenLookResponse(const std::string &response)
         }
     }
     // debug
-    // for (auto &tile : _state.environment.tiles)
-    // {
-    //     printColor("Tile: x:" + std::to_string(tile.x) + " y: " + std::to_string(tile.y) + " distance: " + std::to_string(tile.distance) + "\n", BRIGHT_BLUE);
-    //     std::cout << "Ressources: " << std::endl;
-    //     std::cout << "food: " << tile.ressources.food << std::endl;
-    //     std::cout << "linemate: " << tile.ressources.linemate << std::endl;
-    //     std::cout << "deraumere: " << tile.ressources.deraumere << std::endl;
-    //     std::cout << "sibur: " << tile.ressources.sibur << std::endl;
-    //     std::cout << "mendiane: " << tile.ressources.mendiane << std::endl;
-    //     std::cout << "phiras: " << tile.ressources.phiras << std::endl;
-    //     std::cout << "thystame: " << tile.ressources.thystame << std::endl;
-    //     std::cout << "player: " << tile.ressources.player << std::endl;
-    // }
+    for (auto &tile : _state.environment.tiles)
+    {
+        printColor("Tile: x:" + std::to_string(tile.x) + " y: " + std::to_string(tile.y) + " distance: " + std::to_string(tile.distance) + "\n", BRIGHT_BLUE);
+        std::cout << "Ressources: " << std::endl;
+        std::cout << "food: " << tile.ressources.food << std::endl;
+        std::cout << "linemate: " << tile.ressources.linemate << std::endl;
+        std::cout << "deraumere: " << tile.ressources.deraumere << std::endl;
+        std::cout << "sibur: " << tile.ressources.sibur << std::endl;
+        std::cout << "mendiane: " << tile.ressources.mendiane << std::endl;
+        std::cout << "phiras: " << tile.ressources.phiras << std::endl;
+        std::cout << "thystame: " << tile.ressources.thystame << std::endl;
+        std::cout << "player: " << tile.ressources.player << std::endl;
+    }
 }

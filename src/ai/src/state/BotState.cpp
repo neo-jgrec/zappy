@@ -16,6 +16,7 @@ std::map<State, std::string> stateMap = {
     {STANDARD, "STANDARD"},
     {INVOCATING, "INVOCATING"},
     {FORKED, "FORKED"},
+    {SHOULD_GROUP, "SHOULD_GROUP"},
 };
 
 BotState::BotState() : lastAction("", 0)

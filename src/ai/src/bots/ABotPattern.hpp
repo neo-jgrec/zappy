@@ -30,6 +30,7 @@ protected:
 
     // Interract with server
     virtual void listen(const std::string &response);
+    virtual void listenBroadcast(const std::string &response);
 
     // Act
     void act();

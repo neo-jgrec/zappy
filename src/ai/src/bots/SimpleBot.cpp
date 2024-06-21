@@ -15,6 +15,7 @@ void SimpleBot::initChild()
 // TODO: do bloc for lvl 1 and 2, etc...
 void SimpleBot::updateStrategy()
 {
+    std::cout << "updateStrategy" << std::endl;
     if (_state.ressources.food < 5)
         survive();
     else if (_state.state == SHOULD_GROUP)
