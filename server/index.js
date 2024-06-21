@@ -25,7 +25,12 @@ const connectToTcpServer = () => {
 
     tcpClient.on('data', (data) => {
         tcpData += data.toString();
-        sendToWebSocketClients(data.toString());
+        let messages = data.toString().split('\n');
+        messages.forEach((message) => {
+            if (message) {
+                sendToWebSocketClients(message);
+            }
+        });
     });
 
     tcpClient.on('close', () => {
