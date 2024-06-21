@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2024
-** zappy/ai
+** zappy/ai/client
 ** File description:
 ** Client.cpp
 */
@@ -10,6 +10,7 @@
 Client::Client(const std::string &host, const std::string &teamName, int port, bool arg)
     : _host(host), _teamName(teamName), _port(port)
 {
+    // TODO: remove it
     _arg = arg;
     if (_arg)
         printf("Arg is true\n");
@@ -25,7 +26,7 @@ Client::~Client()
 
 void Client::run()
 {
-    std::cout << "Run client\n\n";
+    printColor("Run client\n", BRIGHT_BLUE);
 
     authenticate();
     loop();
@@ -41,6 +42,7 @@ void Client::setupConnection()
     }
 
     struct sockaddr_in serv_addr;
+
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(_port);
     if (inet_pton(AF_INET, _host.c_str(), &serv_addr.sin_addr) <= 0)
@@ -48,63 +50,56 @@ void Client::setupConnection()
         perror("Invalid address or address not supported");
         exit(EXIT_FAILURE);
     }
-
     if (connect(_sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
         perror("Connection failed");
         exit(EXIT_FAILURE);
     }
     else
-    {
-        std::cout << "Connected to server: " << _host << ":" << _port << " on team: " << _teamName << "\n";
-        std::string buffer;
-    }
+        printColor("🚀 Connected to server: " + _host + ":" + std::to_string(_port) + " on team: " + _teamName + "\n", BRIGHT_BLUE);
 }
 
 void Client::authenticate()
 {
     std::string buffer;
-    // to pass the first message welcome
-    recvMessage(buffer);
     Message _message;
     unsigned int timeToGetIdentity = 0;
+    std::string askForIdentity = "";
 
-    _message.format("I'm_searching_my_identity_🤔");
-    std::string askForIdentity = "Broadcast " + _message._content;
+    // To pass the first message WELCOME
+    recvMessage(buffer);
+
+    // Ask two time for identity
+    _message.format("I'm_searching_my_identity");
+    askForIdentity = "Broadcast " + _message._content;
     sendMessage(_teamName);
     sendMessage(askForIdentity);
     sendMessage(askForIdentity);
     _message._content = "";
 
-    while (timeToGetIdentity < 3)
+    auto condition = [&]()
+    { return timeToGetIdentity < 3; };
+
+    auto action = [&]()
     {
-        FD_ZERO(&_readfds);
-        FD_SET(_sockfd, &_readfds);
-        _tv.tv_sec = 0;
-        _tv.tv_usec = 10000;
+        std::string response;
+        recvMessage(response);
 
-        int activity = select(_sockfd + 1, &_readfds, NULL, NULL, &_tv);
-
-        if (activity > 0 && FD_ISSET(_sockfd, &_readfds))
+        if (response.find("message") != std::string::npos)
         {
-            std::string response;
-            recvMessage(response);
-
-            if (response.find("message") != std::string::npos)
-            {
-                _message._content = response;
-                _message.vigenereDecrypt();
-                break;
-            }
-            timeToGetIdentity++;
-            messageToReadBeforeStart--;
+            _message._content = response;
+            _message.vigenereDecrypt();
+            return;
         }
-    }
+        timeToGetIdentity++;
+        _messageToReadBeforeStart--;
+    };
+    interactWithServer(condition, action);
     try
     {
         initBot(_message._content);
     }
-    catch (const std::exception &e)
+    catch (const ClientException &e)
     {
         PRINT_ERROR(e.what());
         close(_sockfd);
@@ -117,7 +112,6 @@ void Client::initBot(const std::string identityMessage)
     unsigned int id = 0;
     unsigned int currentMessageId = 0;
 
-    std::cout << "identityMessage: " << identityMessage << std::endl;
     if (!identityMessage.empty())
     {
         std::string job = "";
@@ -155,7 +149,7 @@ void Client::initBot(const std::string identityMessage)
     }
     else
     {
-        throw std::runtime_error("Bot is null");
+        throw ClientException("Bot is null");
     }
 }
 
@@ -169,38 +163,26 @@ void Client::sendMessage(const std::string &message)
 void Client::loop()
 {
     // clear messsages of servers before start
-    std::cout << "messageToReadBeforeStart: " << messageToReadBeforeStart << std::endl;
-    while (messageToReadBeforeStart > 0)
+    auto condition = [&]()
+    { return _messageToReadBeforeStart > 0; };
+    auto action = [&]()
     {
-        FD_ZERO(&_readfds);
-        FD_SET(_sockfd, &_readfds);
-        _tv.tv_sec = 0;
-        _tv.tv_usec = 10000;
-        int activity = select(_sockfd + 1, &_readfds, NULL, NULL, &_tv);
+        std::string response;
+        recvMessage(response);
+        _messageToReadBeforeStart--;
+    };
+    interactWithServer(condition, action);
 
-        if (activity > 0 && FD_ISSET(_sockfd, &_readfds))
-        {
-            std::string response;
-            recvMessage(response);
-            messageToReadBeforeStart--;
-        }
-    }
     _bot->run("start");
-    while (true)
+    auto conditionStart = [&]()
+    { return true; };
+    auto actionStart = [&]()
     {
-        FD_ZERO(&_readfds);
-        FD_SET(_sockfd, &_readfds);
-        _tv.tv_sec = 0;
-        _tv.tv_usec = 10000;
-        int activity = select(_sockfd + 1, &_readfds, NULL, NULL, &_tv);
-
-        if (activity > 0 && FD_ISSET(_sockfd, &_readfds))
-        {
-            std::string response;
-            recvMessage(response);
-            _bot->run(response);
-        }
-    }
+        std::string response;
+        recvMessage(response);
+        _bot->run(response);
+    };
+    interactWithServer(conditionStart, actionStart);
 }
 
 void Client::recvMessage(std::string &buffer)
@@ -209,4 +191,20 @@ void Client::recvMessage(std::string &buffer)
     int valread = read(_sockfd, recvBuffer, 1024);
 
     buffer = std::string(recvBuffer, valread);
+}
+
+template <typename ConditionFunc, typename ActionFunc>
+void Client::interactWithServer(ConditionFunc condition, ActionFunc action)
+{
+    while (condition())
+    {
+        FD_ZERO(&_readfds);
+        FD_SET(_sockfd, &_readfds);
+        _tv.tv_sec = 0;
+        _tv.tv_usec = 10000;
+        int activity = select(_sockfd + 1, &_readfds, NULL, NULL, &_tv);
+
+        if (activity > 0 && FD_ISSET(_sockfd, &_readfds))
+            action();
+    }
 }

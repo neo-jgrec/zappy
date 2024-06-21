@@ -9,7 +9,6 @@
 #include "client/Client.hpp"
 #include "utils/Initializer.hpp"
 
-// TODO: make a parser with flags
 int main(int ac, char **av)
 {
 

@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2024
-** zappy/ai
+** zappy/ai/client
 ** File description:
 ** Client.hpp
 */
@@ -28,6 +28,18 @@ public:
     ~Client();
 
     void run();
+    template <typename ConditionFunc, typename ActionFunc>
+    void interactWithServer(ConditionFunc condition, ActionFunc action);
+
+    class ClientException : public std::exception
+    {
+    public:
+        ClientException(const std::string &message) : _message(message) {}
+        const char *what() const noexcept { return _message.c_str(); }
+
+    private:
+        std::string _message;
+    };
 
 private:
     std::string _host;
@@ -37,21 +49,30 @@ private:
     fd_set _readfds;
     struct timeval _tv;
     std::unique_ptr<IBot> _bot;
-    bool _arg;
+    bool _arg; // TODO: remove it
 
     // Map Data
     unsigned int _slot = 0;
     unsigned int _width = 42;
     unsigned int _height = 42;
 
-    int messageToReadBeforeStart = 3;
+    int _messageToReadBeforeStart = 3;
 
+    // Initialisation
     void setupConnection();
-    void authenticate();
+
+    // Logic
     void loop();
+
+    // Message
     void recvMessage(std::string &buffer);
     void sendMessage(const std::string &message);
+
+    // Bot
     void initBot(const std::string identityMessage);
+    void authenticate();
+
+    // Listen
     void listenFirstResponse(const std::string &response);
 };
 
