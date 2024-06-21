@@ -16,8 +16,8 @@ void plv(client_t *client, server_t *server)
         return;
     }
     TAILQ_FOREACH(player, &server->clients, entries) {
-        if (player->client->fd == atoi(client->commands[1])) {
-            dprintf(client->fd, "plv %d %zu\n", player->client->fd,
+        if (player->client->id == atoi(client->commands[1])) {
+            dprintf(client->fd, "plv %d %zu\n", player->client->id,
                 player->client->level);
             return;
         }

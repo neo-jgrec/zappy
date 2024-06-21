@@ -46,6 +46,7 @@ typedef struct tclient_s {
 typedef struct client_s {
     char uuid[37];
     int fd;
+    int id;
     char **commands;
     char message[BUFFER_SIZE];
     signed char x;

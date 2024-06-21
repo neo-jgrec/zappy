@@ -25,7 +25,7 @@ static bool handle_client_death(
         dprintf(client->fd, "dead\n");
         close(client->fd);
         FD_CLR(client->fd, &s->current_sockets);
-        message_to_graphicals(s, "pdi %d\n", client->fd);
+        message_to_graphicals(s, "pdi %d\n", client->id);
         remove_client_by_fd(&s->clients, client->fd);
         return true;
     }

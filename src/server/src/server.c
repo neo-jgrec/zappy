@@ -56,11 +56,13 @@ static void print_egg_graphic(client_t *client, server_t *server)
 {
     unsigned char cmd_idx = 0;
 
+    if (client->is_incanting == true)
+        return;
     if (client->tclient[cmd_idx].available_request)
         dprintf(client->fd, "%s", client->tclient[cmd_idx].payload);
     if (client->tclient[cmd_idx].command == FORK)
         message_to_graphicals(server, "enw %d %s %d %d\n", client->egg_id,
-            client->uuid, client->x, client->y);
+            client->id, client->x, client->y);
     for (unsigned char idx = 0; idx < NB_REQUESTS_HANDLEABLE; idx++) {
         if (idx + 1 < NB_REQUESTS_HANDLEABLE)
             client->tclient[idx] = client->tclient[idx + 1];

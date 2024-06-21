@@ -21,7 +21,7 @@ void fork_z(client_t *c, server_t *server)
         return;
     TAILQ_INSERT_TAIL(&team->eggs, new_egg, entries);
     if (c->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == false) {
-        message_to_graphicals(server, "pfk %d\n", c->fd);
+        message_to_graphicals(server, "pfk %d\n", c->id);
         handle_response(&c->payload, "ok\n");
     } else
         handle_response(&c->payload, "ko\n");
