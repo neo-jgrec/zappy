@@ -70,7 +70,6 @@ protected:
 
     // Game
     unsigned int _iteration = 0;
-    int _timeUnit = 10;
 
     // Messages
     Message _message;
@@ -103,6 +102,9 @@ protected:
     void listenIncantationResponse(const std::string &response);
     void listenIncantationReturnResponse(const std::string &response);
     void listenConnectNbrResponse(const std::string &response);
+
+    // Listeners Broadcast
+    void listenGroup(const std::string &response);
 
     // Metrics
     void saveMetrics(ActionInfo actionInfo);

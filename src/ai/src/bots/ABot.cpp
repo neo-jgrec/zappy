@@ -25,6 +25,8 @@ void ABot::sendMessage(const std::string &message)
 
 void ABot::doAction(Action action, const std::string &parameter)
 {
+    static int timeUnit = 126;
+
     try
     {
         ActionInfo actionInfo = getActionInfo(action);
@@ -37,12 +39,13 @@ void ABot::doAction(Action action, const std::string &parameter)
 
         _state.lastAction.action = action;
         _state.lastAction.parameter = parameter;
-        _timeUnit -= actionInfo.getTimeUnitCost();
-        if (_timeUnit % 126 == 0 && _state.ressources.food > 0)
+        timeUnit -= actionInfo.getTimeUnitCost();
+
+        if (timeUnit < 126 && _state.ressources.food > 0)
         {
             _state.ressources.food -= 1;
+            timeUnit += 126;
         }
-
         saveMetrics(actionInfo);
     }
     catch (const ActionInfoException &e)

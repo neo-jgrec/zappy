@@ -17,6 +17,8 @@ void SimpleBot::updateStrategy()
 {
     if (_state.ressources.food < 5)
         survive();
+    else if (_state.state == SHOULD_GROUP)
+        joinGroup();
     else if (_state.level == 1 && _state.ressources.linemate != 1)
         searchAndTakeRessource("linemate");
     else if (_state.ressources.linemate == 1 && _state.level == 1)

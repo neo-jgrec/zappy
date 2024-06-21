@@ -21,6 +21,7 @@ enum State
     STANDARD,
     INVOCATING,
     FORKED,
+    SHOULD_GROUP,
 };
 
 enum Job

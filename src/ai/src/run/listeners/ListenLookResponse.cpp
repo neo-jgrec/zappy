@@ -56,7 +56,6 @@ void ABot::listenLookResponse(const std::string &response)
         nbTile++;
         if (nbTile == limit)
         {
-            printColor("go to +x\n", BRIGHT_BLUE);
             y++;
             center += addCenter;
             addCenter += 2;
