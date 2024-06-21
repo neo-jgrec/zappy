@@ -21,25 +21,28 @@ void ABotPattern::init(int sockfd, const std::string &teamName, bool arg, const 
 
 void ABotPattern::run(const std::string &response)
 {
+    std::string responseServer = "";
+    std::string responseBroadcast = "no message";
+
     // Mean server crashed
     if (response.empty())
         exit(0);
-    std::string responseCopy = cleanCarriageReturn(response);
-
+    // separe servers and broadcast
+    separateServerBroadcast(response, responseServer, responseBroadcast);
     _message.content = "";
-    printKeyValueColored("🤖👂 Bot listens: ", responseCopy);
-    if (isServerResponse(responseCopy))
+    printKeyValueColored("🤖👂 Bot listens: ", "server: " + responseServer + ", message: " + responseBroadcast);
+    if (!responseServer.empty())
     {
-        listen(responseCopy);
+        listen(responseServer);
         _canAct = true;
     }
-    listenBroadcast(responseCopy);
+    listenBroadcast(responseBroadcast);
     if (_canAct)
     {
         act();
         _canAct = false;
     }
-    if (responseCopy.find("dead") != std::string::npos)
+    if (responseServer.find("dead") != std::string::npos)
     {
         debugState();
         exit(0);
@@ -93,20 +96,20 @@ void ABotPattern::listenBroadcast(const std::string &response)
     }
 }
 
-bool ABotPattern::isServerResponse(const std::string &response) const
+void ABotPattern::separateServerBroadcast(const std::string &response, std::string &responseServer, std::string &responseBroadcast)
 {
-    return response.find("message") == std::string::npos;
-    // TODO: if message concat with server response do that:
-    //  std::vector<std::string> responses = {"ok", "ko", "dead", "[", "]", "Elevation underway", "Current level:"};
-
-    // for (const auto &res : responses)
-    // {
-    //     if (response.find(res) != std::string::npos)
-    //         return true;
-    // }
-    // if (std::all_of(response.begin(), response.end(), ::isdigit))
-    //     return true;
-    // return false;
+    size_t messagePos = response.find("message");
+    if (messagePos != std::string::npos)
+    {
+        responseServer = response.substr(0, messagePos);
+        responseBroadcast = response.substr(messagePos);
+    }
+    else
+    {
+        responseServer = response;
+    }
+    responseServer = cleanCarriageReturn(responseServer);
+    responseBroadcast = cleanCarriageReturn(responseBroadcast);
 }
 
 // TODO: metrics, save proportions of state in the game, add state: searching, moving, etc...

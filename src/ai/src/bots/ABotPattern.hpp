@@ -53,10 +53,11 @@ protected:
     void forkBot(unsigned int idBot);
     void incantationLvl1();
 
+    // Utils
+    void separateServerBroadcast(const std::string &response, std::string &responseServer, std::string &responseBroadcast);
+
 private:
     std::string saveActionsFile = "./src/ai/dataSaved/actions";
     bool _canAct = false;
-
-    bool isServerResponse(const std::string &response) const;
 };
 #endif // ABotPattern_HPP_
