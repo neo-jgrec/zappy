@@ -2,10 +2,10 @@
 sidebar_position: 2
 ---
 
-Before anything let's define what a command is :\
-A command is composed of a keyword followed by it's argument\
+Before anything let's define what a command is.\
+A command is composed of a keyword followed by it's argument,
 for example: *smg 1 "message from the server"*\
-here **smg** is the keyword of the function, **1** is the first argument and **"message from the server"** is the second argument.
+Here **smg** is the keyword of the function, **1** is the first argument and **"message from the server"** is the second argument.
 
 To add a new command to the gui you will need two main things.
 
@@ -45,11 +45,11 @@ The way this structure works is the following :
 
 ### Error handling
 
-The first thing you want to look at here is the **checkType** function, its first and last argument **tokens** and **__func__** nevers changes. the second argument is what you want to modify it correspond to the number of arguments that your funtion takes along with all their types.
+The first thing you want to look at here is the **checkType** function, its first and last arguments **tokens** and **__func__** never changes. The second argument is what you want to modify it correspond to the number of arguments that your funtion takes along with all their types.
 
-you have two types at your disposition INT and STRING if you wish to use something else it would require futher modification of the Parser.
+You have two types at your disposition INT and STRING if you wish to use something else it would require futher modification of the Parser.
 
-here is two example to see how it works :
+Here is two example to see how it works :
 
 1. function with 3 args of the same type (INT)\
 ```cpp
@@ -63,10 +63,10 @@ checkType(tokens, std::vector<Type>({Parser::Type::INT, Parser::Type::STRING}), 
 
 ### Function implementation
 
-next is the lambda part of the function.\
+Next is the lambda part of the function.\
 This is where you will implement your function,
 during your implementation you will surely need to get the arguments of your function at some point,
-here is the sintax to use :
+here is the syntax to use :
 
 1. for an int\
 `int arg = std::get<int>(tokens.at(n));`
@@ -74,17 +74,17 @@ here is the sintax to use :
 2. for a string\
 `std::string arg = std::get<std::string>(tokens.at(n));`
 
-with n being the index of the argument begining at 1 because 0 is the keyword to call the function.
+With n being the index of the argument begining at 1 because 0 is the keyword to call the function.
 
-if you want to send a message to the server you can use the sendToServer member function of the server parametter.
+If you want to send a message to the server you can use the sendToServer member function of the server parametter.
 
-all modification to the gameData parametter must be done through a member function of the Data class.
+All modification to the gameData parametter must be done through a member function of the Data class.
 
 
 ### good pratices
 Lastly you want to look at the parametters you haven't used to mark them as unused and delete them from the array of parametters of the lambda function.
 
-for example if you didn't send a message to the server in your function :
+For example if you do not want to send a message to the server in your function you should do this:
 ```cpp
 void Parser::functionName (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_unused]]ServerConnect &server) {
     checkType(tokens, std::vector<Type>(2, Parser::Type::INT), __func__);
@@ -95,7 +95,7 @@ void Parser::functionName (const std::vector<TokenType>& tokens, Data& gameData,
 };
 ```
 
-**[[maybe_unused]]** is added before **ServerConnect &server** in the function definition and **server** is removed from the array of params of the *lambda* definition.
+**[[maybe_unused]]** is added before **ServerConnect &server** in the function definition, and **server** is removed from the array of params of the *lambda* definition.
 
 Now you should be all set to test your new function.
 
