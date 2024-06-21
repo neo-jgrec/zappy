@@ -2,7 +2,6 @@
   "name": "server",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,9 +10,11 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@fastify/cors": "^9.0.1",
     "dotenv": "^16.4.5",
     "fastify": "^4.28.0",
     "net": "^1.0.2",
+    "socket.io": "^4.7.5",
     "ws": "^8.17.1"
   },
   "devDependencies": {

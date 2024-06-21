@@ -1,46 +1,34 @@
-import Fastify from 'fastify';
-import { createServer } from 'http';
-import { WebSocketServer } from 'ws';
-import net from 'net';
-import dotenv from 'dotenv';
+const Fastify = require('fastify');
+const cors = require('@fastify/cors');
+const net = require('net');
+const dotenv = require('dotenv');
+const { Server } = require("socket.io");
 
 dotenv.config();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8888;
 const tcpPort = process.env.TCP_PORT || 4000;
 const tcpHost = process.env.TCP_HOST || 'localhost';
 
-const fastify = Fastify({
-  logger: true
-});
+const fastify = Fastify({ logger: true });
 
-const server = createServer(fastify.server);
-
-const wss = new WebSocketServer({ server });
+fastify.register(cors, { origin: '*' });
 
 let tcpClient = null;
+let tcpData = '';
 
 const connectToTcpServer = () => {
     tcpClient = new net.Socket();
 
     tcpClient.connect(tcpPort, tcpHost, () => {
-        console.log(`Connected to TCP server at ${tcpHost}:${tcpPort}`);
         tcpClient.write('GRAPHIC\n');
     });
 
     tcpClient.on('data', (data) => {
-        console.log(`Received data from TCP server: ${data}`);
-        if (wss.clients.size > 0) {
-            wss.clients.forEach((client) => {
-                if (client.readyState === WebSocketServer.OPEN) {
-                    client.send(data);
-                }
-            });
-        }
-        console.log('Data sent to WS clients');
+        tcpData += data.toString();
+        sendToWebSocketClients(data.toString());
     });
 
     tcpClient.on('close', () => {
-        console.log('Connection to TCP server closed. Reconnecting...');
         setTimeout(connectToTcpServer, 1000);
     });
 
@@ -49,26 +37,48 @@ const connectToTcpServer = () => {
     });
 };
 
-connectToTcpServer();
+const sendToWebSocketClients = (data) => {
+    if (io) {
+        io.emit('message', data);
+    }
+};
 
-wss.on('connection', (ws) => {
-    console.log('Client connected');
+const io = new Server(fastify.server, {
+    cors: {
+        origin: true,
+        methods: ["GET", "POST"],
+        credentials: true
+    }
+});
 
-    ws.on('message', (message) => {
-        console.log(`Received message from WS client: ${message}`);
+io.on('connection', (socket) => {
+    socket.emit('message', tcpData);
+
+    socket.on('message', (msg) => {
+        console.log(`Received message from WebSocket client: ${msg}`);
         if (tcpClient && tcpClient.writable) {
-            tcpClient.write(message);
+            if (!msg.endsWith('\n'))
+              msg += '\n';
+            tcpClient.write(msg);
+        } else {
+            console.error('TCP client is not connected');
         }
     });
 
-    ws.on('close', () => {
-        console.log('Client disconnected');
+    socket.on('disconnect', () => {
+        console.log('Socket.io connection closed');
+    });
+
+    socket.on('error', (err) => {
+        console.error(`Socket.io error: ${err}`);
     });
 });
 
 const start = async () => {
     try {
         await fastify.listen({ port: port });
+        console.log(`HTTP server and WebSocket server listening on ${port}`);
+        connectToTcpServer();
     } catch (err) {
         fastify.log.error(err);
         process.exit(1);
