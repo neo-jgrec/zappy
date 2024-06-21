@@ -1,3 +1,7 @@
+---
+sidebar_position: 2
+---
+
 Before anything let's define what a command is :\
 A command is composed of a keyword followed by it's argument\
 for example: *smg 1 "message from the server"*\
