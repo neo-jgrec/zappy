@@ -43,9 +43,12 @@ World::World(Core *core)
     _sprites["tree4"] = std::make_shared<Sprite>("./assets/trees/tree(4).png");
     _sprites["stone1"] = std::make_shared<Sprite>("./assets/stone(1).png");
     _sprites["lvlbanner"] = std::make_shared<Sprite>("./assets/lvlBanner.png", 8, 0.1f);
+    _sprites["bubble"] = std::make_shared<Sprite>("./assets/bubble.png");
     _view.setSize(sf::Vector2f(1920 , 1080));
     _chat = std::make_shared<Chat>(_core->getFont(), 7);
     _chat->setPosition(sf::Vector2f(50, 720 - 50));
+    _bubbleText = sf::Text("", _core->getFont(), 15);
+    _bubbleText.setFillColor(sf::Color::Black);
 }
 
 void World::init()
@@ -111,6 +114,7 @@ void World::getServerInit()
         _teams.push_back(team);
         _chat->addMessage(" - " + team);
     }
+
     Ranking::getRanking(_rankings, _core->_data);
 }
 
@@ -149,8 +153,15 @@ bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
     return true;
 }
 
-void World::update(float /*fElapsedTime*/)
+void World::update(float fElapsedTime)
 {
+    int i = 0;
+    for (auto &bubble : _bubbles) {
+        bubble.update(fElapsedTime);
+        if (bubble.isFinished())
+            _bubbles.erase(_bubbles.begin() + i);
+        i++;
+    }
     if (_core->_server.connectionState == ServerConnect::ConnectionState::SERVERDOWN
         || _core->_server.connectionState == ServerConnect::ConnectionState::NOTCONNECTED) {
         _core->backToHome();
@@ -206,10 +217,6 @@ void World::layer1(int i, int j)
                 _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset
             );
             _sprites["hoverEgg"]->setColor(sf::Color(98, 151, 50));
-            // if (_worldUi.getPanelState() == WorldUi::panelState::FLAG) {
-            //     if (egg.second.getTeam() == _teams[_worldUi._idTeam]) {
-            //         _sprites["hoverEgg"]->setColor(_teamsColor[_worldUi._idTeam]);
-            // }
             window.draw(_sprites["hoverEgg"]->_sprite);
         }
     }
@@ -230,8 +237,9 @@ void World::layer2(int i, int j)
                 if (_worldUi.getPanelState() == WorldUi::panelState::FLAG) {
                     _sprites["aura"]->_sprite.setPosition(trantorian.getPos());
                     _sprites["aura"]->setColor(_teamsColor[_worldUi._idTeam]);
-                    if (trantorian._team == _teams[_worldUi._idTeam])
+                    if (trantorian._team == _teams[_worldUi._idTeam]) {
                         window.draw(_sprites["aura"]->_sprite);
+                    }
                 }
                 if (_worldUi.getPanelState() == WorldUi::panelState::TRANTORIAN) {
                     if (index == _worldUi._idPlayer) {
@@ -258,6 +266,19 @@ void World::layer2(int i, int j)
             _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y / 2
         );
         window.draw(_sprites["halo1"]->_sprite);
+    }
+    for (auto &bubble : _bubbles) {
+        if (i == bubble.getPos().x && j == bubble.getPos().y) {
+            _sprites["bubble"]->_sprite.setPosition(
+                _chuncks[i][j].getMiddle());
+            window.draw(_sprites["bubble"]->_sprite);
+            _bubbleText.setString(bubble.getMessage());
+            _bubbleText.setPosition(
+                _chuncks[i][j].getMiddle().x + 25,
+                _chuncks[i][j].getMiddle().y + -50
+            );
+            window.draw(_bubbleText);
+        }
     }
 }
 
@@ -337,8 +358,11 @@ void World::updateTrantorians()
     for (auto &trantorian : _trantorians)
         trantorian.update(_core->getDeltaTime());
     std::optional<Broadcast> broadcast = _core->_data.getNextBroadcast();
-    if (broadcast.has_value())
+    if (broadcast.has_value()) {
         _chat->addMessage(std::to_string(broadcast.value().getPlayerNb()) + " : " + broadcast.value().getMessage());
+        Bubble bubble = Bubble(broadcast.value().getMessage(), sf::Vector2f(broadcast.value().getPosition()[0], broadcast.value().getPosition()[1]));
+        _bubbles.push_back(bubble);
+    }
 
 }
 

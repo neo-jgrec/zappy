@@ -111,7 +111,14 @@ void WorldUi::drawTeam(sf::RenderWindow &window)
     _sprites["flagPanel"]->draw(window);
     _layer2["prevButton"]->draw(window);
     _layer2["nextButton"]->draw(window);
-    Ranking rank = _world->_rankings[_idTeam];
+
+    Ranking rank;
+    for (auto team: _world->_rankings) {
+        if (team._teamName == _world->_teams[_idTeam]) {
+            rank = team;
+            break;
+        }
+    }
 
     _inventoryText.setPosition(sf::Vector2f(
         _sprites["trophyPanel"]->getPosition().x + 96,
@@ -134,12 +141,6 @@ void WorldUi::drawTeam(sf::RenderWindow &window)
     _inventoryText.setString(std::to_string(rank._nbPlayer) + " trantorians");
     window.draw(_inventoryText);
 
-    _inventoryText.setPosition(sf::Vector2f(
-        _sprites["trophyPanel"]->getPosition().x + 96,
-        _sprites["trophyPanel"]->getPosition().y + 40 + 75
-    ));
-    _inventoryText.setString(std::to_string(rank._nbEgg) + " eggs");
-    window.draw(_inventoryText);
 }
 
 void WorldUi::drawTrantorian(sf::RenderWindow &window)
@@ -195,6 +196,12 @@ void WorldUi::drawTileInventory(sf::RenderWindow &window)
         _sprites["trantorian"]->draw(window);
         drawInventoryTile(6, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._food));
         drawInventoryTile(7, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._nbTrantorians));
+        _inventoryText.setString("Chunck inventory");
+        _inventoryText.setPosition(sf::Vector2f(
+            _sprites["inventory"]->getPosition().x,
+            _sprites["inventory"]->getPosition().y - 64
+        ));
+        window.draw(_inventoryText);
 }
 
 void WorldUi::drawPlayerInventory(sf::RenderWindow &window)
@@ -218,4 +225,10 @@ void WorldUi::drawPlayerInventory(sf::RenderWindow &window)
     ));
     _sprites["food"]->draw(window);
     drawInventoryTile(6, window, std::to_string(_world->getTrantorian(_idPlayer)._inventory[0]));
+    _inventoryText.setString("Trantorian inventory");
+        _inventoryText.setPosition(sf::Vector2f(
+            _sprites["inventory"]->getPosition().x,
+            _sprites["inventory"]->getPosition().y - 64
+        ));
+        window.draw(_inventoryText);
 }

@@ -23,6 +23,7 @@
     #include "../../ui/Chat.hpp"
     #include "ui/WorldUi.hpp"
     #include "ui/Ranking.hpp"
+    #include "ui/Bubble.hpp"
 
 class Core;
 class World : public IScene {
@@ -72,6 +73,8 @@ class World : public IScene {
         sf::Vector2f _pos = sf::Vector2f(0, 0);
         sf::Vector2f _offset;
         sf::Vector2f _tmpOffset = sf::Vector2f(0, 0);
+        sf::Text _bubbleText;
+        std::vector<Bubble> _bubbles;
 
         bool _isDragging = false;
         sf::Vector2f _dragStart = sf::Vector2f(0, 0);
