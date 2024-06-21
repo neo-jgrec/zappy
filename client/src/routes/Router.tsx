@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { PromptServer, NotFound } from "../pages";
+import { PromptServer, NotFound, Game, Gamble } from "../pages";
 import { WebSocketProvider, SnackbarProvider } from "../context";
 import PrivateRoute from "./PrivateRoute";
 
@@ -10,7 +10,8 @@ function Router() {
         <Routes>
           <Route path="/prompt" element={<PromptServer />} />
           <Route path="/" element={<PrivateRoute />}>
-            {/* <Route index element={<Game />} /> */}
+            <Route index element={<Game />} />
+            <Route path="/gamble" element={<Gamble />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

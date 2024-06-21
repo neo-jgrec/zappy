@@ -47,6 +47,9 @@ const Layout = ({ children }: LayoutProps) => {
               <HeaderMenuItem href='/' isActive={window.location.pathname === '/'}>
                 Game
               </HeaderMenuItem>
+              <HeaderMenuItem href='/gamble' isActive={window.location.pathname === '/gamble'}>
+                Gamble
+              </HeaderMenuItem>
               <HeaderMenuItem href='/prompt' isActive={window.location.pathname === '/prompt'}>
                 Change Server
               </HeaderMenuItem>
