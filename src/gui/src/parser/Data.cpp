@@ -1,5 +1,6 @@
 #include "Data.hpp"
 #include "../utils/GuiException.hpp"
+
 #include <memory>
 #include <utility>
 
@@ -29,7 +30,7 @@ std::shared_ptr<Player> Data::getPlayerById(int id)
     return this->players.at(id);
 };
 
-Incantation &Data::getIncantationByPos(std::vector<int> pos)
+std::shared_ptr<Incantation> Data::getIncantationByPos(std::vector<int> pos)
 {
     if (this->incantations.find(pos) == this->incantations.end())
         throw guiException("getIncantationsByPos: Invalid position");
@@ -80,14 +81,15 @@ void Data::addEgg(std::vector<int> pos, int eggId, int playerId, EggStatus state
 
 void Data::addIncantation(std::vector<int> pos, int lvl, std::vector<int> playersId)
 {
+    std::shared_ptr<Incantation> incantation = std::make_shared<Incantation>(
+        pos,
+        lvl,
+        playersId
+    );
     this->incantations.insert(
         std::make_pair(
             pos,
-            Incantation(
-                pos,
-                lvl,
-                playersId
-            )
+            incantation
         )
     );
 };
@@ -124,3 +126,18 @@ bool Data::playerExists(int id)
     return true;
 };
 
+// ------------------------------------------------------------------ //
+// ----------------------------  RESET ------------------------------ //
+// ------------------------------------------------------------------ //
+
+void Data::resetGame()
+{
+    this->eggs.clear();
+    this->players.clear();
+    this->incantations.clear();
+    this->broadcasts.clear();
+    this->winner = std::nullopt;
+    this->teamNames.clear();
+    this->map.resetMap();
+    this->tickRate = 100;
+};

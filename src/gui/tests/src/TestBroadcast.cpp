@@ -13,6 +13,16 @@ Test(Broadcast, constructor)
     cr_assert_eq(message, expectedMessage, "message is %s, expected %s", message.c_str(), expectedMessage.c_str());
 }
 
+Test(Broadcast, constructor2)
+{
+    Broadcast broadcast(-100, "", {});
+
+    std::string message = broadcast.getMessage();
+    std::string expectedMessage = "";
+
+    cr_assert_eq(message, expectedMessage, "message is %s, expected %s", message.c_str(), expectedMessage.c_str());
+}
+
 Test(Broadcast, getPosition)
 {
     Broadcast broadcast(1, "message", {1, 2});

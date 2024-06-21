@@ -47,6 +47,8 @@ class Map
         std::vector<std::vector<Tile>> getMap() { return this->map; };
         Tile getTileAt(int x, int y) { return this->map.at(x).at(y); };
 
+        void resetMap();
+
 };
 
 #endif // MAP_HPP

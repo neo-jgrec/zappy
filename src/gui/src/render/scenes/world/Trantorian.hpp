@@ -16,7 +16,7 @@
 class Trantorian {
     public:
         Trantorian(sf::Vector2f tile, sf::Vector2f targetPos)
-            : _tile(tile), _targetPos(targetPos), _pos(targetPos)
+            : _pos(targetPos), _tile(tile), _targetPos(targetPos)
         {
             _sprites.push_back(std::make_shared<Sprite>("./assets/trantorian_spawn.png", 12, 0.1f));
             _sprites[0]->disableLooping();
@@ -41,13 +41,31 @@ class Trantorian {
             _sprites[_actualSprite]->draw(window);
         }
         void setTile(sf::Vector2f tile, sf::Vector2f targetPos) {
+            if ( tile != _tile) {
+                sf::Vector2f offset = sf::Vector2f(
+                    Random::random(0, 26) - 13,
+                    Random::random(0, 26) - 13
+                );
+                _targetPos = targetPos + offset;
+            }
             _tile = tile;
-            _targetPos = targetPos;
         }
         sf::Vector2f getTile() { return _tile; }
-        void kill() { _dead = true; }
+        void kill() { _dead = 1; }
+        bool isDead() {
+            if (_sprites[_actualSprite]->isFinished() && _actualSprite == 2)
+                return true;
+            return false;
+        }
+
+        sf::Vector2f getPos() { return _pos; }
 
         int _id;
+        std::string _team;
+        int _teamIndex;
+        int _level;
+
+        std::vector<int> _inventory = {0, 0, 0, 0, 0, 0, 0};
     protected:
     private:
         int _actualSprite = 0;

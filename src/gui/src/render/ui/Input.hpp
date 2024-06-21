@@ -31,6 +31,7 @@ class Input {
     protected:
     private:
         bool _isFocused = false;
+        bool _hover = false;
         std::string _input = "";
         std::string _placeHolder = "";
         sf::Text _text;

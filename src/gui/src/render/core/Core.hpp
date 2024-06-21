@@ -44,13 +44,14 @@ class Core {
         sf::Font &getFont() { return _font; };
         sf::Vector2f getMousePos() { return _mousePos; };
         sf::Vector2f getRealMousePos() { return _realMousePos; };
+        sf::RenderWindow &getWindow() { return _window; };
 
         bool connectToServer(int port, std::string ip);
+        void backToHome();
         Data _data;
         Parser _parser;
         ServerConnect _server;
     private:
-
         sf::RenderWindow _window;
         sf::Event _event;
         sf::Clock _clock;

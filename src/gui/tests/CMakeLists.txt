@@ -26,9 +26,14 @@ target_include_directories(gui_unit_tests PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/includes
 )
 
+find_package(SFML REQUIRED COMPONENTS network window graphics system)
+
 target_link_libraries(gui_unit_tests PRIVATE
     criterion
     gcov
+    sfml-graphics
+    sfml-audio
+    sfml-network
 )
 
 target_compile_options(gui_unit_tests PRIVATE

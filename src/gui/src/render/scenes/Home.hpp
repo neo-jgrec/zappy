@@ -22,7 +22,7 @@ class Home : public IScene {
         ~Home() {}
 
         bool update(sf::Event event, sf::RenderWindow &window) override;
-        void update(float fElapsedTime) override {}
+        void update(float /*fElapsedTime*/) override {}
         void draw(sf::RenderWindow &window) override;
         void init() override {}
         bool connectToServer();

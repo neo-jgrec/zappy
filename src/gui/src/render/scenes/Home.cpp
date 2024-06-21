@@ -36,7 +36,14 @@ bool Home::update(sf::Event event, sf::RenderWindow &window) {
     if (_quitButton->update(event, window))
         window.close();
     if (_startButton->update(event, window)) {
-        if (!_core->connectToServer(std::stoi(_portButton->getInput()), _ipButton->getInput())) {
+        int port = 0;
+        try {
+            port = std::stoi(_portButton->getInput());
+        } catch (std::exception &e) {
+            _chat->addMessage("Invalid port", sf::Color::Red);
+            return false;
+        }
+        if (!_core->connectToServer(port, _ipButton->getInput())) {
             _chat->addMessage("Failed to connect to server", sf::Color::Red);
             return false;
         }
