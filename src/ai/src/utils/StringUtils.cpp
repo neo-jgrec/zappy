@@ -7,13 +7,15 @@
 
 #include "StringUtils.hpp"
 
-std::string getElementAfter(const std::string& input, char delimiter)
+std::string getElementAfter(const std::string &input, char delimiter)
 {
     std::istringstream iss(input);
     std::string token;
-    
-    while (std::getline(iss, token, delimiter)) {
-        if (iss >> token) {
+
+    while (std::getline(iss, token, delimiter))
+    {
+        if (iss >> token)
+        {
             return token;
         }
     }
@@ -21,13 +23,15 @@ std::string getElementAfter(const std::string& input, char delimiter)
     return "";
 }
 
-std::string getElementBefore(const std::string& input, char delimiter)
+std::string getElementBefore(const std::string &input, char delimiter)
 {
     std::istringstream iss(input);
     std::string token;
-    
-    while (std::getline(iss, token, delimiter)) {
-        if (iss >> token) {
+
+    while (std::getline(iss, token, delimiter))
+    {
+        if (iss >> token)
+        {
             return input.substr(0, input.find(delimiter));
         }
     }
@@ -51,17 +55,18 @@ std::string replaceNumbersInString(const std::string &input, int offset)
 
     std::vector<std::pair<size_t, std::string>> replacements;
 
-    while (currentMatch != lastMatch) {
+    while (currentMatch != lastMatch)
+    {
         std::smatch match = *currentMatch;
         std::string oldNumber = match.str();
         std::string newNumber = generateNewNumber(oldNumber, offset);
         replacements.push_back(
-            {match.position(), newNumber}
-        );
+            {match.position(), newNumber});
         ++currentMatch;
     }
 
-    for (auto it = replacements.rbegin(); it != replacements.rend(); ++it) {
+    for (auto it = replacements.rbegin(); it != replacements.rend(); ++it)
+    {
         output.replace(it->first, it->second.length(), it->second);
     }
 
