@@ -227,7 +227,8 @@ void Parser::enw (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
         int y = std::get<int>(tokens.at(4));
         debug_print << "enw Eid:" << eggNb << " Pid:" << playerNb << " X:" << x << " Y:" << y << std::endl;
         std::vector<int> pos = std::vector<int>({x, y});
-        gameData.addEgg(pos, eggNb, playerNb, INCUBATING);
+        std::string teamName = gameData.getPlayerById(playerNb).getTeam();
+        gameData.addEgg(pos, eggNb, playerNb, INCUBATING, teamName);
     };
     _queue.push(lambda);
 };

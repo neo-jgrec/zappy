@@ -630,12 +630,15 @@ Test(Parser, eboNormal)
     Data data;
     ServerConnect server;
 
+    std::vector<std::variant<std::string, int>> args0 = { "pnw", 1, 1, 1, 1, 1, "team1" };
+    parser.parse(args0, data, server);
+
     std::vector<std::variant<std::string, int>> args = { "enw", 1, 1, 1, 1 };
     parser.parse(args, data, server);
 
     std::vector<std::variant<std::string, int>> args2 = { "ebo", 1 };
-
     parser.parse(args2, data, server);
+
     parser.execute();
     cr_assert_eq(data.getEggs().at(1).getState(), HATCHED);
 }
@@ -667,6 +670,9 @@ Test(Parser, ediNormal)
     Parser parser;
     Data data;
     ServerConnect server;
+
+    std::vector<std::variant<std::string, int>> args0 = { "pnw", 1, 1, 1, 1, 1, "team1" };
+    parser.parse(args0, data, server);
 
     std::vector<std::variant<std::string, int>> args = { "enw", 1, 1, 1, 1 };
     parser.parse(args, data, server);

@@ -68,12 +68,12 @@ void Data::addPlayer(std::vector<int> values, std::string teamName)
 };
 
 
-void Data::addEgg(std::vector<int> pos, int eggId, int playerId, EggStatus state)
+void Data::addEgg(std::vector<int> pos, int eggId, int playerId, EggStatus state, std::string team)
 {
     this->eggs.insert(
         std::make_pair(
             eggId,
-            Egg(pos, eggId, playerId, state)
+            Egg(pos, eggId, playerId, state, team)
         )
     );
 };

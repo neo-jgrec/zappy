@@ -2,6 +2,7 @@
     #define EGG_HPP
 
     #include <vector>
+    #include <string>
 
     enum EggStatus {
         INCUBATING,
@@ -16,17 +17,19 @@ class Egg
         std::vector<int> pos;
         [[maybe_unused]] int nb;
         [[maybe_unused]] int playerNb;
+        [[maybe_unused]] std::string team;
         EggStatus state;
     public:
-        Egg(std::vector<int> pos, int nb, int playerNb, EggStatus state): pos(pos), nb(nb), playerNb(playerNb), state(state) {};
+        Egg(std::vector<int> pos, int nb, int playerNb, EggStatus state, std::string team);
         ~Egg() {};
 
-        void setState(EggStatus newState) { state = newState; }
+        void setState(EggStatus newState);
 
-        EggStatus getState() { return state; }
-        std::vector<int> getPos() { return pos; }
-        int getId() { return nb; }
-        int getPlayerNb() { return playerNb; }
+        EggStatus getState();
+        std::vector<int> getPos();
+        int getId();
+        int getPlayerNb();
+        std::string getTeam();
 };
 
 

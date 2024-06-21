@@ -1,11 +1,12 @@
 #include <criterion/criterion.h>
+#include <string>
 #include <vector>
 
 #include "../../src/parser/Egg.hpp"
 
 Test(Egg, constructor)
 {
-    Egg egg({1, 2}, 1, 1, INCUBATING);
+    Egg egg({1, 2}, 1, 1, INCUBATING, "test");
 
     int id = egg.getId();
     int expectedId = 1;
@@ -15,7 +16,7 @@ Test(Egg, constructor)
 
 Test(Egg, getState)
 {
-    Egg egg({1, 2}, 1, 1, INCUBATING);
+    Egg egg({1, 2}, 1, 1, INCUBATING, "test");
 
     EggStatus state = egg.getState();
     EggStatus expectedState = INCUBATING;
@@ -25,7 +26,7 @@ Test(Egg, getState)
 
 Test(Egg, setState)
 {
-    Egg egg({1, 2}, 1, 1, INCUBATING);
+    Egg egg({1, 2}, 1, 1, INCUBATING, "test");
 
     egg.setState(READY_TO_HATCH);
 
@@ -35,9 +36,20 @@ Test(Egg, setState)
     cr_assert_eq(state, expectedState, "state is %d, expected %d", state, expectedState);
 }
 
+Test(Egg, getTeam)
+{
+    Egg egg({1, 2}, 1, 1, INCUBATING, "test");
+
+    std::string teamName = egg.getTeam();
+    std::string expectedName = "test";
+
+    cr_assert_eq(teamName, expectedName, "teamName is %s, expected %s", teamName.c_str(), expectedName.c_str());
+}
+
+
 Test(Egg, getPos)
 {
-    Egg egg({1, 2}, 1, 1, INCUBATING);
+    Egg egg({1, 2}, 1, 1, INCUBATING, "test");
 
     std::vector<int> pos = egg.getPos();
     std::vector<int> expectedPos = {1, 2};
@@ -48,7 +60,7 @@ Test(Egg, getPos)
 
 Test(Egg, getPlayerNb)
 {
-    Egg egg({1, 2}, 1, 1, INCUBATING);
+    Egg egg({1, 2}, 1, 1, INCUBATING, "test");
 
     int playerNb = egg.getPlayerNb();
     int expectedPlayerNb = 1;
@@ -71,7 +83,7 @@ Test(Egg, eggStatus)
 
 Test(Egg, destructor)
 {
-    Egg *egg = new Egg({1, 2}, 1, 1, INCUBATING);
+    Egg *egg = new Egg({1, 2}, 1, 1, INCUBATING, "test");
 
     delete egg;
     cr_assert(1, "Destructor called");
