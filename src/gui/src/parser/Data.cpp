@@ -1,10 +1,8 @@
 #include "Data.hpp"
 #include "../utils/GuiException.hpp"
-#include "src/utils/Debug.hpp"
 
 #include <memory>
 #include <utility>
-#include <iostream>
 
 // ------------------------------------------------------------------ //
 // ---------------------------- GETTERS ----------------------------- //

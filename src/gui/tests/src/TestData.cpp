@@ -33,7 +33,7 @@ Test(Data, addEgg)
 {
     Data data;
 
-    data.addEgg({1, 1}, 1, 1, HATCHED, "test");
+    data.addEgg({1, 1}, 1, 1, HATCHED);
     cr_assert_eq(data.getEggs().size(), 1, "got %li, expected 1", data.getEggs().size());
 }
 
@@ -41,7 +41,7 @@ Test(Data, getEggById)
 {
     Data data;
 
-    data.addEgg({1, 1}, 1, 1, HATCHED, "test");
+    data.addEgg({1, 1}, 1, 1, HATCHED);
     Egg egg = data.getEggById(1);
     cr_assert_eq(egg.getId(), 1, "got %d, expected 1", egg.getId());
 }
@@ -50,7 +50,7 @@ Test(Data, getEggByIdWrong)
 {
     Data data;
 
-    data.addEgg({1, 1}, 1, 1, HATCHED, "test");
+    data.addEgg({1, 1}, 1, 1, HATCHED);
     cr_assert_throw(data.getEggById(2), guiException, "getEggById: expected guiException");
 }
 
