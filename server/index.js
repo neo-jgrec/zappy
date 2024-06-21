@@ -13,41 +13,6 @@ const fastify = Fastify({ logger: true });
 
 fastify.register(cors, { origin: '*' });
 
-let tcpClient = null;
-let tcpData = '';
-
-const connectToTcpServer = () => {
-    tcpClient = new Socket();
-
-    tcpClient.connect(tcpPort, tcpHost, () => {
-        tcpClient.write('GRAPHIC\n');
-    });
-
-    tcpClient.on('data', (data) => {
-        tcpData += data.toString();
-        let messages = data.toString().split('\n');
-        messages.forEach((message) => {
-            if (message) {
-                sendToWebSocketClients(message);
-            }
-        });
-    });
-
-    tcpClient.on('close', () => {
-        setTimeout(connectToTcpServer, 1000);
-    });
-
-    tcpClient.on('error', (err) => {
-        console.error(`TCP client error: ${err}`);
-    });
-};
-
-const sendToWebSocketClients = (data) => {
-    if (io) {
-        io.emit('message', data);
-    }
-};
-
 const io = new Server(fastify.server, {
     cors: {
         origin: true,
@@ -56,9 +21,15 @@ const io = new Server(fastify.server, {
     }
 });
 
-io.on('connection', (socket) => {
-    socket.emit('message', (tcpData) => {
-        let messages = tcpData.split('\n');
+const createTcpClient = (socket) => {
+    const tcpClient = new Socket();
+
+    tcpClient.connect(tcpPort, tcpHost, () => {
+        tcpClient.write('GRAPHIC\n');
+    });
+
+    tcpClient.on('data', (data) => {
+        let messages = data.toString().split('\n');
         messages.forEach((message) => {
             if (message) {
                 socket.emit('message', message);
@@ -66,11 +37,19 @@ io.on('connection', (socket) => {
         });
     });
 
+    tcpClient.on('close', () => {
+        setTimeout(() => createTcpClient(socket), 1000);
+    });
+
+    tcpClient.on('error', (err) => {
+        console.error(`TCP client error: ${err}`);
+    });
+
     socket.on('message', (msg) => {
         console.log(`Received message from WebSocket client: ${msg}`);
         if (tcpClient && tcpClient.writable) {
             if (!msg.endsWith('\n'))
-              msg += '\n';
+                msg += '\n';
             tcpClient.write(msg);
         } else {
             console.error('TCP client is not connected');
@@ -79,18 +58,22 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('Socket.io connection closed');
+        tcpClient.end();
     });
 
     socket.on('error', (err) => {
         console.error(`Socket.io error: ${err}`);
     });
+};
+
+io.on('connection', (socket) => {
+    createTcpClient(socket);
 });
 
 const start = async () => {
     try {
         await fastify.listen({ port: port });
         console.log(`HTTP server and WebSocket server listening on ${port}`);
-        connectToTcpServer();
     } catch (err) {
         fastify.log.error(err);
         process.exit(1);
