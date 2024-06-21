@@ -7,7 +7,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 const PromptServer = () => {
-  const { host = '', port = '', setPort, setHost, connect } = useWebSocket();
+  const { host = '', port = '', setPort, setHost } = useWebSocket();
   const navigate = useNavigate();
 
   return (
@@ -42,7 +42,6 @@ const PromptServer = () => {
           renderIcon={ArrowRight}
           onClick={() => {
             navigate('/');
-            connect(host, port);
           }}
         >
           Connect to server

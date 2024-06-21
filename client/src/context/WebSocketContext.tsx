@@ -12,6 +12,7 @@ interface WebSocketContextProps {
     setHost: (host: string) => void;
     setPort: (port: string) => void;
     socket: Socket | null;
+    connectionStatus: string;
 }
 
 const WebSocketContext = createContext<WebSocketContextProps | undefined>(undefined);
@@ -25,6 +26,8 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
     const [port, setPort] = useState(localStorage.getItem('port') || undefined);
 
     const { showSnackbar } = useSnackbar();
+
+    const [connectionStatus, setConnectionStatus] = useState('disconnected');
 
     const connect = (host: string, port: string) => {
         console.log('Connecting to server:', host, port);
@@ -52,6 +55,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
             setPort(port);
             localStorage.setItem('host', host);
             localStorage.setItem('port', port);
+            setConnectionStatus('connected');
         });
 
         newSocket.on('message', (data: string) => {
@@ -66,6 +70,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
 
         newSocket.on('disconnect', () => {
             console.log('Socket.io connection closed');
+            setConnectionStatus('disconnected');
             showSnackbar({
                 title: 'Connection Closed',
                 subtitle: 'Socket.io connection was closed, retrying to connect',
@@ -75,6 +80,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         });
 
         newSocket.on('connect_error', () => {
+            setConnectionStatus('error');
             showSnackbar({
                 title: 'Error',
                 subtitle: 'Unable to connect to the server',
@@ -86,6 +92,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
             navigate('/prompt');
         });
 
+        setConnectionStatus('connecting');
         setSocket(newSocket);
     };
 
@@ -110,7 +117,8 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         setHost,
         port,
         setPort,
-        socket
+        socket,
+        connectionStatus
     };
 
     return (
