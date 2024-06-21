@@ -31,9 +31,9 @@ void ABotPattern::group()
 
 void ABotPattern::joinGroup()
 {
+    // TODO: wait a broadcast message
     std::cout << _allyMessage.content << std::endl;
-    std::string level = getElementAfter(_allyMessage.content, '_');
-    std::cout << level << std::endl;
+
     if (_direction == "0")
     {
         _message.content = "group_joined";
@@ -43,7 +43,7 @@ void ABotPattern::joinGroup()
                          { doAction(BROADCAST, _message.content); }, "BROADCAST"});
         return;
     }
-
+    std::cout << "group direction = " << _direction << std::endl;
     static const std::unordered_map<std::string, std::pair<std::string, std::function<void()>>> directionActions = {
         {"2", {"Forward", [&]()
                { doAction(FORWARD, ""); }}},
