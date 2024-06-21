@@ -16,12 +16,12 @@ void SimpleBot::initChild()
 void SimpleBot::updateStrategy()
 {
     std::cout << "updateStrategy" << std::endl;
-    unsigned int searchFood = 5;
+    static unsigned int searchFood = 0;
+    const unsigned int limitFood = 5;
 
-    if (_state.ressources.food < searchFood) // TODO: We can train an ia for this.
+    if (searchFood > 0) // TODO: We can train an ia for this.
     {
-        for (unsigned int i = 0; i < searchFood * 2; i++)
-            survive();
+        survive();
         _state.pattern = "survive";
     }
     else if (_state.state == SHOULD_GROUP)
@@ -54,4 +54,7 @@ void SimpleBot::updateStrategy()
         group();
         _state.pattern = "group";
     }
+
+    if (_state.ressources.food < limitFood)
+        searchFood = 10;
 }
