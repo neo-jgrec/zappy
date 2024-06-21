@@ -12,6 +12,7 @@ void SimpleBot::initChild()
     std::cout << "🧒✅ SimpleBot initialized" << std::endl;
 }
 
+// TODO: do bloc for lvl 1 and 2, etc...
 void SimpleBot::updateStrategy()
 {
     if (_state.ressources.food < 5)
@@ -22,4 +23,10 @@ void SimpleBot::updateStrategy()
         incantationLvl1();
     else if (_state.level == 2 && _state.ressources.linemate != 1)
         searchAndTakeRessource("linemate");
+    else if (_state.level == 2 && _state.ressources.deraumere != 1)
+        searchAndTakeRessource("deraumere");
+    else if (_state.level == 2 && _state.ressources.sibur != 1)
+        searchAndTakeRessource("sibur");
+    else if (_state.level == 2)
+        group();
 }

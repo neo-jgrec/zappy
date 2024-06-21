@@ -49,8 +49,8 @@ void ABotPattern::searchAndTakeRessource(const std::string &ressource)
         else if (ressource == "thystame")
             resourceQuantity = tile.ressources.thystame;
 
-        std::cout << ressource << ": " << resourceQuantity << std::endl;
-        std::cout << "distance: " << tile.distance << std::endl;
+        // std::cout << ressource << ": " << resourceQuantity << std::endl;
+        // std::cout << "distance: " << tile.distance << std::endl;
 
         if (resourceQuantity > 0)
         {
