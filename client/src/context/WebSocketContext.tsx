@@ -30,7 +30,12 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
     const [connectionStatus, setConnectionStatus] = useState('disconnected');
 
     const connect = (host: string, port: string) => {
-        console.log('Connecting to server:', host, port);
+        showSnackbar({
+            title: 'Connecting',
+            subtitle: `Connecting to ${host}:${port}...`,
+            kind: 'info',
+            timeout: 5000
+        });
         if (!host || !port) {
             showSnackbar({
                 title: 'Error',
@@ -49,7 +54,12 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         const newSocket = io(url);
 
         newSocket.on('connect', () => {
-            console.log('Socket.io connection opened');
+            showSnackbar({
+                title: 'Connected',
+                subtitle: `Connected to ${host}:${port}`,
+                kind: 'success',
+                timeout: 5000
+            });
             setSocket(newSocket);
             setHost(host);
             setPort(port);
@@ -59,17 +69,14 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         });
 
         newSocket.on('message', (data: string) => {
-            console.log('Message from server:', data);
             const type = data.split(' ')[0];
             setReceivedMessages(prev => ({
                 ...prev,
                 [type]: [...(prev[type] || []), data]
             }));
-            console.log(receivedMessages);
         });
 
         newSocket.on('disconnect', () => {
-            console.log('Socket.io connection closed');
             setConnectionStatus('disconnected');
             showSnackbar({
                 title: 'Connection Closed',
