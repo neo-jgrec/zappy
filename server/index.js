@@ -1,10 +1,10 @@
-const Fastify = require('fastify');
-const cors = require('@fastify/cors');
-const net = require('net');
-const dotenv = require('dotenv');
-const { Server } = require("socket.io");
+import Fastify from 'fastify';
+import cors from '@fastify/cors';
+import { Socket } from 'net';
+import { config } from 'dotenv';
+import { Server } from "socket.io";
 
-dotenv.config();
+config();
 const port = process.env.PORT || 8888;
 const tcpPort = process.env.TCP_PORT || 4000;
 const tcpHost = process.env.TCP_HOST || 'localhost';
@@ -17,7 +17,7 @@ let tcpClient = null;
 let tcpData = '';
 
 const connectToTcpServer = () => {
-    tcpClient = new net.Socket();
+    tcpClient = new Socket();
 
     tcpClient.connect(tcpPort, tcpHost, () => {
         tcpClient.write('GRAPHIC\n');
