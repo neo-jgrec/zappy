@@ -14,12 +14,26 @@ void WorldUi::init()
 
 bool WorldUi::update(sf::Event event, sf::RenderWindow &window)
 {
+    int index = 0;
+
     for (auto &button : _layer1) {
         if (button->update(event, window)) {
             for (auto &button2 : _layer1) {
                 if (button2 != button)
                     button2->release();
             }
+            _panelState = (panelState)index;
+            return true;
+        }
+        index++;
+    }
+    if (_panelState != NONE) {
+        if (_layer2["closeButton"]->update(event, window)) {
+            _panelState = NONE;
+            for (auto &button : _layer1) {
+                button->release();
+            }
+            _layer2["closeButton"]->release();
             return true;
         }
     }
@@ -35,8 +49,10 @@ void WorldUi::draw(sf::RenderWindow &window)
     for (auto &button : _layer1) {
         button->draw(window);
     }
-    if (_panelState != NONE)
+    if (_panelState != NONE) {
         _panel->draw(window);
+        _layer2["closeButton"]->draw(window);
+    }
     if (_world->_selectedTile.x != -1 && _world->_selectedTile.y != -1) {
         _sprites["inventory"]->setPosition(sf::Vector2f(
             window.getSize().x / 2,
@@ -61,6 +77,9 @@ void WorldUi::draw(sf::RenderWindow &window)
         _sprites["trantorian"]->draw(window);
         drawInventoryTile(6, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._food));
         drawInventoryTile(7, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._nbTrantorians));
+    }
+    if (_panelState == TROPHY) {
+        _sprites["trophyPanel"]->draw(window);
     }
 }
 

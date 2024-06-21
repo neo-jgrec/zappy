@@ -124,6 +124,7 @@ bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
         _isDragging = false;
         _offset = sf::Vector2f(0, 0);
         _tmpOffset = sf::Vector2f(0, 0);
+        _selectedTile = sf::Vector2f(-1, -1);
     }
     if (event.type == sf::Event::MouseMoved ||
         event.type == sf::Event::MouseButtonPressed) {
@@ -154,7 +155,7 @@ void World::update(float /*fElapsedTime*/)
         _core->backToHome();
         return;
     }
-    if (_worldUi._displayTeam != -1 || _worldUi._trantorianDisplayed != -1)
+    if (_worldUi.getPanelState() != WorldUi::panelState::NONE)
         _sprites["aura"]->update(_core->getDeltaTime());
     updateTrantorians();
     updateChuncks();
@@ -191,7 +192,6 @@ void World::layer1(int i, int j)
         );
         window.draw(_sprites["hover1"]->_sprite);
     }
-
 
     std::map<int, Egg> eggs = _core->_data.getEggs();
     for (auto &egg : eggs) {
@@ -245,11 +245,10 @@ void World::layer2(int i, int j)
 bool World::moveMap(sf::Event event)
 {
     if (event.type == sf::Event::MouseWheelScrolled) {
-        if (event.mouseWheelScroll.delta > 0) {
+        if (event.mouseWheelScroll.delta > 0)
             _zoom -= 65 * _core->getDeltaTime();
-        } else {
+        else
             _zoom += 65 * _core->getDeltaTime();
-        }
         if (_zoom < 0.25f)
             _zoom = 0.25f;
         if (_zoom > 2)
