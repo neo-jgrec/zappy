@@ -127,7 +127,7 @@ void Parser::pbc (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
         std::shared_ptr<Player> player = gameData.getPlayerById(playerNb);
         std::vector<int> pos = player->getPosition();
         std::string msg = std::get<std::string>(tokens.at(2));
-        debug_print << "pbc Pid:" << playerNb << " X:" << pos.at(1) << " Y:" << pos.at(2) << " MSG:" << msg << std::endl;
+        debug_print << "pbc Pid:" << playerNb << " X:" << pos.at(0) << " Y:" << pos.at(1) << " MSG:" << msg << std::endl;
         gameData.addBroadcast(playerNb, pos, msg);
     };
     _queue.push(lambda);
