@@ -17,10 +17,9 @@ class Egg
         std::vector<int> pos;
         [[maybe_unused]] int nb;
         [[maybe_unused]] int playerNb;
-        [[maybe_unused]] std::string team;
         EggStatus state;
     public:
-        Egg(std::vector<int> pos, int nb, int playerNb, EggStatus state, std::string team);
+        Egg(std::vector<int> pos, int nb, int playerNb, EggStatus state);
         ~Egg() {};
 
         void setState(EggStatus newState);
@@ -29,7 +28,6 @@ class Egg
         std::vector<int> getPos();
         int getId();
         int getPlayerNb();
-        std::string getTeam();
 };
 
 

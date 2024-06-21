@@ -1,6 +1,6 @@
 #include "Egg.hpp"
 
-Egg::Egg(std::vector<int> pos, int nb, int playerNb, EggStatus state, std::string team): pos(pos), nb(nb), playerNb(playerNb), state(state), team(team) {};
+Egg::Egg(std::vector<int> pos, int nb, int playerNb, EggStatus state): pos(pos), nb(nb), playerNb(playerNb), state(state) {};
 
 void Egg::setState(EggStatus newState) {
     state = newState;
@@ -20,8 +20,4 @@ int Egg::getId() {
 
 int Egg::getPlayerNb() {
     return playerNb;
-}
-
-std::string Egg::getTeam() {
-    return team;
 }

@@ -49,7 +49,7 @@ class Data
         * @param state the state of the egg
         * @return void
         */
-        void addEgg(std::vector<int> pos, int eggId, int playerId, EggStatus state, std::string team);
+        void addEgg(std::vector<int> pos, int eggId, int playerId, EggStatus state);
         std::map<int, Egg> &getEggs() { return this->eggs; };
         Egg &getEggById(int eggid);
 

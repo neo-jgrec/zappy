@@ -1,7 +1,10 @@
 #include "Data.hpp"
 #include "../utils/GuiException.hpp"
+#include "src/utils/Debug.hpp"
+
 #include <memory>
 #include <utility>
+#include <iostream>
 
 // ------------------------------------------------------------------ //
 // ---------------------------- GETTERS ----------------------------- //
@@ -68,12 +71,12 @@ void Data::addPlayer(std::vector<int> values, std::string teamName)
 };
 
 
-void Data::addEgg(std::vector<int> pos, int eggId, int playerId, EggStatus state, std::string team)
+void Data::addEgg(std::vector<int> pos, int eggId, int playerId, EggStatus state)
 {
     this->eggs.insert(
         std::make_pair(
             eggId,
-            Egg(pos, eggId, playerId, state, team)
+            Egg(pos, eggId, playerId, state)
         )
     );
 };
