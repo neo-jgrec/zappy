@@ -45,7 +45,7 @@ void ABotPattern::testPatern()
 ## State
 Look at BotState.hpp
 We store datas about bots in a state.
-- State of bot (Standard, Invocating, ...)
+- State of bot (Standard, INCANTATING, ...)
 - Environment (Ressources in his environments)
 - Last action
 - Level

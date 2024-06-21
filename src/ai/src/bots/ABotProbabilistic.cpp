@@ -62,7 +62,7 @@ void ABotProbabilistic::run(const std::string &response)
     {
         printColor("========== [Bot Run] ==========\n", BLUE);
         printKeyValueColored("Iteration", std::to_string(_iteration));
-        if (_state.state != INVOCATING)
+        if (_state.state != INCANTATING)
         {
             if (queue.empty())
                 updateStrategy(); // -> fait l'action la plus rentable

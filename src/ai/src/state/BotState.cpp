@@ -14,7 +14,7 @@ std::map<Job, std::string> jobMap = {
 
 std::map<State, std::string> stateMap = {
     {STANDARD, "STANDARD"},
-    {INVOCATING, "INVOCATING"},
+    {INCANTATING, "INCANTATING"},
     {FORKED, "FORKED"},
     {SHOULD_GROUP, "SHOULD_GROUP"},
 };

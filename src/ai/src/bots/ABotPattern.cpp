@@ -56,7 +56,7 @@ void ABotPattern::act()
     printKeyValueColored("Iteration", std::to_string(_iteration));
     printKeyValueColored("Pattern:", _state.pattern);
 
-    if (_state.state != INVOCATING)
+    if (_state.state != INCANTATING)
     {
         if (queue.empty())
         {
@@ -76,7 +76,7 @@ void ABotPattern::act()
 // Always put state listener first before listener for actions
 void ABotPattern::listen(const std::string &response)
 {
-    if (_state.state == INVOCATING)
+    if (_state.state == INCANTATING)
         listenIncantationReturnResponse(response);
     else if (_state.lastAction.action == LOOK)
         listenLookResponse(response);

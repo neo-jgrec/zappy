@@ -11,7 +11,7 @@ void ABot::listenIncantationResponse(const std::string &response)
 {
     if (response == "Elevation underway")
     {
-        _state.state = INVOCATING;
+        _state.state = INCANTATING;
     }
 }
 

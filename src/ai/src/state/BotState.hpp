@@ -19,7 +19,7 @@
 enum State
 {
     STANDARD,
-    INVOCATING,
+    INCANTATING,
     FORKED,
     SHOULD_GROUP,
 };
