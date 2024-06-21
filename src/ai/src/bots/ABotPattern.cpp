@@ -38,6 +38,7 @@ void ABotPattern::run(const std::string &response)
     if (responseCopy.find("dead") != std::string::npos)
     {
         debugState();
+        exit(0);
     }
     debugState();
 }

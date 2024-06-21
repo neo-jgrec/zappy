@@ -20,4 +20,6 @@ void SimpleBot::updateStrategy()
         searchAndTakeRessource("linemate");
     else if (_state.ressources.linemate == 1 && _state.level == 1)
         incantationLvl1();
+    else if (_state.level == 2 && _state.ressources.linemate != 1)
+        searchAndTakeRessource("linemate");
 }
