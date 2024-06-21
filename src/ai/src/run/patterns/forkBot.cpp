@@ -13,7 +13,7 @@ void ABotPattern::forkBot(unsigned int idBot)
                      { doAction(CONNECT_NBR, ""); }, "CONNECT_NBR"});
     queue.push_back({[&]()
                      { doAction(FORK, ""); }, "FORK"});
-    _message._content = "you are new bot " + std::to_string(idBot);
+    _message.content = "you are new bot " + std::to_string(idBot);
     queue.push_back({[&]()
-                     { doAction(BROADCAST, _message._content); }, "BROADCAST"});
+                     { doAction(BROADCAST, _message.content); }, "BROADCAST"});
 }

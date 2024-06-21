@@ -23,6 +23,6 @@ void ABot::listenIncantationReturnResponse(const std::string &response)
         _state.level++;
     }
 
-    _state.state = STANDART;
+    _state.state = STANDARD;
     _state.lastAction.parameter = "";
 }

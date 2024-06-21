@@ -7,9 +7,9 @@
 
 #include "Message.hpp"
 
-Message::Message(const std::string &content)
+Message::Message(const std::string &contentMsg)
 {
-    _content = content;
+    content = contentMsg;
 }
 
 Message::Message()
@@ -53,47 +53,47 @@ std::string Message::getCurrentTimeAsLetters()
 
 void Message::generateMessage()
 {
-    _content = _content + ":" + _signature;
+    content = content + ":" + _signature;
 }
 
-void Message::format(const std::string &content)
+void Message::format(const std::string &contentToFormat)
 {
-    _content = content;
+    content = contentToFormat;
     vigenereEncrypt();
     generateMessage();
 }
 
 void Message::vigenereEncrypt()
 {
-    std::string result = _content;
+    std::string result = content;
     int keyIndex = 0;
     const std::string &key = "KIMUCHI";
 
-    for (unsigned int i = 0; i < _content.length(); ++i)
+    for (unsigned int i = 0; i < content.length(); ++i)
     {
-        if (isalpha(_content[i]))
+        if (isalpha(content[i]))
         {
-            char base = islower(_content[i]) ? 'a' : 'A';
-            char shiftedChar = (_content[i] - base + tolower(key[keyIndex]) - 'a') % 26 + base;
+            char base = islower(content[i]) ? 'a' : 'A';
+            char shiftedChar = (content[i] - base + tolower(key[keyIndex]) - 'a') % 26 + base;
             result[i] = shiftedChar;
             keyIndex = (keyIndex + 1) % key.length();
         }
     }
-    _content = result;
+    content = result;
 }
 
 void Message::vigenereDecrypt()
 {
-    std::string result = _content;
+    std::string result = content;
     int keyIndex = 0;
     const std::string &key = "KIMUCHI";
 
-    for (unsigned int i = 0; i < _content.length(); ++i)
+    for (unsigned int i = 0; i < content.length(); ++i)
     {
-        if (isalpha(_content[i]))
+        if (isalpha(content[i]))
         {
-            char base = islower(_content[i]) ? 'a' : 'A';
-            char shiftedChar = _content[i] - base;
+            char base = islower(content[i]) ? 'a' : 'A';
+            char shiftedChar = content[i] - base;
             char keyOffset = tolower(key[keyIndex]) - 'a';
 
             char originalChar = (shiftedChar - keyOffset + 26) % 26 + base;
@@ -102,5 +102,5 @@ void Message::vigenereDecrypt()
             keyIndex = (keyIndex + 1) % key.length();
         }
     }
-    _content = result;
+    content = result;
 }

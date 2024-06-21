@@ -17,14 +17,14 @@
 class Message
 {
 public:
-    Message(const std::string &content);
+    Message(const std::string &contentMsg);
     Message();
     ~Message();
     void vigenereDecrypt();
     void vigenereEncrypt();
     std::string getCurrentTimeAsLetters();
     void generateMessage();
-    void format(const std::string &content);
+    void format(const std::string &contentMsg);
     std::string convertDigitsToLetters(const std::string &digits);
     std::string content;
     int id;

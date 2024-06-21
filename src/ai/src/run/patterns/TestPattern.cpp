@@ -22,9 +22,9 @@ void ABotPattern::testPatern()
 
 void ABotPattern::trapMessage()
 {
-    std::string trapMessage = replaceNumbersInString(_enemyMessage._content, 1200);
+    std::string trapMessage = replaceNumbersInString(_enemyMessage.content, 1200);
     if (trapMessage.empty())
-        trapMessage = _enemyMessage._content;
+        trapMessage = _enemyMessage.content;
     std::cout << "trapMessage: " << trapMessage << std::endl;
     queue.push_back({[&]()
                      { doAction(BROADCAST, trapMessage); }, "BROADCAST"});

@@ -63,8 +63,8 @@ protected:
     // Probabilities
     const double &getTrainedVariableValueByName(const std::string &name) const;
 
-    // data
-    void saveData(const std::string &path) override;
+    // Metrics
+    void saveData(const std::string &path);
 };
 
 #endif // ABOT_PROBABILITIS_HPP_

@@ -43,7 +43,7 @@ void Forker::forkNewBot()
     {
         _message.format("you_are_bot=" + std::to_string(_idBot) + "your_job=" + jobMap[SIMPLE_BOT] + "currentMessageId=" + std::to_string(_currentMessageId));
         queue.push_back(std::make_pair([&]()
-                                       { doAction(BROADCAST, _message._content); }, "FORK"));
+                                       { doAction(BROADCAST, _message.content); }, "FORK"));
 
         wait(nullptr);
     }

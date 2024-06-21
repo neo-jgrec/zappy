@@ -13,18 +13,18 @@ void ABot::listenBroadcastResponse(const std::string &response)
 
     if (signature != _signature)
     {
-        _enemyMessage = _message._content;
-        std::cout << "Enemy message: " << _enemyMessage._content << std::endl;
+        _enemyMessage = _message.content;
+        std::cout << "Enemy message: " << _enemyMessage.content << std::endl;
         return;
     }
     else
     {
         std::string temp = getElementBefore(response, ':');
-        _allyMessage._content = getElementAfter(temp, ',');
+        _allyMessage.content = getElementAfter(temp, ',');
         _direction = getElementBefore(temp, ',');
         _direction = getElementAfter(_direction, ' ');
         _allyMessage.vigenereDecrypt();
-        printKeyValueColored("Message", _allyMessage._content);
+        printKeyValueColored("Message", _allyMessage.content);
         printKeyValueColored("Direction", _direction);
     }
 }

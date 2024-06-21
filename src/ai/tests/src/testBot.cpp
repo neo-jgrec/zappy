@@ -42,27 +42,27 @@ Test(message, vignereEncrypt)
 {
     Message message;
 
-    message._content = "group";
+    message.content = "group";
     message.vigenereEncrypt();
-    cr_assert_str_eq(message._content.c_str(), "qzaor");
+    cr_assert_str_eq(message.content.c_str(), "qzaor");
 }
 
 Test(message, vignereDecrypt)
 {
     Message message;
 
-    message._content = "qzaor";
+    message.content = "qzaor";
     message.vigenereDecrypt();
-    cr_assert_str_eq(message._content.c_str(), "group");
+    cr_assert_str_eq(message.content.c_str(), "group");
 }
 
 Test(message, generateMessage)
 {
     Message message;
 
-    message._content = "group";
+    message.content = "group";
     message.generateMessage();
-    cr_assert_str_eq(message._content.c_str(), "group:bFNneQbXQkyJHGEQd");
+    cr_assert_str_eq(message.content.c_str(), "group:bFNneQbXQkyJHGEQd");
 }
 
 Test(message, convertDigitsToLetters)

@@ -71,11 +71,11 @@ void Client::authenticate()
 
     // Ask two time for identity
     _message.format("I'm_searching_my_identity");
-    askForIdentity = "Broadcast " + _message._content;
+    askForIdentity = "Broadcast " + _message.content;
     sendMessage(_teamName);
     sendMessage(askForIdentity);
     sendMessage(askForIdentity);
-    _message._content = "";
+    _message.content = "";
 
     auto condition = [&]()
     { return timeToGetIdentity < 3; };
@@ -92,7 +92,7 @@ void Client::authenticate()
         }
         if (response.find("message") != std::string::npos)
         {
-            _message._content = response;
+            _message.content = response;
             _message.vigenereDecrypt();
             return;
         }
@@ -102,7 +102,7 @@ void Client::authenticate()
     interactWithServer(condition, action);
     try
     {
-        initBot(_message._content);
+        initBot(_message.content);
     }
     catch (const ClientException &e)
     {

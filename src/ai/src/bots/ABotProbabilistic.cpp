@@ -37,7 +37,7 @@ void ABotProbabilistic::init(int sockfd, const std::string &teamName, bool arg, 
 void ABotProbabilistic::run(const std::string &response)
 {
     std::string responseCopy = response;
-    _message._content = "";
+    _message.content = "";
     static bool _canAct = true;
 
     if (!responseCopy.empty() && responseCopy.back() == '\n')
