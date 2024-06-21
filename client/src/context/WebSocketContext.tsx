@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, ReactNode } from 'react';
+import { createContext, useState, useContext, ReactNode, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useSnackbar } from './SnackbarContext';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,7 @@ interface WebSocketContextProps {
     connect: (host: string, port: string) => void;
     sendMessage: (message: string) => void;
     receivedMessages: { [key: string]: string[] };
+    hundredLastMessages: string[];
     host: string | undefined;
     port: string | undefined;
     setHost: (host: string) => void;
@@ -20,6 +21,8 @@ const WebSocketContext = createContext<WebSocketContextProps | undefined>(undefi
 export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
     const [socket, setSocket] = useState<Socket | null>(null);
     const [receivedMessages, setReceivedMessages] = useState<{ [key: string]: string[] }>({});
+    const [hundredLastMessages, setHundredLastMessages] = useState<string[]>([]);
+    const HundredLastMessagesRef = useRef<string[]>([]);
     const navigate = useNavigate();
 
     const [host, setHost] = useState(localStorage.getItem('host') || undefined);
@@ -69,11 +72,20 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         });
 
         newSocket.on('message', (data: string) => {
-            const type = data.split(' ')[0];
-            setReceivedMessages(prev => ({
-                ...prev,
-                [type]: [...(prev[type] || []), data]
-            }));
+            const newReceivedMessages = { ...receivedMessages };
+            const newHundredLastMessages = [...HundredLastMessagesRef.current];
+            if (newHundredLastMessages.length >= 100) {
+                newHundredLastMessages.shift();
+            }
+            newHundredLastMessages.push(data);
+            HundredLastMessagesRef.current = newHundredLastMessages;
+            setHundredLastMessages(newHundredLastMessages);
+
+            if (!newReceivedMessages[data]) {
+                newReceivedMessages[data] = [];
+            }
+            newReceivedMessages[data].push(data);
+            setReceivedMessages(newReceivedMessages);
         });
 
         newSocket.on('disconnect', () => {
@@ -125,7 +137,8 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         port,
         setPort,
         socket,
-        connectionStatus
+        connectionStatus,
+        hundredLastMessages
     };
 
     return (
