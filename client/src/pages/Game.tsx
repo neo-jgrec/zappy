@@ -1,6 +1,14 @@
 import { useRef, useState, useEffect } from 'react';
 import { Layout } from "../components";
 import { useWebSocket } from '../context';
+import {
+  Button,
+  TextInput,
+  Tile
+} from '@carbon/react';
+import {
+  Send
+} from '@carbon/icons-react';
 
 function Game() {
   const canvasRef = useRef(null);
@@ -9,7 +17,7 @@ function Game() {
   const [isPanning, setIsPanning] = useState(false);
   const [startPan, setStartPan] = useState({ x: 0, y: 0 });
 
-  const { hundredLastMessages } = useWebSocket();
+  const { hundredLastMessages, allBroadcastMessages } = useWebSocket();
 
   useEffect(() => {
     const canvas = canvasRef.current as unknown as HTMLCanvasElement;
@@ -54,10 +62,9 @@ function Game() {
 
   return (
     <Layout>
-      <div className='grid grid-cols-2 gap-4'>
-        <div className='w-full'>
+      <div className='flex space-x-4'>
+        <Tile className='w-full relative w-[85vh] h-[85vh] overflow-hidden bg-blue-900 bg-opacity-5 rounded-xl'>
           <div
-            className='relative w-[85vh] h-[85vh] bg-gray-800 overflow-hidden'
             onWheel={handleWheel}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -71,18 +78,50 @@ function Game() {
               className='absolute top-0 left-0 w-full h-full'
             ></canvas>
           </div>
-        </div>
-        <div className='w-1/2 grid grid-cols-2 gap-4'>
-          <div className='w-full'>
-            It is real chat?
-          </div>
-          <div className='w-full h-[58vh] overflow-y-auto'>
-            <ul>
-              {hundredLastMessages.map((message, index) => (
-                <li key={index}>{message}</li>
-              ))}
-            </ul>
-          </div>
+        </Tile>
+
+        <div className='grid grid-cols-2 gap-4 w-full'>
+          <Tile className='p-4' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%' }}>
+            <h2>Game Events</h2>
+            <div style={{ flex: '1 1 auto', overflowY: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+              <ul className='overflow-y-auto'>
+                {hundredLastMessages.map((message, index) => (
+                  <li key={index} className='pl-5'>{message}</li>
+                ))}
+              </ul>
+            </div>
+          </Tile>
+
+          <Tile className='p-4' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%' }}>
+            <h2>Chat</h2>
+            <div style={{ flex: '1 1 auto', overflowY: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+              <ul className='overflow-y-auto pb-4'>
+                {allBroadcastMessages.map(({ id, message }) => (
+                  <li key={id} className='pl-5'>
+                    <span className='font-bold'>Client {id}:</span> {message}
+                  </li>
+                ))}
+              </ul>
+              <div className='flex'>
+                <TextInput
+                  type="text"
+                  labelText="Send a message"
+                  placeholder="Type your message here"
+                  style={{ width: '100%' }}
+                  id="text-input-1"
+                />
+                <div>
+                  <br />
+                  <Button
+                    kind='ghost'
+                    renderIcon={Send}
+                  >
+                    Send
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Tile>
         </div>
       </div>
     </Layout>

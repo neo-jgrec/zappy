@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, ReactNode, useEffect, useRef } from 'react';
+import { createContext, useState, useContext, ReactNode, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useSnackbar } from './SnackbarContext';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ interface WebSocketContextProps {
     sendMessage: (message: string) => void;
     receivedMessages: { [key: string]: string[] };
     hundredLastMessages: string[];
+    allBroadcastMessages: { id: number; message: string }[];
     host: string | undefined;
     port: string | undefined;
     setHost: (host: string) => void;
@@ -23,6 +24,8 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
     const [receivedMessages, setReceivedMessages] = useState<{ [key: string]: string[] }>({});
     const [hundredLastMessages, setHundredLastMessages] = useState<string[]>([]);
     const HundredLastMessagesRef = useRef<string[]>([]);
+    const [allBroadcastMessages, setAllBroadcastMessages] = useState<{ id: number; message: string }[]>([]);
+    const AllBroadcastMessagesRef = useRef<{ id: number; message: string }[]>([]);
     const navigate = useNavigate();
 
     const [host, setHost] = useState(localStorage.getItem('host') || undefined);
@@ -72,9 +75,12 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         });
 
         newSocket.on('message', (data: string) => {
-            if (!data.startsWith('bct')) {
+            if (typeof data !== 'string')
+                return;
+
+            if (!data?.startsWith('bct')) {
                 const newHundredLastMessages = [...HundredLastMessagesRef.current];
-                if (newHundredLastMessages.length >= 20) {
+                if (newHundredLastMessages.length >= 30) {
                     newHundredLastMessages.shift();
                 }
                 newHundredLastMessages.push(data);
@@ -82,11 +88,17 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                 setHundredLastMessages(newHundredLastMessages);
             }
 
-            const newReceivedMessages = { ...receivedMessages };
-
-            if (!newReceivedMessages[data]) {
-            newReceivedMessages[data] = [];
+            if (data?.startsWith('pbc')) {
+                const [, id, message] = data.split(' ');
+                const newAllBroadcastMessages = [...AllBroadcastMessagesRef.current];
+                newAllBroadcastMessages.push({ id: parseInt(id), message });
+                AllBroadcastMessagesRef.current = newAllBroadcastMessages;
+                setAllBroadcastMessages(newAllBroadcastMessages);
             }
+
+            const newReceivedMessages = { ...receivedMessages };
+            if (!newReceivedMessages[data])
+                newReceivedMessages[data] = [];
             newReceivedMessages[data].push(data);
             setReceivedMessages(newReceivedMessages);
         });
@@ -141,7 +153,8 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         setPort,
         socket,
         connectionStatus,
-        hundredLastMessages
+        hundredLastMessages,
+        allBroadcastMessages
     };
 
     return (
