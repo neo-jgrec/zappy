@@ -39,7 +39,7 @@ void ABotPattern::run(const std::string &response)
     {
         debugState();
     }
-    // debugState();
+    debugState();
 }
 
 void ABotPattern::act()
@@ -50,29 +50,31 @@ void ABotPattern::act()
     if (_state.state != INVOCATING)
     {
         if (queue.empty())
+        {
             updateStrategy();
+        }
         if (!queue.empty())
         {
             queue.front().first();
             queue.erase(queue.begin());
         }
+        _iteration++;
+        if (_iteration % 20 == 0)
+            saveDataActions(saveActionsFile);
     }
-    _iteration++;
-    if (_iteration % 20 == 0)
-        saveDataActions(saveActionsFile);
-    _state.state = STANDARD;
 }
 
+// Always put state listener first before listener for actions
 void ABotPattern::listen(const std::string &response)
 {
-    if (_state.lastAction.action == LOOK)
+    if (_state.state == INVOCATING)
+        listenIncantationReturnResponse(response);
+    else if (_state.lastAction.action == LOOK)
         listenLookResponse(response);
     else if (_state.lastAction.action == TAKE)
         listenTakeResponse(response);
     else if (_state.lastAction.action == INCANTATION)
         listenIncantationResponse(response);
-    else if (_state.state == INVOCATING)
-        listenIncantationReturnResponse(response);
     else if (_state.lastAction.action == CONNECT_NBR)
         listenConnectNbrResponse(response);
     if (response.find("message") != std::string::npos)

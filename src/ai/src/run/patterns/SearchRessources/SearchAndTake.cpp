@@ -71,7 +71,7 @@ void ABotPattern::searchAndTakeRessource(const std::string &ressource)
     if (!resourceFound)
         queue.push_back({[&]()
                          { doAction(FORWARD, ""); }, "FORWARD"});
-
+    // TODO: fix this, it is useless to look when bot take a ressource
     queue.push_back({[&]()
                      { doAction(LOOK, ""); }, "LOOK"});
 }

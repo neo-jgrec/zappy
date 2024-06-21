@@ -12,7 +12,6 @@ void ABot::listenIncantationResponse(const std::string &response)
     if (response == "Elevation underway")
     {
         _state.state = INVOCATING;
-        _state.lastAction.parameter = "";
     }
 }
 
@@ -22,7 +21,5 @@ void ABot::listenIncantationReturnResponse(const std::string &response)
     {
         _state.level++;
     }
-
     _state.state = STANDARD;
-    _state.lastAction.parameter = "";
 }
