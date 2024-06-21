@@ -595,6 +595,9 @@ Test(Parser, enwNormal)
     Data data;
     ServerConnect server;
 
+    std::vector<std::variant<std::string, int>> args0 = { "pnw", 1, 1, 1, 1, 1, "team1" };
+    parser.parse(args0, data, server);
+
     std::vector<std::variant<std::string, int>> args = { "enw", 1, 1, 1, 1 };
 
     parser.parse(args, data, server);
