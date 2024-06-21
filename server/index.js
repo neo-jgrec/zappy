@@ -57,7 +57,14 @@ const io = new Server(fastify.server, {
 });
 
 io.on('connection', (socket) => {
-    socket.emit('message', tcpData);
+    socket.emit('message', (tcpData) => {
+        let messages = tcpData.split('\n');
+        messages.forEach((message) => {
+            if (message) {
+                socket.emit('message', message);
+            }
+        });
+    });
 
     socket.on('message', (msg) => {
         console.log(`Received message from WebSocket client: ${msg}`);

@@ -72,17 +72,20 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         });
 
         newSocket.on('message', (data: string) => {
-            const newReceivedMessages = { ...receivedMessages };
-            const newHundredLastMessages = [...HundredLastMessagesRef.current];
-            if (newHundredLastMessages.length >= 100) {
-                newHundredLastMessages.shift();
+            if (!data.startsWith('bct')) {
+                const newHundredLastMessages = [...HundredLastMessagesRef.current];
+                if (newHundredLastMessages.length >= 20) {
+                    newHundredLastMessages.shift();
+                }
+                newHundredLastMessages.push(data);
+                HundredLastMessagesRef.current = newHundredLastMessages;
+                setHundredLastMessages(newHundredLastMessages);
             }
-            newHundredLastMessages.push(data);
-            HundredLastMessagesRef.current = newHundredLastMessages;
-            setHundredLastMessages(newHundredLastMessages);
+
+            const newReceivedMessages = { ...receivedMessages };
 
             if (!newReceivedMessages[data]) {
-                newReceivedMessages[data] = [];
+            newReceivedMessages[data] = [];
             }
             newReceivedMessages[data].push(data);
             setReceivedMessages(newReceivedMessages);
