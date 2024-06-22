@@ -94,6 +94,7 @@ class World : public IScene {
         std::vector<Starlings> _starlings;
 
         std::map<std::string, sf::Music> _sounds;
+        sf::FloatRect _viewRect;
         bool moveMap(sf::Event event);
         void updateTrantorians();
         void updateChuncks();

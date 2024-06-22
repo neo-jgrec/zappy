@@ -203,6 +203,12 @@ void World::draw(sf::RenderWindow &window)
             _sprites["starling"]->draw(window);
         }
     _view.setCenter(_pos + _tmpOffset + _offset);
+    _viewRect = sf::FloatRect(
+        _view.getCenter().x - _view.getSize().x / 2 - 50,
+        _view.getCenter().y - _view.getSize().y / 2 - 50,
+        _view.getSize().x + 100,
+        _view.getSize().y + 100
+    );
     window.setView(_view);
 
     iterateWorld([&](int i, int j) {
@@ -222,6 +228,8 @@ void World::draw(sf::RenderWindow &window)
 
 void World::layer1(int i, int j)
 {
+    if (_viewRect.contains(_chuncks[i][j].getMiddle()) == false)
+        return;
     sf::RenderWindow &window = _core->getWindow();
     _sprite->_sprite.setPosition(
                 _chuncks[i][j]._pos.x,
@@ -252,6 +260,8 @@ void World::layer1(int i, int j)
 
 void World::layer2(int i, int j)
 {
+    if (_viewRect.contains(_chuncks[i][j].getMiddle()) == false)
+        return;
     sf::RenderWindow &window = _core->getWindow();
     bool isThereTrantorian = false;
     int index = 0;
