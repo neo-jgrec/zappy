@@ -195,12 +195,12 @@ void WorldUi::drawTileInventory(sf::RenderWindow &window)
             window.getSize().y - 32
             ));
         _sprites["inventory"]->draw(window);
-        drawInventoryTile(0, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._linemate));
-        drawInventoryTile(1, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._deraumere));
-        drawInventoryTile(2, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._sibur));
-        drawInventoryTile(3, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._mendiane));
-        drawInventoryTile(4, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._phiras));
-        drawInventoryTile(5, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._thystame));
+        drawInventoryTile(0, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._inventory[1]));
+        drawInventoryTile(1, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._inventory[2]));
+        drawInventoryTile(2, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._inventory[3]));
+        drawInventoryTile(3, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._inventory[4]));
+        drawInventoryTile(4, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._inventory[5]));
+        drawInventoryTile(5, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._inventory[6]));
         _sprites["food"]->setPosition(sf::Vector2f(
             _sprites["inventory"]->getPosition().x + 61 * 2,
             _sprites["inventory"]->getPosition().y
@@ -211,7 +211,7 @@ void WorldUi::drawTileInventory(sf::RenderWindow &window)
             _sprites["inventory"]->getPosition().y + 10
         ));
         _sprites["trantorian"]->draw(window);
-        drawInventoryTile(6, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._food));
+        drawInventoryTile(6, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._inventory[0]));
         drawInventoryTile(7, window, std::to_string(_world->_chuncks[_world->_selectedTile.x][_world->_selectedTile.y]._nbTrantorians));
         _inventoryText.setString("Chunck inventory");
         _inventoryText.setPosition(sf::Vector2f(

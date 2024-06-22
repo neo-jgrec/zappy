@@ -62,13 +62,7 @@ class Chunck {
             );
         }
 
-        int _linemate = 0;
-        int _deraumere = 0;
-        int _sibur = 0;
-        int _mendiane = 0;
-        int _phiras = 0;
-        int _thystame = 0;
-        int _food = 0;
+        std::vector<int> _inventory = {0, 0, 0, 0, 0, 0, 0};
         int _nbTrantorians = 0;
     private:
         std::vector<std::pair<std::shared_ptr<Sprite>, sf::Vector2f>> _enviromentElements;

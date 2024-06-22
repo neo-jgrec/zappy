@@ -13,6 +13,7 @@
     #include <memory>
     #include <functional>
     #include <vector>
+    #include <iostream>
 
     #include "../../../utils/PerlinNoise.hpp"
     #include "Chunck.hpp"
@@ -28,6 +29,19 @@
     #include "ui/Bubble.hpp"
     #include "ui/LvlUpAnim.hpp"
     #include "../Starlings.hpp"
+
+static const std::vector<std::string> _elements = {
+    "tree2", "tree4", "stone1", "grass", "grass2"
+};
+
+static const std::vector<sf::Color> _teamsColor = {
+    sf::Color::Red,
+    sf::Color::Green,
+    sf::Color::Blue,
+    sf::Color::Yellow,
+    sf::Color(255, 165, 0),
+    sf::Color::Magenta,
+};
 
 class Core;
 class World : public IScene {
