@@ -93,6 +93,7 @@ class World : public IScene {
         std::vector<LvlUpAnim> _lvlUpAnims;
         std::vector<Starlings> _starlings;
 
+        std::vector<std::vector<int>> _buildings;
         std::map<std::string, sf::Music> _sounds;
         sf::FloatRect _viewRect;
         bool moveMap(sf::Event event);

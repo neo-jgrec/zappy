@@ -59,6 +59,10 @@ class LvlUpAnim {
             return _tile;
         }
 
+        int getLvl() {
+            return _lvl;
+        }
+
     protected:
     private:
         int _id;

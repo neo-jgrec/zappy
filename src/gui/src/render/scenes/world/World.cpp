@@ -48,6 +48,7 @@ World::World(Core *core)
     _sprites["background"]->resetOrigin();
     _sprites["starling"] = std::make_shared<Sprite>("assets/trantorian.png");
     _sprites["starling"]->setScale(2);
+    _sprites["buildings"] = std::make_shared<Sprite>("./assets/houses.png", 8, 0.1f);
     _view.setSize(sf::Vector2f(1920 , 1080));
     _chat = std::make_shared<Chat>(_core->getFont(), 7);
     _bubbleText = sf::Text("", _core->getFont(), 15);
@@ -82,6 +83,11 @@ void World::init()
         _chuncks.push_back(chuncks);
     }
 
+    for (int i = 0; i < _worldSize.x; i++) {
+        std::vector<int> innerVector(_worldSize.y, 0);
+        _buildings.push_back(innerVector);
+    }
+
     _pos = sf::Vector2f(
         (int)(_worldSize.x / 2) * TILE_SIZE_MX- (int)(_worldSize.x / 2) * TILE_SIZE_MX - TILE_SIZE_MY,
         (int)(_worldSize.y / 2) * TILE_SIZE_MY + (int)(_worldSize.y / 2) * TILE_SIZE_MY - TILE_SIZE_Y
@@ -97,6 +103,7 @@ void World::init()
 void World::reset()
 {
     _trantorians.clear();
+    _buildings.clear();
     _chuncks.clear();
     _worldSize = sf::Vector2f(0, 0);
     _selectedTile = sf::Vector2f(-1, -1);
@@ -265,6 +272,14 @@ void World::layer2(int i, int j)
     sf::RenderWindow &window = _core->getWindow();
     bool isThereTrantorian = false;
     int index = 0;
+    if (_buildings[i][j] != 0) {
+        _sprites["buildings"]->_sprite.setPosition(
+            _chuncks[i][j]._pos.x,
+            _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y / 2
+        );
+        _sprites["buildings"]->setFrame(_buildings[i][j] - 1);
+        window.draw(_sprites["buildings"]->_sprite);
+    }
     for (auto &trantorian : _trantorians) {
         if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
             trantorian.draw(window);
@@ -473,6 +488,7 @@ void World::updateIncantation()
                 _chat->addMessage("Incantation success");
                 _sounds["hourray"].stop();
                 _sounds["hourray"].play();
+                _buildings[lvlUpAnim.getTile().x][lvlUpAnim.getTile().y] = lvlUpAnim.getLvl();
             }
         if (state == IncantationOutcome::FAILURE)
             lvlUpAnim.setFailure();
