@@ -37,6 +37,7 @@ void ABotPattern::joinGroup()
                          { doAction(BROADCAST, _message.content); }, "BROADCAST"});
         _state.state = WAIT_FOR_SERVER_RESPONSE; // TODO: wait incant look response from server
         _state.metadata["wait_incant"] = "true";
+        _state.metadata["should_group"] = "false";
         return;
     }
     std::cout << "group direction = " << _direction << std::endl;
