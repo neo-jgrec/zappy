@@ -26,6 +26,15 @@ Core::Core(int port, std::string ip) {
     initSounds();
     _sounds["music"].play();
     std::cout << "play music" << std::endl;
+    try {
+        if (!_cursorTexture.loadFromFile("assets/cursor.png"))
+            throw guiException("Failed to load cursor");
+        _cursor.setTexture(_cursorTexture);
+        _window.setMouseCursorVisible(false);
+    } catch (const std::exception &e) {
+        std::cerr << "Failed to load cursor" << std::endl;
+    }
+    initIcon();
 }
 
 void Core::update() {
@@ -73,6 +82,8 @@ void Core::draw() {
         _window.draw(_shade);
         _scenes[_upperState]->draw(_window);
     }
+    _cursor.setPosition(_realMousePos);
+    _window.draw(_cursor);
     _window.display();
 }
 
@@ -114,4 +125,14 @@ void Core::initSounds() {
     _music.openFromFile("assets/audio/music.ogg");
     _music.setLoop(true);
     _music.play();
+}
+
+void Core::initIcon() {
+    try {
+        sf::Image icon;
+        icon.loadFromFile("assets/icon.png");
+        _window.setIcon(32, 32, icon.getPixelsPtr());
+    } catch (const std::exception &e) {
+        std::cerr << "Failed to set icon" << std::endl;
+    }
 }

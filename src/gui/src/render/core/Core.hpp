@@ -72,8 +72,12 @@ class Core {
         sf::RectangleShape _shade;
 
         sf::Music _music;
+        sf::Texture _cursorTexture;
+        sf::Sprite _cursor;
 
         void initSounds();
+        void initCursor();
+        void initIcon();
 };
 
 #endif /* !CORE_HPP_ */
