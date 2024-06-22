@@ -80,6 +80,8 @@ static int handle_quit_client(
         TAILQ_INSERT_TAIL(&team->eggs, item_e, entries);
     }
     close(client_fd);
+    if (client->is_connected == true && client->is_graphic == false)
+        message_to_graphicals(server, "dead %s\n", client->id);
     FD_CLR(client_fd, &server->current_sockets);
     remove_client_by_fd(&server->clients, client_fd);
     return OK_STATUS;
