@@ -106,7 +106,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
           newTeamScores[team] = { scores: [] };
           isStateChanged = true;
         }
-        const score = zappyServerData.players.reduce((acc, player) => player.team_name === team ? acc + 15 * (player.level ?? 0) + 10 : acc, 0);
+        const score = zappyServerData.players.reduce((acc, player) => !player.is_dead && player.team_name === team ? acc + 15 * (player.level ?? 0) + 10 : acc, 0);
         const lastScore = newTeamScores[team].scores[newTeamScores[team].scores.length - 1];
         if (!lastScore || score !== lastScore.value) {
           newTeamScores[team].scores.push({ timestamp: new Date().toISOString(), value: score });
@@ -263,6 +263,16 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                         is_dead: true
                     } : player)
                 }));
+                const newTeamScores = { ...teamScoresState };
+                const player = zappyServerData.players.find((player) => player.id === parseInt(id));
+                if (player) {
+                    const score = -15 * (player.level ?? 0) - 10;
+                    if (!newTeamScores[player.team_name ?? '']) {
+                        newTeamScores[player.team_name ?? ''] = { scores: [] };
+                    }
+                    newTeamScores[player.team_name ?? ''].scores.push({ timestamp, value: score });
+                    setTeamScoresState(newTeamScores);
+                }
             }
             if (data.startsWith('pgt')) {
                 const [, id, resource] = data.split(' ');
