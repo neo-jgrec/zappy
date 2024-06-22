@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, ReactNode, useRef, useEffect } from 'react';
+import { createContext, useState, useContext, ReactNode, useRef, useEffect, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useSnackbar } from './SnackbarContext';
 import { useNavigate } from 'react-router-dom';
@@ -24,10 +24,21 @@ interface Ressources {
     thystame: number;
 }
 
+interface Player {
+    id: number;
+    x: number;
+    y: number;
+    orientation?: number;
+    level?: number;
+    team_name?: string;
+    resources: Ressources;
+    is_dead: boolean;
+}
+
 interface ZappyServerData {
     x: number;
     y: number;
-    players: { id: number; x: number; y: number, orientation?: number, level?: number, team_name?: string, resources: Ressources, is_dead: boolean }[];
+    players: Player[];
     foods: { id: number; x: number; y: number }[];
     teams: string[];
 }
@@ -59,6 +70,7 @@ interface WebSocketContextProps {
     tcpHost: string | undefined;
     setTcpHost: (host: string) => void;
     standAloneConnect: () => void;
+    teamScoresState: { [key: string]: { scores: { timestamp: string, value: number }[] } };
 }
 
 const WebSocketContext = createContext<WebSocketContextProps | undefined>(undefined);
@@ -73,7 +85,6 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
     const [zappyServerData, setZappyServerData] = useState<ZappyServerData>(initialZappyServerData);
     const navigate = useNavigate();
 
-
     const [host, setHost] = useState(localStorage.getItem('host') || undefined);
     const [port, setPort] = useState(localStorage.getItem('port') || undefined);
 
@@ -83,6 +94,36 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
     const { showSnackbar } = useSnackbar();
 
     const [connectionStatus, setConnectionStatus] = useState('disconnected');
+
+    const [teamScoresState, setTeamScoresState] = useState<{ [key: string]: { scores: { timestamp: string, value: number }[] } }>({});
+
+    const updateScores = useCallback(() => {
+      const newTeamScores = { ...teamScoresState };
+      let isStateChanged = false;
+
+      zappyServerData.teams.forEach((team) => {
+        if (!newTeamScores[team]) {
+          newTeamScores[team] = { scores: [] };
+          isStateChanged = true;
+        }
+        const score = zappyServerData.players.reduce((acc, player) => player.team_name === team ? acc + 15 * (player.level ?? 0) + 10 : acc, 0);
+        const lastScore = newTeamScores[team].scores[newTeamScores[team].scores.length - 1];
+        if (!lastScore || score !== lastScore.value) {
+          newTeamScores[team].scores.push({ timestamp: new Date().toISOString(), value: score });
+          isStateChanged = true;
+        }
+      });
+
+      if (isStateChanged) {
+        setTeamScoresState(newTeamScores);
+      }
+    }, [teamScoresState, zappyServerData]);
+
+    useEffect(() => {
+      updateScores();
+      const intervalId = setInterval(updateScores, 5000);
+      return () => clearInterval(intervalId);
+    }, [updateScores]);
 
     const connect = (host: string, port: string) => {
         showSnackbar({
@@ -298,7 +339,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
             }
 
             const newHundredLastMessages = [...HundredLastMessagesRef.current];
-            if (newHundredLastMessages.length >= 100) {
+            if (newHundredLastMessages.length >= 30) {
                 newHundredLastMessages.shift();
             }
             newHundredLastMessages.push({ message: data, timestamp });
@@ -420,7 +461,8 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         setTcpHost,
         tcpPort,
         setTcpPort,
-        standAloneConnect
+        standAloneConnect,
+        teamScoresState
     };
 
     return (
