@@ -42,6 +42,7 @@ class World : public IScene {
         bool moveMap(sf::Event event);
         void updateTrantorians();
         void updateChuncks();
+        void updateIncantation();
         sf::Vector2f circularVector(sf::Vector2f tile);
 
         int getNbTrantorian() { return _trantorians.size(); }
@@ -93,7 +94,7 @@ class World : public IScene {
         Diamond _diamond;
         WorldUi _worldUi;
         float _rankTime = 0;
-        int _nbIncantation = 0;
+        int _nbIncantations = 0;
         std::vector<LvlUpAnim> _lvlUpAnims;
         std::vector<Starlings> _starlings;
 };

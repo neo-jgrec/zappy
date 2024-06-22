@@ -180,6 +180,7 @@ void World::update(float fElapsedTime)
         _sprites["aura"]->update(_core->getDeltaTime());
     updateTrantorians();
     updateChuncks();
+    updateIncantation();
     _rankTime += _core->getDeltaTime();
     if (_rankTime > 10)
         Ranking::getRanking(_rankings, _core->_data);
@@ -258,9 +259,10 @@ void World::layer2(int i, int j)
             isThereTrantorian = true;
             if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
                 if (_worldUi.getPanelState() == WorldUi::panelState::FLAG) {
-                    _sprites["aura"]->_sprite.setPosition(trantorian.getPos());
-                    _sprites["aura"]->setColor(_teamsColor[_worldUi._idTeam]);
                     if (trantorian._team == _teams[_worldUi._idTeam]) {
+                        _sprites["aura"]->_sprite.setPosition(trantorian.getPos());
+                        _sprites["aura"]->setColor(_teamsColor[_worldUi._idTeam]);
+                        _sprites["aura"]->setScale(_zoom);
                         window.draw(_sprites["aura"]->_sprite);
                     }
                 }
@@ -268,6 +270,8 @@ void World::layer2(int i, int j)
                     if (index == _worldUi._idPlayer) {
                         _sprites["aura"]->_sprite.setPosition(trantorian.getPos());
                         _sprites["aura"]->setColor(_teamsColor[trantorian._teamIndex]);
+                        _sprites["aura"]->setScale(_zoom);
+
                         window.draw(_sprites["aura"]->_sprite);
                     }
                 }
@@ -283,7 +287,13 @@ void World::layer2(int i, int j)
     }
     if (!isThereTrantorian)
         _chuncks[i][j].draw(window);
-    if (_selectedTile.x == i && _selectedTile.y == j) {
+    bool incantation = false;
+    for (auto &lvlUpAnim : _lvlUpAnims)
+        if (lvlUpAnim.getTile().x == i && lvlUpAnim.getTile().y == j) {
+            lvlUpAnim.draw(window);
+            incantation = true;
+        }
+    if (!incantation && _selectedTile.x == i && _selectedTile.y == j) {
         _sprites["halo1"]->_sprite.setPosition(
             _chuncks[i][j]._pos.x,
             _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y / 2
@@ -415,5 +425,31 @@ void World::updateChuncks()
                 if (trantorian.getTile().x == i && trantorian.getTile().y == j)
                     _chuncks[i][j]._nbTrantorians++;
         }
+    }
+}
+
+void World::updateIncantation()
+{
+    auto incantations = _core->_data.getIncantations();
+
+    if ((int)incantations.size() != _nbIncantations) {
+        _chat->addMessage("Incantation started");
+        auto incantation = incantations[incantations.size() - 1];
+        sf::Vector2f tile = sf::Vector2f(incantation->getPosition()[0], incantation->getPosition()[1]);
+        sf::Vector2f pos = _chuncks[tile.x][tile.y].getMiddle();
+        _lvlUpAnims.push_back(LvlUpAnim(incantations.size() - 1,
+            pos, tile,
+            incantation->getLvl()));
+        _nbIncantations = incantations.size();
+    }
+    for (auto &lvlUpAnim : _lvlUpAnims) {
+        int state = incantations[lvlUpAnim.getId()]->getStatus();
+        if (state == IncantationOutcome::SUCCESS)
+            lvlUpAnim.setSuccess();
+        if (state == IncantationOutcome::FAILURE)
+            lvlUpAnim.setFailure();
+        lvlUpAnim.update(_core->getDeltaTime());
+        if (lvlUpAnim.isFinished())
+            _lvlUpAnims.erase(_lvlUpAnims.begin());
     }
 }

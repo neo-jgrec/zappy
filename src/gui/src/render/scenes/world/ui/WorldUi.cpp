@@ -58,7 +58,7 @@ bool WorldUi::update(sf::Event event, sf::RenderWindow &window)
     return false;
 }
 
-void WorldUi::update(float fElapsedTime)
+void WorldUi::update(float /*fElapsedTime*/)
 {
 }
 

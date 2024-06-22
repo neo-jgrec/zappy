@@ -37,6 +37,8 @@ class Sprite {
         void setFrame(int frame) {
             if (frame >= _frameCount)
                 _frame = 0;
+            else
+                _frame = frame;
             _sprite.setTextureRect(sf::IntRect(_frame * _frameSize.x, 0, _frameSize.x, _frameSize.y));
         }
         bool mouseOver(sf::RenderWindow &window) {
