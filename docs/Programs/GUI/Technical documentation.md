@@ -6,7 +6,7 @@ The GUI is separated into two main parts, the Parser and the Renderer.
 The Parser take care of all communication with the server and store all information relative to the game in a Data structure.
 The Renderer uses that Data structure and translate it into a graphical display using the SFML.
 
-## The Parser
+# The Parser
 The parser is composed of 3 main component:
 1. the connection to the server
 2. the command parser
@@ -79,6 +79,30 @@ they are modified by the handlers of the `Parser` class.
 If you want to know more about how to use that Data head to the "Manipulation the data" page"
 :::
 
-## The renderer
+# The renderer
 
 At the core of the renderer lies the `Core` class, it is used to make the link with the Parser side of the GUI and holds both the gameData and the renderData.
+
+The renderer has a main loop that update both the display and the gameData.
+
+Like a standard graphic implementation the main loop calls update for every component and then call draw for each of them.
+
+the core also has 2 function to handle window size:
+1. change the resolution
+```cpp
+void Core::newResolution(sf::Vector2f resolution)
+```
+2. swap to and from fullscreen
+```cpp
+void Core::switchFullscreen()
+```
+
+The core also store global variables such as the `deltaTime`, the `mousePosition` and the `gameState`.
+
+All other aspect of the renderer will be explained in detail on their own page.
+
+Scenes
+
+Sprites
+
+Buttons & inputs
