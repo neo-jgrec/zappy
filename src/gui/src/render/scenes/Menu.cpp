@@ -14,6 +14,7 @@ Menu::Menu(Core *core) : _core(core) {
     _homeButton = std::make_shared<Button>(sf::Vector2f(100, 450), sf::Vector2f(100, 100), "Home", _core->getFont());
     _homeButton->setCallBack(std::bind(&Menu::getBackHome, this));
     createHzButtons();
+    _funMode = std::make_shared<Button>(sf::Vector2f(100, 250), sf::Vector2f(100, 100), "Fun Mode Off", _core->getFont());
 }
 
 bool Menu::update(sf::Event event, sf::RenderWindow &window) {
@@ -35,6 +36,13 @@ bool Menu::update(sf::Event event, sf::RenderWindow &window) {
         _core->newResolution(sf::Vector2f(1280, 720));
         return true;
     }
+    if (_funMode->update(event, window)) {
+        if (_funMode->getText() == "Fun Mode Off")
+            _funMode->setText("Fun Mode On");
+        else
+            _funMode->setText("Fun Mode Off");
+        _core->_funMode = !_core->_funMode;
+    }
     if (_quitButton->update(event, window))
         window.close();
     _homeButton->update(event, window);
@@ -49,6 +57,7 @@ void Menu::draw(sf::RenderWindow &window) {
     _quitButton->draw(window);
     _homeButton->draw(window);
     window.draw(_hzText);
+    _funMode->draw(window);
     _hzInput->draw(window, _core->getDeltaTime());
 }
 

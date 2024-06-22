@@ -44,6 +44,10 @@ World::World(Core *core)
     _sprites["stone1"] = std::make_shared<Sprite>("./assets/stone(1).png");
     _sprites["lvlbanner"] = std::make_shared<Sprite>("./assets/lvlBanner.png", 8, 0.1f);
     _sprites["bubble"] = std::make_shared<Sprite>("./assets/bubble.png");
+    _sprites["background"] = std::make_shared<Sprite>("assets/background.jpg");
+    _sprites["background"]->resetOrigin();
+    _sprites["starling"] = std::make_shared<Sprite>("assets/trantorian.png");
+    _sprites["starling"]->setScale(2);
     _view.setSize(sf::Vector2f(1920 , 1080));
     _chat = std::make_shared<Chat>(_core->getFont(), 7);
     _chat->setPosition(sf::Vector2f(50, 720 - 50));
@@ -82,6 +86,12 @@ void World::init()
         (int)(_worldSize.x / 2) * TILE_SIZE_MX- (int)(_worldSize.x / 2) * TILE_SIZE_MX - TILE_SIZE_MY,
         (int)(_worldSize.y / 2) * TILE_SIZE_MY + (int)(_worldSize.y / 2) * TILE_SIZE_MY - TILE_SIZE_Y
     );
+
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
 }
 
 void World::reset()
@@ -174,10 +184,20 @@ void World::update(float fElapsedTime)
     _rankTime += _core->getDeltaTime();
     if (_rankTime > 10)
         Ranking::getRanking(_rankings, _core->_data);
+    if (_core->_funMode)
+        for (auto &starling : _starlings)
+            starling.update(fElapsedTime);
 }
 
 void World::draw(sf::RenderWindow &window)
 {
+    _sprites["background"]->draw(window);
+    if (_core->_funMode)
+        for (auto &starling : _starlings) {
+            _sprites["starling"]->setPosition(starling._pos);
+            _sprites["starling"]->setRotation(starling._rotation);
+            _sprites["starling"]->draw(window);
+        }
     _view.setCenter(_pos + _tmpOffset + _offset);
     window.setView(_view);
 

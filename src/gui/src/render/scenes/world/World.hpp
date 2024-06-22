@@ -26,6 +26,7 @@
     #include "ui/Ranking.hpp"
     #include "ui/Bubble.hpp"
     #include "ui/LvlUpAnim.hpp"
+    #include "../Starlings.hpp"
 
 class Core;
 class World : public IScene {
@@ -94,6 +95,7 @@ class World : public IScene {
         float _rankTime = 0;
         int _nbIncantation = 0;
         std::vector<LvlUpAnim> _lvlUpAnims;
+        std::vector<Starlings> _starlings;
 };
 
 

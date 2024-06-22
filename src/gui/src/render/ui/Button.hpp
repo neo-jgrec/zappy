@@ -30,6 +30,14 @@ class Button {
             _text.setCharacterSize(size);
         }
 
+        void setText(std::string text) {
+            _text.setString(text);
+        }
+
+        std::string getText() {
+            return _text.getString();
+        }
+
     protected:
     private:
         sf::Text _text;

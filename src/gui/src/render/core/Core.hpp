@@ -55,6 +55,8 @@ class Core {
         Parser _parser;
         ServerConnect _server;
         std::map<std::string, sf::Sound> _sounds;
+
+        bool _funMode = false;
     private:
         sf::RenderWindow _window;
         sf::Event _event;

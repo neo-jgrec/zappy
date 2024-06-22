@@ -32,6 +32,7 @@ class Menu : public IScene {
         std::shared_ptr<Button> _fullscreenButton;
         std::shared_ptr<Button> _homeButton;
         std::shared_ptr<Button> _quitButton;
+        std::shared_ptr<Button> _funMode;
 
         sf::Text _hzText;
         std::shared_ptr<Input> _hzInput;
