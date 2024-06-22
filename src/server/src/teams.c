@@ -49,8 +49,8 @@ void destroy_teams(struct teams_tailq *teams)
     while (!TAILQ_EMPTY(teams)) {
         item = TAILQ_FIRST(teams);
         TAILQ_REMOVE(teams, item, entries);
-        free(item->team);
-        free(item);
+        secure_free((void **)&item->team->name);
+        secure_free((void **)&item->team);
     }
 }
 

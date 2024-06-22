@@ -7,6 +7,7 @@
 
 #include "server.h"
 #include <time.h>
+#include <stdio.h>
 
 static int handle_connections(server_t *server, int fd)
 {
@@ -155,10 +156,12 @@ int server(const char **args)
         return helper(ERROR_STATUS);
     }
     if (bind(server.fd, (struct sockaddr *)&server.info, server.addrlen) < 0)
-        status = ERROR_STATUS;
-    if (listen(server.fd, FD_SETSIZE) < 0)
-        status = ERROR_STATUS;
-    if (start_server(&server) == ERROR_STATUS)
+        perror("Bind failed: Address already in use"), exit(ERROR_STATUS);
+    if (status == OK_STATUS && listen(server.fd, FD_SETSIZE) < 0) {
+        perror("Listen failed: Unable to continue connection");
+        exit(ERROR_STATUS);
+    }
+    if (status == OK_STATUS && start_server(&server) == ERROR_STATUS)
         status = ERROR_STATUS;
     if (status == ERROR_STATUS)
         close(server.fd);
