@@ -75,10 +75,11 @@ static size_t get_nb_players_on_tile(client_t *client, server_t *server)
     client_list_t *client_entry;
 
     TAILQ_FOREACH(client_entry, &server->clients, entries) {
-        if (client_entry->client->x == client->x
+        if (client_entry->client
+            && client_entry->client->is_graphic == false
+            && client_entry->client->x == client->x
             && client_entry->client->y == client->y
-            && client_entry->client->level == client->level
-            && client_entry->client->is_graphic == false)
+            && client_entry->client->level == client->level)
             players_on_tile++;
     }
     return players_on_tile;
