@@ -1,29 +1,20 @@
 #include "Sprite.hpp"
 
-void Sprite::update() {
-    if (_clock.getElapsedTime().asSeconds() > _frameTime) {
+int Sprite::update(float fElapsedTime) {
+    int ret = 0;
+    _time += fElapsedTime;
+    if (_time > _frameTime) {
+        _time = 0;
         _frame++;
-        if (_frame >= _frameCount)
-            _frame = 0;
-        _sprite.setTextureRect(
-            sf::IntRect(
-            _frame * _texture.getSize().x / _frameCount,
-            0, _texture.getSize().x / _frameCount,
-            _texture.getSize().y
-            )
-        );
-        _clock.restart();
+        if (_frame >= _frameCount) {
+            if (_looping)
+                _frame = 0;
+            else {
+                ret = 1;
+                _frame = _frameCount - 1;
+            }
+        }
+        _sprite.setTextureRect(sf::IntRect(_frame * _frameSize.x, 0, _frameSize.x, _frameSize.y));
     }
-}
-
-void Sprite::setFrame(int frame) {
-    if (frame >= _frameCount)
-        frame = 0;
-    _frame = frame;
-    _sprite.setTextureRect(
-        sf::IntRect(
-            _frame * _texture.getSize().x / _frameCount, 0,
-            _texture.getSize().x / _frameCount, _texture.getSize().y
-        )
-    );
+    return ret;
 }

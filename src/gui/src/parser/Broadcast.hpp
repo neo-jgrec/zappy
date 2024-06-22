@@ -15,9 +15,9 @@ class Broadcast
         Broadcast(int playerNb, std::string message, std::vector<int> pos) : pos(pos), message(message), playerNb(playerNb) {};
         ~Broadcast() {};
 
-        std::vector<int> getPosition() { return this->pos; };
-        std::string getMessage() { return this->message; };
-        int getPlayerNb() { return this->playerNb; };
+        std::vector<int> getPosition();
+        std::string getMessage();
+        int getPlayerNb();
 };
 
 #endif // BROADCAST_HPP

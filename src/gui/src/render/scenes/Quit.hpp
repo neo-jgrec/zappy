@@ -20,6 +20,7 @@ class Quit : public IScene {
         ~Quit() {}
 
         bool update(sf::Event event, sf::RenderWindow &window) override;
+        void update(float /*fElapsedTime*/) override {}
         void draw(sf::RenderWindow &window) override {
             _quitButton->draw(window);
         }

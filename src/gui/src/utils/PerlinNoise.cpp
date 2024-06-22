@@ -3,14 +3,6 @@
 #include <cmath>
 #include <algorithm>
 
-PerlinNoise::PerlinNoise() {
-    for (int i = 0; i < 256; i++)
-        _p.push_back(i);
-    std::random_shuffle(_p.begin(), _p.end());
-    for (int i = 0; i < 256; i++)
-        _p.push_back(_p[i]);
-}
-
 float PerlinNoise::noise(float x, float y) {
     int X = (int)floor(x) & 255;
     int Y = (int)floor(y) & 255;
@@ -43,4 +35,11 @@ float PerlinNoise::grad(int hash, float x, float y) {
     float u = h < 8 ? x : y;
     float v = h < 4 ? y : h == 12 || h == 14 ? x : 0;
     return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
+}
+
+void PerlinNoise::initPermutationVector(unsigned int seed) {
+    _p.clear();
+    for (int i = 0; i < 256; ++i) _p.push_back(i);
+    std::shuffle(_p.begin(), _p.end(), std::default_random_engine(seed));
+    for (int i = 0; i < 256; ++i) _p.push_back(_p[i]);
 }
