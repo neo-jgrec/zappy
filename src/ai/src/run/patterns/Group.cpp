@@ -6,7 +6,6 @@
 */
 
 #include "../../bots/ABotPattern.hpp"
-#include "../../bots/ABotProbabilistic.hpp"
 #include "../../constant/Constants.hpp"
 #include <functional>
 
@@ -68,27 +67,28 @@ void ABotPattern::joinGroup()
     }
 }
 
-bool ABotProbabilistic::canLvlUp(int lvl)
-{
-    if (lvl < 2 || lvl > 8)
-        return false;
+// TODO: remove it.
+//  bool ABotProbabilistic::canLvlUp(int lvl)
+//  {
+//      if (lvl < 2 || lvl > 8)
+//          return false;
 
-    const auto requirements = levelRequirements[lvl];
+//     const auto requirements = levelRequirements[lvl];
 
-    bool hasRequiredResources =
-        _state.ressources.linemate >= requirements[0] &&
-        _state.ressources.deraumere >= requirements[1] &&
-        _state.ressources.sibur >= requirements[2] &&
-        _state.ressources.mendiane >= requirements[3] &&
-        _state.ressources.phiras >= requirements[4] &&
-        _state.ressources.thystame >= requirements[5];
+//     bool hasRequiredResources =
+//         _state.ressources.linemate >= requirements[0] &&
+//         _state.ressources.deraumere >= requirements[1] &&
+//         _state.ressources.sibur >= requirements[2] &&
+//         _state.ressources.mendiane >= requirements[3] &&
+//         _state.ressources.phiras >= requirements[4] &&
+//         _state.ressources.thystame >= requirements[5];
 
-    if (hasRequiredResources)
-    {
-        return true;
-    }
-    return false;
-}
+//     if (hasRequiredResources)
+//     {
+//         return true;
+//     }
+//     return false;
+// }
 
 /*void Bot::findPath(std::pair<int, int> start, const std::pair<int, int> &end)
 {

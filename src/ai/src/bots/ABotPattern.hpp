@@ -19,7 +19,7 @@ class ABotPattern : public ABot
 {
 public:
     void run(const std::string &response) override;
-    void init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port, int id, int idMessage) override;
+    void init(int sockfd, const std::string &teamName, const std::string &host, int port, int id, int idMessage) override;
 
     virtual void initChild() = 0;
     virtual void updateStrategy() = 0;

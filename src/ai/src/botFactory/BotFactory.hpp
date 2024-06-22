@@ -8,7 +8,6 @@
 #ifndef BOTFACTORY_HPP_
 #define BOTFACTORY_HPP_
 
-#include "../bots/BotProbabilistic.hpp"
 #include "../bots/Forker.hpp"
 #include "../bots/SimpleBot.hpp"
 #include <memory>

@@ -13,7 +13,6 @@ Initializer::Initializer()
     teamName = "";
     host = "";
     debug = false;
-    flag = false;
 }
 
 Initializer::~Initializer()
@@ -49,10 +48,7 @@ void Initializer::parseArguments(int ac, char **av)
         {
             host = av[++i];
         }
-        else if (arg == "-t")
-        {
-            flag = true;
-        }
+
         else
         {
             throw InitializerException("Invalid argument: " + arg);

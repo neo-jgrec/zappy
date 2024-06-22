@@ -7,7 +7,7 @@
 
 #include "ABotPattern.hpp"
 
-void ABotPattern::init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port, int id, int idMessage)
+void ABotPattern::init(int sockfd, const std::string &teamName, const std::string &host, int port, int id, int idMessage)
 {
     _sockfd = sockfd;
     _teamName = teamName;

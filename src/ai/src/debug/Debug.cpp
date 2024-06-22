@@ -4,7 +4,7 @@
 ** File description:
 ** Debug.cpp
 */
-#include "../bots/ABotProbabilistic.hpp"
+#include "../bots/ABotPattern.hpp"
 
 void ABot::debugInitialisation()
 {
@@ -12,17 +12,6 @@ void ABot::debugInitialisation()
     printKeyValueColored("sockfd", std::to_string(_sockfd));
     printKeyValueColored("teamName", _teamName);
     printColor("========== [!Bot initiation] ==========\n\n", BLUE);
-}
-
-void ABotProbabilistic::debugTrainedVariables()
-{
-    printColor("========== [Bot Probabilities] ==========\n", BLUE);
-
-    for (auto &TrainedVariable : _trainedVariables)
-    {
-        printKeyValueColored(TrainedVariable->name, std::to_string(TrainedVariable->value));
-    }
-    printColor("========== [!Bot Probabilities] ==========\n", BLUE);
 }
 
 void ABot::debugState()

@@ -7,15 +7,9 @@
 
 #include "Client.hpp"
 
-Client::Client(const std::string &host, const std::string &teamName, int port, bool arg)
+Client::Client(const std::string &host, const std::string &teamName, int port)
     : _host(host), _teamName(teamName), _port(port)
 {
-    // TODO: remove it
-    _arg = arg;
-    if (_arg)
-        printf("Arg is true\n");
-    else
-        printf("Arg is false\n");
     setupConnection();
 }
 
@@ -152,7 +146,7 @@ void Client::initBot(const std::string identityMessage)
     }
     if (_bot != nullptr)
     {
-        _bot->init(_sockfd, _teamName, _arg, _host, _port, id, currentMessageId);
+        _bot->init(_sockfd, _teamName, _host, _port, id, currentMessageId);
     }
     else
     {
