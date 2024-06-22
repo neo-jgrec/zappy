@@ -11,6 +11,7 @@
 
 void ABotPattern::group()
 {
+    std::cout << "_state.level = " << _state.level << std::endl;
     if (_state.level == 2)
         _message.content = "group_3";
     else if (_state.level == 3)

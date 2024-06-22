@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** zappy/ai
 ** File description:
-** ListenInventoryResponse.cpp
+** ListenInventoryresponseCopy.cpp
 */
 
 #include "../../bots/ABot.hpp"
@@ -10,21 +10,48 @@
 
 void ABot::listenInventoryResponse(const std::string &response)
 {
-    std::string cleanResponse = response.substr(1, response.size() - 2);
-    cleanResponse.erase(std::remove_if(cleanResponse.begin(), cleanResponse.end(), ::isspace), cleanResponse.end());
+    const std::string responseCopy = response;
 
-    std::vector<std::string> resources = splitByChar(cleanResponse, ',');
+    if (responseCopy.size() < 2 || responseCopy.front() != '[' || responseCopy.back() != ']')
+    {
+        std::cerr << "Invalid responseCopy format" << std::endl;
+        return;
+    }
+
+    std::string cleanresponseCopy = responseCopy.substr(1, responseCopy.size() - 2);
+
+    std::vector<std::string> resources = splitByChar(cleanresponseCopy, ',');
     int foodCount = 0;
-    // TODO: food is always first so don't need to go through for
+
     for (const auto &resource : resources)
     {
-        std::vector<std::string> parts = splitByChar(resource, ' ');
+        std::string trimmedResource = resource;
+        trimmedResource.erase(trimmedResource.begin(), std::find_if(trimmedResource.begin(), trimmedResource.end(), [](unsigned char ch)
+                                                                    { return !std::isspace(ch); }));
+        trimmedResource.erase(std::find_if(trimmedResource.rbegin(), trimmedResource.rend(), [](unsigned char ch)
+                                           { return !std::isspace(ch); })
+                                  .base(),
+                              trimmedResource.end());
+
+        std::vector<std::string> parts = splitByChar(trimmedResource, ' ');
         if (parts.size() == 2 && parts[0] == "food")
         {
-            foodCount = std::stoi(parts[1]);
+            try
+            {
+                foodCount = std::stoi(parts[1]);
+            }
+            catch (const std::invalid_argument &e)
+            {
+                std::cerr << "Invalid number format: " << parts[1] << std::endl;
+                return;
+            }
+            catch (const std::out_of_range &e)
+            {
+                std::cerr << "Number out of range: " << parts[1] << std::endl;
+                return;
+            }
             break;
         }
     }
-    std::cout << "foodCount: " << foodCount << std::endl;
     _state.ressources.food = foodCount;
 }

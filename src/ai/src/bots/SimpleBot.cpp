@@ -21,8 +21,8 @@ void SimpleBot::updateStrategy()
         handleLvl1();
         return;
     }
-    // if (handleSurvive())
-    //     return;
+    if (handleSurvive())
+        return;
     if (handleState())
         return;
     else if (_state.level == 2)
@@ -43,7 +43,7 @@ bool SimpleBot::handleSurvive()
     if (_state.ressources.food < limitFood)
     {
         if (_state.level == 2)
-            searchFood = 40;
+            searchFood = 10;
     }
     if (searchFood > 0)
     {
@@ -57,11 +57,6 @@ bool SimpleBot::handleSurvive()
 
 bool SimpleBot::handleState()
 {
-
-    PRINT_ALERT("handleState\n");
-    std::cout << "should_group: " << _state.metadata["should_group"] << std::endl;
-    std::cout << "should_incant: " << _state.metadata["should_incant"] << std::endl;
-    std::cout << "level: " << _state.level << std::endl;
     if (_state.metadata["should_group"] == "true")
     {
         joinGroup();
