@@ -119,12 +119,10 @@ void ABotPattern::listenBroadcast(const std::string &response)
 
 void ABotPattern::verifyServerIsRunning(const std::string &response)
 {
-    if (response.empty())
-        exit(55);
     if (response.find("dead") != std::string::npos)
     {
         debugState();
-        exit(77);
+        exit(0);
     }
 }
 

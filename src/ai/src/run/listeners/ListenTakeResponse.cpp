@@ -10,14 +10,7 @@
 // TODO: find a cleaner way to do this
 void ABot::listenTakeResponse(const std::string &response)
 {
-    if (_state.lastAction.parameter == "food")
-    {
-        if (response == "ok")
-        {
-            _state.ressources.food += 1;
-        }
-    }
-    else if (_state.lastAction.parameter == "linemate")
+    if (_state.lastAction.parameter == "linemate")
     {
         if (response == "ok")
         {

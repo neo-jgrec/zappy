@@ -141,20 +141,16 @@ void Client::initBot(const std::string identityMessage)
     }
     else
     {
-        PRINT_ALERT("BotFactory failed");
         _bot = BotFactory::createBot("SimpleBot"); // TODO: is forker normally
         if (_bot == nullptr)
             throw ClientException("BotFactory failed");
-        PRINT_ALERT("BotFactory failed");
     }
     if (_bot != nullptr)
     {
-        PRINT_ALERT("BotFactory failed 2");
         _bot->init(_sockfd, _teamName, _host, _port, id, currentMessageId);
     }
     else
     {
-        PRINT_ALERT("BotFactory failed 3");
         throw ClientException("Bot is null");
     }
 }
