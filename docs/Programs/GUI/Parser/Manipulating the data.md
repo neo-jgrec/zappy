@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 1
 ---
 
 As it was said before the GUI is divided into two parts the Parser and the Render.
