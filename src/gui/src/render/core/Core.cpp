@@ -26,14 +26,11 @@ Core::Core(int port, std::string ip) {
     initSounds();
     _sounds["music"].play();
     std::cout << "play music" << std::endl;
-    try {
-        if (!_cursorTexture.loadFromFile("assets/cursor.png"))
-            throw guiException("Failed to load cursor");
-        _cursor.setTexture(_cursorTexture);
-        _window.setMouseCursorVisible(false);
-    } catch (const std::exception &e) {
-        std::cerr << "Failed to load cursor" << std::endl;
-    }
+
+    if (!_cursorTexture.loadFromFile("assets/cursor.png"))
+        throw guiException("Failed to load cursor");
+    _cursor.setTexture(_cursorTexture);
+    _window.setMouseCursorVisible(false);
     initIcon();
 }
 
@@ -82,7 +79,7 @@ void Core::draw() {
         _window.draw(_shade);
         _scenes[_upperState]->draw(_window);
     }
-    _cursor.setPosition(_realMousePos);
+    _cursor.setPosition(_window.mapPixelToCoords(sf::Mouse::getPosition(_window)));
     _window.draw(_cursor);
     _window.display();
 }
@@ -95,6 +92,7 @@ void Core::newResolution(sf::Vector2f resolution) {
         sf::VideoMode(_resolution.x, _resolution.y),
         "Zappy",
         (_fullscreen) ? sf::Style::Fullscreen : sf::Style::Close);
+    _window.setMouseCursorVisible(false);
 }
 
 void Core::switchFullscreen() {
@@ -103,6 +101,7 @@ void Core::switchFullscreen() {
         sf::VideoMode(_resolution.x, _resolution.y),
         "Zappy",
         (_fullscreen) ? sf::Style::Fullscreen : sf::Style::Close);
+    _window.setMouseCursorVisible(false);
 }
 
 bool Core::connectToServer(int port, std::string ip) {

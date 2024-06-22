@@ -47,6 +47,10 @@ class Trantorian {
                     Random::random(0, 26) - 13
                 );
                 _targetPos = targetPos + offset;
+                float distance = sqrt(pow(_targetPos.x - _pos.x, 2) + pow(_targetPos.y - _pos.y, 2));
+                if (distance > 100) {
+                    _pos = _targetPos;
+                }
             }
             _tile = tile;
         }
