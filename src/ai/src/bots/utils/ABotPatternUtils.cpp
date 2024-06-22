@@ -24,9 +24,7 @@ void ABotPattern::separateServerBroadcast(const std::string &response, std::stri
     responseBroadcast = cleanCarriageReturn(responseBroadcast);
 
     // Handle encryted message
-    if (responseBroadcast.empty())
-        responseBroadcast = "no message";
-    else
+    if (!responseBroadcast.empty())
     {
         std::string signature = getElementAfter(responseBroadcast, ':');
 

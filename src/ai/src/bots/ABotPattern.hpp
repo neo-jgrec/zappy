@@ -23,7 +23,7 @@ public:
 
     virtual void initChild() = 0;
     virtual void updateStrategy() = 0;
-
+    // TODO: do updateStrategyServer and updateStrategyBroadcast ?
 protected:
     unsigned int _id = 0;
     unsigned int _currentMessageId = 0;
@@ -34,6 +34,7 @@ protected:
     virtual void listenBroadcast(const std::string &response);
 
     // Act
+    void react(const std::string &responseServer, const std::string &responseBroadcast);
     void act();
 
     // Paterns
@@ -57,6 +58,7 @@ protected:
     // Debug
     void debugResponses(const std::string &responseServer, const std::string &responseBroadcast);
     void debugBotRun();
+    void debugMetadata();
 
     // Utils
     void separateServerBroadcast(const std::string &response, std::string &responseServer, std::string &responseBroadcast);

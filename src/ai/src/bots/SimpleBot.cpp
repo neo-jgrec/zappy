@@ -24,18 +24,19 @@ void SimpleBot::updateStrategy()
         if (_state.level == 2)
             searchFood = 40;
     }
+
     if (_state.level == 1)
     {
         runToLinemate();
         _state.pattern = "runToLinemate";
     }
-    else if (searchFood > 0) // TODO: We can train an ia for this.
+    else if (searchFood > 0)
     {
         survive();
         _state.pattern = "survive";
         searchFood--;
     }
-    else if (_state.state == SHOULD_GROUP)
+    else if (_state.metadata["should_group"] == "true")
     {
         joinGroup();
         _state.pattern = "joinGroup";

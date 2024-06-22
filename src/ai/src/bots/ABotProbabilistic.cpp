@@ -36,56 +36,58 @@ void ABotProbabilistic::init(int sockfd, const std::string &teamName, bool arg, 
 // }
 void ABotProbabilistic::run(const std::string &response)
 {
-    std::string responseCopy = response;
-    _message.content = "";
-    static bool _canAct = true;
+    (void)response;
+    // Decrecated
+    //  std::string responseCopy = response;
+    //  _message.content = "";
+    //  static bool _canAct = true;
 
-    if (!responseCopy.empty() && responseCopy.back() == '\n')
-    {
-        responseCopy.pop_back();
-    }
-    printKeyValueColored("Bot listens", responseCopy);
-    // TODO: it is a action response, _canAct == true
-    if (responseCopy.find("message") == std::string::npos || responseCopy.find("ok") != std::string::npos || responseCopy.find("ko") != std::string::npos)
-    {
-        _canAct = true;
-        std::cout << "canAct: " << _canAct << std::endl;
-    }
-    else
-    {
-        std::cout << "canAct: " << _canAct << std::endl;
-    }
-    listen(responseCopy);
-    updateProbabilities();
+    // if (!responseCopy.empty() && responseCopy.back() == '\n')
+    // {
+    //     responseCopy.pop_back();
+    // }
+    // printKeyValueColored("Bot listens", responseCopy);
+    // // TODO: it is a action response, _canAct == true
+    // if (responseCopy.find("message") == std::string::npos || responseCopy.find("ok") != std::string::npos || responseCopy.find("ko") != std::string::npos)
+    // {
+    //     _canAct = true;
+    //     std::cout << "canAct: " << _canAct << std::endl;
+    // }
+    // else
+    // {
+    //     std::cout << "canAct: " << _canAct << std::endl;
+    // }
+    // listen(responseCopy);
+    // updateProbabilities();
 
-    if (_canAct)
-    {
-        printColor("========== [Bot Run] ==========\n", BLUE);
-        printKeyValueColored("Iteration", std::to_string(_iteration));
-        if (_state.state != INCANTATING)
-        {
-            if (queue.empty())
-                updateStrategy(); // -> fait l'action la plus rentable
-            if (!queue.empty() && _canAct)
-            {
-                queue.front().first();
-                _canAct = false;
-                queue.erase(queue.begin());
-            }
-        }
-        _iteration++;
-        printColor("========== [!Bot Run] ==========\n", BLUE);
-        if (_iteration % 20 == 0) // TODO: make it when flag --save-data is entered
-        {
-            saveData("./src/ai/dataSaved/behaviors.txt");
-        }
-    }
-    if (_iteration == 200 || (responseCopy.find("dead") != std::string::npos))
-    {
-        debugState();
-        saveData("./src/ai/dataSaved/behaviors.txt");
-        exit(0);
-    }
+    // if (_canAct)
+    // {
+    //     printColor("========== [Bot Run] ==========\n", BLUE);
+    //     printKeyValueColored("Iteration", std::to_string(_iteration));
+    //     if (_state.state != INCANTATING)
+    //     {
+    //         if (queue.empty())
+    //             updateStrategy(); // -> fait l'action la plus rentable
+    //         if (!queue.empty() && _canAct)
+    //         {
+    //             queue.front().first();
+    //             _canAct = false;
+    //             queue.erase(queue.begin());
+    //         }
+    //     }
+    //     _iteration++;
+    //     printColor("========== [!Bot Run] ==========\n", BLUE);
+    //     if (_iteration % 20 == 0) // TODO: make it when flag --save-data is entered
+    //     {
+    //         saveData("./src/ai/dataSaved/behaviors.txt");
+    //     }
+    // }
+    // if (_iteration == 200 || (responseCopy.find("dead") != std::string::npos))
+    // {
+    //     debugState();
+    //     saveData("./src/ai/dataSaved/behaviors.txt");
+    //     exit(0);
+    // }
 }
 
 void ABotProbabilistic::updateStrategy()

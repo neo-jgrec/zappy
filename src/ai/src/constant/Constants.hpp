@@ -26,6 +26,8 @@ const std::array<std::array<unsigned int, 6>, 9> levelRequirements = {{
 
 #define PRINT_ERROR(errorMsg) std::cerr << "\033[31mError: " << errorMsg << " occurred in file " << __FILE__ << " at line " << __LINE__ << "\033[0m" << std::endl;
 
+#define PRINT_ALERT(infoMsg) printColor(std::string("🚨🚨🚨") + (infoMsg), RED);
+
 #define SUCCESS 0
 #define FAILURE 84
 

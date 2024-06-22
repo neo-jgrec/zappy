@@ -53,7 +53,7 @@ void ABot::doAction(Action action, const std::string &parameter)
         PRINT_ERROR(e.what());
     }
     // Bots moved or took a ressource, his environment changed
-    if (action == FORWARD || action == RIGHT || action == LEFT || action == TAKE || action == INCANTATING)
+    if (action == FORWARD || action == RIGHT || action == LEFT || action == TAKE || action == INCANTATION)
         _state.metadata["should_update_env"] = "true";
     if (action == LOOK)
         _state.metadata["should_update_env"] = "false";

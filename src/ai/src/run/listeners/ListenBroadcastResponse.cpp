@@ -9,20 +9,18 @@
 
 void ABot::listenGroup(const std::string &message)
 {
-    if (_state.state != SHOULD_GROUP)
+    if (_state.metadata["should_group"] != "true") // TODO: rename it in process_group ?
     {
         try
         {
-            if (!message.empty())
-            {
-                std::string lastChar(1, message.back());
-                unsigned int askLevel = std::stoi(lastChar);
+            std::string lastChar(1, message.back());
+            unsigned int askLevel = std::stoi(lastChar);
 
-                if (_state.level + 1 == askLevel)
-                {
-                    queue.clear();
-                    _state.state = SHOULD_GROUP;
-                }
+            if (_state.level + 1 == askLevel)
+            {
+                queue.clear();
+                _state.metadata["should_group"] = "true";
+                _state.state = ACT_ON_BROADCAST;
             }
         }
         catch (std::invalid_argument &e)

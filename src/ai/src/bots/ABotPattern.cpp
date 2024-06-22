@@ -24,6 +24,8 @@ void ABotPattern::run(const std::string &response)
     std::string responseServer = "";
     std::string responseBroadcast = "";
     _message.content = "";
+    _allyMessage.content = "";
+    _enemyMessage.content = "";
 
     // separe servers and broadcast, decrypt message
     separateServerBroadcast(response, responseServer, responseBroadcast);
@@ -35,47 +37,65 @@ void ABotPattern::run(const std::string &response)
     debugResponses(responseServer, responseBroadcast);
 
     if (!responseServer.empty())
+        _canAct = true;
+
+    if (!responseServer.empty() && _state.state != WAIT_FOR_BROADCAST_RESPONSE)
     {
         listen(responseServer);
-        _canAct = true;
     }
-    listenBroadcast(responseBroadcast);
-    if (_canAct)
+    if (!responseBroadcast.empty() && _state.state != WAIT_FOR_SERVER_RESPONSE)
     {
-        if (_state.state != SHOULD_GROUP) // TODO: find a cleaner way
-            act();
-        _canAct = false;
+        listenBroadcast(responseBroadcast);
     }
-    else if (!responseBroadcast.empty() && _state.state == SHOULD_GROUP)
+    if (_state.state != WAIT_FOR_BROADCAST_RESPONSE && _state.state != WAIT_FOR_SERVER_RESPONSE)
     {
-        act();
+        react(responseServer, responseBroadcast);
     }
     debugState();
-    _iteration++;
+    debugMetadata();
+}
+
+void ABotPattern::react(const std::string &responseServer, const std::string &responseBroadcast)
+{
+    if (_canAct)
+    {
+        if (!responseServer.empty() && !responseBroadcast.empty())
+        { // TODO: It in this case, use ACT_ON
+            PRINT_ALERT("GET RESPONSES FROM SERVER AND BROADCAST\n");
+        }
+        if (!responseServer.empty() && _state.state != ACT_ON_BROADCAST)
+        {
+            if (_state.state != ACT_ON_BROADCAST)
+                act();
+        }
+        else if (!responseBroadcast.empty() && _state.state != ACT_ON_SERVER)
+        {
+            act();
+        }
+    }
 }
 
 void ABotPattern::act()
 {
-    if (_state.state != INCANTATING)
+    if (queue.empty())
     {
-        if (queue.empty())
-        {
-            updateStrategy();
-        }
-        if (!queue.empty())
-        {
-            queue.front().first();
-            queue.erase(queue.begin());
-        }
-        if (_iteration % 20 == 0)
-            saveDataActions(saveActionsFile);
+        updateStrategy();
     }
+    if (!queue.empty())
+    {
+        queue.front().first();
+        queue.erase(queue.begin());
+        _canAct = false;
+        _iteration++;
+    }
+    if (_iteration % 20 == 0)
+        saveDataActions(saveActionsFile);
 }
 
 // Always put state listener first before listener for actions
 void ABotPattern::listen(const std::string &response)
 {
-    if (_state.state == INCANTATING)
+    if (_state.state == WAIT_FOR_SERVER_RESPONSE && _state.lastAction.action == INCANTATION)
         listenIncantationReturnResponse(response);
     else if (_state.lastAction.action == LOOK)
         listenLookResponse(response);
@@ -89,10 +109,8 @@ void ABotPattern::listen(const std::string &response)
 
 void ABotPattern::listenBroadcast(const std::string &response)
 {
-    if (response.find("message") != std::string::npos)
-    {
-        listenBroadcastResponse(response);
-    }
+    // TODO: clean ?
+    listenBroadcastResponse(_allyMessage.content);
 }
 
 void ABotPattern::verifyServerIsRunning(const std::string &response)
@@ -108,5 +126,4 @@ void ABotPattern::verifyServerIsRunning(const std::string &response)
 
 // TODO: metrics, save proportions of state in the game, add state: searching, moving, etc...
 
-// Landmaerk: 1. When server need to joing group, when server has response it don't do bot does, that why it make times.
-//  Do state that i wrote on paper on the table.
+// Landmaerk: 1: CARE if they group in same time. Howevery we fork bots so we don't care.

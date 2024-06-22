@@ -11,6 +11,7 @@
 #include "../environment/Environment.hpp"
 #include "../ressources/Ressources.hpp"
 #include "../actions/Action.hpp"
+#include "../utils/PrintColor.hpp"
 
 #include <vector>
 #include <memory>
@@ -19,9 +20,11 @@
 enum State
 {
     STANDARD,
-    INCANTATING,
     FORKED,
-    SHOULD_GROUP,
+    WAIT_FOR_SERVER_RESPONSE,    // Do nothing and wait for server response
+    WAIT_FOR_BROADCAST_RESPONSE, // Do nothing and wait for broadcast response
+    ACT_ON_SERVER,               // Do an action on server
+    ACT_ON_BROADCAST,            // Do an action on broadcast
 };
 
 enum Job
@@ -52,11 +55,15 @@ public:
     unsigned int widthMap = 42;
     unsigned int heightMap = 42;
     std::map<std::string, std::string> metadata = {
-        {"should_update_env", "true"}};
+        {"should_update_env", "true"},
+        {"should_group", "false"},
+    };
 
     // Metrics
     std::vector<ActionInfo>
         actionsData;
+
+    void printMetadata() const;
 };
 
 const std::string getStateName(State state);

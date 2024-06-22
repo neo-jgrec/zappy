@@ -35,6 +35,7 @@ void ABotPattern::joinGroup()
     std::cout << _allyMessage.content << std::endl;
     if (_direction == "0")
     {
+        std::cout << "direction = 0" << std::endl;
         _message.content = "group_joined";
         _message.vigenereEncrypt();
         _message.generateMessage();
