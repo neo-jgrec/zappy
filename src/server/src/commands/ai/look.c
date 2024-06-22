@@ -27,8 +27,8 @@ static const struct {
     {0, NULL}
 };
 
-static const int dx[] = {0, 0, -1, 1};
-static const int dy[] = {-1, 1, 0, 0};
+static const int dx[] = {0, 1, 0, -1};
+static const int dy[] = {-1, 0, 1, 0};
 
 static tile_t *copy_map(tile_t *dest, tile_t *src, server_t *server)
 {
@@ -50,10 +50,13 @@ static void populate_map_with_players(tile_t *map, server_t *server)
 {
     client_list_t *tmp;
     client_t *client;
+    int index;
 
     TAILQ_FOREACH(tmp, &server->clients, entries) {
         client = tmp->client;
-        int index = client->y * server->proprieties.width + client->x;
+        if (client->is_graphic)
+            continue;
+        index = client->y * server->proprieties.width + client->x;
         map[index].num_objects++;
         map[index].objects = realloc(map[index].objects,
             map[index].num_objects * sizeof(object_t));

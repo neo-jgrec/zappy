@@ -55,7 +55,7 @@ void print_string_array(char **array);
  *
  * @param elem elem to free
  */
-void secure_free(void *elem);
+void secure_free(void **elem);
 
 /**
  *

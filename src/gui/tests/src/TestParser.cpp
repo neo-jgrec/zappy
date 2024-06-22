@@ -399,8 +399,7 @@ Test(Parser, pieNormal)
 
     parser.parse(args3, data, server);
     parser.execute();
-    std::map <std::vector<int>, std::shared_ptr<Incantation>> incantations = data.getIncantations();
-    std::shared_ptr<Incantation> incantation = incantations.at(std::vector<int>({1, 1}));
+    std::shared_ptr<Incantation> incantation = data.getIncantationByPos({1, 1});
     cr_assert_eq(incantation->getStatus(), SUCCESS, "Expected %d, got %d", SUCCESS, incantation->getStatus());
 }
 

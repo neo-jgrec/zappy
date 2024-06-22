@@ -22,9 +22,13 @@ static void init_inventory(inventory_t *inv)
 
 static void init_bools(client_t *client)
 {
+    static int id = 0;
+
+    client->id = id;
     client->is_incanting = false;
     client->is_connected = false;
     client->is_graphic = false;
+    id++;
 }
 
 client_t *init_client(int client_fd)
@@ -58,8 +62,6 @@ void destroy_clients(struct client_tailq *clients)
     while (!TAILQ_EMPTY(clients)) {
         item = TAILQ_FIRST(clients);
         TAILQ_REMOVE(clients, item, entries);
-        secure_free(item->client);
-        secure_free(item);
     }
 }
 
@@ -70,7 +72,7 @@ void remove_client_by_fd(struct client_tailq *clients, int fd)
     TAILQ_FOREACH(item, clients, entries) {
         if (item->client->fd == fd) {
             TAILQ_REMOVE(clients, item, entries);
-            secure_free(item->client);
+            secure_free((void**)&item->client);
             break;
         }
     }

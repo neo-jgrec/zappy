@@ -1,8 +1,16 @@
 #include <criterion/criterion.h>
+#include <criterion/redirect.h>
 #include "client.h"
 #include "server.h"
 
-Test(eject, basic) {
+static void redirect_all_stdout(void)
+{
+    cr_redirect_stdout();
+    cr_redirect_stderr();
+}
+
+Test(eject, basic, .init = redirect_all_stdout)
+{
     server_t server;
     server.proprieties.height = 10;
     server.proprieties.width = 10;
@@ -11,6 +19,8 @@ Test(eject, basic) {
     client.x = 5;
     client.y = 5;
     client.level = 1;
+    client.id = 0;
+    client.orientation = NORTH;
 
     TAILQ_INIT(&server.clients);
 
@@ -34,6 +44,8 @@ Test(eject, basic) {
     client2.x = 5;
     client2.y = 5;
     client2.level = 1;
+    client2.fd = 1;
+    client2.id = 1;
     client2.orientation = NORTH;
 
     client_list_t *client_list_entry2;
@@ -45,8 +57,7 @@ Test(eject, basic) {
 
     cr_assert_eq(client2.x, 5);
     cr_assert_eq(client2.y, 4);
-    cr_assert_eq(client2.orientation, NORTH);
-    cr_assert_str_eq(client2.payload, "eject: 1\n");
+    cr_assert_stdout_eq_str("eject: 1\n");
 
     cr_assert_str_eq(client.payload, "ok\n");
 }

@@ -14,9 +14,13 @@ void message_to_graphicals(server_t *server, char *fmt, ...)
     client_list_t *client;
     va_list args;
 
-    va_start(args, fmt);
+    if (fmt == NULL)
+        return;
     TAILQ_FOREACH(client, &server->clients, entries) {
-        if (client->client->is_graphic)
+        if (client->client && client->client->is_graphic) {
+            va_start(args, fmt);
             vdprintf(client->client->fd, fmt, args);
+            va_end(args);
+        }
     }
 }

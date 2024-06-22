@@ -5,6 +5,7 @@
 ** meteors.c
 */
 
+#include "flags.h"
 #include "server.h"
 
 static info_map_t get_tile(server_t *server, size_t x, size_t y)
@@ -29,15 +30,27 @@ static void add_object(server_t *server, int max, int value, int obj_enum)
     int diff = max - value;
     int x = server->proprieties.width;
     int y = server->proprieties.height;
+    int x_rand = 0;
+    int y_rand = 0;
+    info_map_t in = {0};
 
-    for (int i = diff; i >= 0; i--)
-        add_element_to_map(server, rand_p(x), rand_p(y), obj_enum);
+    for (int i = diff; i >= 0; i--) {
+        x_rand = rand_p(x);
+        y_rand = rand_p(y);
+        add_element_to_map(server, x_rand, y_rand, obj_enum);
+        in = get_tile(server, x_rand, y_rand);
+        if (in.food >= max || in.linemate >= max || in.deraumere >= max ||
+            in.sibur >= max || in.mendiane >= max || in.phiras >= max ||
+            in.thystame >= max)
+            break;
+        message_to_graphicals(server, "bct %d %d %d %d %d %d %d %d %d\n",
+            x_rand, y_rand, in.food, in.linemate, in.deraumere,
+            in.sibur, in.mendiane, in.phiras, in.thystame);
+    }
 }
 
 static void fill_objects(server_t *server, info_map_t *max, info_map_t *map)
 {
-    info_map_t info;
-
     add_object(server, max->food, map->food, FOOD);
     add_object(server, max->linemate, map->linemate, LINEMATE);
     add_object(server, max->deraumere, map->deraumere, DERAUMERE);
@@ -45,15 +58,6 @@ static void fill_objects(server_t *server, info_map_t *max, info_map_t *map)
     add_object(server, max->mendiane, map->mendiane, MENDIANE);
     add_object(server, max->phiras, map->phiras, PHIRAS);
     add_object(server, max->thystame, map->thystame, THYSTAME);
-    for (size_t y = 0; y < (size_t)server->proprieties.height; y++) {
-        for (size_t x = 0; x < (size_t)server->proprieties.width; x++) {
-            info = get_tile(server, x, y);
-            message_to_graphicals(server, "bct %ld %ld %d %d %d %d %d %d %d\n",
-            x, y, info.food, info.linemate, info.deraumere, info.sibur,
-            info.mendiane, info.phiras, info.thystame
-            );
-        }
-    }
 }
 
 void handle_meteors(server_t *server)

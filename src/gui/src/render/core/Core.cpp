@@ -23,6 +23,9 @@ Core::Core(int port, std::string ip) {
     _scenes[GameState::GAME] = std::make_shared<World>(this);
     _scenes[GameState::MENU] = std::make_shared<Menu>(this);
     _clock.restart();
+    initSounds();
+    _sounds["music"].play();
+    std::cout << "play music" << std::endl;
 }
 
 void Core::update() {
@@ -105,4 +108,10 @@ void Core::backToHome() {
         _data.resetGame();
     _upperState = GameState::DEFAULT;
     _state = GameState::HOME;
+}
+
+void Core::initSounds() {
+    _music.openFromFile("assets/audio/music.ogg");
+    _music.setLoop(true);
+    _music.play();
 }

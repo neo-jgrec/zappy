@@ -28,6 +28,7 @@ class Chat {
         }
 
         void addMessage(std::string msg, sf::Color color = sf::Color::White) {
+            msg = msg.substr(0, 25);
             if ((int)_messages.size() >= _maxMsg) {
                 _messages.pop_back();
             }

@@ -7,9 +7,10 @@
 
 #include <stdlib.h>
 
-void secure_free(void *elem)
+void secure_free(void **ptr)
 {
-    if (elem == NULL)
-        return;
-    free(elem);
+    if (ptr != NULL && *ptr != NULL) {
+        free(*ptr);
+        *ptr = NULL;
+    }
 }

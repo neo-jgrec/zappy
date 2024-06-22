@@ -14,6 +14,7 @@ Test(ppo, basics, .init = redirect_all_stdout)
     server_t server;
     client_t client;
     client.fd = 1;
+    client.id = 1;
     client.x = 1;
     client.y = 1;
     client.orientation = 1;

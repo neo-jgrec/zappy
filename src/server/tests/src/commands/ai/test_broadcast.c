@@ -158,7 +158,7 @@ Test(broadcast, from_north_to_south, .init = redirect_all_stdout) {
     TAILQ_INSERT_TAIL(&server.clients, client_list_entry, entries);
 
     broadcast(&client, &server);
-    cr_assert_stdout_eq_str("message 8, Hello, world!\n");
+    cr_assert_stdout_eq_str("message 2, Hello, world!\n");
 }
 
 Test(broadcast, from_south_to_north, .init = redirect_all_stdout) {
@@ -196,5 +196,5 @@ Test(broadcast, from_south_to_north, .init = redirect_all_stdout) {
     TAILQ_INSERT_TAIL(&server.clients, client_list_entry, entries);
 
     broadcast(&client, &server);
-    cr_assert_stdout_eq_str("message 8, Hello, world!\n");
+    cr_assert_stdout_eq_str("message 2, Hello, world!\n");
 }

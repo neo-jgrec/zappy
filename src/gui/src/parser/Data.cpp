@@ -32,9 +32,11 @@ std::shared_ptr<Player> Data::getPlayerById(int id)
 
 std::shared_ptr<Incantation> Data::getIncantationByPos(std::vector<int> pos)
 {
-    if (this->incantations.find(pos) == this->incantations.end())
-        throw guiException("getIncantationsByPos: Invalid position");
-    return this->incantations.at(pos);
+    for (std::shared_ptr<Incantation> &incantation : this->incantations) {
+        if (incantation->getPosition() == pos)
+            return incantation;
+    }
+    throw guiException("getIncantationByPos: Invalid position(" + std::to_string(pos[0]) + ", " + std::to_string(pos[1]) + ")");
 };
 
 std::optional<Broadcast> Data::getNextBroadcast() {
@@ -86,12 +88,7 @@ void Data::addIncantation(std::vector<int> pos, int lvl, std::vector<int> player
         lvl,
         playersId
     );
-    this->incantations.insert(
-        std::make_pair(
-            pos,
-            incantation
-        )
-    );
+    this->incantations.push_back(incantation);
 };
 
 void Data::addBroadcast(int playerNb, std::vector<int> pos, std::string msg)

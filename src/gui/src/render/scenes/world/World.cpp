@@ -379,11 +379,9 @@ void World::updateChuncks()
             _chuncks[i][j]._phiras = map.getTileAt(i, j).getRessources()[5];
             _chuncks[i][j]._thystame = map.getTileAt(i, j).getRessources()[6];
             _chuncks[i][j]._nbTrantorians = 0;
-            for (auto &trantorian : _trantorians) {
-                if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
+            for (auto &trantorian : _trantorians)
+                if (trantorian.getTile().x == i && trantorian.getTile().y == j)
                     _chuncks[i][j]._nbTrantorians++;
-                }
-            }
         }
     }
 }

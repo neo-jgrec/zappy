@@ -11,6 +11,7 @@
     #include <SFML/Graphics.hpp>
     #include <memory>
     #include <functional>
+    #include <vector>
 
     #include "../../../utils/PerlinNoise.hpp"
     #include "Chunck.hpp"
@@ -24,6 +25,7 @@
     #include "ui/WorldUi.hpp"
     #include "ui/Ranking.hpp"
     #include "ui/Bubble.hpp"
+    #include "ui/LvlUpAnim.hpp"
 
 class Core;
 class World : public IScene {
@@ -90,7 +92,8 @@ class World : public IScene {
         Diamond _diamond;
         WorldUi _worldUi;
         float _rankTime = 0;
-
+        int _nbIncantation = 0;
+        std::vector<LvlUpAnim> _lvlUpAnims;
 };
 
 

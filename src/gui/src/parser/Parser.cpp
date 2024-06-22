@@ -315,7 +315,11 @@ void Parser::sbp (const std::vector<TokenType>& tokens, [[maybe_unused]] Data& g
 
 void Parser::execute() {
     while (!_queue.empty()) {
-        _queue.front()();
+        try {
+            _queue.front()();
+        } catch (const guiException& e) {
+            std::cerr << "error in data update:\n" << e.what() << std::endl;
+        }
         _queue.pop();
     }
 };
@@ -353,7 +357,11 @@ void Parser::updateData(Data &gameData, ServerConnect &server)
                 vals.push_back(token);
             }
         }
-        parse(vals, gameData, server);
+        try {
+            parse(vals, gameData, server);
+        } catch (const ParserException& e) {
+            std::cerr << "error in parsing:\n" << e.what() << std::endl;
+        }
     }
     execute();
 }
