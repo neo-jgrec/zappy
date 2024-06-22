@@ -48,6 +48,8 @@ class WorldUi : public IScene {
             _sprites["flagPanel"]->setPosition(sf::Vector2f(16 * 4, 0));
             _sprites["flagPanel"]->resetOrigin();
             _sprites["flagPanel"]->setScale(4);
+            _sprites["bousolle"] = std::make_shared<Sprite>("./assets/bousolle.png");
+            _sprites["bousolle"]->setScale(0.5);
             _font.loadFromFile("assets/BadComic-Regular.ttf");
             _inventoryText = sf::Text("", _font, 25);
         }

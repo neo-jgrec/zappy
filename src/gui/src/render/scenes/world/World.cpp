@@ -370,6 +370,7 @@ void World::updateTrantorians()
                 exisitingPlayers = true;
                 trantorian.setTile(tile, _chuncks[tile.x][tile.y].getMiddle());
                 trantorian._level = player.second->getLvl();
+                trantorian._facing = player.second->getOrientation();
                 trantorian._inventory = player.second->getInventory();
                 if (player.second->getAlive() == false)
                     trantorian.kill();
