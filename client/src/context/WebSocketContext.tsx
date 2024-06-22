@@ -6,15 +6,17 @@ import { useNavigate } from 'react-router-dom';
 interface ZappyServerData {
     x: number;
     y: number;
-    player_positions: { id: number; x: number; y: number }[];
+    player_positions: { id: number; x: number; y: number, orientation?: string, level?: number, team_name?: string }[];
     food_positions: { id: number; x: number; y: number }[];
+    team_names?: string[];
 }
 
 const initialZappyServerData: ZappyServerData = {
     x: 0,
     y: 0,
     player_positions: [],
-    food_positions: []
+    food_positions: [],
+    team_names: []
 };
 
 interface WebSocketContextProps {
@@ -53,12 +55,6 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
 
     const [connectionStatus, setConnectionStatus] = useState('disconnected');
 
-    useEffect(() => {
-        console.log('x, y', zappyServerData.x, zappyServerData.y);
-        console.log('player_positions', zappyServerData.player_positions);
-        console.log('food_positions', zappyServerData.food_positions);
-    }, [zappyServerData]);
-
     const connect = (host: string, port: string) => {
         showSnackbar({
             title: 'Connecting',
@@ -92,6 +88,8 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
             localStorage.setItem('host', host);
             localStorage.setItem('port', port);
             setConnectionStatus('connected');
+            newSocket.emit('message', 'msz');
+            newSocket.emit('message', 'tna');
         });
 
         newSocket.on('message', (data: string) => {
@@ -105,6 +103,76 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                     AllBroadcastMessagesRef.current = newAllBroadcastMessages;
                     setAllBroadcastMessages(newAllBroadcastMessages);
                 }
+                if (data.startsWith('ppo')) {
+                    const [, id, x, y] = data.split(' ');
+                    const newZappyServerData = { ...zappyServerData };
+                    newZappyServerData.player_positions = newZappyServerData.player_positions.filter(
+                        (player) => player.id !== parseInt(id)
+                    );
+                    newZappyServerData.player_positions.push({ id: parseInt(id), x: parseInt(x), y: parseInt(y) });
+                    setZappyServerData(newZappyServerData);
+                }
+                if (data.startsWith('msz')) {
+                    const [, x, y] = data.split(' ');
+                    const newZappyServerData = { ...zappyServerData };
+                    newZappyServerData.x = parseInt(x);
+                    newZappyServerData.y = parseInt(y);
+                    setZappyServerData(newZappyServerData);
+                }
+                if (data.startsWith('tna')) {
+                    const [, ...team_names] = data.split(' ');
+                    const newZappyServerData = { ...zappyServerData };
+                    newZappyServerData.team_names = team_names;
+                    setZappyServerData(newZappyServerData);
+                }
+                if (data.startsWith('pnw')) {
+                    const [, id, x, y, orientation, level, team_name] = data.split(' ');
+                    const newZappyServerData = { ...zappyServerData };
+                    newZappyServerData.player_positions = newZappyServerData.player_positions.filter(
+                        (player) => player.id !== parseInt(id)
+                    );
+                    newZappyServerData.player_positions.push({
+                        id: parseInt(id),
+                        x: parseInt(x),
+                        y: parseInt(y),
+                        orientation,
+                        level: parseInt(level),
+                        team_name
+                    });
+                    setZappyServerData(newZappyServerData);
+                }
+                if (data.startsWith('pdi')) {
+                    const [, id] = data.split(' ');
+                    const newZappyServerData = { ...zappyServerData };
+                    newZappyServerData.player_positions = newZappyServerData.player_positions.filter(
+                        (player) => player.id !== parseInt(id)
+                    );
+                    setZappyServerData(newZappyServerData);
+                }
+                if (data.startsWith('pgt')) {
+                    const [,, resource] = data.split(' ');
+                    const newZappyServerData = { ...zappyServerData };
+                    newZappyServerData.food_positions = newZappyServerData.food_positions.filter(
+                        (food) => food.id !== parseInt(resource)
+                    );
+                    setZappyServerData(newZappyServerData);
+                }
+                if (data.startsWith('pdr')) {
+                    const [,, resource] = data.split(' ');
+                    const newZappyServerData = { ...zappyServerData };
+                    newZappyServerData.food_positions = newZappyServerData.food_positions.filter(
+                        (food) => food.id !== parseInt(resource)
+                    );
+                    setZappyServerData(newZappyServerData);
+                }
+                if (data.startsWith('plv')) {
+                    const [, id, level] = data.split(' ');
+                    const newZappyServerData = { ...zappyServerData };
+                    newZappyServerData.player_positions = newZappyServerData.player_positions.map(
+                        (player) => player.id === parseInt(id) ? { ...player, level: parseInt(level) } : player
+                    );
+                    setZappyServerData(newZappyServerData);
+                }
                 const newHundredLastMessages = [...HundredLastMessagesRef.current];
                 if (newHundredLastMessages.length >= 30) {
                     newHundredLastMessages.shift();
@@ -112,6 +180,20 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                 newHundredLastMessages.push(data);
                 HundredLastMessagesRef.current = newHundredLastMessages;
                 setHundredLastMessages(newHundredLastMessages);
+            }
+
+            if (data.startsWith('bct')) {
+                const [, x, y, resources] = data.split(' ');
+                const newZappyServerData = { ...zappyServerData };
+                newZappyServerData.food_positions = newZappyServerData.food_positions.filter(
+                    (food) => food.x !== parseInt(x) && food.y !== parseInt(y)
+                );
+                resources.split(',').forEach((resource, index) => {
+                    if (parseInt(resource) > 0) {
+                        newZappyServerData.food_positions.push({ id: index, x: parseInt(x), y: parseInt(y) });
+                    }
+                });
+                setZappyServerData(newZappyServerData);
             }
 
             const newReceivedMessages = { ...receivedMessages };
