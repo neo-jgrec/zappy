@@ -1,25 +1,27 @@
-import Fastify from 'fastify';
-import cors from '@fastify/cors';
-import { Socket } from 'net';
-import { config } from 'dotenv';
-import { Server } from "socket.io";
+const { Server } = require("socket.io");
+const { createServer } = require("http");
+const { Socket } = require("net");
+const dotenv = require("dotenv");
 
-config();
-const port = process.env.PORT || 8888;
+dotenv.config();
+
+const httpServer = createServer((req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST");
+    res.end("Socket.io server");
+});
+
+const io = new Server(httpServer, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
+
 const tcpPort = process.env.TCP_PORT || 4000;
 const tcpHost = process.env.TCP_HOST || 'localhost';
 
-const fastify = Fastify({ logger: true });
-
-fastify.register(cors, { origin: '*' });
-
-const io = new Server(fastify.server, {
-    cors: {
-        origin: true,
-        methods: ["GET", "POST"],
-        credentials: true
-    }
-});
+console.log(`Connecting to TCP server at ${tcpHost}:${tcpPort}`);
 
 const createTcpClient = (socket) => {
     const tcpClient = new Socket();
@@ -52,7 +54,7 @@ const createTcpClient = (socket) => {
     socket.on('message', (msg) => {
         console.log(`Received message from WebSocket client: ${msg}`);
         if (tcpClient && tcpClient.writable) {
-            if (!msg.endsWith('\n'))
+            if (!msg.endsWith('\n')) 
                 msg += '\n';
             tcpClient.write(msg);
         } else {
@@ -74,14 +76,7 @@ io.on('connection', (socket) => {
     createTcpClient(socket);
 });
 
-const start = async () => {
-    try {
-        await fastify.listen({ port: port });
-        console.log(`HTTP server and WebSocket server listening on ${port}`);
-    } catch (err) {
-        fastify.log.error(err);
-        process.exit(1);
-    }
-};
-
-start();
+const port = process.env.PORT || 8888;
+httpServer.listen(port, () => {
+    console.log(`HTTP server and WebSocket server listening on ${port}`);
+});
