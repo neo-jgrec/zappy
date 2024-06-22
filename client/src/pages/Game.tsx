@@ -24,6 +24,9 @@ import {
   TableToolbarMenu,
   TableToolbarAction
 } from '@carbon/react';
+import {
+  white,
+} from '@carbon/colors';
 
 function Game() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -297,8 +300,8 @@ function Game() {
               header: 'Status'
             }
           ]}
-          rows={zappyServerData.players.map((player, index) => ({
-            id: index.toString(),
+          rows={zappyServerData.players.map((player) => ({
+            id: player.id.toString(),
             team_name: player.team_name,
             x: player.x.toString(),
             y: player.y.toString(),
@@ -311,7 +314,7 @@ function Game() {
             mendiane: player.resources?.mendiane?.toString() || '0',
             phiras: player.resources?.phiras?.toString() || '0',
             thystame: player.resources?.thystame?.toString() || '0',
-            is_dead: player.is_dead ? 'Dead' : 'Alive'
+            is_dead: player.is_dead ? 'Dead' : 'Dead'
           }))}
         >
           {({
@@ -350,9 +353,11 @@ function Game() {
                 </TableHead>
                 <TableBody>
                   {rows.map((row) => (
-                    <TableRow {...getRowProps({ row })}>
+                    <TableRow {...getRowProps({ row })} style={{ backgroundColor: row.cells[13].value === 'Dead' ? '#A34343' : '' }}>
                       {row.cells.map((cell) => (
-                        <TableCell>{cell.value}</TableCell>
+                        <TableCell style={{ color: row.cells[13].value === 'Dead' ? `${white}` : '' }}>
+                          {cell.value}
+                        </TableCell>
                       ))}
                     </TableRow>
                   ))}
