@@ -270,22 +270,64 @@ void World::layer2(int i, int j)
     if (_viewRect.contains(_chuncks[i][j].getMiddle()) == false)
         return;
     sf::RenderWindow &window = _core->getWindow();
-    bool isThereTrantorian = false;
-    int index = 0;
-    if (_buildings[i][j] != 0) {
+    if (!drawBuilding(window, i, j) && !drawTrantorian(window, i, j))
+        _chuncks[i][j].draw(window);
+    bool incantation = false;
+    for (auto &lvlUpAnim : _lvlUpAnims)
+        if (lvlUpAnim.getTile().x == i && lvlUpAnim.getTile().y == j) {
+            lvlUpAnim.draw(window);
+            incantation = true;
+        }
+    if (!incantation && _selectedTile.x == i && _selectedTile.y == j) {
+        _sprites["halo1"]->_sprite.setPosition(
+            _chuncks[i][j]._pos.x,
+            _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y / 2
+        );
+        window.draw(_sprites["halo1"]->_sprite);
+    }
+    for (auto &bubble : _bubbles) {
+        if (i == bubble.getPos().x && j == bubble.getPos().y) {
+            _sprites["bubble"]->_sprite.setPosition(
+                _chuncks[i][j].getMiddle());
+            window.draw(_sprites["bubble"]->_sprite);
+            _bubbleText.setString(bubble.getMessage());
+            _bubbleText.setPosition(
+                _chuncks[i][j].getMiddle().x + 25,
+                _chuncks[i][j].getMiddle().y + -50
+            );
+            window.draw(_bubbleText);
+        }
+    }
+}
+
+bool World::drawBuilding(sf::RenderWindow &window, int i, int j)
+{
+    bool ret = false;
+    if (_buildings[i][j] != 0 &&
+        _worldUi.getPanelState() != WorldUi::panelState::FLAG &&
+        _worldUi.getPanelState() != WorldUi::panelState::TRANTORIAN) {
         _sprites["buildings"]->_sprite.setPosition(
             _chuncks[i][j]._pos.x,
             _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y / 2
         );
         _sprites["buildings"]->setFrame(_buildings[i][j] - 1);
         window.draw(_sprites["buildings"]->_sprite);
+        ret = true;
     }
+    return ret;
+}
+
+bool World::drawTrantorian(sf::RenderWindow &window, int i, int j)
+{
+    bool ret = false;
+    int index = 0;
+
     for (auto &trantorian : _trantorians) {
         if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
             trantorian.draw(window);
             if (trantorian.isDead())
                 continue;
-            isThereTrantorian = true;
+            ret = true;
             if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
                 if (_worldUi.getPanelState() == WorldUi::panelState::FLAG) {
                     if (trantorian._team == _teams[_worldUi._idTeam]) {
@@ -314,34 +356,7 @@ void World::layer2(int i, int j)
         }
         index++;
     }
-    if (!isThereTrantorian)
-        _chuncks[i][j].draw(window);
-    bool incantation = false;
-    for (auto &lvlUpAnim : _lvlUpAnims)
-        if (lvlUpAnim.getTile().x == i && lvlUpAnim.getTile().y == j) {
-            lvlUpAnim.draw(window);
-            incantation = true;
-        }
-    if (!incantation && _selectedTile.x == i && _selectedTile.y == j) {
-        _sprites["halo1"]->_sprite.setPosition(
-            _chuncks[i][j]._pos.x,
-            _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y / 2
-        );
-        window.draw(_sprites["halo1"]->_sprite);
-    }
-    for (auto &bubble : _bubbles) {
-        if (i == bubble.getPos().x && j == bubble.getPos().y) {
-            _sprites["bubble"]->_sprite.setPosition(
-                _chuncks[i][j].getMiddle());
-            window.draw(_sprites["bubble"]->_sprite);
-            _bubbleText.setString(bubble.getMessage());
-            _bubbleText.setPosition(
-                _chuncks[i][j].getMiddle().x + 25,
-                _chuncks[i][j].getMiddle().y + -50
-            );
-            window.draw(_bubbleText);
-        }
-    }
+    return ret;
 }
 
 bool World::moveMap(sf::Event event)
