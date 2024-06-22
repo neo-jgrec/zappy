@@ -72,8 +72,10 @@ static void remove_resources(tile_t *tile, const size_t *required_resources)
 static size_t get_nb_players_on_tile(client_t *client, server_t *server)
 {
     size_t players_on_tile = 0;
-    client_list_t *client_entry;
+    client_list_t *client_entry = NULL;
 
+    if (client == NULL)
+        return 0;
     TAILQ_FOREACH(client_entry, &server->clients, entries) {
         if (client_entry->client
             && client_entry->client->is_graphic == false
