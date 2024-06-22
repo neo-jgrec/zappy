@@ -10,6 +10,7 @@
 void ABotPattern::separateServerBroadcast(const std::string &response, std::string &responseServer, std::string &responseBroadcast)
 {
     size_t messagePos = response.find("message");
+
     if (messagePos != std::string::npos)
     {
         responseServer = response.substr(0, messagePos);
@@ -42,6 +43,7 @@ void ABotPattern::separateServerBroadcast(const std::string &response, std::stri
             _direction = getElementBefore(temp, ',');
             _direction = getElementAfter(_direction, ' ');
             _allyMessage.vigenereDecrypt();
+            responseBroadcast = _allyMessage.content;
             // printKeyValueColored("Message", _allyMessage.content);
             // printKeyValueColored("Direction", _direction);
         }

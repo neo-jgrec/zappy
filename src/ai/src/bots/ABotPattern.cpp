@@ -107,3 +107,6 @@ void ABotPattern::listenBroadcast(const std::string &response)
 }
 
 // TODO: metrics, save proportions of state in the game, add state: searching, moving, etc...
+
+// Landmaerk: 1. When server need to joing group, when server has response it don't do bot does, that why it make times.
+//  Do state that i wrote on paper on the table.

@@ -22,7 +22,7 @@ void SimpleBot::updateStrategy()
     if (_state.ressources.food < limitFood)
     {
         if (_state.level == 2)
-            searchFood = 20;
+            searchFood = 40;
     }
     if (_state.level == 1)
     {
