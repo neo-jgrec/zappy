@@ -50,10 +50,13 @@ static void populate_map_with_players(tile_t *map, server_t *server)
 {
     client_list_t *tmp;
     client_t *client;
+    int index;
 
     TAILQ_FOREACH(tmp, &server->clients, entries) {
         client = tmp->client;
-        int index = client->y * server->proprieties.width + client->x;
+        if (client->is_graphic)
+            continue;
+        index = client->y * server->proprieties.width + client->x;
         map[index].num_objects++;
         map[index].objects = realloc(map[index].objects,
             map[index].num_objects * sizeof(object_t));
