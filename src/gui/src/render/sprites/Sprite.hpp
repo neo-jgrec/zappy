@@ -54,6 +54,9 @@ class Sprite {
         void setColor(sf::Color color) {
             _sprite.setColor(color);
         }
+        void setRotation(float angle) {
+            _sprite.setRotation(angle);
+        }
         bool isFinished() {
             if (_frame == _frameCount - 1)
                 return true;

@@ -359,6 +359,8 @@ void World::updateTrantorians()
         trantorian.update(_core->getDeltaTime());
     std::optional<Broadcast> broadcast = _core->_data.getNextBroadcast();
     if (broadcast.has_value()) {
+        if (_bubbles.size() > 6)
+            return;
         _chat->addMessage(std::to_string(broadcast.value().getPlayerNb()) + " : " + broadcast.value().getMessage());
         Bubble bubble = Bubble(broadcast.value().getMessage(), sf::Vector2f(broadcast.value().getPosition()[0], broadcast.value().getPosition()[1]));
         _bubbles.push_back(bubble);
