@@ -62,8 +62,6 @@ void destroy_clients(struct client_tailq *clients)
     while (!TAILQ_EMPTY(clients)) {
         item = TAILQ_FIRST(clients);
         TAILQ_REMOVE(clients, item, entries);
-        secure_free((void **)&item->client);
-        secure_free((void**)&item);
     }
 }
 
