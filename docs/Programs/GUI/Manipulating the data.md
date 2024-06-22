@@ -11,14 +11,16 @@ To use the gameData three things are needed:
 3. accessing the data
 
 :::warning
-Before trying to make a Render process yourself you should understand the Core class:::
+Before trying to make a Render process yourself you should understand the Core class
+:::
 
 ## Connecting to the server
 
 To connect to a server you need to use the member funtion `connectToServer(int port, const char *ip)` of the `ServerConnect` class.
 
 :::info
-The ServerConnect class contain a ip and port public variable for you to use:::
+The ServerConnect class contain a ip and port public variable for you to use
+:::
 
 `connectToServer` can throw in two situations:
 1. if the ip given is invalid
@@ -39,7 +41,8 @@ parser.updateData(gameData, server)
 This function does nothing if no data is available to read so don't hesitate to call it each frame to make sure your data is up to date.
 
 :::info
-You must feed the function a ServerConnect that is already connected to a server or else it will throw:::
+You must feed the function a ServerConnect that is already connected to a server or else it will throw
+:::
 
 ## Accesing the data
 
