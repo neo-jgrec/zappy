@@ -378,7 +378,7 @@ void Parser::parse(std::vector<TokenType> values, Data& gameData, ServerConnect 
     if (it != handlers.end()) {
         it->second(values, gameData, server);
     } else {
-        std::cerr << "Command not found: " << command << std::endl;
+        // std::cerr << "Command not found: " << command << std::endl;
     }
 };
 
