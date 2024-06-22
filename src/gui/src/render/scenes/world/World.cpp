@@ -44,11 +44,16 @@ World::World(Core *core)
     _sprites["stone1"] = std::make_shared<Sprite>("./assets/stone(1).png");
     _sprites["lvlbanner"] = std::make_shared<Sprite>("./assets/lvlBanner.png", 8, 0.1f);
     _sprites["bubble"] = std::make_shared<Sprite>("./assets/bubble.png");
+    _sprites["background"] = std::make_shared<Sprite>("assets/background.jpg");
+    _sprites["background"]->resetOrigin();
+    _sprites["starling"] = std::make_shared<Sprite>("assets/trantorian.png");
+    _sprites["starling"]->setScale(2);
+    _sprites["buildings"] = std::make_shared<Sprite>("./assets/houses.png", 8, 0.1f);
     _view.setSize(sf::Vector2f(1920 , 1080));
     _chat = std::make_shared<Chat>(_core->getFont(), 7);
-    _chat->setPosition(sf::Vector2f(50, 720 - 50));
     _bubbleText = sf::Text("", _core->getFont(), 15);
     _bubbleText.setFillColor(sf::Color::Black);
+    initSounds();
 }
 
 void World::init()
@@ -78,15 +83,27 @@ void World::init()
         _chuncks.push_back(chuncks);
     }
 
+    for (int i = 0; i < _worldSize.x; i++) {
+        std::vector<int> innerVector(_worldSize.y, 0);
+        _buildings.push_back(innerVector);
+    }
+
     _pos = sf::Vector2f(
         (int)(_worldSize.x / 2) * TILE_SIZE_MX- (int)(_worldSize.x / 2) * TILE_SIZE_MX - TILE_SIZE_MY,
         (int)(_worldSize.y / 2) * TILE_SIZE_MY + (int)(_worldSize.y / 2) * TILE_SIZE_MY - TILE_SIZE_Y
     );
+
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
 }
 
 void World::reset()
 {
     _trantorians.clear();
+    _buildings.clear();
     _chuncks.clear();
     _worldSize = sf::Vector2f(0, 0);
     _selectedTile = sf::Vector2f(-1, -1);
@@ -141,8 +158,11 @@ bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
                 ));
                 if (_diamond.checkCollision(_mousePos)) {
                     _hoveredTile = sf::Vector2f(i, j);
-                    if (event.mouseButton.button == sf::Mouse::Button::Left)
+                    if (event.mouseButton.button == sf::Mouse::Button::Left) {
                         _selectedTile = sf::Vector2f(i, j);
+                        _sounds["interact"].stop();
+                        _sounds["interact"].play();
+                    }
                     break;
                 }
 
@@ -171,14 +191,31 @@ void World::update(float fElapsedTime)
         _sprites["aura"]->update(_core->getDeltaTime());
     updateTrantorians();
     updateChuncks();
+    updateIncantation();
     _rankTime += _core->getDeltaTime();
     if (_rankTime > 10)
         Ranking::getRanking(_rankings, _core->_data);
+    if (_core->_funMode)
+        for (auto &starling : _starlings)
+            starling.update(fElapsedTime);
 }
 
 void World::draw(sf::RenderWindow &window)
 {
+    _sprites["background"]->draw(window);
+    if (_core->_funMode)
+        for (auto &starling : _starlings) {
+            _sprites["starling"]->setPosition(starling._pos);
+            _sprites["starling"]->setRotation(starling._rotation);
+            _sprites["starling"]->draw(window);
+        }
     _view.setCenter(_pos + _tmpOffset + _offset);
+    _viewRect = sf::FloatRect(
+        _view.getCenter().x - _view.getSize().x / 2 - 50,
+        _view.getCenter().y - _view.getSize().y / 2 - 50,
+        _view.getSize().x + 100,
+        _view.getSize().y + 100
+    );
     window.setView(_view);
 
     iterateWorld([&](int i, int j) {
@@ -189,11 +226,17 @@ void World::draw(sf::RenderWindow &window)
     });
     window.setView(window.getDefaultView());
     _worldUi.draw(window);
+    _chat->setPosition(sf::Vector2f(
+        50,
+        window.getSize().y - 50
+    ));
     _chat->draw(window);
 }
 
 void World::layer1(int i, int j)
 {
+    if (_viewRect.contains(_chuncks[i][j].getMiddle()) == false)
+        return;
     sf::RenderWindow &window = _core->getWindow();
     _sprite->_sprite.setPosition(
                 _chuncks[i][j]._pos.x,
@@ -224,43 +267,18 @@ void World::layer1(int i, int j)
 
 void World::layer2(int i, int j)
 {
+    if (_viewRect.contains(_chuncks[i][j].getMiddle()) == false)
+        return;
     sf::RenderWindow &window = _core->getWindow();
-    bool isThereTrantorian = false;
-    int index = 0;
-    for (auto &trantorian : _trantorians) {
-        if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
-            trantorian.draw(window);
-            if (trantorian.isDead())
-                continue;
-            isThereTrantorian = true;
-            if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
-                if (_worldUi.getPanelState() == WorldUi::panelState::FLAG) {
-                    _sprites["aura"]->_sprite.setPosition(trantorian.getPos());
-                    _sprites["aura"]->setColor(_teamsColor[_worldUi._idTeam]);
-                    if (trantorian._team == _teams[_worldUi._idTeam]) {
-                        window.draw(_sprites["aura"]->_sprite);
-                    }
-                }
-                if (_worldUi.getPanelState() == WorldUi::panelState::TRANTORIAN) {
-                    if (index == _worldUi._idPlayer) {
-                        _sprites["aura"]->_sprite.setPosition(trantorian.getPos());
-                        _sprites["aura"]->setColor(_teamsColor[trantorian._teamIndex]);
-                        window.draw(_sprites["aura"]->_sprite);
-                    }
-                }
-            }
-            if (_zoom > 0.6f)
-                continue;
-            _sprites["lvlbanner"]->_sprite.setPosition(trantorian.getPos());
-            _sprites["lvlbanner"]->setFrame(trantorian._level - 1);
-            _sprites["lvlbanner"]->setColor(_teamsColor[trantorian._teamIndex]);
-            window.draw(_sprites["lvlbanner"]->_sprite);
-        }
-        index++;
-    }
-    if (!isThereTrantorian)
+    if (!drawBuilding(window, i, j) && !drawTrantorian(window, i, j))
         _chuncks[i][j].draw(window);
-    if (_selectedTile.x == i && _selectedTile.y == j) {
+    bool incantation = false;
+    for (auto &lvlUpAnim : _lvlUpAnims)
+        if (lvlUpAnim.getTile().x == i && lvlUpAnim.getTile().y == j) {
+            lvlUpAnim.draw(window);
+            incantation = true;
+        }
+    if (!incantation && _selectedTile.x == i && _selectedTile.y == j) {
         _sprites["halo1"]->_sprite.setPosition(
             _chuncks[i][j]._pos.x,
             _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y / 2
@@ -280,6 +298,65 @@ void World::layer2(int i, int j)
             window.draw(_bubbleText);
         }
     }
+}
+
+bool World::drawBuilding(sf::RenderWindow &window, int i, int j)
+{
+    bool ret = false;
+    if (_buildings[i][j] != 0 &&
+        _worldUi.getPanelState() != WorldUi::panelState::FLAG &&
+        _worldUi.getPanelState() != WorldUi::panelState::TRANTORIAN) {
+        _sprites["buildings"]->_sprite.setPosition(
+            _chuncks[i][j]._pos.x,
+            _chuncks[i][j]._pos.y + _chuncks[i][j]._yOffset - TILE_SIZE_Y / 2
+        );
+        _sprites["buildings"]->setFrame(_buildings[i][j] - 1);
+        window.draw(_sprites["buildings"]->_sprite);
+        ret = true;
+    }
+    return ret;
+}
+
+bool World::drawTrantorian(sf::RenderWindow &window, int i, int j)
+{
+    bool ret = false;
+    int index = 0;
+
+    for (auto &trantorian : _trantorians) {
+        if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
+            trantorian.draw(window);
+            if (trantorian.isDead())
+                continue;
+            ret = true;
+            if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
+                if (_worldUi.getPanelState() == WorldUi::panelState::FLAG) {
+                    if (trantorian._team == _teams[_worldUi._idTeam]) {
+                        _sprites["aura"]->_sprite.setPosition(trantorian.getPos());
+                        _sprites["aura"]->setColor(_teamsColor[_worldUi._idTeam]);
+                        _sprites["aura"]->setScale(_zoom);
+                        window.draw(_sprites["aura"]->_sprite);
+                    }
+                }
+                if (_worldUi.getPanelState() == WorldUi::panelState::TRANTORIAN) {
+                    if (index == _worldUi._idPlayer) {
+                        _sprites["aura"]->_sprite.setPosition(trantorian.getPos());
+                        _sprites["aura"]->setColor(_teamsColor[trantorian._teamIndex]);
+                        _sprites["aura"]->setScale(_zoom);
+
+                        window.draw(_sprites["aura"]->_sprite);
+                    }
+                }
+            }
+            if (_zoom > 0.6f)
+                continue;
+            _sprites["lvlbanner"]->_sprite.setPosition(trantorian.getPos());
+            _sprites["lvlbanner"]->setFrame(trantorian._level - 1);
+            _sprites["lvlbanner"]->setColor(_teamsColor[trantorian._teamIndex]);
+            window.draw(_sprites["lvlbanner"]->_sprite);
+        }
+        index++;
+    }
+    return ret;
 }
 
 bool World::moveMap(sf::Event event)
@@ -333,6 +410,7 @@ void World::updateTrantorians()
                 exisitingPlayers = true;
                 trantorian.setTile(tile, _chuncks[tile.x][tile.y].getMiddle());
                 trantorian._level = player.second->getLvl();
+                trantorian._facing = player.second->getOrientation();
                 trantorian._inventory = player.second->getInventory();
                 if (player.second->getAlive() == false)
                     trantorian.kill();
@@ -359,7 +437,23 @@ void World::updateTrantorians()
         trantorian.update(_core->getDeltaTime());
     std::optional<Broadcast> broadcast = _core->_data.getNextBroadcast();
     if (broadcast.has_value()) {
-        _chat->addMessage(std::to_string(broadcast.value().getPlayerNb()) + " : " + broadcast.value().getMessage());
+        if (_bubbles.size() > 6)
+            return;
+        sf::Color color = sf::Color::White;
+        for (auto &trantorian : _trantorians) {
+            if (trantorian._id == broadcast.value().getPlayerNb()) {
+                color = _teamsColor[trantorian._teamIndex];
+                break;
+            }
+        }
+        int random = rand() % 2;
+        _sounds["talk1"].stop();
+        _sounds["talk2"].stop();
+        if (random == 0)
+            _sounds["talk1"].play();
+        else
+            _sounds["talk2"].play();
+        _chat->addMessage(std::to_string(broadcast.value().getPlayerNb()) + " : " + broadcast.value().getMessage(), color);
         Bubble bubble = Bubble(broadcast.value().getMessage(), sf::Vector2f(broadcast.value().getPosition()[0], broadcast.value().getPosition()[1]));
         _bubbles.push_back(bubble);
     }
@@ -384,4 +478,51 @@ void World::updateChuncks()
                     _chuncks[i][j]._nbTrantorians++;
         }
     }
+}
+
+void World::updateIncantation()
+{
+    auto incantations = _core->_data.getIncantations();
+
+    if ((int)incantations.size() != _nbIncantations) {
+        _chat->addMessage("Incantation started");
+        _sounds["wololo"].stop();
+        _sounds["wololo"].play();
+        auto incantation = incantations[incantations.size() - 1];
+        sf::Vector2f tile = sf::Vector2f(incantation->getPosition()[0], incantation->getPosition()[1]);
+        sf::Vector2f pos = _chuncks[tile.x][tile.y].getMiddle();
+        _lvlUpAnims.push_back(LvlUpAnim(incantations.size() - 1,
+            pos, tile,
+            incantation->getLvl()));
+        _nbIncantations = incantations.size();
+    }
+    for (auto &lvlUpAnim : _lvlUpAnims) {
+        int state = incantations[lvlUpAnim.getId()]->getStatus();
+        if (state == IncantationOutcome::SUCCESS)
+            if (lvlUpAnim.setSuccess()) {
+                _chat->addMessage("Incantation success");
+                _sounds["hourray"].stop();
+                _sounds["hourray"].play();
+                _buildings[lvlUpAnim.getTile().x][lvlUpAnim.getTile().y] = lvlUpAnim.getLvl();
+            }
+        if (state == IncantationOutcome::FAILURE)
+            lvlUpAnim.setFailure();
+        lvlUpAnim.update(_core->getDeltaTime());
+        if (lvlUpAnim.isFinished())
+            _lvlUpAnims.erase(_lvlUpAnims.begin());
+    }
+}
+
+void World::initSounds()
+{
+    _sounds["talk1"].openFromFile("./assets/audio/talk1.ogg");
+    _sounds["talk1"].setVolume(100);
+    _sounds["talk2"].openFromFile("./assets/audio/talk2.ogg");
+    _sounds["talk2"].setVolume(100);
+    _sounds["hourray"].openFromFile("./assets/audio/hourray.ogg");
+    _sounds["hourray"].setVolume(100);
+    _sounds["wololo"].openFromFile("./assets/audio/wololo.ogg");
+    _sounds["wololo"].setVolume(100);
+    _sounds["interact"].openFromFile("./assets/audio/interact.ogg");
+    _sounds["interact"].setVolume(50);
 }

@@ -55,6 +55,9 @@ class Core {
         Parser _parser;
         ServerConnect _server;
         std::map<std::string, sf::Sound> _sounds;
+        bool isFullscreen() { return _fullscreen; }
+
+        bool _funMode = false;
     private:
         sf::RenderWindow _window;
         sf::Event _event;
@@ -70,8 +73,12 @@ class Core {
         sf::RectangleShape _shade;
 
         sf::Music _music;
+        sf::Texture _cursorTexture;
+        sf::Sprite _cursor;
 
         void initSounds();
+        void initCursor();
+        void initIcon();
 };
 
 #endif /* !CORE_HPP_ */

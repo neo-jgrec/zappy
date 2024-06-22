@@ -11,7 +11,7 @@ Button::Button(sf::Vector2f pos, [[maybe_unused]] sf::Vector2f size, std::string
 }
 
 bool Button::update(sf::Event event, sf::RenderWindow &window) {
-    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
     if (_text.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
         if (event.type == sf::Event::MouseButtonPressed)

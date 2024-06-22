@@ -8,6 +8,13 @@
 #include "WorldUi.hpp"
 #include "../World.hpp"
 
+static const std::vector<std::string> orientation = {
+    "NORTH",
+    "EAST",
+    "SOUTH",
+    "WEST"
+};
+
 void WorldUi::init()
 {
 }
@@ -58,7 +65,7 @@ bool WorldUi::update(sf::Event event, sf::RenderWindow &window)
     return false;
 }
 
-void WorldUi::update(float fElapsedTime)
+void WorldUi::update(float /*fElapsedTime*/)
 {
 }
 
@@ -148,6 +155,11 @@ void WorldUi::drawTrantorian(sf::RenderWindow &window)
     _sprites["trantorianPanel"]->draw(window);
     _layer2["prevButton"]->draw(window);
     _layer2["nextButton"]->draw(window);
+    _sprites["bousolle"]->setPosition(sf::Vector2f(
+        window.getSize().x - 256 / 4,
+        256 / 4
+    ));
+    _sprites["bousolle"]->draw(window);
     if (_world->getNbTrantorian() == 0)
         return;
     auto trantorian = _world->getTrantorian(_idPlayer);
@@ -167,7 +179,12 @@ void WorldUi::drawTrantorian(sf::RenderWindow &window)
         _sprites["trantorianPanel"]->getPosition().y + 32 + 25
     ));
     _inventoryText.setString("Level " + std::to_string(trantorian._level));
-
+    window.draw(_inventoryText);
+    _inventoryText.setPosition(sf::Vector2f(
+        _sprites["trantorianPanel"]->getPosition().x + + 96,
+        _sprites["trantorianPanel"]->getPosition().y + 32 + 50
+    ));
+    _inventoryText.setString("Facing " + orientation[trantorian._facing - 1]);
     window.draw(_inventoryText);
 }
 

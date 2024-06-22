@@ -9,6 +9,7 @@
     #define WORLD_HPP_
 
     #include <SFML/Graphics.hpp>
+    #include <SFML/Audio.hpp>
     #include <memory>
     #include <functional>
     #include <vector>
@@ -26,6 +27,7 @@
     #include "ui/Ranking.hpp"
     #include "ui/Bubble.hpp"
     #include "ui/LvlUpAnim.hpp"
+    #include "../Starlings.hpp"
 
 class Core;
 class World : public IScene {
@@ -37,11 +39,6 @@ class World : public IScene {
         bool update(sf::Event event, sf::RenderWindow &window) override;
         void update(float fElapsedTime) override;
         void draw(sf::RenderWindow &window) override;
-
-        bool moveMap(sf::Event event);
-        void updateTrantorians();
-        void updateChuncks();
-        sf::Vector2f circularVector(sf::Vector2f tile);
 
         int getNbTrantorian() { return _trantorians.size(); }
         Trantorian getTrantorian(int id) { return _trantorians[id]; }
@@ -92,8 +89,20 @@ class World : public IScene {
         Diamond _diamond;
         WorldUi _worldUi;
         float _rankTime = 0;
-        int _nbIncantation = 0;
+        int _nbIncantations = 0;
         std::vector<LvlUpAnim> _lvlUpAnims;
+        std::vector<Starlings> _starlings;
+
+        std::vector<std::vector<int>> _buildings;
+        std::map<std::string, sf::Music> _sounds;
+        sf::FloatRect _viewRect;
+        bool moveMap(sf::Event event);
+        void updateTrantorians();
+        void updateChuncks();
+        void updateIncantation();
+        void initSounds();
+        bool drawBuilding(sf::RenderWindow &window, int i, int j);
+        bool drawTrantorian(sf::RenderWindow &window, int i, int j);
 };
 
 

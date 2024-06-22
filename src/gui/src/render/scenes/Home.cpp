@@ -27,6 +27,11 @@ Home::Home(Core *core, int port, std::string ip) : _core(core) {
 void Home::draw(sf::RenderWindow &window) {
     _sprites["background"]->draw(window);
     _sprites["movingEarth"]->draw(window);
+    for (auto &starling : _starlings) {
+        _sprites["starling"]->setPosition(starling._pos);
+        _sprites["starling"]->setRotation(starling._rotation);
+        _sprites["starling"]->draw(window);
+    }
     _quitButton->draw(window);
     _startButton->draw(window);
     _ipButton->draw(window, _core->getDeltaTime());
@@ -37,6 +42,9 @@ void Home::draw(sf::RenderWindow &window) {
 
 void Home::update(float fElapsedTime) {
     _sprites["movingEarth"]->update(fElapsedTime);
+    for (auto &starling : _starlings) {
+        starling.update(fElapsedTime);
+    }
 }
 
 bool Home::update(sf::Event event, sf::RenderWindow &window) {
@@ -65,7 +73,15 @@ bool Home::update(sf::Event event, sf::RenderWindow &window) {
 void Home::initSprites() {
     _sprites["background"] = std::make_shared<Sprite>("assets/background.jpg");
     _sprites["background"]->resetOrigin();
-    _sprites["movingEarth"] = std::make_shared<Sprite>("assets/earthPlanetMenu75.png", 100, 0.1f);
+    _sprites["movingEarth"] = std::make_shared<Sprite>("assets/earthPlanetMenu75.png", 100, 0.3f);
     _sprites["movingEarth"]->setScale(10);
     _sprites["movingEarth"]->setPosition(sf::Vector2f(1080, 720));
+    _sprites["starling"] = std::make_shared<Sprite>("assets/trantorian.png");
+    _sprites["starling"]->setScale(2);
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
 }

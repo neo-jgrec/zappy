@@ -47,6 +47,10 @@ class Trantorian {
                     Random::random(0, 26) - 13
                 );
                 _targetPos = targetPos + offset;
+                float distance = sqrt(pow(_targetPos.x - _pos.x, 2) + pow(_targetPos.y - _pos.y, 2));
+                if (distance > 100) {
+                    _pos = _targetPos;
+                }
             }
             _tile = tile;
         }
@@ -60,10 +64,11 @@ class Trantorian {
 
         sf::Vector2f getPos() { return _pos; }
 
-        int _id;
-        std::string _team;
-        int _teamIndex;
-        int _level;
+        int _id = 0;
+        std::string _team = "team";
+        int _teamIndex = 0;
+        int _level = 1;
+        int _facing = 0;
 
         std::vector<int> _inventory = {0, 0, 0, 0, 0, 0, 0};
     protected:

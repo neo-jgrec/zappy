@@ -27,6 +27,9 @@ class Input {
         void setInput(std::string input) {
             _input = input;
         }
+        void setEnd(std::string end) {
+            _end = end;
+        }
 
     protected:
     private:
@@ -36,6 +39,7 @@ class Input {
         std::string _placeHolder = "";
         sf::Text _text;
         std::string _accept;
+        std::string _end = "";
 
         float _time = 0;
 };

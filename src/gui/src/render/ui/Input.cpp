@@ -19,7 +19,8 @@ Input::Input(sf::Vector2f pos, [[maybe_unused]] sf::Vector2f size, std::string t
 }
 
 bool Input::update(sf::Event event, sf::RenderWindow &window) {
-    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+
     if (!_isFocused)
         _hover = _text.getGlobalBounds().contains(mousePos.x, mousePos.y);
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
@@ -50,16 +51,16 @@ bool Input::update(sf::Event event, sf::RenderWindow &window) {
 void Input::draw(sf::RenderWindow &window, float deltaTime) {
     _time += deltaTime;
     if (!_isFocused && _input.size() == 0)
-        _text.setString(_placeHolder);
+        _text.setString(_placeHolder + " " + _end);
     else if (_isFocused) {
         if (_time < 0.5)
             _text.setString(_input + "_");
         else
-            _text.setString(_input);
+            _text.setString(_input + " ");
         if (_time > 1)
             _time = 0;
     } else {
-        _text.setString(_input);
+        _text.setString(_input + " " + _end);
     }
 
     if (_isFocused || _hover)

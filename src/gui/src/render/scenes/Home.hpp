@@ -13,11 +13,15 @@
     #include "../ui/Input.hpp"
     #include "../ui/Chat.hpp"
     #include "../sprites/Sprite.hpp"
+    #include "../../utils/Lerp.hpp"
+    #include "../../utils/Random.hpp"
+    #include "Starlings.hpp"
 
     #include <memory>
     #include <map>
 
 class Core;
+
 class Home : public IScene {
     public:
         Home(Core *core, int port, std::string ip);
@@ -28,7 +32,6 @@ class Home : public IScene {
         void draw(sf::RenderWindow &window) override;
         void init() override {}
         bool connectToServer();
-
 
     protected:
     private:
@@ -47,6 +50,7 @@ class Home : public IScene {
         std::map<std::string, std::shared_ptr<Sprite>> _sprites;
 
         void initSprites();
+        std::vector<Starlings> _starlings;
 };
 
 #endif /* !HOME_HPP_ */
