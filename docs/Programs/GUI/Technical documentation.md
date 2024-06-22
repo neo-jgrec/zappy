@@ -101,8 +101,7 @@ The core also store global variables such as the `deltaTime`, the `mousePosition
 
 All other aspect of the renderer will be explained in detail on their own page.
 
-Scenes
+[Scenes documentation](/category/GUI/Renderer/Scenes).
+[Sprites documentation](/category/GUI/Renderer/Sprites).
+[Buttons & inputs documentation](/category/GUI/Renderer/).
 
-Sprites
-
-Buttons & inputs
