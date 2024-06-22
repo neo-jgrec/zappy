@@ -99,6 +99,8 @@ void ABotPattern::listen(const std::string &response)
         listenCancel(response);
     if (_state.state == WAIT_FOR_SERVER_RESPONSE && isConcernedByIncantation())
         listenIncantationReturnResponse(response);
+    else if (_state.lastAction.action == INVENTORY)
+        listenInventoryResponse(response);
     else if (_state.lastAction.action == LOOK)
         listenLookResponse(response);
     else if (_state.lastAction.action == TAKE)

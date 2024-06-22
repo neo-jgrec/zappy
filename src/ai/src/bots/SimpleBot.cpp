@@ -21,8 +21,8 @@ void SimpleBot::updateStrategy()
         handleLvl1();
         return;
     }
-    if (handleSurvive())
-        return;
+    // if (handleSurvive())
+    //     return;
     if (handleState())
         return;
     else if (_state.level == 2)
@@ -35,6 +35,10 @@ bool SimpleBot::handleSurvive()
 {
     static int searchFood = 0;
     const unsigned int limitFood = 11;
+
+    if (_iteration % 40 == 0)
+        queue.push_back({[&]()
+                         { doAction(INVENTORY, ""); }, "INVENTORY"});
 
     if (_state.ressources.food < limitFood)
     {

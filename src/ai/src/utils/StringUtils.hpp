@@ -18,5 +18,6 @@ std::string generateNewNumber(const std::string &oldNumber, int offset);
 std::string getElementAfter(const std::string &input, char delimiter);
 std::string getElementBefore(const std::string &input, char delimiter);
 std::string cleanCarriageReturn(const std::string &input);
+std::vector<std::string> splitByChar(const std::string &s, char delimiter);
 
 #endif // STRINGUTILS_HPP_
