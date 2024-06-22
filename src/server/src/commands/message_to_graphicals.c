@@ -19,9 +19,7 @@ void message_to_graphicals(server_t *server, char *fmt, ...)
     TAILQ_FOREACH(client, &server->clients, entries) {
         if (client->client && client->client->is_graphic) {
             va_start(args, fmt);
-            printf("FD: [%d]\n", client->client->fd);
             vdprintf(client->client->fd, fmt, args);
-            printf("FMT\n");
             va_end(args);
         }
     }
