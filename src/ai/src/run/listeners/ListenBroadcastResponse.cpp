@@ -43,6 +43,7 @@ void ABot::listenGroupJoined(const std::string &message)
         _state.metadata["should_incant"] = "true";
     else if (_state.level == 4)
     {
+        std::cout << "playersPresent: " << playersPresent << std::endl;
         playersPresent++;
         if (playersPresent == 3)
         {

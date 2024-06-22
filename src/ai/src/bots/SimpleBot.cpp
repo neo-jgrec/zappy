@@ -169,5 +169,6 @@ void SimpleBot::handleLvl4()
     }
 }
 
-// TODO: sometimes it group but don't survive
-// TODO (MAYBE): handle when both can group: rule bot id < bot 2 id group, the other join group
+// TODO: fix: don't use food on time unit because sometimes bot only wait so his fod don't decrease.
+//  TODO: sometimes it group but don't survive
+//  TODO (MAYBE): handle when both can group: rule bot id < bot 2 id group, the other join group
