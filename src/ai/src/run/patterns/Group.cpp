@@ -33,7 +33,6 @@ void ABotPattern::joinGroup()
 {
     // TODO: wait a broadcast message
     std::cout << _allyMessage.content << std::endl;
-    static int tmp = 5;
     if (_direction == "0")
     {
         _message.content = "group_joined";
@@ -69,9 +68,6 @@ void ABotPattern::joinGroup()
         printf("%s\n", action.first.c_str());
         queue.push_back({action.second, action.first});
     }
-    tmp--;
-    if (tmp == 0)
-        exit(0);
 }
 
 bool ABotProbabilistic::canLvlUp(int lvl)

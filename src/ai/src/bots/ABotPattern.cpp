@@ -30,7 +30,7 @@ void ABotPattern::run(const std::string &response)
     // separe servers and broadcast
     separateServerBroadcast(response, responseServer, responseBroadcast);
     _message.content = "";
-    printKeyValueColored("🤖👂 Bot listens: ", "server: " + responseServer + ", message: " + responseBroadcast);
+    printKeyValueColored("🤖👂 Bot listens", "server: " + responseServer + ", message: " + responseBroadcast);
     if (!responseServer.empty())
     {
         listen(responseServer);
@@ -39,8 +39,13 @@ void ABotPattern::run(const std::string &response)
     listenBroadcast(responseBroadcast);
     if (_canAct)
     {
-        act();
+        if (_state.state != SHOULD_GROUP) // TODO: find a cleaner way
+            act();
         _canAct = false;
+    }
+    else if (!responseBroadcast.empty() && _state.state == SHOULD_GROUP)
+    {
+        act();
     }
     if (responseServer.find("dead") != std::string::npos)
     {

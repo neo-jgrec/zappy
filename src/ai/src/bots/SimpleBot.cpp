@@ -19,12 +19,18 @@ void SimpleBot::updateStrategy()
     static int searchFood = 0;
     const unsigned int limitFood = 11;
 
+    // survive has better success if better vision
     if (_state.ressources.food < limitFood)
-        searchFood = 10;
-    std::cout << " limitFood = " << limitFood << std::endl;
-    std::cout << "food = " << _state.ressources.food << std::endl;
-    std::cout << "searchFood = " << searchFood << std::endl;
-    if (searchFood > 0) // TODO: We can train an ia for this.
+    {
+        if (_state.level == 2)
+            searchFood = 20;
+    }
+    if (_state.level == 1)
+    {
+        runToLinemate();
+        _state.pattern = "runToLinemate";
+    }
+    else if (searchFood > 0) // TODO: We can train an ia for this.
     {
         survive();
         _state.pattern = "survive";
@@ -34,11 +40,6 @@ void SimpleBot::updateStrategy()
     {
         joinGroup();
         _state.pattern = "joinGroup";
-    }
-    else if (_state.level == 1)
-    {
-        runToLinemate();
-        _state.pattern = "runToLinemate";
     }
     else if (_state.level == 2 && _state.ressources.linemate != 1)
     {

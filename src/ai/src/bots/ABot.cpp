@@ -34,7 +34,7 @@ void ABot::doAction(Action action, const std::string &parameter)
 
         if (parameter != "")
             actionToServer += " " + parameter;
-        printKeyValueColored("🤖🤜 Bot does: ", actionToServer);
+        printKeyValueColored("🤖🤜 Bot does", actionToServer);
         sendMessage(actionToServer);
 
         _state.lastAction.action = action;
@@ -53,7 +53,7 @@ void ABot::doAction(Action action, const std::string &parameter)
         PRINT_ERROR(e.what());
     }
     // Bots moved or took a ressource, his environment changed
-    if (action == FORWARD || action == RIGHT || action == LEFT || action == TAKE)
+    if (action == FORWARD || action == RIGHT || action == LEFT || action == TAKE || action == INCANTATING)
         _state.metadata["should_update_env"] = "true";
     if (action == LOOK)
         _state.metadata["should_update_env"] = "false";
