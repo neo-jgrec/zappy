@@ -5,6 +5,7 @@
 ** eject.c
 */
 
+#include "client.h"
 #include "server.h"
 #include <stdarg.h>
 
@@ -30,70 +31,57 @@ static void delete_eggs_on_tile(server_t *s, int x, int y)
         purge_eggs_from_team(team->team, x, y);
 }
 
-static int reverse(int direction)
+static int get_orientation_to_tile(int x, int y, int x2, int y2)
 {
-    switch (direction) {
-        case NORTH:
-            return SOUTH;
-        case SOUTH:
-            return NORTH;
-        case WEST:
-            return EAST;
-        case EAST:
-            return WEST;
-        default:
-            return -1;
-    }
+    if (x == x2 && y == y2 - 1)
+        return NORTH;
+    if (x == x2 && y == y2 + 1)
+        return SOUTH;
+    if (x == x2 - 1 && y == y2)
+        return WEST;
+    if (x == x2 + 1 && y == y2)
+        return EAST;
+    return -1;
 }
 
-static void set_dx_and_dy(
-    unsigned char orientation,
-    signed char *dx,
-    signed char *dy
-)
+static int set_dx(unsigned char orientation)
+{
+    if (orientation == WEST)
+        return -1;
+    if (orientation == EAST)
+        return 1;
+    return 0;
+}
+
+static int set_dy(unsigned char orientation)
 {
     if (orientation == NORTH)
-        *dy = -1;
+        return -1;
     if (orientation == SOUTH)
-        *dy = 1;
-    if (orientation == WEST)
-        *dx = -1;
-    if (orientation == EAST)
-        *dx = 1;
-}
-
-static void response(client_t *c, const char *fmt, ...)
-{
-    va_list args;
-    char *response = NULL;
-
-    va_start(args, fmt);
-    if (vasprintf(&response, fmt, args) != -1) {
-        c->payload = response;
-    }
-    va_end(args);
+        return 1;
+    return 0;
 }
 
 void eject(client_t *c, server_t *s)
 {
-    signed char x = 0;
-    signed char y = 0;
+    signed char x = set_dx(c->orientation);
+    signed char y = set_dy(c->orientation);
     client_list_t *n;
 
-    set_dx_and_dy(c->orientation, &x, &y);
     TAILQ_FOREACH(n, &s->clients, entries) {
-        if (n->client->x == c->x && n->client->y == c->y && n->client != c) {
-            n->client->x = (c->x + x + s->proprieties.width)
-                % s->proprieties.width;
-            n->client->y = (c->y + y + s->proprieties.height)
-                % s->proprieties.height;
-            response(n->client, "eject: %d\n", reverse(c->orientation));
+        if (n->client->x == c->x && n->client->y == c->y
+        && n->client->id != c->id) {
+            n->client->x += x;
+            n->client->y += y;
+            n->client->orientation = get_orientation_to_tile(n->client->x,
+                n->client->y, c->x, c->y);
+            dprintf(n->client->fd, "eject: %d\n", n->client->orientation);
             message_to_graphicals(s, "pex %d\n", n->client->id);
             message_to_graphicals(s, "ppo %d %d %d %d\n", n->client->id,
                 n->client->x, n->client->y, n->client->orientation);
         }
     }
     delete_eggs_on_tile(s, c->x, c->y);
-    response(c, "ok\n");
+    handle_response(&c->payload, "ok\n");
     client_time_handler(c, EJECT);
 }
