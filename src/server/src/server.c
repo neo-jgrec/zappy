@@ -96,7 +96,7 @@ static bool send_command(
             ->tv_nsec - cmd_start_time.tv_nsec) / NANOSECONDS_IN_SECOND);
         if (elapsed >= interval
             && client->tclient[cmd_idx].command == INCANTATION)
-            incantation_callback_end_of_command(client, NULL);
+            incantation_callback_end_of_command(client, server);
         if (client->level == LAST_LEVEL)
             return true;
         if (elapsed >= interval)
