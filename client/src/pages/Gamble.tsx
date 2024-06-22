@@ -111,6 +111,10 @@ function Gamble() {
           value={window.location.href}
         />
       </Modal>
+      <h2 className='mt-10'>Odds</h2>
+      <p>
+        Ici momo, c'est là où tu calcule les cotes et où tu laisse les utilisateurs miser
+      </p>
     </Layout>
   );
 }
