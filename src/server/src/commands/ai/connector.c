@@ -28,8 +28,8 @@ static void asign_egg_to_client(
             TAILQ_REMOVE(&team->eggs, item, entries);
             message_to_graphicals(server, "edi %d\n", item->egg->id);
             handle_response(&client->payload, "ok\n");
-            secure_free(item->egg);
-            secure_free(item);
+            secure_free((void**)&item->egg);
+            secure_free((void**)&item);
             break;
         }
         counter++;

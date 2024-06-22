@@ -124,7 +124,7 @@ void destroy_flags(flags_t *flags)
     if (flags->names == NULL)
         return;
     for (size_t i = 0; flags->names[i] != NULL; i++) {
-        secure_free(flags->names[i]);
+        secure_free((void**)&flags->names[i]);
     }
     free(flags->names);
 }
