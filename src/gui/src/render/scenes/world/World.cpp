@@ -50,7 +50,6 @@ World::World(Core *core)
     _sprites["starling"]->setScale(2);
     _view.setSize(sf::Vector2f(1920 , 1080));
     _chat = std::make_shared<Chat>(_core->getFont(), 7);
-    _chat->setPosition(sf::Vector2f(50, 720 - 50));
     _bubbleText = sf::Text("", _core->getFont(), 15);
     _bubbleText.setFillColor(sf::Color::Black);
 }
@@ -209,6 +208,10 @@ void World::draw(sf::RenderWindow &window)
     });
     window.setView(window.getDefaultView());
     _worldUi.draw(window);
+    _chat->setPosition(sf::Vector2f(
+        50,
+        window.getSize().y - 50
+    ));
     _chat->draw(window);
 }
 
