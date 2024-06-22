@@ -171,6 +171,7 @@ void World::update(float fElapsedTime)
         _sprites["aura"]->update(_core->getDeltaTime());
     updateTrantorians();
     updateChuncks();
+    updateIncantation();
     _rankTime += _core->getDeltaTime();
     if (_rankTime > 10)
         Ranking::getRanking(_rankings, _core->_data);
@@ -380,10 +381,23 @@ void World::updateChuncks()
             _chuncks[i][j]._thystame = map.getTileAt(i, j).getRessources()[6];
             _chuncks[i][j]._nbTrantorians = 0;
             for (auto &trantorian : _trantorians) {
-                if (trantorian.getTile().x == i && trantorian.getTile().y == j) {
+                if (trantorian.getTile().x == i && trantorian.getTile().y == j)
                     _chuncks[i][j]._nbTrantorians++;
-                }
-            }
         }
     }
+}
+
+void World::updateIncantation()
+{
+    std::map<std::vector<int>, std::shared_ptr<Incantation>> incantations = _core->_data.getIncantations();
+    // if (incantations.size() == 0)
+    //     return;
+    // for (auto &incantation : incantations) {
+    //     auto tile = sf::Vector2f(incantation.first[0], incantation.first[1]);
+    //     for (auto &trantorian : _trantorians) {
+    //         if (trantorian.getTile() == tile) {
+    //             trantorian.incantation();
+    //         }
+    //     }
+    // }
 }
