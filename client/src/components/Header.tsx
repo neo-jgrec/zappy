@@ -6,22 +6,13 @@ import {
   HeaderName,
   HeaderNavigation,
 } from '@carbon/react';
-import {
-  Moon,
-  Sun,
-  LogoGithub
-} from '@carbon/icons-react';
+import { Moon, Sun, LogoGithub } from '@carbon/icons-react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 
-type Theme = 'g100' | 'white' | 'g10' | 'g90';
-
-interface HeaderComponentProps {
-  theme: string;
-  setTheme: (theme: Theme) => void;
-}
-
-function HeaderComponent({ theme, setTheme }: HeaderComponentProps) {
+const HeaderComponent = () => {
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   return (
     <Header aria-label='Zappy'>
@@ -63,6 +54,6 @@ function HeaderComponent({ theme, setTheme }: HeaderComponentProps) {
       </HeaderGlobalBar>
     </Header>
   );
-}
+};
 
 export default HeaderComponent;

@@ -1,11 +1,12 @@
 import { useMemo } from "react";
 import { LineChart, ScaleTypes } from "@carbon/charts-react";
 import { Layout } from "../components";
-import { useWebSocket } from "../context";
-import "@carbon/charts/styles.css";
+import { useTheme, useWebSocket } from "../context";
+import '@carbon/charts/styles.css'
 
 function Gamble() {
   const { teamScoresState } = useWebSocket();
+  const { theme } = useTheme();
 
   const transformData = useMemo(() => {
     const data: { group: string; date: Date; value: any; }[] = [];
@@ -37,12 +38,16 @@ function Gamble() {
     },
     height: "400px",
     curve: 'curveMonotoneX',
+    theme,
   };
 
   return (
     <Layout>
       <h1>Gambling</h1>
-      <LineChart data={transformData} options={options} />
+      <LineChart
+        data={transformData}
+        options={options}
+      />
     </Layout>
   );
 }
