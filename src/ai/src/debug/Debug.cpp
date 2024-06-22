@@ -39,3 +39,17 @@ void ABot::debugState()
     printKeyValueColored("state", getStateName(_state.state));
     std::cout << std::endl;
 }
+
+void ABotPattern::debugResponses(const std::string &responseServer, const std::string &responseBroadcast)
+{
+    printColor("🤖👂 Bot listens\n", YELLOW);
+    printKeyValueColored("\t- server", responseServer);
+    printKeyValueColored("\t- broadcast", responseBroadcast);
+}
+
+void ABotPattern::debugBotRun()
+{
+    printColor("========== [Bot Run] ==========\n", BRIGHT_BLUE);
+    printKeyValueColored("Iteration", std::to_string(_iteration));
+    printKeyValueColored("Pattern:", _state.pattern);
+}

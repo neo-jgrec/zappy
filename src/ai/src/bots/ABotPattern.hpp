@@ -29,6 +29,7 @@ protected:
     unsigned int _currentMessageId = 0;
 
     // Interract with server
+    void verifyServerIsRunning(const std::string &response);
     virtual void listen(const std::string &response);
     virtual void listenBroadcast(const std::string &response);
 
@@ -52,6 +53,10 @@ protected:
     void joinGroup();
     void forkBot(unsigned int idBot);
     void incantationLvl1();
+
+    // Debug
+    void debugResponses(const std::string &responseServer, const std::string &responseBroadcast);
+    void debugBotRun();
 
     // Utils
     void separateServerBroadcast(const std::string &response, std::string &responseServer, std::string &responseBroadcast);

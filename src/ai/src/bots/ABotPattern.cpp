@@ -25,20 +25,14 @@ void ABotPattern::run(const std::string &response)
     std::string responseBroadcast = "";
     _message.content = "";
 
-    // Mean server crashed
-    if (response.empty())
-        exit(0);
-    printColor("========== [Bot Run] ==========\n", BRIGHT_BLUE);
-    printKeyValueColored("Iteration", std::to_string(_iteration));
-    printKeyValueColored("Pattern:", _state.pattern);
-
     // separe servers and broadcast, decrypt message
     separateServerBroadcast(response, responseServer, responseBroadcast);
 
+    verifyServerIsRunning(response);
+    debugBotRun();
+
     // Debug
-    printColor("🤖👂 Bot listens\n", YELLOW);
-    printKeyValueColored("\t- server", responseServer);
-    printKeyValueColored("\t- broadcast", responseBroadcast);
+    debugResponses(responseServer, responseBroadcast);
 
     if (!responseServer.empty())
     {
@@ -55,11 +49,6 @@ void ABotPattern::run(const std::string &response)
     else if (!responseBroadcast.empty() && _state.state == SHOULD_GROUP)
     {
         act();
-    }
-    if (responseServer.find("dead") != std::string::npos)
-    {
-        debugState();
-        exit(0);
     }
     debugState();
     _iteration++;
@@ -103,6 +92,17 @@ void ABotPattern::listenBroadcast(const std::string &response)
     if (response.find("message") != std::string::npos)
     {
         listenBroadcastResponse(response);
+    }
+}
+
+void ABotPattern::verifyServerIsRunning(const std::string &response)
+{
+    if (response.empty())
+        exit(0);
+    if (response.find("dead") != std::string::npos)
+    {
+        debugState();
+        exit(0);
     }
 }
 
