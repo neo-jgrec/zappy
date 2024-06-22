@@ -27,7 +27,7 @@ void ABotProbabilistic::debugTrainedVariables()
 
 void ABot::debugState()
 {
-    printColor("========== [Bot State] ==========\n", BLUE);
+    printColor("🤖📋 Bot State\n", YELLOW);
     printKeyValueColored("food", std::to_string(_state.ressources.food));
     printKeyValueColored("linemate", std::to_string(_state.ressources.linemate));
     printKeyValueColored("deraumere", std::to_string(_state.ressources.deraumere));

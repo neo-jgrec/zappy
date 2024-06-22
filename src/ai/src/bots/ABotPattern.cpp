@@ -23,14 +23,23 @@ void ABotPattern::run(const std::string &response)
 {
     std::string responseServer = "";
     std::string responseBroadcast = "";
+    _message.content = "";
 
     // Mean server crashed
     if (response.empty())
         exit(0);
-    // separe servers and broadcast
+    printColor("========== [Bot Run] ==========\n", BRIGHT_BLUE);
+    printKeyValueColored("Iteration", std::to_string(_iteration));
+    printKeyValueColored("Pattern:", _state.pattern);
+
+    // separe servers and broadcast, decrypt message
     separateServerBroadcast(response, responseServer, responseBroadcast);
-    _message.content = "";
-    printKeyValueColored("🤖👂 Bot listens", "server: " + responseServer + ", message: " + responseBroadcast);
+
+    // Debug
+    printColor("🤖👂 Bot listens\n", YELLOW);
+    printKeyValueColored("\t- server", responseServer);
+    printKeyValueColored("\t- broadcast", responseBroadcast);
+
     if (!responseServer.empty())
     {
         listen(responseServer);
@@ -53,14 +62,11 @@ void ABotPattern::run(const std::string &response)
         exit(0);
     }
     debugState();
+    _iteration++;
 }
 
 void ABotPattern::act()
 {
-    printColor("========== [Bot Run] ==========\n", BRIGHT_BLUE);
-    printKeyValueColored("Iteration", std::to_string(_iteration));
-    printKeyValueColored("Pattern:", _state.pattern);
-
     if (_state.state != INCANTATING)
     {
         if (queue.empty())
@@ -72,7 +78,6 @@ void ABotPattern::act()
             queue.front().first();
             queue.erase(queue.begin());
         }
-        _iteration++;
         if (_iteration % 20 == 0)
             saveDataActions(saveActionsFile);
     }

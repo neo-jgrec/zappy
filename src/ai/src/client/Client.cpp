@@ -26,7 +26,7 @@ Client::~Client()
 
 void Client::run()
 {
-    printColor("Run client\n", BRIGHT_BLUE);
+    printColor("Run client\n\n", BRIGHT_BLUE);
 
     authenticate();
     loop();
@@ -169,7 +169,6 @@ void Client::sendMessage(const std::string &message)
 
 void Client::loop()
 {
-    std::cout << "do loop\n";
     // clear messsages of servers before start
     auto condition = [&]()
     { return _messageToReadBeforeStart > 0; };

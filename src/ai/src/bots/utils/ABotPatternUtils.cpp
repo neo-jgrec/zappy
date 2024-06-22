@@ -21,4 +21,29 @@ void ABotPattern::separateServerBroadcast(const std::string &response, std::stri
     }
     responseServer = cleanCarriageReturn(responseServer);
     responseBroadcast = cleanCarriageReturn(responseBroadcast);
+
+    // Handle encryted message
+    if (responseBroadcast.empty())
+        responseBroadcast = "no message";
+    else
+    {
+        std::string signature = getElementAfter(responseBroadcast, ':');
+
+        if (signature != _signature)
+        {
+            _enemyMessage = _message.content;
+            std::cout << "Enemy message: " << _enemyMessage.content << std::endl;
+            return;
+        }
+        else
+        {
+            std::string temp = getElementBefore(responseBroadcast, ':');
+            _allyMessage.content = getElementAfter(temp, ',');
+            _direction = getElementBefore(temp, ',');
+            _direction = getElementAfter(_direction, ' ');
+            _allyMessage.vigenereDecrypt();
+            // printKeyValueColored("Message", _allyMessage.content);
+            // printKeyValueColored("Direction", _direction);
+        }
+    }
 }

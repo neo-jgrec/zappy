@@ -35,13 +35,13 @@ void ABotPattern::searchAndTakeRessource(const std::string &ressource)
         if (tile != nullptr)
         {
             std::pair<int, int> coord = {tile->x, tile->y};
-            std::cout << "tile = " << tile->x << " " << tile->y << std::endl;
+            // std::cout << "tile = " << tile->x << " " << tile->y << std::endl;
             if (movementMap.find(coord) != movementMap.end())
             {
                 for (const auto &move : movementMap[coord])
                 {
                     queue.push_back({actions[move], move});
-                    std::cout << "movement to go the tile = " << move << std::endl;
+                    // std::cout << "movement to go the tile = " << move << std::endl;
                 }
             }
             queue.push_back({actions["TAKE"], "TAKE"});

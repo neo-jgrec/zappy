@@ -15,7 +15,6 @@ void SimpleBot::initChild()
 // TODO: do bloc for lvl 1 and 2, etc...
 void SimpleBot::updateStrategy()
 {
-    std::cout << "updateStrategy" << std::endl;
     static int searchFood = 0;
     const unsigned int limitFood = 11;
 
