@@ -120,23 +120,25 @@ static bool check_response_client_time(
     return false;
 }
 
-static int start_server(server_t *server)
+static int start_server(server_t *s)
 {
+    fd_set write_sockets;
+    fd_set except_sockets;
+
     while (true) {
-        server->ready_sockets = server->current_sockets;
-        clock_gettime(CLOCK_REALTIME, &server->current_time);
-        if (handle_client_life(server) == true)
+        s->ready_sockets = s->current_sockets;
+        FD_ZERO(&write_sockets);
+        FD_ZERO(&except_sockets);
+        clock_gettime(CLOCK_REALTIME, &s->current_time);
+        if (handle_client_life(s) == true)
             continue;
-        handle_meteors(server);
-        if (check_response_client_time(&server->clients,
-            server, &server->current_time) == true)
+        handle_meteors(s);
+        if (check_response_client_time(&s->clients, s, &s->current_time))
             break;
-        if (select(FD_SETSIZE, &server->ready_sockets,
-            NULL, NULL, &server->timeout) < 0) {
-            perror("There was an error in select");
+        if (select(FD_SETSIZE, &s->ready_sockets,
+            &write_sockets, &except_sockets, &s->timeout) < 0)
             return ERROR_STATUS;
-        }
-        if (check_connections(server) == ERROR_STATUS)
+        if (check_connections(s) == ERROR_STATUS)
             return ERROR_STATUS;
     }
     return OK_STATUS;
