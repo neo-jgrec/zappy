@@ -3,10 +3,20 @@ import { io, Socket } from 'socket.io-client';
 import { useSnackbar } from './SnackbarContext';
 import { useNavigate } from 'react-router-dom';
 
+interface Ressources {
+    food: number;
+    linemate: number;
+    deraumere: number;
+    sibur: number;
+    mendiane: number;
+    phiras: number;
+    thystame: number;
+}
+
 interface ZappyServerData {
     x: number;
     y: number;
-    player_positions: { id: number; x: number; y: number, orientation?: number, level?: number, team_name?: string }[];
+    player_positions: { id: number; x: number; y: number, orientation?: number, level?: number, team_name?: string, resources?: Ressources }[];
     food_positions: { id: number; x: number; y: number }[];
     team_names: string[];
 }
@@ -95,97 +105,111 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         newSocket.on('message', (data: string) => {
             if (typeof data !== 'string') return;
 
-            if (!data.startsWith('bct')) {
-                if (data.startsWith('msz')) {
-                    const [, x, y] = data.split(' ');
-                    setZappyServerData(prevData => ({
-                        ...prevData,
+            if (data.startsWith('msz')) {
+                const [, x, y] = data.split(' ');
+                setZappyServerData(prevData => ({
+                    ...prevData,
+                    x: parseInt(x),
+                    y: parseInt(y)
+                }));
+            }
+            if (data.startsWith('pbc')) {
+                const [, id, message] = data.split(' ');
+                const newAllBroadcastMessages = [...AllBroadcastMessagesRef.current];
+                newAllBroadcastMessages.push({ id: parseInt(id), message });
+                AllBroadcastMessagesRef.current = newAllBroadcastMessages;
+                setAllBroadcastMessages(newAllBroadcastMessages);
+            }
+            if (data.startsWith('ppo')) {
+                const [, id, x, y] = data.split(' ');
+                setZappyServerData(prevData => ({
+                    ...prevData,
+                    player_positions: prevData.player_positions.map(player => player.id === parseInt(id) ? {
+                        ...player,
                         x: parseInt(x),
                         y: parseInt(y)
-                    }));
-                }
-                if (data.startsWith('pbc')) {
-                    const [, id, message] = data.split(' ');
-                    const newAllBroadcastMessages = [...AllBroadcastMessagesRef.current];
-                    newAllBroadcastMessages.push({ id: parseInt(id), message });
-                    AllBroadcastMessagesRef.current = newAllBroadcastMessages;
-                    setAllBroadcastMessages(newAllBroadcastMessages);
-                }
-                if (data.startsWith('ppo')) {
-                    const [, id, x, y] = data.split(' ');
-                    setZappyServerData(prevData => ({
-                        ...prevData,
-                        player_positions: prevData.player_positions.map(player => player.id === parseInt(id) ? {
-                            ...player,
-                            x: parseInt(x),
-                            y: parseInt(y)
-                        } : player)
-                    }));
-                }
-                if (data.startsWith('tna')) {
-                    const [, ...team_names] = data.split(' ');
-                    zappyServerData.team_names.push(...team_names);
-                }
-                if (data.startsWith('pnw')) {
-                    const [, id, x, y, orientation, level, team_name] = data.split(' ');
-                    setZappyServerData(prevData => ({
-                        ...prevData,
-                        player_positions: [...prevData.player_positions, {
-                            id: parseInt(id),
-                            x: parseInt(x),
-                            y: parseInt(y),
-                            orientation: parseInt(orientation),
-                            level: parseInt(level),
-                            team_name
-                        }]
-                    }));
-                }
-                if (data.startsWith('pdi')) {
-                    const [, id] = data.split(' ');
-                    setZappyServerData(prevData => ({
-                        ...prevData,
-                        player_positions: prevData.player_positions.filter(player => player.id !== parseInt(id))
-                    }));
-                }
-                if (data.startsWith('pgt')) {
-                    const [,, resource] = data.split(' ');
-                    setZappyServerData(prevData => ({
-                        ...prevData,
-                        food_positions: prevData.food_positions.filter(
-                            (food) => food.id !== parseInt(resource)
-                        )
-                    }));
-                }
-                if (data.startsWith('pdr')) {
-                    const [,, resource] = data.split(' ');
-                    setZappyServerData(prevData => ({
-                        ...prevData,
-                        food_positions: [...prevData.food_positions, {
-                            id: parseInt(resource),
-                            x: prevData.player_positions[0].x,
-                            y: prevData.player_positions[0].y
-                        }]
-                    }));
-                }
-                if (data.startsWith('plv')) {
-                    const [, id, level] = data.split(' ');
-                    setZappyServerData(prevData => ({
-                        ...prevData,
-                        player_positions: prevData.player_positions.map(player => player.id === parseInt(id) ? {
-                            ...player,
-                            level: parseInt(level)
-                        } : player)
-                    }));
-                }
+                    } : player)
+                }));
             }
-            const newHundredLastMessages = [...HundredLastMessagesRef.current];
-            if (newHundredLastMessages.length >= 100) {
-                newHundredLastMessages.shift();
+            if (data.startsWith('tna')) {
+                const [, ...team_names] = data.split(' ');
+                zappyServerData.team_names.push(...team_names);
             }
-            newHundredLastMessages.push(data);
-            HundredLastMessagesRef.current = newHundredLastMessages;
-            setHundredLastMessages(newHundredLastMessages);
-
+            if (data.startsWith('pnw')) {
+                const [, id, x, y, orientation, level, team_name] = data.split(' ');
+                setZappyServerData(prevData => ({
+                    ...prevData,
+                    player_positions: [...prevData.player_positions, {
+                        id: parseInt(id),
+                        x: parseInt(x),
+                        y: parseInt(y),
+                        orientation: parseInt(orientation),
+                        level: parseInt(level),
+                        team_name
+                    }]
+                }));
+                showSnackbar({
+                    title: 'Trantorian Spawned',
+                    subtitle: `Player at position (${x}, ${y}) in team ${team_name}`,
+                    kind: 'info',
+                    timeout: 5000
+                });
+            }
+            if (data.startsWith('pdi')) {
+                const [, id] = data.split(' ');
+                setZappyServerData(prevData => ({
+                    ...prevData,
+                    player_positions: prevData.player_positions.filter(player => player.id !== parseInt(id))
+                }));
+            }
+            if (data.startsWith('pgt')) {
+                const [,, resource] = data.split(' ');
+                setZappyServerData(prevData => ({
+                    ...prevData,
+                    food_positions: prevData.food_positions.filter(
+                        (food) => food.id !== parseInt(resource)
+                    )
+                }));
+            }
+            if (data.startsWith('pdr')) {
+                const [,, resource] = data.split(' ');
+                setZappyServerData(prevData => ({
+                    ...prevData,
+                    food_positions: [...prevData.food_positions, {
+                        id: parseInt(resource),
+                        x: prevData.player_positions[0].x,
+                        y: prevData.player_positions[0].y
+                    }]
+                }));
+            }
+            if (data.startsWith('plv')) {
+                const [, id, level] = data.split(' ');
+                setZappyServerData(prevData => ({
+                    ...prevData,
+                    player_positions: prevData.player_positions.map(player => player.id === parseInt(id) ? {
+                        ...player,
+                        level: parseInt(level)
+                    } : player)
+                }));
+            }
+            if (data.startsWith('pin')) {
+                const [, id, , , ...resources] = data.split(' ');
+                setZappyServerData(prevData => ({
+                    ...prevData,
+                    player_positions: prevData.player_positions.map(player => player.id === parseInt(id) ? {
+                        ...player,
+                        resources: {
+                            food: parseInt(resources[0]),
+                            linemate: parseInt(resources[1]),
+                            deraumere: parseInt(resources[2]),
+                            sibur: parseInt(resources[3]),
+                            mendiane: parseInt(resources[4]),
+                            phiras: parseInt(resources[5]),
+                            thystame: parseInt(resources[6])
+                        }
+                    } : player)
+                }));
+            }
             if (data.startsWith('bct')) {
                 const [, x, y, resources] = data.split(' ');
                 const newZappyServerData = { ...zappyServerData };
@@ -199,6 +223,14 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                 });
                 setZappyServerData(newZappyServerData);
             }
+
+            const newHundredLastMessages = [...HundredLastMessagesRef.current];
+            if (newHundredLastMessages.length >= 100) {
+                newHundredLastMessages.shift();
+            }
+            newHundredLastMessages.push(data);
+            HundredLastMessagesRef.current = newHundredLastMessages;
+            setHundredLastMessages(newHundredLastMessages);
 
             const newReceivedMessages = { ...receivedMessages };
             if (!newReceivedMessages[data]) newReceivedMessages[data] = [];
