@@ -44,9 +44,9 @@ interface WebSocketContextProps {
     connect: (host: string, port: string) => void;
     disconnect: () => void;
     sendMessage: (message: string) => void;
-    receivedMessages: { [key: string]: string[] };
-    hundredLastMessages: string[];
-    allBroadcastMessages: { id: number; message: string }[];
+    receivedMessages: { [key: string]: { message: string; timestamp: string }[] };
+    hundredLastMessages: { message: string; timestamp: string }[];
+    allBroadcastMessages: { id: number; message: string; timestamp: string }[];
     host: string | undefined;
     port: string | undefined;
     setHost: (host: string) => void;
@@ -58,17 +58,18 @@ interface WebSocketContextProps {
     setTcpPort: (port: string) => void;
     tcpHost: string | undefined;
     setTcpHost: (host: string) => void;
+    standAloneConnect: () => void;
 }
 
 const WebSocketContext = createContext<WebSocketContextProps | undefined>(undefined);
 
 export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
     const [socket, setSocket] = useState<Socket | null>(null);
-    const [receivedMessages, setReceivedMessages] = useState<{ [key: string]: string[] }>({});
-    const [hundredLastMessages, setHundredLastMessages] = useState<string[]>([]);
-    const HundredLastMessagesRef = useRef<string[]>([]);
-    const [allBroadcastMessages, setAllBroadcastMessages] = useState<{ id: number; message: string }[]>([]);
-    const AllBroadcastMessagesRef = useRef<{ id: number; message: string }[]>([]);
+    const [receivedMessages, setReceivedMessages] = useState<{ [key: string]: { message: string; timestamp: string }[] }>({});
+    const [hundredLastMessages, setHundredLastMessages] = useState<{ message: string; timestamp: string }[]>([]);
+    const HundredLastMessagesRef = useRef<{ message: string; timestamp: string }[]>([]);
+    const [allBroadcastMessages, setAllBroadcastMessages] = useState<{ id: number; message: string; timestamp: string }[]>([]);
+    const AllBroadcastMessagesRef = useRef<{ id: number; message: string; timestamp: string }[]>([]);
     const [zappyServerData, setZappyServerData] = useState<ZappyServerData>(initialZappyServerData);
     const navigate = useNavigate();
 
@@ -85,50 +86,50 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
 
     const connect = (host: string, port: string) => {
         showSnackbar({
-            title: 'Connecting',
-            subtitle: `Connecting to ${host}:${port}...`,
-            kind: 'info',
-            timeout: 5000
+          title: 'Connecting',
+          subtitle: `Connecting to ${host}:${port}...`,
+          kind: 'info',
+          timeout: 5000
         });
         if (!host || !port) {
-            showSnackbar({
-                title: 'Error',
-                subtitle: 'Host and port are required',
-                kind: 'error',
-                timeout: 5000
-            });
-            return;
+          showSnackbar({
+            title: 'Error',
+            subtitle: 'Host and port are required',
+            kind: 'error',
+            timeout: 5000
+          });
+          return;
         }
 
         const url = `http://${host}:${port}`;
         const newSocket = io(url);
 
         newSocket.on('connect', () => {
-            showSnackbar({
-                title: 'Connected',
-                subtitle: `Connected to ${host}:${port}`,
-                kind: 'success',
-                timeout: 5000
-            });
-            newSocket.emit('connectToTcpServer', { host: tcpHost, port: tcpPort });
-            setTcpHost(tcpHost);
-            setTcpPort(tcpPort);
-            localStorage.setItem('tcpHost', tcpHost ?? '');
-            localStorage.setItem('tcpPort', tcpPort ?? '');
-            showSnackbar({
-                title: 'Connected to TCP Server',
-                subtitle: `Connected to ${tcpHost}:${tcpPort}`,
-                kind: 'success',
-                timeout: 5000
-            });
-            setSocket(newSocket);
-            setHost(host);
-            setPort(port);
-            localStorage.setItem('host', host);
-            localStorage.setItem('port', port);
-            setConnectionStatus('connected');
-            newSocket.emit('message', 'msz');
-            newSocket.emit('message', 'tna');
+          showSnackbar({
+            title: 'Connected',
+            subtitle: `Connected to ${host}:${port}`,
+            kind: 'success',
+            timeout: 5000
+          });
+          setSocket(newSocket);
+          setHost(host);
+          setPort(port);
+          localStorage.setItem('host', host);
+          localStorage.setItem('port', port);
+          setConnectionStatus('connected');
+          newSocket.emit('connectToTcpServer', { host: tcpHost, port: tcpPort });
+          setTcpHost(tcpHost);
+          setTcpPort(tcpPort);
+          localStorage.setItem('tcpHost', tcpHost ?? '');
+          localStorage.setItem('tcpPort', tcpPort ?? '');
+          showSnackbar({
+            title: 'Connected to TCP Server',
+            subtitle: `Connected to ${tcpHost}:${tcpPort}`,
+            kind: 'success',
+            timeout: 5000
+          });
+          newSocket.emit('message', 'msz');
+          newSocket.emit('message', 'tna');
         });
 
         newSocket.on('tcpError', () => {
@@ -149,6 +150,8 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         newSocket.on('message', (data: string) => {
             if (typeof data !== 'string') return;
 
+            const timestamp = new Date().toISOString();
+
             if (data.startsWith('msz')) {
                 const [, x, y] = data.split(' ');
                 setZappyServerData(prevData => ({
@@ -160,7 +163,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
             if (data.startsWith('pbc')) {
                 const [, id, message] = data.split(' ');
                 const newAllBroadcastMessages = [...AllBroadcastMessagesRef.current];
-                newAllBroadcastMessages.push({ id: parseInt(id), message });
+                newAllBroadcastMessages.push({ id: parseInt(id), message, timestamp });
                 AllBroadcastMessagesRef.current = newAllBroadcastMessages;
                 setAllBroadcastMessages(newAllBroadcastMessages);
             }
@@ -298,13 +301,13 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
             if (newHundredLastMessages.length >= 100) {
                 newHundredLastMessages.shift();
             }
-            newHundredLastMessages.push(data);
+            newHundredLastMessages.push({ message: data, timestamp });
             HundredLastMessagesRef.current = newHundredLastMessages;
             setHundredLastMessages(newHundredLastMessages);
 
             const newReceivedMessages = { ...receivedMessages };
             if (!newReceivedMessages[data]) newReceivedMessages[data] = [];
-            newReceivedMessages[data].push(data);
+            newReceivedMessages[data].push({ message: data, timestamp });
             setReceivedMessages(newReceivedMessages);
         });
 
@@ -316,6 +319,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                 kind: 'warning',
                 timeout: 5000
             });
+            navigate('/prompt');
         });
 
         newSocket.on('connect_error', () => {
@@ -344,14 +348,6 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    useEffect(() => {
-        return () => {
-            if (socket) {
-                socket.disconnect();
-            }
-        };
-    }, [socket]);
-
     const sendMessage = (message: string) => {
         if (socket && socket.connected) {
             socket.emit('message', message);
@@ -364,6 +360,47 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
             });
         }
     };
+
+    const standAloneConnect = () => {
+        if (!tcpHost || !tcpPort) {
+            showSnackbar({
+                title: 'Error',
+                subtitle: 'TCP Host and Port are required',
+                kind: 'error',
+                timeout: 5000
+            });
+            return;
+        }
+
+        if (socket && socket.connected) {
+            socket.emit('connectToTcpServer', { host: tcpHost, port: tcpPort });
+            setTcpHost(tcpHost);
+            setTcpPort(tcpPort);
+            localStorage.setItem('tcpHost', tcpHost);
+            localStorage.setItem('tcpPort', tcpPort);
+            showSnackbar({
+                title: 'Connected to TCP Server',
+                subtitle: `Connected to ${tcpHost}:${tcpPort}`,
+                kind: 'success',
+                timeout: 5000
+            });
+        } else {
+            showSnackbar({
+                title: 'Error',
+                subtitle: 'Not connected to the server',
+                kind: 'error',
+                timeout: 5000
+            });
+        }
+    };
+
+    useEffect(() => {
+        connect(host || '', port || '');
+        console.log('Connecting to', host, port);
+        return () => {
+            disconnect();
+        }
+    }, []);
 
     const contextValue: WebSocketContextProps = {
         connect,
@@ -382,7 +419,8 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         tcpHost,
         setTcpHost,
         tcpPort,
-        setTcpPort
+        setTcpPort,
+        standAloneConnect
     };
 
     return (

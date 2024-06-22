@@ -199,8 +199,10 @@ function Game() {
             <h2>Game Events</h2>
             <div style={{ flex: '1 1 auto', overflowY: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
               <ul className='overflow-y-auto'>
-                {hundredLastMessages.map((message, index) => (
-                  <li key={index} className='pl-5'>{message}</li>
+                {hundredLastMessages.map((node, index) => (
+                  <li key={index} className='pl-5'>
+                    {node.message}
+                  </li>
                 ))}
               </ul>
             </div>
@@ -347,7 +349,9 @@ function Game() {
                 <TableHead>
                   <TableRow>
                     {headers.map((header) => (
-                      <TableHeader {...getHeaderProps({ header })}>{header.header}</TableHeader>
+                      <TableHeader {...getHeaderProps({ header })}>
+                        {header.header}
+                      </TableHeader>
                     ))}
                   </TableRow>
                 </TableHead>

@@ -1,24 +1,18 @@
-import { useWebSocket } from '../context/WebSocketContext';
 import { Button, TextInput } from '@carbon/react';
 import { Layout } from '../components';
 import {
   ArrowRight
 } from '@carbon/icons-react';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 const PromptServer = () => {
-  const {
-    host = '',
-    port = '',
-    tcpPort = '',
-    tcpHost = '',
-    setTcpHost,
-    setTcpPort,
-    setPort,
-    setHost,
-    connect
-  } = useWebSocket();
   const navigate = useNavigate();
+
+  const [host, setHost] = useState(localStorage.getItem('host') || '');
+  const [port, setPort] = useState(localStorage.getItem('port') || '');
+  const [tcpHost, setTcpHost] = useState(localStorage.getItem('tcpHost') || '');
+  const [tcpPort, setTcpPort] = useState(localStorage.getItem('tcpPort') || '');
 
   return (
     <Layout>
@@ -33,7 +27,10 @@ const PromptServer = () => {
             placeholder='127.0.0.1'
             style={{ maxWidth: '500px', width: '500px' }}
             value={host}
-            onChange={(e) => setHost(e.target.value)}
+            onChange={(e) => {
+              setHost(e.target.value);
+              localStorage.setItem('host', e.target.value);
+            }}
           />
           <TextInput
             id='port'
@@ -41,7 +38,10 @@ const PromptServer = () => {
             placeholder='8080'
             style={{ maxWidth: '500px', width: '500px' }}
             value={port}
-            onChange={(e) => setPort(e.target.value)}
+            onChange={(e) => {
+              setPort(e.target.value);
+              localStorage.setItem('port', e.target.value);
+            }}
           />
         </div>
         <div className='flex flex-col space-y-5 items-center pt-10'>
@@ -54,7 +54,10 @@ const PromptServer = () => {
             placeholder='54.25.36.2'
             style={{ maxWidth: '500px', width: '500px' }}
             value={tcpHost}
-            onChange={(e) => setTcpHost(e.target.value)}
+            onChange={(e) => {
+              setTcpHost(e.target.value);
+              localStorage.setItem('tcpHost', e.target.value);
+            }}
           />
           <TextInput
             id='tcpPort'
@@ -62,7 +65,10 @@ const PromptServer = () => {
             placeholder='8080'
             style={{ maxWidth: '500px', width: '500px' }}
             value={tcpPort}
-            onChange={(e) => setTcpPort(e.target.value)}
+            onChange={(e) => {
+              setTcpPort(e.target.value);
+              localStorage.setItem('tcpPort', e.target.value);
+            }}
           />
         </div>
         <Button
@@ -71,7 +77,6 @@ const PromptServer = () => {
           renderIcon={ArrowRight}
           onClick={() => {
             navigate('/');
-            connect(host, port);
           }}
         >
           Connect to server

@@ -11,6 +11,7 @@ import {
   Sun,
   LogoGithub
 } from '@carbon/icons-react';
+import { useNavigate } from 'react-router-dom';
 
 type Theme = 'g100' | 'white' | 'g10' | 'g90';
 
@@ -20,22 +21,24 @@ interface HeaderComponentProps {
 }
 
 function HeaderComponent({ theme, setTheme }: HeaderComponentProps) {
+  const navigate = useNavigate();
+
   return (
     <Header aria-label='Zappy'>
       <HeaderName href='/' prefix='Zappy / '>
         A tribute to Zaphod Beeblebrox
       </HeaderName>
       <HeaderNavigation aria-label='Zappy'>
-        <HeaderMenuItem href='/' isActive={window.location.pathname === '/'}>
+        <HeaderMenuItem isActive={window.location.pathname === '/'} onClick={() => navigate('/')}>
           Game
         </HeaderMenuItem>
-        <HeaderMenuItem href='/gamble' isActive={window.location.pathname === '/gamble'}>
+        <HeaderMenuItem isActive={window.location.pathname === '/gamble'} onClick={() => navigate('/gamble')}>
           Gamble
         </HeaderMenuItem>
-        <HeaderMenuItem href='/prompt' isActive={window.location.pathname === '/prompt'}>
+        <HeaderMenuItem isActive={window.location.pathname === '/prompt'} onClick={() => navigate('/prompt')}>
           Change Server
         </HeaderMenuItem>
-        <HeaderMenuItem href='/about' isActive={window.location.pathname === '/about'}>
+        <HeaderMenuItem isActive={window.location.pathname === '/about'} onClick={() => navigate('/about')}>
           About
         </HeaderMenuItem>
       </HeaderNavigation>

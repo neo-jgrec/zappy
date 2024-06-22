@@ -22,9 +22,14 @@ const createTcpClient = (socket, tcpHost, tcpPort) => {
     const tcpClient = new Socket();
     socket.tcpClient = tcpClient;
 
-    tcpClient.connect(tcpPort, tcpHost, () => {
-        tcpClient.write('GRAPHIC\n');
-    });
+    try {
+        tcpClient.connect(tcpPort, tcpHost, () => {
+            tcpClient.write('GRAPHIC\n');
+        });
+    } catch (error) {
+        console.error(`TCP client connection error: ${error}`);
+        socket.emit('tcpError', error);
+    }
 
     tcpClient.on('data', (data) => {
         let messages = data.toString().split('\n');
