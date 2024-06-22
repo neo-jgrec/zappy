@@ -1,6 +1,7 @@
 #include <criterion/criterion.h>
 #include <criterion/internal/assert.h>
 #include <criterion/redirect.h>
+#include <memory>
 #include <string>
 #include <variant>
 #include <vector>
@@ -165,11 +166,13 @@ Test(Parser, ppoNormal)
 
     parser.parse(args2, data, server);
     parser.execute();
-    Player p = data.getPlayerById(1);
-    p.getNextEvent();
-    std::vector<int> position = p.getPosition();
+    std::shared_ptr<Player> p = data.getPlayerById(1);
+    p->getNextEvent();
+    std::vector<int> position = p->getPosition();
     cr_assert_eq(position[0], 2, "Expected 2, got %d", position[0]);
     cr_assert_eq(position[1], 2, "Expected 2, got %d", position[1]);
+
+    cr_assert_eq(p->getNextEvent().action, NONE);
 }
 
 Test(Parser, ppoWrongArgs)
@@ -248,13 +251,13 @@ Test(Parser, pinNormal)
     parser.parse(args2, data, server);
 
     parser.execute();
-    int q0 = data.getPlayerById(1).getInventory().at(0);
-    int q1 = data.getPlayerById(1).getInventory().at(1);
-    int q2 = data.getPlayerById(1).getInventory().at(2);
-    int q3 = data.getPlayerById(1).getInventory().at(3);
-    int q4 = data.getPlayerById(1).getInventory().at(4);
-    int q5 = data.getPlayerById(1).getInventory().at(5);
-    int q6 = data.getPlayerById(1).getInventory().at(6);
+    int q0 = data.getPlayerById(1)->getInventory().at(0);
+    int q1 = data.getPlayerById(1)->getInventory().at(1);
+    int q2 = data.getPlayerById(1)->getInventory().at(2);
+    int q3 = data.getPlayerById(1)->getInventory().at(3);
+    int q4 = data.getPlayerById(1)->getInventory().at(4);
+    int q5 = data.getPlayerById(1)->getInventory().at(5);
+    int q6 = data.getPlayerById(1)->getInventory().at(6);
 
     
     cr_assert_eq(q0, 0, "Expected 0, got %d", q0);
@@ -300,8 +303,8 @@ Test(Parser, pexNormal)
     std::vector<std::variant<std::string, int>> args2 = { "pex", 1 };
 
     parser.parse(args2, data, server);
-    parser.execute();
-    cr_assert_eq(data.getPlayerById(1).getNextEvent().action, PUSHED);
+    cr_assert_throw(parser.execute(), guiException);
+    cr_assert_eq(data.getPlayerById(1)->getNextEvent().action, PUSHED);
 }
 
 Test(Parser, pexWrongArgs)
@@ -377,7 +380,7 @@ Test(Parser, picNormal)
 
     parser.parse(args2, data, server);
     parser.execute();
-    cr_assert_eq(data.getIncantationByPos(std::vector<int>({1, 1})).getLvl(), 4);
+    cr_assert_eq(data.getIncantationByPos(std::vector<int>({1, 1}))->getLvl(), 4);
 }
 
 Test(Parser, pieNormal)
@@ -396,9 +399,9 @@ Test(Parser, pieNormal)
 
     parser.parse(args3, data, server);
     parser.execute();
-    std::map <std::vector<int>, Incantation> incantations = data.getIncantations();
-    Incantation incantation = incantations.at(std::vector<int>({1, 1}));
-    cr_assert_eq(incantation.getStatus(), SUCCESS, "Expected %d, got %d", SUCCESS, incantation.getStatus());
+    std::map <std::vector<int>, std::shared_ptr<Incantation>> incantations = data.getIncantations();
+    std::shared_ptr<Incantation> incantation = incantations.at(std::vector<int>({1, 1}));
+    cr_assert_eq(incantation->getStatus(), SUCCESS, "Expected %d, got %d", SUCCESS, incantation->getStatus());
 }
 
 Test(Parser, pieWrongArgs)
@@ -436,7 +439,7 @@ Test(Parser, pfkNormal)
 
     parser.parse(args2, data, server);
     parser.execute();
-    cr_assert_eq(data.getPlayerById(1).getNextEvent().action, EGGING);
+    cr_assert_eq(data.getPlayerById(1)->getNextEvent().action, EGGING);
 }
 
 Test(Parser, pfkWrongArgs)
@@ -561,7 +564,7 @@ Test(Parser, pdiNormal)
 
     parser.parse(args2, data, server);
     parser.execute();
-    cr_assert_eq(data.getPlayerById(1).getAlive(), false);
+    cr_assert_eq(data.getPlayerById(1)->getAlive(), false);
 }
 
 Test(Parser, pdiWrongArgs)
@@ -591,6 +594,9 @@ Test(Parser, enwNormal)
     Parser parser;
     Data data;
     ServerConnect server;
+
+    std::vector<std::variant<std::string, int>> args0 = { "pnw", 1, 1, 1, 1, 1, "team1" };
+    parser.parse(args0, data, server);
 
     std::vector<std::variant<std::string, int>> args = { "enw", 1, 1, 1, 1 };
 
@@ -627,12 +633,15 @@ Test(Parser, eboNormal)
     Data data;
     ServerConnect server;
 
+    std::vector<std::variant<std::string, int>> args0 = { "pnw", 1, 1, 1, 1, 1, "team1" };
+    parser.parse(args0, data, server);
+
     std::vector<std::variant<std::string, int>> args = { "enw", 1, 1, 1, 1 };
     parser.parse(args, data, server);
 
     std::vector<std::variant<std::string, int>> args2 = { "ebo", 1 };
-
     parser.parse(args2, data, server);
+
     parser.execute();
     cr_assert_eq(data.getEggs().at(1).getState(), HATCHED);
 }
@@ -664,6 +673,9 @@ Test(Parser, ediNormal)
     Parser parser;
     Data data;
     ServerConnect server;
+
+    std::vector<std::variant<std::string, int>> args0 = { "pnw", 1, 1, 1, 1, 1, "team1" };
+    parser.parse(args0, data, server);
 
     std::vector<std::variant<std::string, int>> args = { "enw", 1, 1, 1, 1 };
     parser.parse(args, data, server);

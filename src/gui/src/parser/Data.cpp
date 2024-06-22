@@ -1,6 +1,9 @@
 #include "Data.hpp"
 #include "../utils/GuiException.hpp"
 
+#include <memory>
+#include <utility>
+
 // ------------------------------------------------------------------ //
 // ---------------------------- GETTERS ----------------------------- //
 // ------------------------------------------------------------------ //
@@ -20,14 +23,14 @@ std::string Data::getTeamByName(std::string name)
     throw guiException("getTeamByName: Invalid team name(" + name + ")");
 };
 
-Player &Data::getPlayerById(int id)
+std::shared_ptr<Player> Data::getPlayerById(int id)
 {
     if (this->players.find(id) == this->players.end())
         throw guiException("getPlayerById: Invalid player id(" + std::to_string(id) + ")");
     return this->players.at(id);
 };
 
-Incantation &Data::getIncantationByPos(std::vector<int> pos)
+std::shared_ptr<Incantation> Data::getIncantationByPos(std::vector<int> pos)
 {
     if (this->incantations.find(pos) == this->incantations.end())
         throw guiException("getIncantationsByPos: Invalid position");
@@ -50,16 +53,19 @@ std::optional<Broadcast> Data::getNextBroadcast() {
 void Data::addPlayer(std::vector<int> values, std::string teamName)
 {
     std::vector<int> pos = {values[1], values[2]};
-    this->players.insert(std::make_pair(
-        values[0],
-        Player(
+    std::shared_ptr<Player> player = std::make_shared<Player>(
             values[0],
             pos,
             values[3],
             values[4],
             teamName
+        );
+    players.insert(
+        std::pair<int, std::shared_ptr<Player>>(
+            values[0],
+            player
         )
-    ));
+    );
 };
 
 
@@ -75,14 +81,15 @@ void Data::addEgg(std::vector<int> pos, int eggId, int playerId, EggStatus state
 
 void Data::addIncantation(std::vector<int> pos, int lvl, std::vector<int> playersId)
 {
+    std::shared_ptr<Incantation> incantation = std::make_shared<Incantation>(
+        pos,
+        lvl,
+        playersId
+    );
     this->incantations.insert(
         std::make_pair(
             pos,
-            Incantation(
-                pos,
-                lvl,
-                playersId
-            )
+            incantation
         )
     );
 };
@@ -119,3 +126,18 @@ bool Data::playerExists(int id)
     return true;
 };
 
+// ------------------------------------------------------------------ //
+// ----------------------------  RESET ------------------------------ //
+// ------------------------------------------------------------------ //
+
+void Data::resetGame()
+{
+    this->eggs.clear();
+    this->players.clear();
+    this->incantations.clear();
+    this->broadcasts.clear();
+    this->winner = std::nullopt;
+    this->teamNames.clear();
+    this->map.resetMap();
+    this->tickRate = 100;
+};

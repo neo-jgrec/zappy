@@ -15,6 +15,8 @@ Core::Core(int port, std::string ip) {
     _font.loadFromFile("assets/BadComic-Regular.ttf");
     _state = GameState::HOME;
     _upperState = GameState::DEFAULT;
+    _shade = sf::RectangleShape(sf::Vector2f(1920, 1080));
+    _shade.setFillColor(sf::Color(0, 0, 0, 150));
 
     _scenes[GameState::HOME] = std::make_shared<Home>(this, port, ip);
     _scenes[GameState::END] = std::make_shared<Quit>(this);
@@ -31,6 +33,7 @@ void Core::update() {
         if (_event.type == sf::Event::Closed)
             _upperState = GameState::END;
         if (_event.type == sf::Event::MouseMoved) {
+            _realMousePos = sf::Vector2f(_event.mouseMove.x, _event.mouseMove.y);
             if (_state == GameState::GAME) {
                 _mousePos = sf::Vector2f(
                     _event.mouseMove.x * 1920 / _window.getSize().x,
@@ -43,13 +46,19 @@ void Core::update() {
             ((_upperState != GameState::DEFAULT) ? _upperState : _state)
             ]->update(_event, _window);
     }
+    _scenes[
+            ((_upperState != GameState::DEFAULT) ? _upperState : _state)
+            ]->update(_deltaTime);
 }
 
 void Core::run() {
     while (_window.isOpen()) {
+        _parser.updateData(_data, _server);
+        auto players = _data.getPlayers();
+        for (auto &player : players)
+            player.second->getNextEvent();
         update();
         draw();
-        _parser.updateData(_data, _server);
     }
 }
 
@@ -57,8 +66,10 @@ void Core::draw() {
     _window.clear(sf::Color(82,198,255));
 
     _scenes[_state]->draw(_window);
-    if (_upperState != GameState::DEFAULT)
+    if (_upperState != GameState::DEFAULT) {
+        _window.draw(_shade);
         _scenes[_upperState]->draw(_window);
+    }
     _window.display();
 }
 
@@ -87,4 +98,11 @@ bool Core::connectToServer(int port, std::string ip) {
         return false;
     }
     return true;
+}
+
+void Core::backToHome() {
+    if (_server.disconectFromServer() == true)
+        _data.resetGame();
+    _upperState = GameState::DEFAULT;
+    _state = GameState::HOME;
 }

@@ -6,7 +6,9 @@
     #include "Player.hpp"
     #include "Incantation.hpp"
     #include "Broadcast.hpp"
+#include "ServerConnect.hpp"
 
+    #include <memory>
     #include <string>
     #include <vector>
     #include <map>
@@ -17,10 +19,9 @@ class Data
     private:
         int tickRate = 0;
         std::vector<std::string> teamNames = {};
-        bool isRunning = false;
         std::map<int, Egg> eggs = {};
-        std::map<int, Player> players = {};
-        std::map<std::vector<int>, Incantation> incantations = {};
+        std::map<int, std::shared_ptr<Player>> players = {};
+        std::map<std::vector<int>, std::shared_ptr<Incantation>> incantations = {};
         std::vector<Broadcast> broadcasts = {};
         std::optional<std::string> winner = std::nullopt;
         Map map = Map();
@@ -36,11 +37,7 @@ class Data
         */
         void setTickRate(int rate) { this->tickRate = rate; };
         int getTickRate() { return this->tickRate; };
-        int requestTickRate() { return 0; };
-
-
-        void setRunning(bool state) { this->isRunning = state; };
-        bool getRunning() { return this->isRunning; };
+        void requestNewTickRate(int rate, ServerConnect server) { server.sendToServer("sst" + std::to_string(rate)); };
 
         void setWinner(std::string team) { this->winner = team; };
         std::optional<std::string> getWinner() { return this->winner; };
@@ -64,7 +61,7 @@ class Data
 
 
         void addPlayer(std::vector<int> values, std::string teamName);
-        std::map<int, Player> &getPlayers() { return this->players; };
+        std::map<int, std::shared_ptr<Player>> getPlayers() { return players; };
 
         /**
          * @brief Get the player corresponding to the given id
@@ -72,11 +69,11 @@ class Data
          * @return a reference to the player
          * @throw guiException if the player does not exist
         */
-        Player &getPlayerById(int id);
+        std::shared_ptr<Player> getPlayerById(int id);
         bool playerExists(int id);
 
-        std::map<std::vector<int>, Incantation> &getIncantations() { return this->incantations; };
-        Incantation &getIncantationByPos(std::vector<int> pos);
+        std::map<std::vector<int>, std::shared_ptr<Incantation>> getIncantations() { return this->incantations; };
+        std::shared_ptr<Incantation> getIncantationByPos(std::vector<int> pos);
         void addIncantation(std::vector<int> pos, int lvl, std::vector<int> playersId);
 
         std::vector<Broadcast> &getBroadcasts() { return this->broadcasts; };
@@ -84,6 +81,8 @@ class Data
         void addBroadcast(int playerNb, std::vector<int> pos, std::string msg);
 
         Map &getMap() { return this->map; };
+
+        void resetGame();
 };
 
 #endif // DATA_HPP

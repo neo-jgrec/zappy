@@ -11,41 +11,69 @@
 #include "../../sprites/Sprite.hpp"
 #include "../../core/Setting.hpp"
 #include "../../../utils/Lerp.hpp"
+#include <iostream>
 
 class Trantorian {
     public:
-        Trantorian(Sprite sprite, sf::Vector2f tile)
-            : _sprite(sprite), _tile(tile)
+        Trantorian(sf::Vector2f tile, sf::Vector2f targetPos)
+            : _pos(targetPos), _tile(tile), _targetPos(targetPos)
         {
-            // _sprite.setSize(sf::Vector2f(TILE_SIZE_X, TILE_SIZE_Y));
-            _sprite.setPosition(sf::Vector2f(tile.x * TILE_SIZE_X, tile.y * TILE_SIZE_Y));
-            _targetPos = sf::Vector2f(tile.x * TILE_SIZE_X, tile.y * TILE_SIZE_Y);
+            _sprites.push_back(std::make_shared<Sprite>("./assets/trantorian_spawn.png", 12, 0.1f));
+            _sprites[0]->disableLooping();
+            _sprites.push_back(std::make_shared<Sprite>("./assets/trantorian_run.png", 6, 0.1f));
+            _sprites.push_back(std::make_shared<Sprite>("./assets/trantorian_death.png", 13, 0.1f));
+            _sprites[2]->disableLooping();
         }
         ~Trantorian() {
         }
 
-        void setPosition(sf::Vector2f pos) { _sprite.setPosition(pos); }
-        void setSize(sf::Vector2f size) { _sprite.setSize(size); }
-
-        void update() {
-            _sprite.setPosition(Lerp::lerp(_sprite.getPosition(), _targetPos, 0.1f));
-            _sprite.update();
+        void update(float deltaTime) {
+            _pos = Lerp::lerp(_pos, _targetPos, 1.f * deltaTime);
+            _sprites[_actualSprite]->setPosition(_pos);
+            int ret = _sprites[_actualSprite]->update(deltaTime);
+            if (ret == 1 && _actualSprite == 0) {
+                _actualSprite = 1;
+            }
+            if (_dead == true)
+                _actualSprite = 2;
         }
         void draw(sf::RenderWindow &window) {
-            _sprite.draw(window);
+            _sprites[_actualSprite]->draw(window);
         }
-        void setTile(sf::Vector2f tile) {
+        void setTile(sf::Vector2f tile, sf::Vector2f targetPos) {
+            if ( tile != _tile) {
+                sf::Vector2f offset = sf::Vector2f(
+                    Random::random(0, 26) - 13,
+                    Random::random(0, 26) - 13
+                );
+                _targetPos = targetPos + offset;
+            }
             _tile = tile;
-            _targetPos = sf::Vector2f(tile.x * TILE_SIZE_X, tile.y * TILE_SIZE_Y);
         }
         sf::Vector2f getTile() { return _tile; }
+        void kill() { _dead = 1; }
+        bool isDead() {
+            if (_sprites[_actualSprite]->isFinished() && _actualSprite == 2)
+                return true;
+            return false;
+        }
+
+        sf::Vector2f getPos() { return _pos; }
 
         int _id;
+        std::string _team;
+        int _teamIndex;
+        int _level;
+
+        std::vector<int> _inventory = {0, 0, 0, 0, 0, 0, 0};
     protected:
     private:
-        Sprite _sprite;
+        int _actualSprite = 0;
+        sf::Vector2f _pos;
+        std::vector<std::shared_ptr<Sprite>> _sprites;
         sf::Vector2f _tile = sf::Vector2f(0, 0);
         sf::Vector2f _targetPos = sf::Vector2f(0, 0);
+        bool _dead = false;
 };
 
 #endif /* !TRANTORIAN_HPP_ */

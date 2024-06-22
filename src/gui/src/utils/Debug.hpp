@@ -16,11 +16,9 @@
 
         #define _D_STRING _D_GREEN_ANSII "[DEBUG] " _D_END_ANSII
 
-        #define debug_print(fmt, ...) do { \
-            std::cerr << _D_STRING << __FILE__ << ":" << __LINE__ << " " << fmt << std::endl; \
-        } while (0)
+        #define debug_print std::cerr << _D_STRING << __FILE__ << ":" << __LINE__ << " "
     #else
-        #define debug_print(fmt, ...)
+        #define debug_print 0 && std::cerr
     #endif
 
 #endif /* !DEBUG_PRINT_HPP_ */
