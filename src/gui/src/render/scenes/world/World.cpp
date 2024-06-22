@@ -384,7 +384,14 @@ void World::updateTrantorians()
     if (broadcast.has_value()) {
         if (_bubbles.size() > 6)
             return;
-        _chat->addMessage(std::to_string(broadcast.value().getPlayerNb()) + " : " + broadcast.value().getMessage());
+        sf::Color color = sf::Color::White;
+        for (auto &trantorian : _trantorians) {
+            if (trantorian._id == broadcast.value().getPlayerNb()) {
+                color = _teamsColor[trantorian._teamIndex];
+                break;
+            }
+        }
+        _chat->addMessage(std::to_string(broadcast.value().getPlayerNb()) + " : " + broadcast.value().getMessage(), color);
         Bubble bubble = Bubble(broadcast.value().getMessage(), sf::Vector2f(broadcast.value().getPosition()[0], broadcast.value().getPosition()[1]));
         _bubbles.push_back(bubble);
     }
