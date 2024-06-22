@@ -16,8 +16,8 @@ void SimpleBot::initChild()
 void SimpleBot::updateStrategy()
 {
     std::cout << "updateStrategy" << std::endl;
-    int searchFood = 0;
-    const unsigned int limitFood = 20;
+    static int searchFood = 0;
+    const unsigned int limitFood = 11;
 
     if (_state.ressources.food < limitFood)
         searchFood = 10;
