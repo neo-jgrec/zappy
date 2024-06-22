@@ -74,7 +74,7 @@ static size_t get_nb_players_on_tile(client_t *client, server_t *server)
     size_t players_on_tile = 0;
     client_list_t *client_entry = NULL;
 
-    if (client == NULL)
+    if (client == NULL || TAILQ_EMPTY(&server->clients))
         return 0;
     TAILQ_FOREACH(client_entry, &server->clients, entries) {
         if (client_entry->client
