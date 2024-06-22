@@ -16,6 +16,9 @@
     #include "../../parser/Data.hpp"
     #include "../../utils/CommandLineParser.hpp"
 
+    #include <SFML/Graphics.hpp>
+    #include <SFML/Audio.hpp>
+
 enum GameState {
     HOME,
     MENU,
@@ -51,6 +54,7 @@ class Core {
         Data _data;
         Parser _parser;
         ServerConnect _server;
+        std::map<std::string, sf::Sound> _sounds;
     private:
         sf::RenderWindow _window;
         sf::Event _event;
@@ -64,6 +68,10 @@ class Core {
         sf::Vector2f _resolution = sf::Vector2f(1280, 720);
         bool _fullscreen = false;
         sf::RectangleShape _shade;
+
+        sf::Music _music;
+
+        void initSounds();
 };
 
 #endif /* !CORE_HPP_ */

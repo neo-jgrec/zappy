@@ -17,7 +17,7 @@ class LvlUpAnim {
         {
             _sprite.setPosition(_pos);
         }
-        ~LvlUpAnim();
+        ~LvlUpAnim() {}
 
         enum class LvlUpAnimState {
             START,

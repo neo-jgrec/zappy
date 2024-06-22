@@ -11,6 +11,7 @@
     #include <SFML/Graphics.hpp>
     #include <memory>
     #include <functional>
+    #include <vector>
 
     #include "../../../utils/PerlinNoise.hpp"
     #include "Chunck.hpp"
@@ -40,7 +41,6 @@ class World : public IScene {
         bool moveMap(sf::Event event);
         void updateTrantorians();
         void updateChuncks();
-        void updateIncantation();
         sf::Vector2f circularVector(sf::Vector2f tile);
 
         int getNbTrantorian() { return _trantorians.size(); }
@@ -93,7 +93,7 @@ class World : public IScene {
         WorldUi _worldUi;
         float _rankTime = 0;
         int _nbIncantation = 0;
-        std:vector<LvlUpAnim> _lvlUpAnims;
+        std::vector<LvlUpAnim> _lvlUpAnims;
 };
 
 
