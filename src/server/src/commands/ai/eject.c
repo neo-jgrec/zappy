@@ -88,8 +88,8 @@ void eject(client_t *c, server_t *s)
             n->client->y = (c->y + y + s->proprieties.height)
                 % s->proprieties.height;
             response(n->client, "eject: %d\n", reverse(c->orientation));
-            message_to_graphicals(s, "pex %d\n", n->client->fd);
-            message_to_graphicals(s, "ppo %d %d %d %d\n", n->client->fd,
+            message_to_graphicals(s, "pex %d\n", n->client->id);
+            message_to_graphicals(s, "ppo %d %d %d %d\n", n->client->id,
                 n->client->x, n->client->y, n->client->orientation);
         }
     }

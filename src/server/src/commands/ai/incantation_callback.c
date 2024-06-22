@@ -25,7 +25,7 @@ void callback_level_up(
     message_to_graphicals(
             server,
             "plv %d %d\n",
-            client->fd,
+            client->id,
             client->level
     );
 }

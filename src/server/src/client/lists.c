@@ -22,9 +22,13 @@ static void init_inventory(inventory_t *inv)
 
 static void init_bools(client_t *client)
 {
+    static int id = 0;
+
+    client->id = id;
     client->is_incanting = false;
     client->is_connected = false;
     client->is_graphic = false;
+    id++;
 }
 
 client_t *init_client(int client_fd)

@@ -30,7 +30,7 @@ Test(pin, basics, .init = redirect_all_stdout)
     pin(&client, &server);
     char expected[2550];
     sprintf(expected, "pin %d %u %u %u %u %u %u %u %u %u\n",
-        client.fd, client.x, client.y,
+        client.id, client.x, client.y,
         client.inventory.food,
         client.inventory.linemate,
         client.inventory.deraumere,
