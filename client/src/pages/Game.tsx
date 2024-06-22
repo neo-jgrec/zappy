@@ -1,56 +1,118 @@
 import { useRef, useState, useEffect } from 'react';
 import { Layout } from "../components";
 import { useWebSocket } from '../context';
+import { Button, TextInput, Tile } from '@carbon/react';
+import { Send } from '@carbon/icons-react';
 import {
-  Button,
-  TextInput,
-  Tile
-} from '@carbon/react';
-import {
-  Send
-} from '@carbon/icons-react';
+  Orientation,
+  colors
+} from '../utils';
 
 function Game() {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const [startPan, setStartPan] = useState({ x: 0, y: 0 });
 
-  const { hundredLastMessages, allBroadcastMessages } = useWebSocket();
+  const { zappyServerData, hundredLastMessages, allBroadcastMessages } = useWebSocket();
 
   useEffect(() => {
-    const canvas = canvasRef.current as unknown as HTMLCanvasElement;
+    const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
 
+    if (!context || !canvas) {
+      console.error('Failed to get canvas context');
+      return;
+    }
+
+    const tileSize = 50;
+    canvas.width = zappyServerData.x * tileSize;
+    canvas.height = zappyServerData.y * tileSize;
+
     const draw = () => {
-      if (!context || !canvas) return;
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.save();
       context.scale(zoom, zoom);
       context.translate(pan.x / zoom, pan.y / zoom);
 
-      context.fillStyle = 'red';
-      context.fillRect(50, 50, 100, 100);
+      for (let i = 0; i < zappyServerData.x; i++) {
+        for (let j = 0; j < zappyServerData.y; j++) {
+          context.fillStyle = '#008000';
+          context.fillRect(i * tileSize, j * tileSize, tileSize, tileSize);
+          context.strokeStyle = '#000000';
+          context.strokeRect(i * tileSize, j * tileSize, tileSize, tileSize);
+        }
+      }
+      zappyServerData.player_positions.forEach(player => {
+        let playerColor;
+        if (player.team_name)
+          playerColor = colors[zappyServerData.team_names.indexOf(player?.team_name || '')];
+        else
+          playerColor = '#000000';
+        context.beginPath();
+        context.arc(player.x * tileSize + tileSize / 2, player.y * tileSize + tileSize / 2, tileSize / 4, 0, 2 * Math.PI);
+        context.fillStyle = playerColor;
+        context.fill();
+        context.closePath();
+
+        if (player.orientation) {
+          const arrowSize = tileSize / 2;
+          const arrowX = player.x * tileSize + tileSize / 2;
+          const arrowY = player.y * tileSize + tileSize / 2;
+          const arrowOrientation = player.orientation;
+          let rotation = 0;
+          switch (arrowOrientation) {
+            case Orientation.NORTH:
+              rotation = 0;
+              break;
+            case Orientation.EAST:
+              rotation = Math.PI / 2;
+              break;
+            case Orientation.SOUTH:
+              rotation = Math.PI;
+              break;
+            case Orientation.WEST:
+              rotation = (3 * Math.PI) / 2;
+              break;
+          }
+          context.save();
+          context.translate(arrowX, arrowY);
+          context.rotate(rotation);
+          context.beginPath();
+          context.moveTo(0, -arrowSize / 2);
+          context.lineTo(arrowSize / 2, arrowSize / 2);
+          context.lineTo(-arrowSize / 2, arrowSize / 2);
+          context.closePath();
+          context.fillStyle = '#000000';
+          context.fill();
+          context.restore();
+        }
+
+        context.fillStyle = 'white';
+        context.font = '25px';
+        context.textAlign = 'center';
+        context.fillText(player.level?.toString() || '1', player.x * tileSize + tileSize / 2, player.y * tileSize + tileSize / 2 + 4);
+      });
 
       context.restore();
     };
 
     draw();
-  }, [zoom, pan]);
+  }, [zoom, pan, zappyServerData]);
 
-  const handleWheel = (event: { preventDefault: () => void; deltaY: number; }) => {
+  const handleWheel = (event: React.WheelEvent) => {
     event.preventDefault();
     const scaleAmount = -event.deltaY * 0.01;
     setZoom((prevZoom) => Math.min(Math.max(prevZoom + scaleAmount, 0.5), 3));
   };
 
-  const handleMouseDown = (event: { clientX: number; clientY: number; }) => {
+  const handleMouseDown = (event: React.MouseEvent) => {
     setIsPanning(true);
     setStartPan({ x: event.clientX - pan.x, y: event.clientY - pan.y });
   };
 
-  const handleMouseMove = (event: { clientX: number; clientY: number; }) => {
+  const handleMouseMove = (event: React.MouseEvent) => {
     if (isPanning) {
       setPan({ x: event.clientX - startPan.x, y: event.clientY - startPan.y });
     }
@@ -59,6 +121,18 @@ function Game() {
   const handleMouseUp = () => {
     setIsPanning(false);
   };
+
+  const alertUser = (e: BeforeUnloadEvent) => {
+    e.preventDefault();
+    e.returnValue = "";
+  };
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", alertUser);
+    return () => {
+      window.removeEventListener("beforeunload", alertUser);
+    };
+  }, []);
 
   return (
     <Layout>
@@ -73,8 +147,6 @@ function Game() {
           >
             <canvas
               ref={canvasRef}
-              width={384}
-              height={384}
               className='absolute top-0 left-0 w-full h-full'
             ></canvas>
           </div>
