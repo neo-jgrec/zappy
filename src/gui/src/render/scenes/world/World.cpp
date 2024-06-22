@@ -52,6 +52,7 @@ World::World(Core *core)
     _chat = std::make_shared<Chat>(_core->getFont(), 7);
     _bubbleText = sf::Text("", _core->getFont(), 15);
     _bubbleText.setFillColor(sf::Color::Black);
+    initSounds();
 }
 
 void World::init()
@@ -150,8 +151,11 @@ bool World::update(sf::Event event, [[maybe_unused]] sf::RenderWindow &window)
                 ));
                 if (_diamond.checkCollision(_mousePos)) {
                     _hoveredTile = sf::Vector2f(i, j);
-                    if (event.mouseButton.button == sf::Mouse::Button::Left)
+                    if (event.mouseButton.button == sf::Mouse::Button::Left) {
                         _selectedTile = sf::Vector2f(i, j);
+                        _sounds["interact"].stop();
+                        _sounds["interact"].play();
+                    }
                     break;
                 }
 
@@ -401,6 +405,13 @@ void World::updateTrantorians()
                 break;
             }
         }
+        int random = rand() % 2;
+        _sounds["talk1"].stop();
+        _sounds["talk2"].stop();
+        if (random == 0)
+            _sounds["talk1"].play();
+        else
+            _sounds["talk2"].play();
         _chat->addMessage(std::to_string(broadcast.value().getPlayerNb()) + " : " + broadcast.value().getMessage(), color);
         Bubble bubble = Bubble(broadcast.value().getMessage(), sf::Vector2f(broadcast.value().getPosition()[0], broadcast.value().getPosition()[1]));
         _bubbles.push_back(bubble);
@@ -434,6 +445,8 @@ void World::updateIncantation()
 
     if ((int)incantations.size() != _nbIncantations) {
         _chat->addMessage("Incantation started");
+        _sounds["wololo"].stop();
+        _sounds["wololo"].play();
         auto incantation = incantations[incantations.size() - 1];
         sf::Vector2f tile = sf::Vector2f(incantation->getPosition()[0], incantation->getPosition()[1]);
         sf::Vector2f pos = _chuncks[tile.x][tile.y].getMiddle();
@@ -445,11 +458,29 @@ void World::updateIncantation()
     for (auto &lvlUpAnim : _lvlUpAnims) {
         int state = incantations[lvlUpAnim.getId()]->getStatus();
         if (state == IncantationOutcome::SUCCESS)
-            lvlUpAnim.setSuccess();
+            if (lvlUpAnim.setSuccess()) {
+                _chat->addMessage("Incantation success");
+                _sounds["hourray"].stop();
+                _sounds["hourray"].play();
+            }
         if (state == IncantationOutcome::FAILURE)
             lvlUpAnim.setFailure();
         lvlUpAnim.update(_core->getDeltaTime());
         if (lvlUpAnim.isFinished())
             _lvlUpAnims.erase(_lvlUpAnims.begin());
     }
+}
+
+void World::initSounds()
+{
+    _sounds["talk1"].openFromFile("./assets/audio/talk1.ogg");
+    _sounds["talk1"].setVolume(100);
+    _sounds["talk2"].openFromFile("./assets/audio/talk2.ogg");
+    _sounds["talk2"].setVolume(100);
+    _sounds["hourray"].openFromFile("./assets/audio/hourray.ogg");
+    _sounds["hourray"].setVolume(100);
+    _sounds["wololo"].openFromFile("./assets/audio/wololo.ogg");
+    _sounds["wololo"].setVolume(100);
+    _sounds["interact"].openFromFile("./assets/audio/interact.ogg");
+    _sounds["interact"].setVolume(50);
 }

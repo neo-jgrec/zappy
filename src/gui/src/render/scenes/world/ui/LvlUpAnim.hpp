@@ -35,8 +35,12 @@ class LvlUpAnim {
             _lvlup->draw(window);
         }
 
-        void setSuccess() {
+        bool setSuccess() {
+            bool ret = false;
+            if (_state == LvlUpAnimState::START)
+                ret = true;
             _state = LvlUpAnimState::FINISHING;
+            return ret;
         }
 
         void setFailure() {
