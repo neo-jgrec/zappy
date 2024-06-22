@@ -1,12 +1,29 @@
 import { useRef, useState, useEffect } from 'react';
 import { Layout } from "../components";
 import { useWebSocket } from '../context';
-import { Button, TextInput, Tile } from '@carbon/react';
 import { Send } from '@carbon/icons-react';
 import {
   Orientation,
   colors
 } from '../utils';
+import {
+  DataTable,
+  Table,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+  Button,
+  TextInput,
+  Tile,
+  TableContainer,
+  TableToolbar,
+  TableToolbarContent,
+  TableToolbarSearch,
+  TableToolbarMenu,
+  TableToolbarAction
+} from '@carbon/react';
 
 function Game() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -44,10 +61,11 @@ function Game() {
           context.strokeRect(i * tileSize, j * tileSize, tileSize, tileSize);
         }
       }
-      zappyServerData.player_positions.forEach(player => {
+      zappyServerData.players.forEach(player => {
+        if (player.is_dead) return;
         let playerColor;
         if (player.team_name)
-          playerColor = colors[zappyServerData.team_names.indexOf(player?.team_name || '')];
+          playerColor = colors[zappyServerData.teams.indexOf(player?.team_name || '')];
         else
           playerColor = '#000000';
         context.beginPath();
@@ -147,22 +165,14 @@ function Game() {
     setIsPanning(false);
   };
 
-  const alertUser = (e: BeforeUnloadEvent) => {
-    e.preventDefault();
-    e.returnValue = "";
-  };
-
-  useEffect(() => {
-    window.addEventListener("beforeunload", alertUser);
-    return () => {
-      window.removeEventListener("beforeunload", alertUser);
-    };
-  }, []);
-
   return (
     <Layout>
+      <h1 className='pb-2'>Game</h1>
       <div className='flex space-x-4'>
-        <Tile className='w-full relative h-[85vh] overflow-hidden bg-blue-900 bg-opacity-5 rounded-xl'>
+        <Tile className='w-full relative h-[85vh] overflow-hidden'>
+          <h2>
+            Map
+          </h2>
           <div
             ref={wrapperRef}
             onMouseDown={handleMouseDown}
@@ -225,6 +235,132 @@ function Game() {
           </Tile>
         </div>
       </div>
+
+      <h1 className='pt-4'>Additionnal Data</h1>
+      <DataTable
+          isSortable={true}
+          headers={[
+            {
+              key: 'id',
+              header: 'ID'
+            },
+            {
+              key: 'team_name',
+              header: 'Team'
+            },
+            {
+              key: 'x',
+              header: 'X'
+            },
+            {
+              key: 'y',
+              header: 'Y'
+            },
+            {
+              key: 'orientation',
+              header: 'Orientation'
+            },
+            {
+              key: 'level',
+              header: 'Level'
+            },
+            {
+              key: 'food',
+              header: 'Food'
+            },
+            {
+              key: 'linemate',
+              header: 'Linemate'
+            },
+            {
+              key: 'deraumere',
+              header: 'Deraumere'
+            },
+            {
+              key: 'sibur',
+              header: 'Sibur'
+            },
+            {
+              key: 'mendiane',
+              header: 'Mendiane'
+            },
+            {
+              key: 'phiras',
+              header: 'Phiras'
+            },
+            {
+              key: 'thystame',
+              header: 'Thystame'
+            },
+            {
+              key: 'is_dead',
+              header: 'Status'
+            }
+          ]}
+          rows={zappyServerData.players.map((player, index) => ({
+            id: index.toString(),
+            team_name: player.team_name,
+            x: player.x.toString(),
+            y: player.y.toString(),
+            orientation: player.orientation?.toString(),
+            level: player.level?.toString(),
+            food: player.resources?.food?.toString() || '0',
+            linemate: player.resources?.linemate?.toString() || '0',
+            deraumere: player.resources?.deraumere?.toString() || '0',
+            sibur: player.resources?.sibur?.toString() || '0',
+            mendiane: player.resources?.mendiane?.toString() || '0',
+            phiras: player.resources?.phiras?.toString() || '0',
+            thystame: player.resources?.thystame?.toString() || '0',
+            is_dead: player.is_dead ? 'Dead' : 'Alive'
+          }))}
+        >
+          {({
+            rows,
+            headers,
+            getHeaderProps,
+            getRowProps,
+            getTableProps,
+            onInputChange,
+          }) => (
+            <TableContainer title="Players" description="List of players with their data" className='mt-4'>
+              <TableToolbar>
+                <TableToolbarContent>
+                  <TableToolbarSearch onChange={() => {}} />
+                  <TableToolbarMenu>
+                    <TableToolbarAction onClick={() => {} }>
+                      Action 1
+                    </TableToolbarAction>
+                    <TableToolbarAction onClick={() => {} }>
+                      Action 2
+                    </TableToolbarAction>
+                    <TableToolbarAction onClick={() => {} }>
+                      Action 3
+                    </TableToolbarAction>
+                  </TableToolbarMenu>
+                  <Button onClick={() => {} }>Primary Button</Button>
+                </TableToolbarContent>
+              </TableToolbar>
+              <Table {...getTableProps()}>
+                <TableHead>
+                  <TableRow>
+                    {headers.map((header) => (
+                      <TableHeader {...getHeaderProps({ header })}>{header.header}</TableHeader>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rows.map((row) => (
+                    <TableRow {...getRowProps({ row })}>
+                      {row.cells.map((cell) => (
+                        <TableCell>{cell.value}</TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </DataTable>
     </Layout>
   );
 }

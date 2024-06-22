@@ -3,6 +3,17 @@ import { io, Socket } from 'socket.io-client';
 import { useSnackbar } from './SnackbarContext';
 import { useNavigate } from 'react-router-dom';
 
+
+enum ResourceType {
+    food = 'food',
+    linemate = 'linemate',
+    deraumere = 'deraumere',
+    sibur = 'sibur',
+    mendiane = 'mendiane',
+    phiras = 'phiras',
+    thystame = 'thystame'
+}
+
 interface Ressources {
     food: number;
     linemate: number;
@@ -16,17 +27,17 @@ interface Ressources {
 interface ZappyServerData {
     x: number;
     y: number;
-    player_positions: { id: number; x: number; y: number, orientation?: number, level?: number, team_name?: string, resources?: Ressources }[];
-    food_positions: { id: number; x: number; y: number }[];
-    team_names: string[];
+    players: { id: number; x: number; y: number, orientation?: number, level?: number, team_name?: string, resources: Ressources, is_dead: boolean }[];
+    foods: { id: number; x: number; y: number }[];
+    teams: string[];
 }
 
 const initialZappyServerData: ZappyServerData = {
     x: 0,
     y: 0,
-    player_positions: [],
-    food_positions: [],
-    team_names: []
+    players: [],
+    foods: [],
+    teams: []
 };
 
 interface WebSocketContextProps {
@@ -124,7 +135,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                 const [, id, x, y] = data.split(' ');
                 setZappyServerData(prevData => ({
                     ...prevData,
-                    player_positions: prevData.player_positions.map(player => player.id === parseInt(id) ? {
+                    players: prevData.players.map(player => player.id === parseInt(id) ? {
                         ...player,
                         x: parseInt(x),
                         y: parseInt(y)
@@ -133,21 +144,32 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
             }
             if (data.startsWith('tna')) {
                 const [, ...team_names] = data.split(' ');
-                zappyServerData.team_names.push(...team_names);
+                zappyServerData.teams.push(...team_names);
             }
             if (data.startsWith('pnw')) {
                 const [, id, x, y, orientation, level, team_name] = data.split(' ');
                 setZappyServerData(prevData => ({
                     ...prevData,
-                    player_positions: [...prevData.player_positions, {
+                    players: [...prevData.players, {
                         id: parseInt(id),
                         x: parseInt(x),
                         y: parseInt(y),
                         orientation: parseInt(orientation),
                         level: parseInt(level),
-                        team_name
+                        team_name,
+                        is_dead: false,
+                        resources: {
+                            food: 0,
+                            linemate: 0,
+                            deraumere: 0,
+                            sibur: 0,
+                            mendiane: 0,
+                            phiras: 0,
+                            thystame: 0
+                        }
                     }]
                 }));
+                newSocket.emit('message', `pin ${id}`);
                 showSnackbar({
                     title: 'Trantorian Spawned',
                     subtitle: `Player at position (${x}, ${y}) in team ${team_name}`,
@@ -159,34 +181,49 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                 const [, id] = data.split(' ');
                 setZappyServerData(prevData => ({
                     ...prevData,
-                    player_positions: prevData.player_positions.filter(player => player.id !== parseInt(id))
+                    players: prevData.players.map(player => player.id === parseInt(id) ? {
+                        ...player,
+                        is_dead: true
+                    } : player)
                 }));
             }
             if (data.startsWith('pgt')) {
-                const [,, resource] = data.split(' ');
-                setZappyServerData(prevData => ({
-                    ...prevData,
-                    food_positions: prevData.food_positions.filter(
-                        (food) => food.id !== parseInt(resource)
-                    )
-                }));
+                const [, id, resource] = data.split(' ');
+                const resourceType = Object.values(ResourceType).find((type) => type === resource);
+                if (resourceType) {
+                    setZappyServerData(prevData => ({
+                        ...prevData,
+                        players: prevData.players.map(player => player.id === parseInt(id) ? {
+                            ...player,
+                            resources: {
+                                ...player.resources,
+                                [resourceType]: player.resources[resourceType] + 1
+                            }
+                        } : player)
+                    }));
+                }
             }
             if (data.startsWith('pdr')) {
-                const [,, resource] = data.split(' ');
-                setZappyServerData(prevData => ({
-                    ...prevData,
-                    food_positions: [...prevData.food_positions, {
-                        id: parseInt(resource),
-                        x: prevData.player_positions[0].x,
-                        y: prevData.player_positions[0].y
-                    }]
-                }));
+                const [, id, resource] = data.split(' ');
+                const resourceType = Object.values(ResourceType).find((type) => type === resource);
+                if (resourceType) {
+                    setZappyServerData(prevData => ({
+                        ...prevData,
+                        players: prevData.players.map(player => player.id === parseInt(id) ? {
+                            ...player,
+                            resources: {
+                                ...player.resources,
+                                [resourceType]: player.resources[resourceType] - 1
+                            }
+                        } : player)
+                    }));
+                }
             }
             if (data.startsWith('plv')) {
                 const [, id, level] = data.split(' ');
                 setZappyServerData(prevData => ({
                     ...prevData,
-                    player_positions: prevData.player_positions.map(player => player.id === parseInt(id) ? {
+                    players: prevData.players.map(player => player.id === parseInt(id) ? {
                         ...player,
                         level: parseInt(level)
                     } : player)
@@ -196,7 +233,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                 const [, id, , , ...resources] = data.split(' ');
                 setZappyServerData(prevData => ({
                     ...prevData,
-                    player_positions: prevData.player_positions.map(player => player.id === parseInt(id) ? {
+                    players: prevData.players.map(player => player.id === parseInt(id) ? {
                         ...player,
                         resources: {
                             food: parseInt(resources[0]),
@@ -213,12 +250,12 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
             if (data.startsWith('bct')) {
                 const [, x, y, resources] = data.split(' ');
                 const newZappyServerData = { ...zappyServerData };
-                newZappyServerData.food_positions = newZappyServerData.food_positions.filter(
+                newZappyServerData.foods = newZappyServerData.foods.filter(
                     (food) => food.x !== parseInt(x) && food.y !== parseInt(y)
                 );
                 resources.split(',').forEach((resource, index) => {
                     if (parseInt(resource) > 0) {
-                        newZappyServerData.food_positions.push({ id: index, x: parseInt(x), y: parseInt(y) });
+                        newZappyServerData.foods.push({ id: index, x: parseInt(x), y: parseInt(y) });
                     }
                 });
                 setZappyServerData(newZappyServerData);
