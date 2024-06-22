@@ -95,13 +95,13 @@ void ABotPattern::act()
 // Always put state listener first before listener for actions
 void ABotPattern::listen(const std::string &response)
 {
-    if (_state.state == WAIT_FOR_SERVER_RESPONSE && _state.lastAction.action == INCANTATION)
+    if (_state.state == WAIT_FOR_SERVER_RESPONSE && isConcernedByIncantation())
         listenIncantationReturnResponse(response);
     else if (_state.lastAction.action == LOOK)
         listenLookResponse(response);
     else if (_state.lastAction.action == TAKE)
         listenTakeResponse(response);
-    else if (_state.lastAction.action == INCANTATION)
+    else if (isConcernedByIncantation())
         listenIncantationResponse(response);
     else if (_state.lastAction.action == CONNECT_NBR)
         listenConnectNbrResponse(response);

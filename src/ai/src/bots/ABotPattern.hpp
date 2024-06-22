@@ -64,6 +64,9 @@ protected:
     // Utils
     void separateServerBroadcast(const std::string &response, std::string &responseServer, std::string &responseBroadcast);
 
+    // Verification
+    bool isConcernedByIncantation();
+
 private:
     std::string saveActionsFile = "./src/ai/dataSaved/actions";
     bool _canAct = false;

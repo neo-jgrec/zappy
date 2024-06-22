@@ -42,7 +42,7 @@ void SimpleBot::updateStrategy()
         joinGroup();
         _state.pattern = "joinGroup";
     }
-    else if (_state.metadata["should_incant"] == "true")
+    else if (_state.metadata["should_incant"] == "true" && _state.level == 2)
     {
         incantationLvl2();
         _state.pattern = "incantationLvl2";

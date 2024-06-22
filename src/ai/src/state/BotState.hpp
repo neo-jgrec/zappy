@@ -58,6 +58,7 @@ public:
         {"should_update_env", "true"},
         {"should_group", "false"},
         {"should_incant", "false"},
+        {"wait_incant", "false"},
     };
 
     // Metrics

@@ -33,11 +33,11 @@ void ABotPattern::joinGroup()
 {
     if (_direction == "0")
     {
-        PRINT_ALERT("SAY JOINED\n");
         _message.format("joined");
         queue.push_back({[&]()
                          { doAction(BROADCAST, _message.content); }, "BROADCAST"});
-        _state.state = WAIT_FOR_BROADCAST_RESPONSE; // TODO: wait incant look response from server
+        _state.state = WAIT_FOR_SERVER_RESPONSE; // TODO: wait incant look response from server
+        _state.metadata["wait_incant"] = "true";
         return;
     }
     std::cout << "group direction = " << _direction << std::endl;

@@ -9,28 +9,32 @@
 
 void ABotPattern::separateServerBroadcast(const std::string &response, std::string &responseServer, std::string &responseBroadcast)
 {
-    size_t messagePos = response.find("message");
+    std::istringstream stream(response);
+    std::string line;
 
-    if (messagePos != std::string::npos)
+    while (std::getline(stream, line))
     {
-        responseServer = response.substr(0, messagePos);
-        responseBroadcast = response.substr(messagePos);
+        if (line.find("message") != std::string::npos)
+        {
+            responseBroadcast += line + "\n";
+        }
+        else
+        {
+            responseServer += line + "\n";
+        }
     }
-    else
-    {
-        responseServer = response;
-    }
+
     responseServer = cleanCarriageReturn(responseServer);
     responseBroadcast = cleanCarriageReturn(responseBroadcast);
 
-    // Handle encryted message
+    // Handle encrypted message
     if (!responseBroadcast.empty())
     {
         std::string signature = getElementAfter(responseBroadcast, ':');
 
         if (signature != _signature)
         {
-            _enemyMessage = _message.content;
+            _enemyMessage.content = _message.content;
             std::cout << "Enemy message: " << _enemyMessage.content << std::endl;
             return;
         }
@@ -47,3 +51,6 @@ void ABotPattern::separateServerBroadcast(const std::string &response, std::stri
         }
     }
 }
+
+// TODO: fix set linemate that can be on negativ, waiter incant. 1 say group 2 say joingroup, 2 say group 1 say joingroup because lvl are not updated
+// If incant == ko, go search rocks

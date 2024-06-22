@@ -29,6 +29,7 @@ void ABotPattern::incantationLvl2()
     _state.ressources.sibur--;
     queue.push_back({[&]()
                      { doAction(INCANTATION, ""); }, "INCANTATION"});
+    _state.metadata["should_incant"] = "false";
 }
 
 // TODO: Fix this i guess. objStr is empty

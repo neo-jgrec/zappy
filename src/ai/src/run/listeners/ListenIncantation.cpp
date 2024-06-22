@@ -21,9 +21,11 @@ void ABot::listenIncantationReturnResponse(const std::string &response)
     {
         _state.level++;
         _state.state = STANDARD;
+        _state.metadata["wait_incant"] = "false";
     }
     if (response.find("ko") != std::string::npos || response.find("ko") != std::string::npos)
     {
         _state.state = STANDARD;
+        _state.metadata["wait_incant"] = "false";
     }
 }
