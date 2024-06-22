@@ -28,9 +28,6 @@ void ABot::doAction(Action action, const std::string &parameter)
 {
     try
     {
-        // debug
-        if (action == BROADCAST && parameter.empty())
-            PRINT_ALERT("Broadcast with empty message");
         ActionInfo actionInfo = getActionInfo(action);
         std::string actionToServer = actionInfo.getName();
 

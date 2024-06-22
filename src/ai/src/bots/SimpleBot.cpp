@@ -37,8 +37,11 @@ bool SimpleBot::handleSurvive()
     const unsigned int limitFood = 11;
 
     if (_iteration % 40 == 0)
+    {
         queue.push_back({[&]()
                          { doAction(INVENTORY, ""); }, "INVENTORY"});
+        return true;
+    }
 
     if (_state.ressources.food < limitFood)
     {
