@@ -54,6 +54,10 @@ interface WebSocketContextProps {
     socket: Socket | null;
     connectionStatus: string;
     zappyServerData: ZappyServerData;
+    tcpPort: string | undefined;
+    setTcpPort: (port: string) => void;
+    tcpHost: string | undefined;
+    setTcpHost: (host: string) => void;
 }
 
 const WebSocketContext = createContext<WebSocketContextProps | undefined>(undefined);
@@ -71,6 +75,9 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
 
     const [host, setHost] = useState(localStorage.getItem('host') || undefined);
     const [port, setPort] = useState(localStorage.getItem('port') || undefined);
+
+    const [tcpHost, setTcpHost] = useState(localStorage.getItem('tcpHost') || undefined);
+    const [tcpPort, setTcpPort] = useState(localStorage.getItem('tcpPort') || undefined);
 
     const { showSnackbar } = useSnackbar();
 
@@ -103,6 +110,17 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                 kind: 'success',
                 timeout: 5000
             });
+            newSocket.emit('connectToTcpServer', { host: tcpHost, port: tcpPort });
+            setTcpHost(tcpHost);
+            setTcpPort(tcpPort);
+            localStorage.setItem('tcpHost', tcpHost ?? '');
+            localStorage.setItem('tcpPort', tcpPort ?? '');
+            showSnackbar({
+                title: 'Connected to TCP Server',
+                subtitle: `Connected to ${tcpHost}:${tcpPort}`,
+                kind: 'success',
+                timeout: 5000
+            });
             setSocket(newSocket);
             setHost(host);
             setPort(port);
@@ -111,6 +129,21 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
             setConnectionStatus('connected');
             newSocket.emit('message', 'msz');
             newSocket.emit('message', 'tna');
+        });
+
+        newSocket.on('tcpError', () => {
+            console.log('TCP Error');
+            showSnackbar({
+                title: 'Error',
+                subtitle: 'Unable to connect to the TCP server',
+                kind: 'error',
+                timeout: 5000
+            });
+            setConnectionStatus('error');
+            setSocket(null);
+            newSocket.disconnect();
+            navigate('/prompt');
+            setZappyServerData(initialZappyServerData);
         });
 
         newSocket.on('message', (data: string) => {
@@ -279,7 +312,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
             setConnectionStatus('disconnected');
             showSnackbar({
                 title: 'Connection Closed',
-                subtitle: 'Socket.io connection was closed, retrying to connect',
+                subtitle: 'Socket.io connection was closed nor the TCP server is not reachable',
                 kind: 'warning',
                 timeout: 5000
             });
@@ -345,7 +378,11 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         connectionStatus,
         hundredLastMessages,
         allBroadcastMessages,
-        zappyServerData
+        zappyServerData,
+        tcpHost,
+        setTcpHost,
+        tcpPort,
+        setTcpPort
     };
 
     return (

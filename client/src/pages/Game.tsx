@@ -314,7 +314,7 @@ function Game() {
             mendiane: player.resources?.mendiane?.toString() || '0',
             phiras: player.resources?.phiras?.toString() || '0',
             thystame: player.resources?.thystame?.toString() || '0',
-            is_dead: player.is_dead ? 'Dead' : 'Dead'
+            is_dead: player.is_dead ? 'Dead' : 'Alive'
           }))}
         >
           {({

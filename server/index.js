@@ -18,12 +18,7 @@ const io = new Server(httpServer, {
     }
 });
 
-const tcpPort = process.env.TCP_PORT || 4000;
-const tcpHost = process.env.TCP_HOST || 'localhost';
-
-console.log(`Connecting to TCP server at ${tcpHost}:${tcpPort}`);
-
-const createTcpClient = (socket) => {
+const createTcpClient = (socket, tcpHost, tcpPort) => {
     const tcpClient = new Socket();
     socket.tcpClient = tcpClient;
 
@@ -43,18 +38,19 @@ const createTcpClient = (socket) => {
 
     tcpClient.on('close', () => {
         if (socket.connected) {
-            setTimeout(() => createTcpClient(socket), 1000);
+            setTimeout(() => createTcpClient(socket, tcpHost, tcpPort), 1000);
         }
     });
 
     tcpClient.on('error', (err) => {
+        socket.emit('tcpError', err);
         console.error(`TCP client error: ${err}`);
     });
 
     socket.on('message', (msg) => {
         console.log(`Received message from WebSocket client: ${msg}`);
         if (tcpClient && tcpClient.writable) {
-            if (!msg.endsWith('\n')) 
+            if (!msg.endsWith('\n'))
                 msg += '\n';
             tcpClient.write(msg);
         } else {
@@ -73,7 +69,10 @@ const createTcpClient = (socket) => {
 };
 
 io.on('connection', (socket) => {
-    createTcpClient(socket);
+    socket.on('connectToTcpServer', (data) => {
+        const { host, port } = data;
+        createTcpClient(socket, host, port);
+    });
 });
 
 const port = process.env.PORT || 8888;
