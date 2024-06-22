@@ -24,7 +24,7 @@ class Button {
 
         bool update(sf::Event event, sf::RenderWindow &window);
         void draw(sf::RenderWindow &window);
-        void setEvent(std::function<void()> event) { _event = event; }
+        void setCallBack(std::function<void()> event) { _event = event; }
 
         void setFontSize(int size) {
             _text.setCharacterSize(size);

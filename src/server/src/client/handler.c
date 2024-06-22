@@ -67,7 +67,6 @@ static int handle_quit_client(
     egg_t *egg;
     eggs_list_t *item_e;
     team_t *team;
-    int client_id = client->id;
 
     if (check_read != 0)
         return NEUTRAL_VALUE;

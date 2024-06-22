@@ -1,4 +1,5 @@
 #include <criterion/criterion.h>
+#include <string>
 #include <vector>
 
 #include "../../src/parser/Egg.hpp"

@@ -7,6 +7,7 @@
 
 #include "server.h"
 #include <string.h>
+#include <stdio.h>
 
 static struct sockaddr_in init_socket_address(size_t port)
 {

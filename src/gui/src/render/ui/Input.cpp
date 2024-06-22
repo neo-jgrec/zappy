@@ -20,14 +20,10 @@ Input::Input(sf::Vector2f pos, [[maybe_unused]] sf::Vector2f size, std::string t
 
 bool Input::update(sf::Event event, sf::RenderWindow &window) {
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-    if (_text.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
-            _isFocused = true;
-    }
-    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-        if (!_text.getGlobalBounds().contains(mousePos.x, mousePos.y))
-            _isFocused = false;
-    }
+    if (!_isFocused)
+        _hover = _text.getGlobalBounds().contains(mousePos.x, mousePos.y);
+    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+        _isFocused = _text.getGlobalBounds().contains(mousePos.x, mousePos.y);
     if (_isFocused) {
         if (event.type == sf::Event::TextEntered) {
             if (event.text.unicode == 8) {
@@ -66,7 +62,7 @@ void Input::draw(sf::RenderWindow &window, float deltaTime) {
         _text.setString(_input);
     }
 
-    if (_isFocused)
+    if (_isFocused || _hover)
         _text.setFillColor(sf::Color::Red);
     else
         _text.setFillColor(sf::Color::White);

@@ -7,6 +7,7 @@
 
 #include "server.h"
 #include <time.h>
+#include <stdio.h>
 
 static int handle_connections(server_t *server, int fd)
 {
@@ -96,7 +97,7 @@ static bool send_command(
             ->tv_nsec - cmd_start_time.tv_nsec) / NANOSECONDS_IN_SECOND);
         if (elapsed >= interval
             && client->tclient[cmd_idx].command == INCANTATION)
-            incantation_callback_end_of_command(client, NULL);
+            incantation_callback_end_of_command(client, server);
         if (client->level == LAST_LEVEL)
             return true;
         if (elapsed >= interval)
@@ -120,28 +121,26 @@ static bool check_response_client_time(
     return false;
 }
 
-static int start_server(server_t *server)
+
+static int start_server(server_t *s)
 {
-    fd_set writedfds;
-    fd_set exceptionfds;
+    fd_set writefds;
+    fd_set exceptfds;
 
     while (true) {
-        FD_ZERO(&writedfds);
-        FD_ZERO(&exceptionfds);
-        server->ready_sockets = server->current_sockets;
-        clock_gettime(CLOCK_REALTIME, &server->current_time);
-        if (handle_client_life(server) == true)
+        s->ready_sockets = s->current_sockets;
+        FD_ZERO(&writefds);
+        FD_ZERO(&exceptfds);
+        clock_gettime(CLOCK_REALTIME, &s->current_time);
+        if (handle_client_life(s) == true)
             continue;
-        handle_meteors(server);
-        if (check_response_client_time(&server->clients,
-            server, &server->current_time) == true)
+        handle_meteors(s);
+        if (check_response_client_time(&s->clients, s, &s->current_time))
             break;
-        if (select(FD_SETSIZE, &server->ready_sockets,
-        &writedfds, &exceptionfds, &server->timeout) < 0) {
-            perror("There was an error in select");
+        if (select(FD_SETSIZE, &s->ready_sockets,
+                   &writefds, &exceptfds, &s->timeout) < 0)
             return ERROR_STATUS;
-        }
-        if (check_connections(server) == ERROR_STATUS)
+        if (check_connections(s) == ERROR_STATUS)
             return ERROR_STATUS;
     }
     return OK_STATUS;
@@ -158,12 +157,13 @@ int server(const char **args)
         return helper(ERROR_STATUS);
     }
     if (bind(server.fd, (struct sockaddr *)&server.info, server.addrlen) < 0)
-        status = ERROR_STATUS;
-    if (listen(server.fd, FD_SETSIZE) < 0)
-        status = ERROR_STATUS;
-    if (start_server(&server) == ERROR_STATUS) {
-        status = ERROR_STATUS;
+        perror("Bind failed: Address already in use"), exit(ERROR_STATUS);
+    if (status == OK_STATUS && listen(server.fd, FD_SETSIZE) < 0) {
+        perror("Listen failed: Unable to continue connection");
+        exit(ERROR_STATUS);
     }
+    if (status == OK_STATUS && start_server(&server) == ERROR_STATUS)
+        status = ERROR_STATUS;
     if (status == ERROR_STATUS)
         close(server.fd);
     destroy_server(server);

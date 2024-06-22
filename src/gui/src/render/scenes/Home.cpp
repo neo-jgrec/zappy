@@ -8,8 +8,8 @@ Home::Home(Core *core, int port, std::string ip) : _core(core) {
     _title.setCharacterSize(43);
 
     _quitButton = std::make_shared<Button>(sf::Vector2f(100, 500), sf::Vector2f(100, 100), "Quit", _core->getFont());
-    _startButton = std::make_shared<Button>(sf::Vector2f(100, 400), sf::Vector2f(100, 100), "Start", _core->getFont());
-    _portButton = std::make_shared<Input>(sf::Vector2f(100, 300), sf::Vector2f(100, 100), "Port", _core->getFont(),
+    _startButton = std::make_shared<Button>(sf::Vector2f(100, 300), sf::Vector2f(100, 100), "Start", _core->getFont());
+    _portButton = std::make_shared<Input>(sf::Vector2f(100, 250), sf::Vector2f(100, 100), "Port", _core->getFont(),
         "1234567890");
     if (port != 0)
         _portButton->setInput(std::to_string(port));
@@ -17,26 +17,55 @@ Home::Home(Core *core, int port, std::string ip) : _core(core) {
         "1234567890.");
     if (ip != "")
         _ipButton->setInput(ip);
+
+    _chat = std::make_shared<Chat>(_core->getFont(), 7);
+    _chat->setPosition(sf::Vector2f(50, 720 - 50));
+    _chat->addMessage("Welcome to Zappy 1.0");
+    initSprites();
 }
 
 void Home::draw(sf::RenderWindow &window) {
+    _sprites["background"]->draw(window);
+    _sprites["movingEarth"]->draw(window);
     _quitButton->draw(window);
     _startButton->draw(window);
     _ipButton->draw(window, _core->getDeltaTime());
     _portButton->draw(window, _core->getDeltaTime());
+    _chat->draw(window);
     window.draw(_title);
+}
+
+void Home::update(float fElapsedTime) {
+    _sprites["movingEarth"]->update(fElapsedTime);
 }
 
 bool Home::update(sf::Event event, sf::RenderWindow &window) {
     if (_quitButton->update(event, window))
         window.close();
     if (_startButton->update(event, window)) {
-        if (!_core->connectToServer(std::stoi(_portButton->getInput()), _ipButton->getInput()))
+        int port = 0;
+        try {
+            port = std::stoi(_portButton->getInput());
+        } catch (std::exception &e) {
+            _chat->addMessage("Invalid port", sf::Color::Red);
             return false;
+        }
+        if (!_core->connectToServer(port, _ipButton->getInput())) {
+            _chat->addMessage("Failed to connect to server", sf::Color::Red);
+            return false;
+        }
         _core->_scenes[GameState::GAME]->init();
         _core->_state = GameState::GAME;
     }
     _ipButton->update(event, window);
     _portButton->update(event, window);
     return true;
+}
+
+void Home::initSprites() {
+    _sprites["background"] = std::make_shared<Sprite>("assets/background.jpg");
+    _sprites["background"]->resetOrigin();
+    _sprites["movingEarth"] = std::make_shared<Sprite>("assets/earthPlanetMenu75.png", 100, 0.1f);
+    _sprites["movingEarth"]->setScale(10);
+    _sprites["movingEarth"]->setPosition(sf::Vector2f(1080, 720));
 }

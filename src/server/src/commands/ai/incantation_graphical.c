@@ -15,7 +15,8 @@ void send_start_incantation_to_graphicals(client_t *client, server_t *server)
     int ret = asprintf(&ids, "%d", client->id);
 
     TAILQ_FOREACH(list, &server->clients, entries) {
-        if (list->client->x == client->x
+        if (list->client && list->client->is_graphic == false
+            && list->client->x == client->x
             && list->client->y == client->y
             && list->client->is_incanting
             && list->client != client) {
