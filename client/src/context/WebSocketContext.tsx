@@ -177,14 +177,14 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                         } : player)
                     }));
                 }
-                const newHundredLastMessages = [...HundredLastMessagesRef.current];
-                if (newHundredLastMessages.length >= 30) {
-                    newHundredLastMessages.shift();
-                }
-                newHundredLastMessages.push(data);
-                HundredLastMessagesRef.current = newHundredLastMessages;
-                setHundredLastMessages(newHundredLastMessages);
             }
+            const newHundredLastMessages = [...HundredLastMessagesRef.current];
+            if (newHundredLastMessages.length >= 100) {
+                newHundredLastMessages.shift();
+            }
+            newHundredLastMessages.push(data);
+            HundredLastMessagesRef.current = newHundredLastMessages;
+            setHundredLastMessages(newHundredLastMessages);
 
             if (data.startsWith('bct')) {
                 const [, x, y, resources] = data.split(' ');

@@ -10,10 +10,12 @@ import {
 
 function Game() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const [startPan, setStartPan] = useState({ x: 0, y: 0 });
+  const [mouseTile, setMouseTile] = useState({ x: 0, y: 0 });
 
   const { zappyServerData, hundredLastMessages, allBroadcastMessages } = useWebSocket();
 
@@ -27,8 +29,6 @@ function Game() {
     }
 
     const tileSize = 50;
-    canvas.width = zappyServerData.x * tileSize;
-    canvas.height = zappyServerData.y * tileSize;
 
     const draw = () => {
       context.clearRect(0, 0, canvas.width, canvas.height);
@@ -98,14 +98,30 @@ function Game() {
       context.restore();
     };
 
-    draw();
-  }, [zoom, pan, zappyServerData]);
+    const handleResize = () => {
+      if (wrapperRef.current && canvas) {
+        const { width, height } = wrapperRef.current.getBoundingClientRect();
+        canvas.width = width;
+        canvas.height = height;
+        draw();
+      }
+    };
 
-  const handleWheel = (event: React.WheelEvent) => {
-    event.preventDefault();
-    const scaleAmount = -event.deltaY * 0.01;
-    setZoom((prevZoom) => Math.min(Math.max(prevZoom + scaleAmount, 0.5), 3));
-  };
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      const scaleAmount = -event.deltaY * 0.01;
+      setZoom((prevZoom) => Math.min(Math.max(prevZoom + scaleAmount, 0.5), 3));
+    };
+
+    window.addEventListener('resize', handleResize);
+    wrapperRef.current?.addEventListener('wheel', handleWheel, { passive: false });
+    handleResize();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      wrapperRef.current?.removeEventListener('wheel', handleWheel);
+    };
+  }, [zoom, pan, zappyServerData]);
 
   const handleMouseDown = (event: React.MouseEvent) => {
     setIsPanning(true);
@@ -115,6 +131,15 @@ function Game() {
   const handleMouseMove = (event: React.MouseEvent) => {
     if (isPanning) {
       setPan({ x: event.clientX - startPan.x, y: event.clientY - startPan.y });
+    } else {
+      const rect = wrapperRef.current?.getBoundingClientRect();
+      if (rect) {
+        const x = Math.floor((event.clientX - rect.left - pan.x) / (50 * zoom));
+        const y = Math.floor((event.clientY - rect.top - pan.y) / (50 * zoom));
+        if (x >= 0 && y >= 0) {
+          setMouseTile({ x, y });
+        }
+      }
     }
   };
 
@@ -139,21 +164,25 @@ function Game() {
       <div className='flex space-x-4'>
         <Tile className='w-full relative h-[85vh] overflow-hidden bg-blue-900 bg-opacity-5 rounded-xl'>
           <div
-            onWheel={handleWheel}
+            ref={wrapperRef}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
+            className='w-full h-full relative'
           >
             <canvas
               ref={canvasRef}
-              className='absolute top-0 left-0 w-full h-full'
+              className='absolute top-0 left-0'
             ></canvas>
+            <p className='absolute top-0 left-0 bg-white p-2 m-2 rounded shadow bg-opacity-50 text-black'>
+              Tile Coordinates: ({mouseTile.x}, {mouseTile.y})
+            </p>
           </div>
         </Tile>
 
         <div className='grid grid-cols-2 gap-4 w-full'>
-          <Tile className='p-4' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%' }}>
+          <Tile className='p-4' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%', maxHeight: '85vh' }}>
             <h2>Game Events</h2>
             <div style={{ flex: '1 1 auto', overflowY: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
               <ul className='overflow-y-auto'>
@@ -164,7 +193,7 @@ function Game() {
             </div>
           </Tile>
 
-          <Tile className='p-4' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%' }}>
+          <Tile className='p-4' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%', maxHeight: '85vh' }}>
             <h2>Chat</h2>
             <div style={{ flex: '1 1 auto', overflowY: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
               <ul className='overflow-y-auto pb-4'>
