@@ -36,7 +36,20 @@ void ABot::listenGroup(const std::string &message)
 
 void ABot::listenGroupJoined(const std::string &message)
 {
-    _state.metadata["should_incant"] = "true";
+    // TODO: add it in ABot or somewhere (metadata ?)?
+    static unsigned int playersPresent = 0;
+
+    if (_state.level == 2 || _state.level == 3)
+        _state.metadata["should_incant"] = "true";
+    else if (_state.level == 4)
+    {
+        playersPresent++;
+        if (playersPresent == 3)
+        {
+            _state.metadata["should_incant"] = "true";
+            playersPresent = 0;
+        }
+    }
 }
 
 void ABot::listenBroadcastResponse(const std::string &response)

@@ -55,6 +55,8 @@ protected:
     void forkBot(unsigned int idBot);
     void incantationLvl1();
     void incantationLvl2();
+    void incantationLvl3();
+    void incantationLvl4();
 
     // Debug
     void debugResponses(const std::string &responseServer, const std::string &responseBroadcast);

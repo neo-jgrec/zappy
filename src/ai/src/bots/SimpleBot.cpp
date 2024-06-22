@@ -53,6 +53,11 @@ bool SimpleBot::handleSurvive()
 
 bool SimpleBot::handleState()
 {
+
+    PRINT_ALERT("handleState\n");
+    std::cout << "should_group: " << _state.metadata["should_group"] << std::endl;
+    std::cout << "should_incant: " << _state.metadata["should_incant"] << std::endl;
+    std::cout << "level: " << _state.level << std::endl;
     if (_state.metadata["should_group"] == "true")
     {
         joinGroup();
@@ -65,7 +70,18 @@ bool SimpleBot::handleState()
         _state.pattern = "incantationLvl2";
         return true;
     }
-
+    if (_state.metadata["should_incant"] == "true" && _state.level == 3)
+    {
+        incantationLvl3();
+        _state.pattern = "incantationLvl3";
+        return true;
+    }
+    if (_state.metadata["should_incant"] == "true" && _state.level == 4)
+    {
+        incantationLvl4();
+        _state.pattern = "incantationLvl4";
+        return true;
+    }
     return false;
 }
 
@@ -92,11 +108,66 @@ void SimpleBot::handleLvl2()
         searchAndTakeRessource("sibur");
         _state.pattern = "searchAndTakeRessource: sibur";
     }
-    group();
-    _state.pattern = "group";
+    else
+    {
+        group();
+        _state.pattern = "group";
+    }
 }
 
 void SimpleBot::handleLvl3()
 {
-    std::cout << "ready for lvl 3" << std::endl;
+    if (_state.ressources.linemate != 2)
+    {
+        searchAndTakeRessource("linemate");
+        _state.pattern = "searchAndTakeRessource: linemate";
+    }
+    else if (_state.ressources.sibur != 1)
+    {
+        searchAndTakeRessource("sibur");
+        _state.pattern = "searchAndTakeRessource: sibur";
+    }
+    else if (_state.ressources.phiras != 2)
+    {
+        searchAndTakeRessource("phiras");
+        _state.pattern = "searchAndTakeRessource: phiras";
+    }
+    else
+    {
+        group();
+        _state.pattern = "group";
+    }
 }
+
+void SimpleBot::handleLvl4()
+{
+    PRINT_ALERT("handleLvl4\n");
+    if (_state.ressources.linemate != 1)
+    {
+        searchAndTakeRessource("linemate");
+        _state.pattern = "searchAndTakeRessource: linemate";
+    }
+    else if (_state.ressources.deraumere != 1)
+    {
+        searchAndTakeRessource("deraumere");
+        _state.pattern = "searchAndTakeRessource: deraumere";
+    }
+    else if (_state.ressources.sibur != 2)
+    {
+        searchAndTakeRessource("sibur");
+        _state.pattern = "searchAndTakeRessource: sibur";
+    }
+    else if (_state.ressources.phiras != 1)
+    {
+        searchAndTakeRessource("phiras");
+        _state.pattern = "searchAndTakeRessource: phiras";
+    }
+    else
+    {
+        group();
+        _state.pattern = "group";
+    }
+}
+
+// TODO: sometimes it group but don't survive
+// TODO (MAYBE): handle when both can group: rule bot id < bot 2 id group, the other join group

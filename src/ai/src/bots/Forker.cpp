@@ -29,7 +29,7 @@ void Forker::forkNewBot()
         //  execl("./zappy_ai", "./zappy_ai", "-p", std::to_string(_port).c_str(), "-n", _teamName.c_str(), "-h", _host.c_str(), nullptr);
 
         // with term that close
-        //  execl("/usr/bin/gnome-terminal", "/usr/bin/gnome-terminal", "--", "./zappy_ai", "-p", std::to_string(_port).c_str(), "-n", _teamName.c_str(), "-h", _host.c_str(), nullptr);
+        // execl("/usr/bin/gnome-terminal", "/usr/bin/gnome-terminal", "--", "./zappy_ai", "-p", std::to_string(_port).c_str(), "-n", _teamName.c_str(), "-h", _host.c_str(), nullptr);
 
         //  with term that stay open
         execl("/usr/bin/gnome-terminal", "/usr/bin/gnome-terminal", "--", "bash", "-c",
@@ -42,7 +42,7 @@ void Forker::forkNewBot()
     else
     {
         _message.format("you_are_bot=" + std::to_string(_idBot) + "your_job=" + jobMap[SIMPLE_BOT] + "currentMessageId=" + std::to_string(_currentMessageId));
-        sleep(1);
+        // sleep(1);
         queue.push_back(std::make_pair([&]()
                                        { doAction(BROADCAST, _message.content); }, "FORK"));
 
@@ -52,7 +52,7 @@ void Forker::forkNewBot()
 
 void Forker::updateStrategy()
 {
-    static bool canFork = true; // TODO: it is to debug
+    static unsigned int limitFork = 4; // TODO: it is to debug
     static bool verifySlot = true;
 
     std::cout << "🍴 Forker updateStrategy" << std::endl;
@@ -67,16 +67,16 @@ void Forker::updateStrategy()
     {
         survive();
     }
-    else if ((_state.state == FORKED || _state.slot > 0) && canFork)
+    else if ((_state.state == FORKED || _state.slot > 0) && limitFork > 0)
     {
         forkNewBot();
         _idBot++;
         _state.slot--;
-        canFork = false;
+        limitFork--;
     }
-    else if (_state.slot == 0 && canFork)
-    {
-        queue.push_back(std::make_pair([&]()
-                                       { doAction(FORK, ""); }, "FORK"));
-    }
+    // else if (_state.slot == 0 && limitFork == 0)
+    // {
+    //     queue.push_back(std::make_pair([&]()
+    //                                    { doAction(FORK, ""); }, "FORK"));
+    // }
 }

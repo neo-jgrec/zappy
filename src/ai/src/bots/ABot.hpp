@@ -102,6 +102,7 @@ protected:
     void listenIncantationResponse(const std::string &response);
     void listenIncantationReturnResponse(const std::string &response);
     void listenConnectNbrResponse(const std::string &response);
+    void listenCancel(const std::string &response);
 
     // Listeners Broadcast
     void listenGroup(const std::string &response);

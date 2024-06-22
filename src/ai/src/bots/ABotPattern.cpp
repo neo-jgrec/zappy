@@ -95,6 +95,8 @@ void ABotPattern::act()
 // Always put state listener first before listener for actions
 void ABotPattern::listen(const std::string &response)
 {
+    if (_state.state == WAIT_FOR_SERVER_RESPONSE)
+        listenCancel(response);
     if (_state.state == WAIT_FOR_SERVER_RESPONSE && isConcernedByIncantation())
         listenIncantationReturnResponse(response);
     else if (_state.lastAction.action == LOOK)
@@ -109,18 +111,18 @@ void ABotPattern::listen(const std::string &response)
 
 void ABotPattern::listenBroadcast(const std::string &response)
 {
-    // TODO: clean ?
+    // TODO: we don't use response ?
     listenBroadcastResponse(_allyMessage.content);
 }
 
 void ABotPattern::verifyServerIsRunning(const std::string &response)
 {
     if (response.empty())
-        exit(0);
+        exit(55);
     if (response.find("dead") != std::string::npos)
     {
         debugState();
-        exit(0);
+        exit(77);
     }
 }
 

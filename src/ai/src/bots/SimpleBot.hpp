@@ -20,6 +20,7 @@ public:
     void handleLvl1();
     void handleLvl2();
     void handleLvl3();
+    void handleLvl4();
 
     // State
     bool handleState();

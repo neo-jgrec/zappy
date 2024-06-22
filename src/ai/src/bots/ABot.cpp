@@ -23,6 +23,7 @@ void ABot::sendMessage(const std::string &message)
     send(_sockfd, messageToSend.c_str(), messageToSend.size(), 0);
 }
 
+// TODO: decrypt parameter in a tmp to debug it easily.
 void ABot::doAction(Action action, const std::string &parameter)
 {
     static int timeUnit = 126;

@@ -113,6 +113,7 @@ void Client::initBot(const std::string identityMessage)
 
     if (!identityMessage.empty())
     {
+        std::cout << "identityMessage: " << identityMessage << std::endl;
         std::string job = "";
         std::string prefixId = "you_are_bot=";
         std::string prefixJob = "your_job=";
@@ -140,7 +141,7 @@ void Client::initBot(const std::string identityMessage)
     }
     else
     {
-        _bot = BotFactory::createBot("SimpleBot"); // TODO: is forker normally
+        _bot = BotFactory::createBot("Forker"); // TODO: is forker normally
         if (_bot == nullptr)
             throw ClientException("BotFactory failed");
     }
