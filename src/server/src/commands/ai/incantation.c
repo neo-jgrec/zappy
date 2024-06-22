@@ -17,28 +17,37 @@ static const size_t required_resources[7][7] = {
     {6, 2, 2, 2, 2, 2, 1}
 };
 
-static void count_resources(tile_t *tile, size_t *resource_count)
+static info_map_t get_tile(server_t *server, size_t x, size_t y)
 {
-    for (size_t i = 0; i < tile->num_objects; i++)
-        resource_count[tile->objects[i]]++;
+    tile_t tile = server->map[x + y * server->proprieties.width];
+    info_map_t info = {0};
+
+    for (size_t i = 0; i < tile.num_objects; i++) {
+        info.food += tile.objects[i] == FOOD;
+        info.linemate += tile.objects[i] == LINEMATE;
+        info.deraumere += tile.objects[i] == DERAUMERE;
+        info.sibur += tile.objects[i] == SIBUR;
+        info.mendiane += tile.objects[i] == MENDIANE;
+        info.phiras += tile.objects[i] == PHIRAS;
+        info.thystame += tile.objects[i] == THYSTAME;
+    }
+    return info;
 }
 
 static bool check_requirements_met(
-    const size_t *resource_count,
-    const size_t *z,
-    size_t players_on_tile
+    const info_map_t resource_count,
+    size_t players_on_tile,
+    size_t required_level
 )
 {
-    for (size_t i = 1; i < 7; i++) {
-        if (resource_count[i] < z[i]) {
-            fprintf(stderr, "Insufficient resources of type %zu\n", i);
-            return false;
-        }
-    }
-    if (players_on_tile < z[0]) {
-        fprintf(stderr, "Insufficient players on the tile\n");
+    if (players_on_tile < required_resources[required_level - 1][0]
+        || resource_count.linemate < required_resources[required_level - 1][1]
+        || resource_count.deraumere < required_resources[required_level - 1][2]
+        || resource_count.sibur < required_resources[required_level - 1][3]
+        || resource_count.mendiane < required_resources[required_level - 1][4]
+        || resource_count.phiras < required_resources[required_level - 1][5]
+        || resource_count.thystame < required_resources[required_level - 1][6])
         return false;
-    }
     return true;
 }
 
@@ -57,13 +66,20 @@ static void remove_resource_from_tile(
     }
 }
 
-static void remove_resources(tile_t *tile, const size_t *required_resources)
+static void remove_resources(tile_t *tile, info_map_t resources)
 {
-    size_t resource_count[8] = {0};
+    size_t resource_count[7] = {
+        resources.food,
+        resources.linemate,
+        resources.deraumere,
+        resources.sibur,
+        resources.mendiane,
+        resources.phiras,
+        resources.thystame
+    };
 
-    count_resources(tile, resource_count);
-    for (size_t i = 1; i < 7; i++) {
-        while (resource_count[i] > required_resources[i]) {
+    for (size_t i = 0; i < 7; i++) {
+        for (size_t j = 0; j < required_resources[0][i]; j++) {
             remove_resource_from_tile(tile, i, resource_count);
         }
     }
@@ -94,10 +110,12 @@ static void run_logic_on_group(
     void (*func)(client_t *client, server_t *server)
 )
 {
-    client_list_t *client_entry;
+    client_list_t *client_entry = NULL;
 
     TAILQ_FOREACH(client_entry, &server->clients, entries) {
-        if (client_entry->client->x == client->x
+        if (client_entry->client
+            && client_entry->client->is_graphic == false
+            && client_entry->client->x == client->x
             && client_entry->client->y == client->y
             && client_entry->client->level == required_level)
             func(client_entry->client, server);
@@ -106,14 +124,14 @@ static void run_logic_on_group(
 
 static bool are_requierment_met_encapsulation(
     client_t *client,
-    size_t *resource_count,
+    info_map_t resource_count,
     size_t players_on_tile,
     size_t required_level
 )
 {
     if (!check_requirements_met(
         resource_count,
-        required_resources[required_level],
+        required_level,
         players_on_tile)
     ) {
         dprintf(client->fd, "ko\n");
@@ -124,18 +142,16 @@ static bool are_requierment_met_encapsulation(
 
 void incantation(client_t *client, server_t *server)
 {
-    size_t required_level = client->level - 1;
-    size_t resource_count[8] = {0};
+    info_map_t resource_count = get_tile(server, client->x, client->y);
     size_t players_on_tile = get_nb_players_on_tile(client, server);
     tile_t *tile = &server
         ->map[client->x + client->y * server->proprieties.width];
 
-    count_resources(tile, resource_count);
     if (!are_requierment_met_encapsulation(client, resource_count,
-        players_on_tile, required_level))
+        players_on_tile, client->level))
         return;
-    run_logic_on_group(client, server, required_level, callback_freeze);
-    run_logic_on_group(client, server, required_level,
+    run_logic_on_group(client, server, client->level, callback_freeze);
+    run_logic_on_group(client, server, client->level,
         callback_start_incantation_set_payload);
     send_start_incantation_to_graphicals(client, server);
     client_time_handler(client, INCANTATION);
@@ -143,22 +159,19 @@ void incantation(client_t *client, server_t *server)
 
 void incantation_callback_end_of_command(client_t *c, server_t *s)
 {
-    size_t required_level = c->level - 1;
-    size_t old_level = c->level;
-    size_t resource_count[8] = {0};
+    info_map_t resource_count = get_tile(s, c->x, c->y);
     size_t players_on_tile = get_nb_players_on_tile(c, s);
     tile_t *tile = &s->map[c->x + c->y * s->proprieties.width];
 
-    count_resources(tile, resource_count);
     if (!are_requierment_met_encapsulation(c, resource_count,
-        players_on_tile, required_level)) {
-        run_logic_on_group(c, s, required_level, callback_unfreeze);
+        players_on_tile, c->level)) {
+        run_logic_on_group(c, s, c->level, callback_unfreeze);
         message_to_graphicals(s, "pie %hhd %hhd %d\n", c->x, c->y, 0);
         return;
     }
-    remove_resources(tile, required_resources[old_level]);
-    run_logic_on_group(c, s, old_level, callback_level_up);
-    run_logic_on_group(c, s, old_level,
+    remove_resources(tile, resource_count);
+    run_logic_on_group(c, s, c->level, callback_level_up);
+    run_logic_on_group(c, s, c->level,
         callback_end_incantation_set_payload);
     message_to_graphicals(s, "pie %hhd %hhd %d\n", c->x, c->y, 1);
     if (c->level == LAST_LEVEL)
