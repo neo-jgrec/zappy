@@ -55,6 +55,7 @@ class Core {
         Parser _parser;
         ServerConnect _server;
         std::map<std::string, sf::Sound> _sounds;
+        bool isFullscreen() { return _fullscreen; }
 
         bool _funMode = false;
     private:

@@ -3,7 +3,7 @@
 
 Menu::Menu(Core *core) : _core(core) {
     _fullscreenButton = std::make_shared<Button>(sf::Vector2f(100, 100),
-    sf::Vector2f(100, 100), "Fullscreen", _core->getFont());
+    sf::Vector2f(100, 100), "Windowed", _core->getFont());
     _resolutionButtons.push_back(std::make_shared<Button>(sf::Vector2f(100, 150),
     sf::Vector2f(100, 100), "1920x1080", _core->getFont()));
     _resolutionButtons.push_back(std::make_shared<Button>(sf::Vector2f(300, 150),
@@ -22,6 +22,7 @@ bool Menu::update(sf::Event event, sf::RenderWindow &window) {
         _core->_upperState = GameState::DEFAULT;
     if (_fullscreenButton->update(event, window)) {
         _core->switchFullscreen();
+        _fullscreenButton->setText(_core->isFullscreen() ? "Fullscreen" : "Windowed");
         return true;
     }
     if (_resolutionButtons[0]->update(event, window)) {
