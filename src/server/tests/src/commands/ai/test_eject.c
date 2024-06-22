@@ -43,6 +43,7 @@ Test(eject, basic) {
 
     eject(&client, &server);
 
+    printf("client.x, client.y: %d, %d\n", client.x, client.y);
     cr_assert_eq(client2.x, 5);
     cr_assert_eq(client2.y, 4);
     cr_assert_eq(client2.orientation, NORTH);

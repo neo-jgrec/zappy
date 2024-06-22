@@ -20,10 +20,10 @@
     #include "utils.h"
 
 enum Orientation {
-    NORTH,
-    SOUTH,
-    WEST,
-    EAST
+    NORTH = 1,
+    EAST = 2,
+    SOUTH = 3,
+    WEST = 4
 };
 
 typedef struct inventory_s {
