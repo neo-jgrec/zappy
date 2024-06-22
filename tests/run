@@ -1,0 +1,53 @@
+#!/bin/env python
+
+import argparse
+import subprocess
+import shlex
+
+def launch_process(command, log_file):
+    with open(log_file, 'a') as f:
+        process = subprocess.Popen(shlex.split(command), stdout=f, stderr=subprocess.STDOUT)
+    return process
+
+def main():
+    parser = argparse.ArgumentParser(description='Zappy Launcher')
+    parser.add_argument('-H', '--host', type=str, required=True, help='Server IP address')
+    parser.add_argument('-p', type=int, required=True, help='Server port')
+    parser.add_argument('-n', type=str, required=True, help='Teams names (comma separated)')
+    parser.add_argument('-x', type=int, required=True, help='Map width')
+    parser.add_argument('-y', type=int, required=True, help='Map height')
+    parser.add_argument('-c', type=int, required=True, help='Number of clients per team')
+    parser.add_argument('-f', type=int, required=True, help='Frequency')
+    parser.add_argument('-l', type=str, default='zappy_launcher', help='Base log file name')
+    args = parser.parse_args()
+
+    teams = args.n.split(',')
+    base_log_file = args.l
+
+    server_log_file = f'{base_log_file}_server.out'
+    server_command = f'./zappy_server -p {args.p} -x {args.x} -y {args.y} -n {" ".join(teams)} -c {args.c} -f {args.f}'
+    server_process = launch_process(server_command, server_log_file)
+
+    ai_processes = []
+    for team in teams:
+        for i in range(4):
+            ai_log_file = f'{base_log_file}_ai_{team}_{i}.out'
+            ai_command = f'./zappy_ai -n {team} -h {args.host} -p {args.p}'
+            ai_process = launch_process(ai_command, ai_log_file)
+            ai_processes.append(ai_process)
+
+    gui_log_file = f'{base_log_file}_gui.out'
+    gui_command = f'./zappy_gui -i {args.host} -p {args.p}'
+    gui_process = launch_process(gui_command, gui_log_file)
+
+    try:
+        server_process.wait()
+    except KeyboardInterrupt:
+        server_process.terminate()
+        gui_process.terminate()
+        for ai_process in ai_processes:
+            ai_process.terminate()
+        print("Processes terminated.")
+
+if __name__ == "__main__":
+    main()
