@@ -1,7 +1,9 @@
 import { useRef, useState, useEffect } from 'react';
 import { Layout } from "../components";
 import { useWebSocket } from '../context';
-import { Send } from '@carbon/icons-react';
+import {
+  Send,
+} from '@carbon/icons-react';
 import {
   Orientation,
   colors
@@ -22,7 +24,8 @@ import {
   TableToolbarContent,
   TableToolbarSearch,
   TableToolbarMenu,
-  TableToolbarAction
+  TableToolbarAction,
+  Tooltip,
 } from '@carbon/react';
 import {
   white,
@@ -198,10 +201,10 @@ function Game() {
           <Tile className='p-4' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%', maxHeight: '85vh' }}>
             <h2>Game Events</h2>
             <div style={{ flex: '1 1 auto', overflowY: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-              <ul className='overflow-y-auto'>
+              <ul>
                 {hundredLastMessages.map((node, index) => (
-                  <li key={index} className='pl-5'>
-                    {node.message}
+                  <li key={index}>
+                    {new Date(node.timestamp).toLocaleString(navigator.language, { hour: '2-digit', minute: '2-digit' })}&nbsp;|&nbsp;{node.message}
                   </li>
                 ))}
               </ul>
@@ -211,11 +214,17 @@ function Game() {
           <Tile className='p-4' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%', maxHeight: '85vh' }}>
             <h2>Chat</h2>
             <div style={{ flex: '1 1 auto', overflowY: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-              <ul className='overflow-y-auto pb-4'>
-                {allBroadcastMessages.map(({ id, message }) => (
-                  <li key={id} className='pl-5'>
-                    <span className='font-bold'>Client {id}:</span> {message}
-                  </li>
+              <ul className='pb-4'>
+                {allBroadcastMessages.map(({ id, message, timestamp }) => (
+                  <Tooltip
+                    label={new Date(timestamp).toLocaleString(navigator.language, { hour: '2-digit', minute: '2-digit' })}
+                  >
+                    <li key={id} className='flex items-center space-x-2'>
+                      <span className='font-bold hover:bg-black hover:bg-opacity-20 hover:cursor-pointer p-1 rounded'>
+                        Client {id}
+                      </span>:&nbsp;{message}
+                    </li>
+                  </Tooltip>
                 ))}
               </ul>
               <div className='flex'>
