@@ -142,7 +142,7 @@ void BotProbabilistic::updateProbabilities()
         }
         else if (pattern->name == "incantationLvl2")
         {
-            if (_state.ressources.linemate == 1 && _state.ressources.deraumere == 1 && _state.ressources.sibur == 1 && _state.level == 2 && _allyMessage.content == "group_joined")
+            if (_state.ressources.linemate == 1 && _state.ressources.deraumere == 1 && _state.ressources.sibur == 1 && _state.level == 2 && _allyMessage.content == "joined")
                 newProbability = getTrainedVariableValueByName("incantation_probability");
             else
                 newProbability = baseline;

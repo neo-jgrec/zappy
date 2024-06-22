@@ -31,16 +31,13 @@ void ABotPattern::group()
 
 void ABotPattern::joinGroup()
 {
-    // TODO: wait a broadcast message
-    std::cout << _allyMessage.content << std::endl;
     if (_direction == "0")
     {
-        std::cout << "direction = 0" << std::endl;
-        _message.content = "group_joined";
-        _message.vigenereEncrypt();
-        _message.generateMessage();
+        PRINT_ALERT("SAY JOINED\n");
+        _message.format("joined");
         queue.push_back({[&]()
                          { doAction(BROADCAST, _message.content); }, "BROADCAST"});
+        _state.state = WAIT_FOR_BROADCAST_RESPONSE; // TODO: wait incant look response from server
         return;
     }
     std::cout << "group direction = " << _direction << std::endl;

@@ -36,10 +36,16 @@ void SimpleBot::updateStrategy()
         _state.pattern = "survive";
         searchFood--;
     }
+    // state
     else if (_state.metadata["should_group"] == "true")
     {
         joinGroup();
         _state.pattern = "joinGroup";
+    }
+    else if (_state.metadata["should_incant"] == "true")
+    {
+        incantationLvl2();
+        _state.pattern = "incantationLvl2";
     }
     else if (_state.level == 2 && _state.ressources.linemate != 1)
     {

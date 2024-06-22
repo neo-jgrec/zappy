@@ -57,6 +57,7 @@ public:
     std::map<std::string, std::string> metadata = {
         {"should_update_env", "true"},
         {"should_group", "false"},
+        {"should_incant", "false"},
     };
 
     // Metrics

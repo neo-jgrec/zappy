@@ -9,6 +9,7 @@
 #include "../../../constant/Constants.hpp"
 #include <functional>
 
+// TODO: verify to have no ko
 void ABotPattern::searchAndTakeRessource(const std::string &ressource)
 {
 

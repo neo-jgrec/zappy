@@ -54,6 +54,7 @@ protected:
     void joinGroup();
     void forkBot(unsigned int idBot);
     void incantationLvl1();
+    void incantationLvl2();
 
     // Debug
     void debugResponses(const std::string &responseServer, const std::string &responseBroadcast);

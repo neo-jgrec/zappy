@@ -36,8 +36,7 @@ void ABot::listenGroup(const std::string &message)
 
 void ABot::listenGroupJoined(const std::string &message)
 {
-    std::cout << "GROUP JOIN" << std::endl;
-    exit(0);
+    _state.metadata["should_incant"] = "true";
 }
 
 void ABot::listenBroadcastResponse(const std::string &response)
@@ -47,7 +46,7 @@ void ABot::listenBroadcastResponse(const std::string &response)
     {
         listenGroup(_allyMessage.content);
     }
-    else if (_allyMessage.content.find("group_joined") != std::string::npos)
+    else if (_allyMessage.content.find("joined") != std::string::npos)
     {
         listenGroupJoined(_allyMessage.content);
     }
