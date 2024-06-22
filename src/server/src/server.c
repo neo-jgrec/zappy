@@ -122,7 +122,12 @@ static bool check_response_client_time(
 
 static int start_server(server_t *server)
 {
+    fd_set writedfds;
+    fd_set exceptionfds;
+
     while (true) {
+        FD_ZERO(&writedfds);
+        FD_ZERO(&exceptionfds);
         server->ready_sockets = server->current_sockets;
         clock_gettime(CLOCK_REALTIME, &server->current_time);
         if (handle_client_life(server) == true)
@@ -132,7 +137,7 @@ static int start_server(server_t *server)
             server, &server->current_time) == true)
             break;
         if (select(FD_SETSIZE, &server->ready_sockets,
-            NULL, NULL, &server->timeout) < 0) {
+        &writedfds, &exceptionfds, &server->timeout) < 0) {
             perror("There was an error in select");
             return ERROR_STATUS;
         }
@@ -156,8 +161,9 @@ int server(const char **args)
         status = ERROR_STATUS;
     if (listen(server.fd, FD_SETSIZE) < 0)
         status = ERROR_STATUS;
-    if (start_server(&server) == ERROR_STATUS)
+    if (start_server(&server) == ERROR_STATUS) {
         status = ERROR_STATUS;
+    }
     if (status == ERROR_STATUS)
         close(server.fd);
     destroy_server(server);

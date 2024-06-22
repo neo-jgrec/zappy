@@ -72,7 +72,7 @@ static int handle_quit_client(
     if (check_read != 0)
         return NEUTRAL_VALUE;
     if (client->is_graphic == false && client->is_connected == true) {
-        message_to_graphicals(server, "dead %s\n", client_id);
+        message_to_graphicals(server, "pdi %d\n", client->id);
         egg = init_egg(client->x, client->y);
         item_e = malloc(sizeof(eggs_list_t));
         if (item_e == NULL)
@@ -82,8 +82,6 @@ static int handle_quit_client(
         TAILQ_INSERT_TAIL(&team->eggs, item_e, entries);
     }
     close(client_fd);
-    if (client->is_connected == true && client->is_graphic == false)
-        message_to_graphicals(server, "dead %s\n", client->id);
     FD_CLR(client_fd, &server->current_sockets);
     remove_client_by_fd(&server->clients, client_fd);
     return OK_STATUS;

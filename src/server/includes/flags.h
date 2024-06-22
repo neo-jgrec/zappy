@@ -7,7 +7,7 @@
 
 #ifndef ZAPPY_FLAGS_H
     #define ZAPPY_FLAGS_H
-    #define NB_FLAGS 6
+    #define NB_FLAGS 5
     #define INCORRECT_FLAG_VALUE (-1)
     #include "utils.h"
     #include <stdint.h>

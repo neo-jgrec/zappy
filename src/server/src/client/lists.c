@@ -59,8 +59,7 @@ void destroy_clients(struct client_tailq *clients)
 {
     client_list_t *item;
 
-    while (!TAILQ_EMPTY(clients)) {
-        item = TAILQ_FIRST(clients);
+    TAILQ_FOREACH(item, clients, entries) {
         TAILQ_REMOVE(clients, item, entries);
     }
 }

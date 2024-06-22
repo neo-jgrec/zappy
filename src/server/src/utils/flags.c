@@ -89,11 +89,20 @@ static void fill_flags(size_t f_count[NB_FLAGS], flags_t *f,
     }
 }
 
+bool is_freq_flag(const char **args)
+{
+    for (size_t i = 0; args[i] != NULL; i++) {
+        if (strcmp(args[i], "-f") == 0)
+            return true;
+    }
+    return false;
+}
+
 static bool check_number_flags(flags_t *flags, const char **args)
 {
     size_t flags_counter[NB_FLAGS] = {0};
 
-    if (!args)
+    if (args == NULL)
         return false;
     flags->is_iteration = false;
     for (size_t i = 0; args[i]; i++) {
@@ -103,6 +112,8 @@ static bool check_number_flags(flags_t *flags, const char **args)
             continue;
         fill_flags(flags_counter, flags, args, i);
     }
+    if (is_freq_flag(args) == false)
+        flags->frequency = 100;
     return count_flags(flags_counter);
 }
 
@@ -153,12 +164,6 @@ static bool check_error_flags(flags_t *flags)
     return true;
 }
 
-/**
- * TODO: add getoptlong, -f is optional, default value = 100
- * @param flags
- * @param args
- * @return
- */
 bool init_flags(flags_t *flags, const char **args)
 {
     double width;
