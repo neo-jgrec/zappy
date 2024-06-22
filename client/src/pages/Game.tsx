@@ -63,7 +63,7 @@ function Game() {
   return (
     <Layout>
       <div className='flex space-x-4'>
-        <Tile className='w-full relative w-[85vh] h-[85vh] overflow-hidden bg-blue-900 bg-opacity-5 rounded-xl'>
+        <Tile className='w-full relative h-[85vh] overflow-hidden bg-blue-900 bg-opacity-5 rounded-xl'>
           <div
             onWheel={handleWheel}
             onMouseDown={handleMouseDown}

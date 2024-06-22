@@ -23,6 +23,7 @@ const io = new Server(fastify.server, {
 
 const createTcpClient = (socket) => {
     const tcpClient = new Socket();
+    socket.tcpClient = tcpClient;
 
     tcpClient.connect(tcpPort, tcpHost, () => {
         tcpClient.write('GRAPHIC\n');
@@ -32,13 +33,16 @@ const createTcpClient = (socket) => {
         let messages = data.toString().split('\n');
         messages.forEach((message) => {
             if (message) {
+                console.log(message);
                 socket.emit('message', message);
             }
         });
     });
 
     tcpClient.on('close', () => {
-        setTimeout(() => createTcpClient(socket), 1000);
+        if (socket.connected) {
+            setTimeout(() => createTcpClient(socket), 1000);
+        }
     });
 
     tcpClient.on('error', (err) => {

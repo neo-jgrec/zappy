@@ -1,10 +1,25 @@
-import { createContext, useState, useContext, ReactNode, useRef } from 'react';
+import { createContext, useState, useContext, ReactNode, useRef, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useSnackbar } from './SnackbarContext';
 import { useNavigate } from 'react-router-dom';
 
+interface ZappyServerData {
+    x: number;
+    y: number;
+    player_positions: { id: number; x: number; y: number }[];
+    food_positions: { id: number; x: number; y: number }[];
+}
+
+const initialZappyServerData: ZappyServerData = {
+    x: 0,
+    y: 0,
+    player_positions: [],
+    food_positions: []
+};
+
 interface WebSocketContextProps {
     connect: (host: string, port: string) => void;
+    disconnect: () => void;
     sendMessage: (message: string) => void;
     receivedMessages: { [key: string]: string[] };
     hundredLastMessages: string[];
@@ -15,6 +30,7 @@ interface WebSocketContextProps {
     setPort: (port: string) => void;
     socket: Socket | null;
     connectionStatus: string;
+    zappyServerData: ZappyServerData;
 }
 
 const WebSocketContext = createContext<WebSocketContextProps | undefined>(undefined);
@@ -26,7 +42,9 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
     const HundredLastMessagesRef = useRef<string[]>([]);
     const [allBroadcastMessages, setAllBroadcastMessages] = useState<{ id: number; message: string }[]>([]);
     const AllBroadcastMessagesRef = useRef<{ id: number; message: string }[]>([]);
+    const [zappyServerData, setZappyServerData] = useState<ZappyServerData>(initialZappyServerData);
     const navigate = useNavigate();
+
 
     const [host, setHost] = useState(localStorage.getItem('host') || undefined);
     const [port, setPort] = useState(localStorage.getItem('port') || undefined);
@@ -34,6 +52,12 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
     const { showSnackbar } = useSnackbar();
 
     const [connectionStatus, setConnectionStatus] = useState('disconnected');
+
+    useEffect(() => {
+        console.log('x, y', zappyServerData.x, zappyServerData.y);
+        console.log('player_positions', zappyServerData.player_positions);
+        console.log('food_positions', zappyServerData.food_positions);
+    }, [zappyServerData]);
 
     const connect = (host: string, port: string) => {
         showSnackbar({
@@ -50,10 +74,6 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                 timeout: 5000
             });
             return;
-        }
-
-        if (socket) {
-            socket.disconnect();
         }
 
         const url = `http://${host}:${port}`;
@@ -75,10 +95,16 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         });
 
         newSocket.on('message', (data: string) => {
-            if (typeof data !== 'string')
-                return;
+            if (typeof data !== 'string') return;
 
-            if (!data?.startsWith('bct')) {
+            if (!data.startsWith('bct')) {
+                if (data.startsWith('pbc')) {
+                    const [, id, message] = data.split(' ');
+                    const newAllBroadcastMessages = [...AllBroadcastMessagesRef.current];
+                    newAllBroadcastMessages.push({ id: parseInt(id), message });
+                    AllBroadcastMessagesRef.current = newAllBroadcastMessages;
+                    setAllBroadcastMessages(newAllBroadcastMessages);
+                }
                 const newHundredLastMessages = [...HundredLastMessagesRef.current];
                 if (newHundredLastMessages.length >= 30) {
                     newHundredLastMessages.shift();
@@ -88,17 +114,8 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                 setHundredLastMessages(newHundredLastMessages);
             }
 
-            if (data?.startsWith('pbc')) {
-                const [, id, message] = data.split(' ');
-                const newAllBroadcastMessages = [...AllBroadcastMessagesRef.current];
-                newAllBroadcastMessages.push({ id: parseInt(id), message });
-                AllBroadcastMessagesRef.current = newAllBroadcastMessages;
-                setAllBroadcastMessages(newAllBroadcastMessages);
-            }
-
             const newReceivedMessages = { ...receivedMessages };
-            if (!newReceivedMessages[data])
-                newReceivedMessages[data] = [];
+            if (!newReceivedMessages[data]) newReceivedMessages[data] = [];
             newReceivedMessages[data].push(data);
             setReceivedMessages(newReceivedMessages);
         });
@@ -130,6 +147,21 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         setSocket(newSocket);
     };
 
+    const disconnect = () => {
+        if (socket) {
+            socket.disconnect();
+            setSocket(null);
+        }
+    };
+
+    useEffect(() => {
+        return () => {
+            if (socket) {
+                socket.disconnect();
+            }
+        };
+    }, [socket]);
+
     const sendMessage = (message: string) => {
         if (socket && socket.connected) {
             socket.emit('message', message);
@@ -145,6 +177,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
 
     const contextValue: WebSocketContextProps = {
         connect,
+        disconnect,
         sendMessage,
         receivedMessages,
         host,
@@ -154,7 +187,8 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         socket,
         connectionStatus,
         hundredLastMessages,
-        allBroadcastMessages
+        allBroadcastMessages,
+        zappyServerData
     };
 
     return (
