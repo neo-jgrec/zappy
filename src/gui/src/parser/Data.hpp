@@ -37,7 +37,7 @@ class Data
         */
         void setTickRate(int rate) { this->tickRate = rate; };
         int getTickRate() { return this->tickRate; };
-        void requestNewTickRate(int rate, ServerConnect server) { server.sendToServer("sst " + std::to_string(rate)); };
+        void requestNewTickRate(int rate, ServerConnect server) { server.sendToServer("sst " + std::to_string(rate) + "\n"); };
 
         void setWinner(std::string team) { this->winner = team; };
         std::optional<std::string> getWinner() { return this->winner; };
