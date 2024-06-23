@@ -142,6 +142,7 @@ static bool are_requierment_met_encapsulation(
         required_level)
     ) {
         dprintf(client->fd, "ko\n");
+        client->is_incanting = false;
         return false;
     }
     return true;
@@ -168,6 +169,8 @@ void incantation_callback_end_of_command(client_t *c, server_t *s)
     size_t players_on_tile = get_nb_players_on_tile(c, s);
     tile_t *tile = &s->map[c->x + c->y * s->proprieties.width];
 
+    if (c->is_incanting == false)
+        return;
     if (!are_requierment_met_encapsulation(c, resource_count,
         players_on_tile, c->level)) {
         run_logic_on_group(c, s, c->level, callback_unfreeze);
