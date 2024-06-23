@@ -40,8 +40,12 @@ static size_t count_nb_names(const char **args, size_t *idx)
     return nb_names;
 }
 
-static void get_names(size_t *flag_count, flags_t *flags, const char **args,
-                      size_t *idx)
+static void get_names(
+    size_t *flag_count,
+    flags_t *flags,
+    const char **args,
+    size_t *idx
+)
 {
     size_t nb_names = count_nb_names(args, idx);
 
@@ -64,8 +68,11 @@ static void get_names(size_t *flag_count, flags_t *flags, const char **args,
     }
 }
 
-static void fill_flags(size_t f_count[NB_FLAGS], flags_t *f,
-                       const char **av, size_t i)
+static void fill_flags(
+    size_t f_count[NB_FLAGS],
+    flags_t *f,
+    const char **av, size_t i
+)
 {
     switch (av[i][1]) {
         case 'p':
@@ -143,7 +150,7 @@ static bool check_error_flags(flags_t *flags)
         dprintf(2, "Frequency can only be between 2 and 10000\n");
         return false;
     } else if (flags->width < 10 || flags->width > 1000 ||
-               flags->height < 10 || flags->height > 1000) {
+            flags->height < 10 || flags->height > 1000) {
         dprintf(2, "Map values need to be between 10 and 1000\n");
         return false;
     }

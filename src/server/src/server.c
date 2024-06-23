@@ -119,7 +119,6 @@ static bool check_response_client_time(
     return false;
 }
 
-
 static int start_server(server_t *s)
 {
     fd_set writefds;
@@ -136,7 +135,7 @@ static int start_server(server_t *s)
         if (check_response_client_time(&s->clients, s, &s->current_time))
             break;
         if (select(FD_SETSIZE, &s->ready_sockets,
-                   &writefds, &exceptfds, &s->timeout) < 0)
+                &writefds, &exceptfds, &s->timeout) < 0)
             return ERROR_STATUS;
         if (check_connections(s) == ERROR_STATUS)
             return ERROR_STATUS;
