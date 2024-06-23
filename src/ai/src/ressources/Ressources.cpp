@@ -50,3 +50,12 @@ size_t Ressources::getRessource(const std::string &ressource) const
     }
     return 0;
 }
+
+void Ressources::addRessourceByQuantity(std::string ressource, size_t quantity)
+{
+    if (ressourcesMap.find(ressource) != ressourcesMap.end()) {
+        *(ressourcesMap[ressource]) += quantity;
+    } else {
+        std::cerr << "Unknown resource: " << ressource << std::endl;
+    }
+}
