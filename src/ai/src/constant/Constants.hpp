@@ -45,12 +45,12 @@ const std::vector<LevelRequirements> levelRequirementsShared = {
 };
 
 struct NeededResources {
-    size_t linemate = 0;
-    size_t deraumere = 0;
-    size_t sibur = 0;
-    size_t mendiane = 0;
-    size_t phiras = 0;
-    size_t thystame = 0;
+    int linemate = 0;
+    int deraumere = 0;
+    int sibur = 0;
+    int mendiane = 0;
+    int phiras = 0;
+    int thystame = 0;
 };
 
 #define PRINT_ERROR(errorMsg) std::cerr << "\033[31mError: " << errorMsg << " occurred in file " << __FILE__ << " at line " << __LINE__ << "\033[0m" << std::endl;
