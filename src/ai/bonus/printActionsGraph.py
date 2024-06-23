@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 
-# filename
-with open('./src/ai/dataSaved/actionsteam11.txt', 'r') as file:
+with open('./src/ai/dataSaved/actionsteam10.txt', 'r') as file:
     data = file.read()
 
 sections = data.strip().split('\n\n')
@@ -25,18 +24,14 @@ for section in sections:
             actions[action].append(0)
 
 plt.figure(figsize=(12, 6))
-bar_width = 0.1
 colors = ['blue', 'green', 'red', 'purple', 'orange', 'cyan', 'magenta', 'yellow', 'brown']
 
-positions = {action: [x + (i - len(actions) / 2) * bar_width for x in range(len(iterations))]
-             for i, action in enumerate(actions)}
-
 for i, (action, values) in enumerate(actions.items()):
-    plt.bar(positions[action], values, color=colors[i % len(colors)], width=bar_width, edgecolor='grey', label=action)
+    plt.plot(iterations, values, color=colors[i % len(colors)], label=action, marker='o')
 
 plt.xlabel('Iterations')
 plt.ylabel('Values')
-plt.title('Bar Plot of Iteration Actions')
+plt.title('Line Plot of Iteration Actions')
 plt.xticks(range(len(iterations)), iterations)
 plt.legend()
 

@@ -29,6 +29,7 @@ void ABot::doAction(Action action, const std::string parameter)
     try
     {
         ActionInfo actionInfo = getActionInfo(action);
+        actionInfo.parameter = parameter;
         std::string actionToServer = actionInfo.getName();
 
         if (!parameter.empty())
@@ -38,8 +39,6 @@ void ABot::doAction(Action action, const std::string parameter)
 
         _state.lastAction.action = action;
         _state.lastAction.parameter = parameter;
-
-        saveMetrics(actionInfo);
     }
     catch (const ActionInfoException &e)
     {

@@ -6,6 +6,8 @@
 */
 
 #include "ABotPattern.hpp"
+#include <filesystem>
+#include <string>
 
 void ABotPattern::init(int sockfd, const std::string &teamName, const std::string &host, int port, int id, int idMessage)
 {
@@ -16,7 +18,17 @@ void ABotPattern::init(int sockfd, const std::string &teamName, const std::strin
     _id = id;
     _currentMessageId = idMessage;
     initChild();
-    saveActionsFile += teamName + std::to_string(id) + ".txt";
+    std::string baseFileName = teamName + "-";
+    int suffix = 0;
+    while (true)
+    {
+        saveActionsFile += baseFileName + std::to_string(suffix) + ".txt";
+        if (!std::filesystem::exists(saveActionsFile))
+        {
+            break;
+        }
+        ++suffix;
+    }
 }
 
 void ABotPattern::run(const std::string &response)

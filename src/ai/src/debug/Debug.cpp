@@ -71,6 +71,7 @@ void ABot::debugAction(const ActionInfo actionInfo, const std::string &parameter
             Message tmp(tmpStr);
             tmp.vigenereDecrypt();
             finalParameter = tmp.content;
+            actionToServerClean.parameter = finalParameter;
         }
     }
     std::string actionToServer = actionToServerClean.getName();
@@ -78,4 +79,5 @@ void ABot::debugAction(const ActionInfo actionInfo, const std::string &parameter
     if (!finalParameter.empty())
         actionToServer += " " + finalParameter;
     printKeyValueColored("🤖🤜 Bot does", actionToServer);
+    saveMetrics(actionToServerClean);
 }
