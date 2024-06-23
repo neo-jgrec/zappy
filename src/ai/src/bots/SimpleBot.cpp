@@ -84,9 +84,9 @@ bool SimpleBot::handleState()
     if (_state.metadata["should_incant"] == "true")
     {
         std::string msgToSent = "meeting_" + _state.metadata["id_group"] + "_done";
+        addBroadcastAction(msgToSent);
         // Broadcast two times to ensure if someone try to copy and modifie this message
-        addBroadcastAction(msgToSent);
-        addBroadcastAction(msgToSent);
+        // addBroadcastAction(msgToSent);
     }
     if (_state.metadata["should_group"] == "true")
     {
