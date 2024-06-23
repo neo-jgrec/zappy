@@ -12,7 +12,6 @@ void SimpleBot::initChild()
     std::cout << "🧒✅ SimpleBot initialized" << std::endl;
 }
 
-// TODO: do bloc for lvl 1 and 2, etc...
 void SimpleBot::updateStrategy()
 {
     std::cout << "🧒🔄 SimpleBot updateStrategy" << std::endl;
@@ -56,7 +55,6 @@ bool SimpleBot::handleSurvive()
 
     if (_state.ressources.food < limitFood)
     {
-        // TODO: we want differant searchFood for each level ?
         searchFood = 250;
     }
     if (searchFood > 0)
@@ -74,14 +72,13 @@ bool SimpleBot::handleSurvive()
     return false;
 }
 
-// TODO: state is priority, he will not try to survive.
 bool SimpleBot::handleState()
 {
     if (_state.metadata["should_incant"] == "true")
     {
         std::string msgToSent = "meeting_" + _state.metadata["id_group"] + "_done";
         addBroadcastAction(msgToSent);
-        // Broadcast two times to ensure if someone try to copy and modifie this message
+        // TODO: Broadcast two times to ensure if someone try to copy and modifie this message
         // addBroadcastAction(msgToSent);
     }
     if (_state.metadata["should_group"] == "true")

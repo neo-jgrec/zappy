@@ -11,7 +11,7 @@
 #include <string>
 #include <sstream>
 
-void ABot::listenBroadcastResponse(const std::string &response)
+void ABot::listenBroadcastResponse()
 {
     // Listeners Broadcast
     if (_allyMessage.content.find("group") != std::string::npos)
