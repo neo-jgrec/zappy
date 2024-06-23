@@ -9,7 +9,7 @@
 
 int main(int ac, char **av)
 {
-    if (ac < 13)
+    if (ac < 10)
         return helper(ERROR_STATUS);
     return server((const char **)av);
 }
