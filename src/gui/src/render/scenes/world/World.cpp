@@ -133,7 +133,7 @@ void World::initSounds()
     _sounds["wololo"].openFromFile("./assets/audio/wololo.ogg");
     _sounds["wololo"].setVolume(100);
     _sounds["interact"].openFromFile("./assets/audio/interact.ogg");
-    _sounds["interact"].setVolume(50);
+    _sounds["interact"].setVolume(25);
 }
 
 void World::lookTrantorian(int index)

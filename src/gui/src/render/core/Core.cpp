@@ -62,7 +62,9 @@ void Core::update() {
 
 void Core::run() {
     while (_window.isOpen()) {
+        std::cout << "update data" << std::endl;
         _parser.updateData(_data, _server);
+        std::cout << "update data done" << std::endl;
         auto players = _data.getPlayers();
         for (auto &player : players)
             player.second->getNextEvent();
