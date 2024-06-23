@@ -21,6 +21,7 @@ World::World(Core *core)
     _sprites["hoverEgg"] = std::make_shared<Sprite>("./assets/hoverEgg.png");
     _sprites["trantorian_run"] = std::make_shared<Sprite>("./assets/trantorian_run.png", 6, 0.1f);
     _sprites["trantorian_spawn"] = std::make_shared<Sprite>("./assets/trantorian_spawn.png", 12, 0.1f);
+    _sprites["trantorian_death"] = std::make_shared<Sprite>("./assets/trantorian_death.png", 13, 0.1f);
     _sprites["grass"] = std::make_shared<Sprite>("./assets/grass_detail(1).png");
     _sprites["grass2"] = std::make_shared<Sprite>("./assets/stone(1).png");
     _sprites["tree2"] = std::make_shared<Sprite>("./assets/trees/tree(2).png");
@@ -33,6 +34,7 @@ World::World(Core *core)
     _sprites["starling"] = std::make_shared<Sprite>("assets/trantorian.png");
     _sprites["starling"]->setScale(2);
     _sprites["buildings"] = std::make_shared<Sprite>("./assets/houses.png", 8, 0.1f);
+    _sprites["lvlup"] = std::make_shared<Sprite>("./assets/lvlup.png", 8, 0.1f);
     _view.setSize(sf::Vector2f(1920 , 1080));
     _chat = std::make_shared<Chat>(_core->getFont(), 7);
     _bubbleText = sf::Text("", _core->getFont(), 15);
