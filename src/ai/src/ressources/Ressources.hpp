@@ -18,6 +18,7 @@ public:
     ~Ressources();
 
     void addRessource(std::string ressource);
+    void addRessourceByQuantity(std::string ressource, size_t quantity);
     size_t getRessource(const std::string &ressource) const;
 
     size_t food;
