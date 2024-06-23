@@ -57,12 +57,7 @@ bool SimpleBot::handleSurvive()
     if (_state.ressources.food < limitFood)
     {
         // TODO: we want differant searchFood for each level ?
-        if (_state.level == 2)
-            searchFood = 150;
-        if (_state.level == 3)
-            searchFood = 125;
-        else
-            searchFood = 115;
+        searchFood = 175;
     }
     if (searchFood > 0)
     {
@@ -79,6 +74,7 @@ bool SimpleBot::handleSurvive()
     return false;
 }
 
+// TODO: state is priority, he will not try to survive.
 bool SimpleBot::handleState()
 {
     if (_state.metadata["should_incant"] == "true")
@@ -92,6 +88,12 @@ bool SimpleBot::handleState()
     {
         joinGroup();
         _state.pattern = "joinGroup";
+        return true;
+    }
+    if (_state.metadata["ask_for_group"] == "true")
+    {
+        group();
+        _state.pattern = "group";
         return true;
     }
     if (_state.metadata["should_incant"] == "true" && _state.level == 2)
@@ -322,7 +324,3 @@ void SimpleBot::handleLvl7()
         _state.pattern = "group";
     }
 }
-
-// Landmark: 1.
-// TODO: do slaves.
-// Fix invalid arguments: excepted 1 but go 0
