@@ -16,8 +16,8 @@ void Slave::updateStrategy()
 {
     printf("SLAVE! : ");
     for (auto &_allyMessage : _alliesMessage) {
-        if (_allyMessage.content.find("send_ressources") != std::string::npos) {
-            std::string _msg = std::to_string(_id) + "/i_have_ressources?" +
+        if (_allyMessage.content.find("send_ressources") != std::string::npos && _state.level == 2) {
+            std::string _msg = "{SLAVE}" + std::to_string(_id) + "/i_have_ressources?" +
             "linemate=" + std::to_string(_state.ressources.linemate) + "|" +
             "deraumere=" + std::to_string(_state.ressources.deraumere) + "|" +
             "sibur=" + std::to_string(_state.ressources.sibur) + "|" +
