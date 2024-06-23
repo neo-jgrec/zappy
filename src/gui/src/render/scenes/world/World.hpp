@@ -68,6 +68,7 @@ class World : public IScene {
         sf::Vector2f _selectedTile = sf::Vector2f(-1, -1);
         std::vector<std::vector<Chunck>> _chuncks;
         std::vector<Ranking> _rankings;
+        void lookTrantorian(int index);
     private:
         void reset();
         void getServerInit();

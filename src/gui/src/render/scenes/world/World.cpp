@@ -134,3 +134,16 @@ void World::initSounds()
     _sounds["interact"].openFromFile("./assets/audio/interact.ogg");
     _sounds["interact"].setVolume(50);
 }
+
+void World::lookTrantorian(int index)
+{
+    Trantorian trantorian = _trantorians[index];
+
+    sf::Vector2f pos = trantorian.getPos();
+    sf::Vector2f viewPos = _pos + _tmpOffset + _offset;
+    sf::Vector2f offset = sf::Vector2f(
+        pos.x - viewPos.x,
+        pos.y - viewPos.y
+    );
+    _offset += offset;
+}

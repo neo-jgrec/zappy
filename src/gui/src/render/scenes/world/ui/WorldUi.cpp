@@ -1,4 +1,4 @@
-/*
+/*./tests/run -H 127.0.0.1 -p 9999 -n oui,non -x 30 -y 30 -c 100 -f 100
 ** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
@@ -49,6 +49,10 @@ bool WorldUi::update(sf::Event event, sf::RenderWindow &window)
                 return false;
             _idPlayer = (_idPlayer + 1) % _world->getNbTrantorian();
         }
+        if (_world->getNbTrantorian() != 0)
+            if (_layer2["lookButton"]->update(event, window)) {
+                _world->lookTrantorian(_idPlayer);
+            }
     }
     if (_panelState == FLAG) {
         if (_layer2["prevButton"]->update(event, window)) {
@@ -162,6 +166,7 @@ void WorldUi::drawTrantorian(sf::RenderWindow &window)
     _sprites["bousolle"]->draw(window);
     if (_world->getNbTrantorian() == 0)
         return;
+    _layer2["lookButton"]->draw(window);
     auto trantorian = _world->getTrantorian(_idPlayer);
     _inventoryText.setPosition(sf::Vector2f(
         _sprites["trantorianPanel"]->getPosition().x + + 96,
