@@ -7,6 +7,12 @@
 
 #include "Message.hpp"
 
+Message::Message(const std::string &contentMsg, std::string direction)
+{
+    content = contentMsg;
+    this->direction = direction;
+}
+
 Message::Message(const std::string &contentMsg)
 {
     content = contentMsg;
