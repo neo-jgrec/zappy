@@ -66,9 +66,9 @@ void eject(client_t *c, server_t *s)
 {
     signed char x = set_dx(c->orientation);
     signed char y = set_dy(c->orientation);
-    client_list_t *n;
 
-    TAILQ_FOREACH(n, &s->clients, entries) {
+    for (client_list_t *n = TAILQ_FIRST(&s->clients); n != NULL;
+        n = TAILQ_NEXT(n, entries)) {
         if (n->client->x == c->x && n->client->y == c->y
         && n->client->id != c->id) {
             n->client->x += x;

@@ -7,45 +7,58 @@
 
 #include "server.h"
 
+static void end_assign_egg_to_client(
+    client_t *client,
+    server_t *server,
+    eggs_list_t *item
+)
+{
+    message_to_graphicals(server, "edi %d\n", client->egg_id);
+    handle_response(&client->payload, "ok\n");
+    secure_free((void **)&item->egg);
+    secure_free((void **)&item);
+}
+
 static void asign_egg_to_client(
     client_t *client,
     server_t *server,
     size_t rand_idx
 )
 {
-    eggs_list_t *item;
     size_t counter = 0;
     team_t *team = get_team_by_name(&server->teams, client->commands[0]);
 
-    TAILQ_FOREACH(item, &team->eggs, entries) {
-        if (counter == rand_idx) {
-            client->is_connected = true;
-            client->x = item->egg->x;
-            client->y = item->egg->y;
-            asprintf(&client->team_name, "%s", team->name);
-            clock_gettime(CLOCK_REALTIME, &client->live_time);
-            client->egg_id = team->nb_eggs;
-            TAILQ_REMOVE(&team->eggs, item, entries);
-            message_to_graphicals(server, "edi %d\n", item->egg->id);
-            handle_response(&client->payload, "ok\n");
-            secure_free((void**)&item->egg);
-            secure_free((void**)&item);
-            break;
+    for (eggs_list_t *item = TAILQ_FIRST(&team->eggs);
+        item;
+        item = TAILQ_NEXT(item, entries)) {
+        if (!(counter == rand_idx)) {
+            counter++;
+            continue;
         }
-        counter++;
+        client->is_connected = true;
+        client->x = item->egg->x;
+        client->y = item->egg->y;
+        asprintf(&client->team_name, "%s", team->name);
+        clock_gettime(CLOCK_REALTIME, &client->live_time);
+        client->egg_id = team->nb_eggs;
+        TAILQ_REMOVE(&team->eggs, item, entries);
+        end_assign_egg_to_client(client, server, item);
+        break;
     }
 }
 
 static void print_eggs(client_t *c, server_t *s)
 {
-    team_list_t *item_t;
-    eggs_list_t *item_e;
     team_t *t;
     egg_t *e;
 
-    TAILQ_FOREACH(item_t, &s->teams, entries) {
+    for (team_list_t *item_t = TAILQ_FIRST(&s->teams);
+        item_t;
+        item_t = TAILQ_NEXT(item_t, entries)) {
         t = item_t->team;
-        TAILQ_FOREACH(item_e, &t->eggs, entries) {
+        for (eggs_list_t *item_e = TAILQ_FIRST(&t->eggs);
+            item_e;
+            item_e = TAILQ_NEXT(item_e, entries)) {
             e = item_e->egg;
             dprintf(c->fd, "enw %d %d %d %d\n", e->id, -1, e->x, e->y);
         }
@@ -97,18 +110,18 @@ static void print_map_to_gui(client_t *c, server_t *s)
 static void send_players(client_t *c, server_t *s)
 {
     client_list_t *item;
-    client_t *client;
+    client_t *tmp;
 
     TAILQ_FOREACH(item, &s->clients, entries) {
-        client = item->client;
-        if (client->is_connected == true && client->is_graphic == false) {
-            dprintf(c->fd, "pnw %d %u %u %u %zu %s\n", client->id, client->x,
-                client->y, client->orientation, client->level, client->team_name);
-            dprintf(c->fd, "pin %d %u %u %u %u %u %u %u %u %u\n", client->id,
-                client->x, client->y, client->inventory.food,
-                client->inventory.linemate, client->inventory.deraumere,
-                client->inventory.sibur, client->inventory.mendiane,
-                client->inventory.phiras, client->inventory.thystame);
+        tmp = item->client;
+        if (tmp->is_connected == true && tmp->is_graphic == false) {
+            dprintf(c->fd, "pnw %d %u %u %u %zu %s\n", tmp->id, tmp->x,
+                tmp->y, tmp->orientation, tmp->level, tmp->team_name);
+            dprintf(c->fd, "pin %d %u %u %u %u %u %u %u %u %u\n", tmp->id,
+                tmp->x, tmp->y, tmp->inventory.food,
+                tmp->inventory.linemate, tmp->inventory.deraumere,
+                tmp->inventory.sibur, tmp->inventory.mendiane,
+                tmp->inventory.phiras, tmp->inventory.thystame);
         }
     }
 }
@@ -127,7 +140,6 @@ static void send_everything(client_t *c, server_t *server)
 bool connector(client_t *c, server_t *server)
 {
     size_t nb_slots;
-    size_t rand_idx;
 
     if (c->is_connected == true)
         return false;
@@ -140,8 +152,7 @@ bool connector(client_t *c, server_t *server)
     nb_slots = team_nb_slots(&server->teams, c->commands[0]);
     if (nb_slots == 0)
         return false;
-    rand_idx = rand() % nb_slots;
-    asign_egg_to_client(c, server, rand_idx);
+    asign_egg_to_client(c, server, rand() % nb_slots);
     dprintf(c->fd, "%zu\n%u %u\n", (nb_slots - 1),
         server->proprieties.width, server->proprieties.height);
     message_to_graphicals(server, "pnw %d %u %u %u %u %s\n", c->id, c->x,

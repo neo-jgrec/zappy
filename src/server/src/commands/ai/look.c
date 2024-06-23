@@ -48,11 +48,11 @@ static tile_t *copy_map(tile_t *dest, tile_t *src, server_t *server)
 
 static void populate_map_with_players(tile_t *map, server_t *server)
 {
-    client_list_t *tmp;
     client_t *client;
     int index;
 
-    TAILQ_FOREACH(tmp, &server->clients, entries) {
+    for (client_list_t *tmp = TAILQ_FIRST(&server->clients); tmp != NULL;
+        tmp = TAILQ_NEXT(tmp, entries)) {
         client = tmp->client;
         if (client->is_graphic)
             continue;

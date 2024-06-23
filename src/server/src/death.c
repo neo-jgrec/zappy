@@ -44,14 +44,14 @@ static bool handle_client_death(
 
 bool handle_client_life(server_t *s)
 {
-    client_list_t *item;
     struct timespec current = s->current_time;
     struct timespec live_time;
     client_t *client;
     time_t sec_sus;
     long nsec_sus;
 
-    TAILQ_FOREACH(item, &s->clients, entries) {
+    for (client_list_t *item = TAILQ_FIRST(&s->clients); item;
+        item = TAILQ_NEXT(item, entries)) {
         client = item->client;
         if (client->is_connected == false || client->is_graphic == true)
             continue;
