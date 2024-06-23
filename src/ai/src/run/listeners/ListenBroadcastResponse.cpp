@@ -57,6 +57,12 @@ void ABot::listenGroupJoined(const std::string &message)
     }
 }
 
+// TODO: find somehow how to rename it in listenGroupDone
+void ABot::listenMeetingDone(const std::string &message)
+{
+    _state.metadata["should_group"] = "false";
+}
+
 void ABot::listenBroadcastResponse(const std::string &response)
 {
     // Listeners Broadcast
@@ -67,5 +73,9 @@ void ABot::listenBroadcastResponse(const std::string &response)
     else if (_allyMessage.content.find("joined") != std::string::npos && _state.metadata["ask_for_group"] == "true")
     {
         listenGroupJoined(_allyMessage.content);
+    }
+    else if (_allyMessage.content.find("meeting") != std::string::npos)
+    {
+        listenMeetingDone(_allyMessage.content);
     }
 }

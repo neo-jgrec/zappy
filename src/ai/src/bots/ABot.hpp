@@ -108,6 +108,7 @@ protected:
     // Listeners Broadcast
     void listenGroup(const std::string &response);
     void listenGroupJoined(const std::string &response);
+    void listenMeetingDone(const std::string &response);
 
     // Metrics
     void saveMetrics(ActionInfo actionInfo);

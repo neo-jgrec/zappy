@@ -56,7 +56,7 @@ void ABotPattern::run(const std::string &response)
     debugState();
     debugMetadata();
     // debug
-    if (_iteration > 1000)
+    if (_iteration > 5000)
         exit(0);
 }
 
