@@ -17,6 +17,7 @@
 class Message
 {
 public:
+    Message(const std::string &contentMsg, std::string direction);
     Message(const std::string &contentMsg);
     Message();
     ~Message();
@@ -27,6 +28,7 @@ public:
     void format(const std::string &contentMsg);
     std::string convertDigitsToLetters(const std::string &digits);
     std::string content;
+    std::string direction;
     int id;
 
 private:
