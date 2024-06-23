@@ -1,4 +1,4 @@
-/*./tests/run -H 127.0.0.1 -p 9999 -n oui,non -x 30 -y 30 -c 100 -f 100
+/*
 ** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
