@@ -57,30 +57,9 @@ void ABot::listenGroupJoined(const std::string &message)
     }
 }
 
-void ABot::listenBroadcastResponse(const std::string &response)
+void ABot::listenBroadcastResponse(std::vector<Message> &_alliesMessage_)
 {
-    std::string signature = getElementAfter(response, ':');
-
-    if (signature != _signature)
-    {
-        _enemyMessage = _message.content;
-        std::cout << "Enemy message: " << _enemyMessage.content << std::endl;
-        return;
-    }
-    else
-    {
-        queue.clear();
-        std::string temp = getElementBefore(response, ':');
-        Message _allyMessage;
-        _allyMessage.content = getElementAfter(temp, ',');
-        _direction = getElementBefore(temp, ',');
-        _allyMessage.direction = getElementAfter(_direction, ' ');
-        _allyMessage.vigenereDecrypt();
-        printKeyValueColored("Message", _allyMessage.content);
-        printKeyValueColored("Direction", _direction);
-        _alliesMessage.push_back(_allyMessage);
-    }
-    for (auto &_allyMessage : _alliesMessage) {
+    for (auto &_allyMessage : _alliesMessage_) {
         if (_allyMessage.content.find("group") != std::string::npos)
         {
             listenGroup(_allyMessage.content);
