@@ -10,6 +10,7 @@
 std::map<Job, std::string> jobMap = {
     {FORKER, "FORKER"},
     {SIMPLE_BOT, "SIMPLE_BOT"},
+    {SLAVE, "SLAVE"},
 };
 
 std::map<State, std::string> stateMap = {
