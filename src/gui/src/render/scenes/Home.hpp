@@ -36,7 +36,6 @@ class Home : public IScene {
     protected:
     private:
 
-        sf::Text _title;
         std::shared_ptr<Button> _quitButton;
         std::shared_ptr<Button> _startButton;
 
