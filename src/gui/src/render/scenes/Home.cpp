@@ -2,18 +2,14 @@
 #include "../core/Core.hpp"
 
 Home::Home(Core *core, int port, std::string ip) : _core(core) {
-    _title.setFont(_core->getFont());
-    _title.setString("Zappy");
-    _title.setPosition(100, 100);
-    _title.setCharacterSize(43);
 
     _quitButton = std::make_shared<Button>(sf::Vector2f(100, 500), sf::Vector2f(100, 100), "Quit", _core->getFont());
-    _startButton = std::make_shared<Button>(sf::Vector2f(100, 300), sf::Vector2f(100, 100), "Start", _core->getFont());
-    _portButton = std::make_shared<Input>(sf::Vector2f(100, 250), sf::Vector2f(100, 100), "Port", _core->getFont(),
+    _startButton = std::make_shared<Button>(sf::Vector2f(100, 400), sf::Vector2f(100, 100), "Start", _core->getFont());
+    _portButton = std::make_shared<Input>(sf::Vector2f(100, 350), sf::Vector2f(100, 100), "Port", _core->getFont(),
         "1234567890");
     if (port != 0)
         _portButton->setInput(std::to_string(port));
-    _ipButton = std::make_shared<Input>(sf::Vector2f(100, 200), sf::Vector2f(100, 100), "Ip", _core->getFont(),
+    _ipButton = std::make_shared<Input>(sf::Vector2f(100, 300), sf::Vector2f(100, 100), "Ip", _core->getFont(),
         "1234567890.");
     if (ip != "")
         _ipButton->setInput(ip);
@@ -37,7 +33,7 @@ void Home::draw(sf::RenderWindow &window) {
     _ipButton->draw(window, _core->getDeltaTime());
     _portButton->draw(window, _core->getDeltaTime());
     _chat->draw(window);
-    window.draw(_title);
+    _sprites["logo"]->draw(window);
 }
 
 void Home::update(float fElapsedTime) {
@@ -75,6 +71,8 @@ void Home::initSprites() {
     _sprites["background"]->resetOrigin();
     _sprites["movingEarth"] = std::make_shared<Sprite>("assets/earthPlanetMenu75.png", 100, 0.3f);
     _sprites["movingEarth"]->setScale(10);
+    _sprites["logo"] = std::make_shared<Sprite>("assets/logo.png");
+    _sprites["logo"]->setPosition(sf::Vector2f(200, 150));
     _sprites["movingEarth"]->setPosition(sf::Vector2f(1080, 720));
     _sprites["starling"] = std::make_shared<Sprite>("assets/trantorian.png");
     _sprites["starling"]->setScale(2);

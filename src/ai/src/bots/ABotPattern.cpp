@@ -55,8 +55,8 @@ void ABotPattern::run(const std::string &response)
     }
     debugState();
     debugMetadata();
-    // debug
-    if (_iteration > 1000)
+    // TODO: remove it.
+    if (_iteration > 100000)
         exit(0);
 }
 
@@ -82,6 +82,7 @@ void ABotPattern::react(const std::string &responseServer, const std::string &re
 
 void ABotPattern::act()
 {
+    std::cout << "ACT\n";
     if (queue.empty())
     {
         updateStrategy();

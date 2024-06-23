@@ -40,8 +40,12 @@ static size_t count_nb_names(const char **args, size_t *idx)
     return nb_names;
 }
 
-static void get_names(size_t *flag_count, flags_t *flags, const char **args,
-    size_t *idx)
+static void get_names(
+    size_t *flag_count,
+    flags_t *flags,
+    const char **args,
+    size_t *idx
+)
 {
     size_t nb_names = count_nb_names(args, idx);
 
@@ -64,8 +68,11 @@ static void get_names(size_t *flag_count, flags_t *flags, const char **args,
     }
 }
 
-static void fill_flags(size_t f_count[NB_FLAGS], flags_t *f,
-    const char **av, size_t i)
+static void fill_flags(
+    size_t f_count[NB_FLAGS],
+    flags_t *f,
+    const char **av, size_t i
+)
 {
     switch (av[i][1]) {
         case 'p':
@@ -89,11 +96,20 @@ static void fill_flags(size_t f_count[NB_FLAGS], flags_t *f,
     }
 }
 
+bool is_freq_flag(const char **args)
+{
+    for (size_t i = 0; args[i] != NULL; i++) {
+        if (strcmp(args[i], "-f") == 0)
+            return true;
+    }
+    return false;
+}
+
 static bool check_number_flags(flags_t *flags, const char **args)
 {
     size_t flags_counter[NB_FLAGS] = {0};
 
-    if (!args)
+    if (args == NULL)
         return false;
     flags->is_iteration = false;
     for (size_t i = 0; args[i]; i++) {
@@ -102,6 +118,10 @@ static bool check_number_flags(flags_t *flags, const char **args)
         if (strlen(args[i]) != 2 || args[i][0] != '-')
             continue;
         fill_flags(flags_counter, flags, args, i);
+    }
+    if (is_freq_flag(args) == false) {
+        flags_counter[FREQ] = 1;
+        flags->frequency = 100;
     }
     return count_flags(flags_counter);
 }
@@ -141,12 +161,6 @@ static bool check_error_flags(flags_t *flags)
     return true;
 }
 
-/**
- * TODO: add getoptlong, -f is optional, default value = 100
- * @param flags
- * @param args
- * @return
- */
 bool init_flags(flags_t *flags, const char **args)
 {
     double width;

@@ -42,12 +42,12 @@ void ABot::listenInventoryResponse(const std::string &response)
             }
             catch (const std::invalid_argument &e)
             {
-                std::cerr << "Invalid number format: " << parts[1] << std::endl;
+                PRINT_ERROR("Invalid number format: " + parts[1]);
                 return;
             }
             catch (const std::out_of_range &e)
             {
-                std::cerr << "Number out of range: " << parts[1] << std::endl;
+                PRINT_ERROR("Number out of range: " + parts[1]);
                 return;
             }
             break;

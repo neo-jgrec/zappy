@@ -24,5 +24,5 @@ Test(look, basic_test)
 
     look(&client, &server);
 
-    cr_assert_str_eq(client.payload, "[food linemate deraumere player,,, ]\n");
+    cr_assert_str_eq(client.payload, "[food linemate deraumere player,,,]\n");
 }

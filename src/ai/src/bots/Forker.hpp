@@ -40,6 +40,7 @@ private:
     std::map<int, Ressources> sharedInventory;
     std::map<int, Ressources> evoBotInventory;
     BotState _evoBot;
+    bool handleSurvive();
 };
 
 #endif // FORKER_HPP_

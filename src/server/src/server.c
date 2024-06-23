@@ -8,6 +8,30 @@
 #include "server.h"
 #include <time.h>
 #include <stdio.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+void signint_handler(int sig)
+{
+    char c;
+
+    signal(sig, SIG_IGN);
+    printf("OUCH, did you hit Ctrl-C?\n"
+        "Do you really want to quit? [y/n] ");
+    c = getchar();
+    if (c == 'y' || c == 'Y')
+        exit(0);
+    else
+        signal(SIGINT, signint_handler);
+    getchar();
+}
+
+void sigpipe_handler(int sig)
+{
+    (void)sig;
+}
 
 static int handle_connections(server_t *server, int fd)
 {
@@ -121,13 +145,13 @@ static bool check_response_client_time(
 
 static int start_server(server_t *s)
 {
-    fd_set write_sockets;
-    fd_set except_sockets;
+    fd_set writefds;
+    fd_set exceptfds;
 
     while (true) {
         s->ready_sockets = s->current_sockets;
-        FD_ZERO(&write_sockets);
-        FD_ZERO(&except_sockets);
+        FD_ZERO(&writefds);
+        FD_ZERO(&exceptfds);
         clock_gettime(CLOCK_REALTIME, &s->current_time);
         if (handle_client_life(s) == true)
             continue;
@@ -135,7 +159,7 @@ static int start_server(server_t *s)
         if (check_response_client_time(&s->clients, s, &s->current_time))
             break;
         if (select(FD_SETSIZE, &s->ready_sockets,
-            &write_sockets, &except_sockets, &s->timeout) < 0)
+                &writefds, &exceptfds, &s->timeout) < 0)
             return ERROR_STATUS;
         if (check_connections(s) == ERROR_STATUS)
             return ERROR_STATUS;
@@ -148,6 +172,8 @@ int server(const char **args)
     int status = OK_STATUS;
     server_t server = {0};
 
+    signal(SIGINT, signint_handler);
+    signal(SIGPIPE, sigpipe_handler);
     srand(time(NULL));
     if (!init_server(&server, args)) {
         destroy_server(server);
@@ -155,10 +181,8 @@ int server(const char **args)
     }
     if (bind(server.fd, (struct sockaddr *)&server.info, server.addrlen) < 0)
         perror("Bind failed: Address already in use"), exit(ERROR_STATUS);
-    if (status == OK_STATUS && listen(server.fd, FD_SETSIZE) < 0) {
-        perror("Listen failed: Unable to continue connection");
-        exit(ERROR_STATUS);
-    }
+    if (status == OK_STATUS && listen(server.fd, FD_SETSIZE) < 0)
+        perror("Unable to continue connection"), exit(ERROR_STATUS);
     if (status == OK_STATUS && start_server(&server) == ERROR_STATUS)
         status = ERROR_STATUS;
     if (status == ERROR_STATUS)

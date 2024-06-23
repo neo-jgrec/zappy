@@ -76,11 +76,10 @@ void broadcast(client_t *client, server_t *server)
     int d;
     client_t *receiver;
 
-    for (client_list_t *client_list_entry = TAILQ_FIRST(&server->clients);
-        client_list_entry;
-        client_list_entry = TAILQ_NEXT(client_list_entry, entries)) {
-        receiver = client_list_entry->client;
-        if (receiver == client || receiver->is_graphic)
+    for (client_list_t *tmp = TAILQ_FIRST(&server->clients); tmp != NULL;
+        tmp = TAILQ_NEXT(tmp, entries)) {
+        receiver = tmp->client;
+        if (receiver == client)
             continue;
         d = get_sound_direction(
             client,

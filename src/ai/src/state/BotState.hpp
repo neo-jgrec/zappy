@@ -55,6 +55,8 @@ public:
     unsigned int slot = 0;
     unsigned int widthMap = 42;
     unsigned int heightMap = 42;
+    unsigned int nbAlly = 0;
+
     std::map<std::string, std::string> metadata = {
         {"should_update_env", "true"},
         {"should_group", "false"},
@@ -62,6 +64,7 @@ public:
         {"wait_incant", "false"},
         {"ask_for_group",
          "false"},
+        {"id_group", "0"},
     };
 
     // Metrics

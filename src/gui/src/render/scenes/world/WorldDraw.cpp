@@ -142,13 +142,11 @@ bool World::drawTrantorian(sf::RenderWindow &window, int i, int j)
                     index == _worldUi._idPlayer) ||
                     (_worldUi.getPanelState() == WorldUi::panelState::FLAG &&
                     trantorian._team == _teams[_worldUi._idTeam])) {
-                    if (index == _worldUi._idPlayer) {
-                        _sprites["aura"]->_sprite.setPosition(trantorian.getPos() + sf::Vector2f(0, -40));
-                        _sprites["aura"]->setColor(_teamsColor[trantorian._teamIndex > 5 ? 5 : trantorian._teamIndex]);
-                        _sprites["aura"]->setScale(_zoom);
+                    _sprites["aura"]->_sprite.setPosition(trantorian.getPos() + sf::Vector2f(0, -40));
+                    _sprites["aura"]->setColor(_teamsColor[trantorian._teamIndex > 5 ? 5 : trantorian._teamIndex]);
+                    _sprites["aura"]->setScale(_zoom);
 
-                        window.draw(_sprites["aura"]->_sprite);
-                    }
+                    window.draw(_sprites["aura"]->_sprite);
                 }
             }
             if (_zoom > 0.6f)

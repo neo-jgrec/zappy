@@ -25,6 +25,7 @@ enum GameState {
     GAME,
     QUIT,
     END,
+    WIN,
     DEFAULT,
 };
 class Core {
@@ -56,8 +57,10 @@ class Core {
         ServerConnect _server;
         std::map<std::string, sf::Sound> _sounds;
         bool isFullscreen() { return _fullscreen; }
+        int _tickRate = 2;
 
         bool _funMode = false;
+        std::string _winner = "";
     private:
         sf::RenderWindow _window;
         sf::Event _event;

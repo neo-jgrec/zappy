@@ -110,8 +110,7 @@ static void handle_look(client_t *c, server_t *server, tile_t *map)
 {
     int w = server->proprieties.width;
     int h = server->proprieties.height;
-    int d = c->orientation % 4;
-    char *final_payload;
+    int d = c->orientation - 1;
     int look_y;
     int look_x;
 
@@ -121,13 +120,12 @@ static void handle_look(client_t *c, server_t *server, tile_t *map)
         return;
     for (int level = 0; level <= (int)c->level; level++) {
         for (int offset = -level; offset <= level; offset++) {
-            look_x = (c->x + dx[d] * level + dy[d] *offset + w) % w;
+            look_x = (c->x + dx[d] * level + dy[d] * offset + w) % w;
             look_y = (c->y + dy[d] * level - dx[d] * offset + h) % h;
             append_tile_to_payload(c, map, (look_y * w + look_x));
         }
     }
-    if (asprintf(&final_payload, "%s ]\n", c->payload) != -1)
-        c->payload = final_payload;
+    handle_response(&c->payload, "%s]\n", c->payload);
 }
 
 void look(client_t *c, server_t *server)

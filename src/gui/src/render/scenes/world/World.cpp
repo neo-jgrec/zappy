@@ -117,7 +117,8 @@ void World::getServerInit()
         _teams.push_back(team);
         _chat->addMessage(" - " + team);
     }
-
+    _core->_tickRate = _core->_data.getTickRate();
+    _chat->addMessage("Tick rate: " + std::to_string(_core->_tickRate));
     Ranking::getRanking(_rankings, _core->_data);
 }
 
@@ -132,7 +133,7 @@ void World::initSounds()
     _sounds["wololo"].openFromFile("./assets/audio/wololo.ogg");
     _sounds["wololo"].setVolume(100);
     _sounds["interact"].openFromFile("./assets/audio/interact.ogg");
-    _sounds["interact"].setVolume(50);
+    _sounds["interact"].setVolume(25);
 }
 
 void World::lookTrantorian(int index)
@@ -146,4 +147,17 @@ void World::lookTrantorian(int index)
         pos.y - viewPos.y
     );
     _offset += offset;
+}
+
+void World::checkWinner()
+{
+    try {
+        std::optional<std::string> winner = _core->_data.getWinner();
+        if (winner.has_value()) {
+            _core->_winner = winner.value();
+            _core->_upperState = GameState::WIN;
+        }
+    } catch (std::exception &e) {
+        std::cout << e.what() << std::endl;
+    }
 }
