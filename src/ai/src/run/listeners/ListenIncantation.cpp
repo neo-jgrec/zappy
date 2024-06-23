@@ -30,4 +30,11 @@ void ABot::listenIncantationReturnResponse(const std::string &response)
         _state.metadata["should_incant"] = "false";
         _state.metadata["wait_incant"] = "false";
     }
+    _state.nbAlly = 0;
+    // TODO: remove it
+    if (_state.level == 8)
+    {
+        printColor("👑 WIN 👑", BRIGHT_GREEN);
+        exit(0);
+    }
 }

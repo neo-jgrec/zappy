@@ -9,6 +9,13 @@
 #define PRINTCOLOR_HPP_
 #include <iostream>
 
+enum PRINT_STATE
+{
+    PRINT_STATE_INFO,
+    PRINT_STATE_WARNING,
+    PRINT_STATE_SUCESS,
+};
+
 #define BRIGHT "\x1b[1m"
 #define DIM "\x1b[2m"
 #define UNDERSCORE "\x1b[4m"
@@ -49,6 +56,6 @@
 #define COLOR_RESET "\x1b[0m"
 
 void printColor(const std::string &message, const std::string &color);
-void printKeyValueColored(const std::string &key, const std::string &value);
+void printKeyValueColored(const std::string &key, const std::string &value, PRINT_STATE state = PRINT_STATE_INFO);
 
 #endif /* !PRINTCOLOR_HPP_ */
