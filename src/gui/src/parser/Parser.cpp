@@ -127,7 +127,7 @@ void Parser::pbc (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
         std::shared_ptr<Player> player = gameData.getPlayerById(playerNb);
         std::vector<int> pos = player->getPosition();
         std::string msg = std::get<std::string>(tokens.at(2));
-        debug_print << "pbc Pid:" << playerNb << " X:" << pos.at(1) << " Y:" << pos.at(2) << " MSG:" << msg << std::endl;
+        debug_print << "pbc Pid:" << playerNb << " X:" << pos.at(0) << " Y:" << pos.at(1) << " MSG:" << msg << std::endl;
         gameData.addBroadcast(playerNb, pos, msg);
     };
     _queue.push(lambda);
@@ -162,8 +162,8 @@ void Parser::pie (const std::vector<TokenType>& tokens, Data& gameData, [[maybe_
         std::vector<int> pos = std::vector<int>({x, y});
 
         debug_print << "pie result:" << result << " X:" << x << " Y:" << y << std::endl;
-        Incantation incantation = gameData.getIncantationByPos(pos);
-        incantation.setStatus(result == 0 ? FAILURE : SUCCESS);
+        std::shared_ptr<Incantation> incantation = gameData.getIncantationByPos(pos);
+        incantation->setStatus(result == 0 ? FAILURE : SUCCESS);
     };
     _queue.push(lambda);
 };
@@ -315,7 +315,11 @@ void Parser::sbp (const std::vector<TokenType>& tokens, [[maybe_unused]] Data& g
 
 void Parser::execute() {
     while (!_queue.empty()) {
-        _queue.front()();
+        try {
+            _queue.front()();
+        } catch (const guiException& e) {
+            std::cerr << "error in data update:\n" << e.what() << std::endl;
+        }
         _queue.pop();
     }
 };
@@ -353,7 +357,11 @@ void Parser::updateData(Data &gameData, ServerConnect &server)
                 vals.push_back(token);
             }
         }
-        parse(vals, gameData, server);
+        try {
+            parse(vals, gameData, server);
+        } catch (const ParserException& e) {
+            std::cerr << "error in parsing:\n" << e.what() << std::endl;
+        }
     }
     execute();
 }

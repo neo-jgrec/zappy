@@ -7,7 +7,7 @@
 
 #include "ABotPattern.hpp"
 
-void ABotPattern::init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port, int id, int idMessage)
+void ABotPattern::init(int sockfd, const std::string &teamName, const std::string &host, int port, int id, int idMessage)
 {
     _sockfd = sockfd;
     _teamName = teamName;
@@ -21,81 +21,117 @@ void ABotPattern::init(int sockfd, const std::string &teamName, bool arg, const 
 
 void ABotPattern::run(const std::string &response)
 {
-    std::string responseCopy = cleanCarriageReturn(response);
-
+    std::string responseServer = "";
+    std::string responseBroadcast = "";
     _message.content = "";
-    printKeyValueColored("🤖👂 Bot listens: ", responseCopy);
-    if (isServerResponse(responseCopy))
-    {
+    _allyMessage.content = "";
+    _enemyMessage.content = "";
+
+    // TODO: should cancel if need food ?
+
+    // separe servers and broadcast, decrypt message
+    separateServerBroadcast(response, responseServer, responseBroadcast);
+
+    verifyServerIsRunning(response);
+    debugBotRun();
+
+    // Debug
+    debugResponses(responseServer, responseBroadcast);
+
+    if (!responseServer.empty())
         _canAct = true;
-    }
-    listen(responseCopy);
-    if (_canAct)
+
+    if (!responseServer.empty() && _state.state != WAIT_FOR_BROADCAST_RESPONSE)
     {
-        act();
-        _canAct = false;
+        listen(responseServer);
     }
-    if (responseCopy.find("dead") != std::string::npos)
+    if (!responseBroadcast.empty() && _state.state != WAIT_FOR_SERVER_RESPONSE)
     {
-        debugState();
-        exit(0);
+        listenBroadcast(responseBroadcast);
+    }
+    if (_state.state != WAIT_FOR_BROADCAST_RESPONSE && _state.state != WAIT_FOR_SERVER_RESPONSE)
+    {
+        react(responseServer, responseBroadcast);
     }
     debugState();
+    debugMetadata();
+    // debug
+    if (_iteration > 1000)
+        exit(0);
+}
+
+void ABotPattern::react(const std::string &responseServer, const std::string &responseBroadcast)
+{
+    if (_canAct)
+    {
+        if (!responseServer.empty() && !responseBroadcast.empty())
+        { // TODO: It in this case, use ACT_ON
+            PRINT_ALERT("GET RESPONSES FROM SERVER AND BROADCAST\n");
+        }
+        if (!responseServer.empty() && _state.state != ACT_ON_BROADCAST)
+        {
+            if (_state.state != ACT_ON_BROADCAST)
+                act();
+        }
+        else if (!responseBroadcast.empty() && _state.state != ACT_ON_SERVER)
+        {
+            act();
+        }
+    }
 }
 
 void ABotPattern::act()
 {
-    printColor("========== [Bot Run] ==========\n", BRIGHT_BLUE);
-    printKeyValueColored("Iteration", std::to_string(_iteration));
-
-    if (_state.state != INVOCATING)
+    if (queue.empty())
     {
-        if (queue.empty())
-        {
-            updateStrategy();
-        }
-        if (!queue.empty())
-        {
-            queue.front().first();
-            queue.erase(queue.begin());
-        }
-        _iteration++;
-        if (_iteration % 20 == 0)
-            saveDataActions(saveActionsFile);
+        updateStrategy();
     }
+    if (!queue.empty())
+    {
+        queue.front().first();
+        queue.erase(queue.begin());
+        _canAct = false;
+        _iteration++;
+    }
+    if (_iteration % 20 == 0)
+        saveDataActions(saveActionsFile);
 }
 
 // Always put state listener first before listener for actions
 void ABotPattern::listen(const std::string &response)
 {
-    if (_state.state == INVOCATING)
+    if (_state.state == WAIT_FOR_SERVER_RESPONSE)
+        listenCancel(response);
+    if (_state.state == WAIT_FOR_SERVER_RESPONSE && isConcernedByIncantation())
         listenIncantationReturnResponse(response);
+    else if (_state.lastAction.action == INVENTORY)
+        listenInventoryResponse(response);
     else if (_state.lastAction.action == LOOK)
         listenLookResponse(response);
     else if (_state.lastAction.action == TAKE)
         listenTakeResponse(response);
-    else if (_state.lastAction.action == INCANTATION)
+    else if (isConcernedByIncantation())
         listenIncantationResponse(response);
     else if (_state.lastAction.action == CONNECT_NBR)
         listenConnectNbrResponse(response);
-    if (response.find("message") != std::string::npos)
+}
+
+void ABotPattern::listenBroadcast(const std::string &response)
+{
+    // TODO: we don't use response ?
+    listenBroadcastResponse(_allyMessage.content);
+}
+
+void ABotPattern::verifyServerIsRunning(const std::string &response)
+{
+    if (response.find("dead") != std::string::npos)
     {
-        listenBroadcastResponse(response);
+        debugState();
+        PRINT_ALERT("END OF BOT\n");
+        exit(0);
     }
 }
 
-bool ABotPattern::isServerResponse(const std::string &response) const
-{
-    return response.find("message") == std::string::npos;
-    // TODO: if message concat with server response do that:
-    //  std::vector<std::string> responses = {"ok", "ko", "dead", "[", "]", "Elevation underway", "Current level:"};
+// TODO: metrics, save proportions of state in the game, add state: searching, moving, etc...
 
-    // for (const auto &res : responses)
-    // {
-    //     if (response.find(res) != std::string::npos)
-    //         return true;
-    // }
-    // if (std::all_of(response.begin(), response.end(), ::isdigit))
-    //     return true;
-    // return false;
-}
+// Landmaerk: 1: CARE if they group in same time. Howevery we fork bots so we don't care.

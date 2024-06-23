@@ -7,29 +7,53 @@
 
 #include "../../bots/ABot.hpp"
 
-void ABot::listenGroup(const std::string &response)
+void ABot::listenGroup(const std::string &message)
 {
-    try
+    if (_state.metadata["should_group"] != "true") // TODO: rename it in process_group ?
     {
-        if (!response.empty())
+        try
         {
-            std::string lastChar(1, response.back());
-            int askLevel = std::stoi(lastChar);
-            std::cout << "response = " << response << std::endl;
+            std::string lastChar(1, message.back());
+            unsigned int askLevel = std::stoi(lastChar);
 
-            if (_state.level == askLevel)
+            if (_state.level + 1 == askLevel)
             {
-                _state.state = SHOULD_GROUP;
+                queue.clear();
+                _state.metadata["should_group"] = "true";
+                _state.state = ACT_ON_BROADCAST;
             }
         }
+        catch (std::invalid_argument &e)
+        {
+            PRINT_ERROR(e.what());
+        }
+        catch (std::out_of_range &e)
+        {
+            PRINT_ERROR(e.what());
+        }
     }
-    catch (std::invalid_argument &e)
+}
+
+void ABot::listenGroupJoined(const std::string &message)
+{
+    // TODO: add it in ABot or somewhere (metadata ?)?
+    static unsigned int playersPresent = 0;
+
+    if (_state.level == 2 || _state.level == 3)
     {
-        PRINT_ERROR(e.what());
+        _state.metadata["should_incant"] = "true";
+        _state.metadata["ask_for_group"] = "false";
     }
-    catch (std::out_of_range &e)
+    else if (_state.level == 4)
     {
-        PRINT_ERROR(e.what());
+        std::cout << "playersPresent: " << playersPresent << std::endl;
+        playersPresent++;
+        if (playersPresent == 3)
+        {
+            _state.metadata["should_incant"] = "true";
+            _state.metadata["ask_for_group"] = "false";
+            playersPresent = 0;
+        }
     }
 }
 
@@ -59,7 +83,12 @@ void ABot::listenBroadcastResponse(const std::string &response)
     for (auto &_allyMessage : _alliesMessage) {
         if (_allyMessage.content.find("group") != std::string::npos)
         {
-            listenGroup(response);
+            listenGroup(_allyMessage.content);
+        }
+        else if (_allyMessage.content.find("joined") != std::string::npos && _state.metadata["ask_for_group"] == "true")
+        {
+            listenGroupJoined(_allyMessage.content);
         }
     }
+    // Listeners Broadcast
 }

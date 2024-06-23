@@ -7,6 +7,15 @@
 
 #include "server.h"
 
+static void send_pin_for_food_update(client_t *client, server_t *s)
+{
+    message_to_graphicals(s, "pin %d %d %d %d %d %d %d %d %d %d\n",
+        client->id, client->x, client->y, client->inventory.food,
+        client->inventory.linemate, client->inventory.deraumere,
+        client->inventory.sibur, client->inventory.mendiane,
+        client->inventory.phiras, client->inventory.thystame);
+}
+
 static bool handle_client_death(
     client_t *client,
     server_t *s,
@@ -20,12 +29,13 @@ static bool handle_client_death(
     if (elapsed >= interval) {
         client->inventory.food -= 1;
         clock_gettime(CLOCK_REALTIME, &client->live_time);
+        send_pin_for_food_update(client, s);
     }
     if (client->inventory.food == 0) {
         dprintf(client->fd, "dead\n");
         close(client->fd);
         FD_CLR(client->fd, &s->current_sockets);
-        message_to_graphicals(s, "pdi %d\n", client->fd);
+        message_to_graphicals(s, "pdi %d\n", client->id);
         remove_client_by_fd(&s->clients, client->fd);
         return true;
     }
@@ -34,14 +44,14 @@ static bool handle_client_death(
 
 bool handle_client_life(server_t *s)
 {
-    client_list_t *item;
     struct timespec current = s->current_time;
     struct timespec live_time;
     client_t *client;
     time_t sec_sus;
     long nsec_sus;
 
-    TAILQ_FOREACH(item, &s->clients, entries) {
+    for (client_list_t *item = TAILQ_FIRST(&s->clients); item;
+        item = TAILQ_NEXT(item, entries)) {
         client = item->client;
         if (client->is_connected == false || client->is_graphic == true)
             continue;

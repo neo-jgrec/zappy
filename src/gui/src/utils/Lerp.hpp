@@ -29,6 +29,16 @@ class Lerp {
             }
         }
 
+        static sf::Vector2f moveTo(sf::Vector2f a, sf::Vector2f b, float speed, float distanceThreshold = 5.f) {
+            float distance = std::sqrt(std::pow(b.x - a.x, 2) + std::pow(b.y - a.y, 2));
+            if (distance < distanceThreshold) {
+                return b;
+            } else {
+                float t = speed / distance;
+                return sf::Vector2f(lerp(a.x, b.x, t), lerp(a.y, b.y, t));
+            }
+        }
+
         static sf::Color lerp(sf::Color a, sf::Color b, float t) {
             return sf::Color(
                 lerp(a.r, b.r, t),

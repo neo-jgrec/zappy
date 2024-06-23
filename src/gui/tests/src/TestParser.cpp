@@ -303,7 +303,7 @@ Test(Parser, pexNormal)
     std::vector<std::variant<std::string, int>> args2 = { "pex", 1 };
 
     parser.parse(args2, data, server);
-    parser.execute();
+    cr_assert_throw(parser.execute(), guiException);
     cr_assert_eq(data.getPlayerById(1)->getNextEvent().action, PUSHED);
 }
 
@@ -380,7 +380,7 @@ Test(Parser, picNormal)
 
     parser.parse(args2, data, server);
     parser.execute();
-    cr_assert_eq(data.getIncantationByPos(std::vector<int>({1, 1})).getLvl(), 4);
+    cr_assert_eq(data.getIncantationByPos(std::vector<int>({1, 1}))->getLvl(), 4);
 }
 
 Test(Parser, pieNormal)
@@ -399,9 +399,8 @@ Test(Parser, pieNormal)
 
     parser.parse(args3, data, server);
     parser.execute();
-    std::map <std::vector<int>, Incantation> incantations = data.getIncantations();
-    Incantation incantation = incantations.at(std::vector<int>({1, 1}));
-    cr_assert_eq(incantation.getStatus(), SUCCESS, "Expected %d, got %d", SUCCESS, incantation.getStatus());
+    std::shared_ptr<Incantation> incantation = data.getIncantationByPos({1, 1});
+    cr_assert_eq(incantation->getStatus(), SUCCESS, "Expected %d, got %d", SUCCESS, incantation->getStatus());
 }
 
 Test(Parser, pieWrongArgs)
@@ -595,6 +594,9 @@ Test(Parser, enwNormal)
     Data data;
     ServerConnect server;
 
+    std::vector<std::variant<std::string, int>> args0 = { "pnw", 1, 1, 1, 1, 1, "team1" };
+    parser.parse(args0, data, server);
+
     std::vector<std::variant<std::string, int>> args = { "enw", 1, 1, 1, 1 };
 
     parser.parse(args, data, server);
@@ -630,12 +632,15 @@ Test(Parser, eboNormal)
     Data data;
     ServerConnect server;
 
+    std::vector<std::variant<std::string, int>> args0 = { "pnw", 1, 1, 1, 1, 1, "team1" };
+    parser.parse(args0, data, server);
+
     std::vector<std::variant<std::string, int>> args = { "enw", 1, 1, 1, 1 };
     parser.parse(args, data, server);
 
     std::vector<std::variant<std::string, int>> args2 = { "ebo", 1 };
-
     parser.parse(args2, data, server);
+
     parser.execute();
     cr_assert_eq(data.getEggs().at(1).getState(), HATCHED);
 }
@@ -667,6 +672,9 @@ Test(Parser, ediNormal)
     Parser parser;
     Data data;
     ServerConnect server;
+
+    std::vector<std::variant<std::string, int>> args0 = { "pnw", 1, 1, 1, 1, 1, "team1" };
+    parser.parse(args0, data, server);
 
     std::vector<std::variant<std::string, int>> args = { "enw", 1, 1, 1, 1 };
     parser.parse(args, data, server);

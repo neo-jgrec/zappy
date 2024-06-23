@@ -24,7 +24,7 @@
 class Client
 {
 public:
-    Client(const std::string &host, const std::string &teamName, int port, bool arg);
+    Client(const std::string &host, const std::string &teamName, int port);
     ~Client();
 
     void run();
@@ -49,7 +49,6 @@ private:
     fd_set _readfds;
     struct timeval _tv;
     std::unique_ptr<IBot> _bot;
-    bool _arg; // TODO: remove it
 
     // Map Data
     unsigned int _slot = 0;

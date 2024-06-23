@@ -27,7 +27,7 @@ void right(client_t *c, server_t *server)
     }
     if (c->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == false) {
         message_to_graphicals(server, "ppo %d %d %d %d\n",
-                            c->fd, c->x, c->y, c->orientation);
+        c->id, c->x, c->y, c->orientation);
         handle_response(&c->payload, "ok\n");
     } else {
         handle_response(&c->payload, "ko\n");

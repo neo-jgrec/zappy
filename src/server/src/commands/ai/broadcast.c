@@ -58,6 +58,8 @@ static void send_broadcast_to_graphicals(client_t *client, server_t *server)
     client_list_t *client_list_entry;
     client_t *receiver;
 
+    if (client->commands[1] == NULL)
+        return;
     if (server->proprieties.is_iteration == true &&
     strcmp(client->commands[1], "STOP") == 0)
         exit(OK_STATUS);
@@ -65,19 +67,20 @@ static void send_broadcast_to_graphicals(client_t *client, server_t *server)
         receiver = client_list_entry->client;
         if (receiver->is_graphic)
             dprintf(receiver->fd, "pbc %d %s\n",
-                client->fd, client->commands[1]);
+                client->id, client->commands[1]);
     }
 }
 
 void broadcast(client_t *client, server_t *server)
 {
-    client_list_t *client_list_entry;
     int d;
     client_t *receiver;
 
-    TAILQ_FOREACH(client_list_entry, &server->clients, entries) {
+    for (client_list_t *client_list_entry = TAILQ_FIRST(&server->clients);
+        client_list_entry;
+        client_list_entry = TAILQ_NEXT(client_list_entry, entries)) {
         receiver = client_list_entry->client;
-        if (receiver == client)
+        if (receiver == client || receiver->is_graphic)
             continue;
         d = get_sound_direction(
             client,

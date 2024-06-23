@@ -22,7 +22,6 @@ public:
     std::string teamName;
     std::string host;
     bool debug; // TODO: use --debug
-    bool flag;  // TODO: remove it.
 
     void parseArguments(int ac, char **av);
 

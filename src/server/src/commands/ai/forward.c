@@ -9,21 +9,22 @@
 
 void forward(client_t *c, server_t *server)
 {
-    int width = server->proprieties.width;
-    int height = server->proprieties.height;
-    int direction = c->orientation % 4;
-    int dx[] = {0, 0, -1, 1};
-    int dy[] = {-1, 1, 0, 0};
+    int x = c->x;
+    int y = c->y;
 
-    c->x = (c->x + dx[direction] + width) % width;
-    c->y = (c->y + dy[direction] + height) % height;
-    if (c->x < 0)
-        c->x += width;
-    if (c->y < 0)
-        c->y += height;
+    if (c->orientation == NORTH)
+        y = (y - 1 + server->proprieties.height) % server->proprieties.height;
+    if (c->orientation == SOUTH)
+        y = (y + 1) % server->proprieties.height;
+    if (c->orientation == EAST)
+        x = (x + 1) % server->proprieties.width;
+    if (c->orientation == WEST)
+        x = (x - 1 + server->proprieties.width) % server->proprieties.width;
+    c->x = x;
+    c->y = y;
     if (c->tclient[NB_REQUESTS_HANDLEABLE - 1].available_request == false) {
         message_to_graphicals(server, "ppo %d %d %d %d\n",
-        c->fd, c->x, c->y, c->orientation);
+        c->id, c->x, c->y, c->orientation);
         c->payload = strdup("ok\n");
     } else
         c->payload = strdup("ko\n");

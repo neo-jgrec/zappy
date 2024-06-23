@@ -20,10 +20,10 @@
     #include "utils.h"
 
 enum Orientation {
-    NORTH,
-    SOUTH,
-    WEST,
-    EAST
+    NORTH = 1,
+    EAST = 2,
+    SOUTH = 3,
+    WEST = 4
 };
 
 typedef struct inventory_s {
@@ -46,6 +46,7 @@ typedef struct tclient_s {
 typedef struct client_s {
     char uuid[37];
     int fd;
+    int id;
     char **commands;
     char message[BUFFER_SIZE];
     signed char x;

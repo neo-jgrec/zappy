@@ -13,6 +13,7 @@ Test(plv, basics, .init = redirect_all_stdout)
     server_t server;
     client_t client;
     client.fd = 1;
+    client.id = 1;
     client.x = 1;
     client.y = 1;
     client.orientation = 1;
@@ -28,6 +29,6 @@ Test(plv, basics, .init = redirect_all_stdout)
     TAILQ_INSERT_TAIL(&server.clients, client_list, entries);
     plv(&client, &server);
     char expected[2550];
-    sprintf(expected, "plv %d %zu\n", client.fd, client.level);
+    sprintf(expected, "plv %d %zu\n", client.id, client.level);
     cr_assert_stdout_eq_str(expected);
 }

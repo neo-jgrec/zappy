@@ -11,7 +11,7 @@ void ABot::listenIncantationResponse(const std::string &response)
 {
     if (response == "Elevation underway")
     {
-        _state.state = INVOCATING;
+        _state.state = WAIT_FOR_SERVER_RESPONSE;
     }
 }
 
@@ -20,6 +20,14 @@ void ABot::listenIncantationReturnResponse(const std::string &response)
     if (response.find("Current level") != std::string::npos)
     {
         _state.level++;
+        _state.state = STANDARD;
+        _state.metadata["wait_incant"] = "false";
     }
-    _state.state = STANDARD;
+    if (response.find("ko") != std::string::npos)
+    {
+        PRINT_ALERT("Incantation failed\n");
+        _state.state = STANDARD;
+        _state.metadata["should_incant"] = "false";
+        _state.metadata["wait_incant"] = "false";
+    }
 }

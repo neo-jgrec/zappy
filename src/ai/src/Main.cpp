@@ -23,7 +23,7 @@ int main(int ac, char **av)
         PRINT_ERROR(e.what());
         return FAILURE;
     }
-    Client client(initializer.host, initializer.teamName, initializer.port, initializer.flag);
+    Client client(initializer.host, initializer.teamName, initializer.port);
 
     client.run();
 

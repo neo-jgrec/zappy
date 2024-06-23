@@ -15,7 +15,7 @@ std::vector<int> Map::getSize()
 
 void Map::updateTile(int x, int y, std::vector<int> values)
 {
-    if (x >= static_cast<int>(this->map.size()) || y >= static_cast<int>(this->map.at(0).size())) {
+    if (x >= static_cast<int>(this->getSize()[0]) || y >= static_cast<int>(this->getSize()[1])) {
         throw guiException("Invalid tile position");
     }
     map[x][y].setRessources(values);
@@ -31,4 +31,9 @@ void Map::fillMap(int x, int y)
         }
         this->map.push_back(row);
     }
+}
+
+void Map::resetMap()
+{
+    this->map.clear();
 }

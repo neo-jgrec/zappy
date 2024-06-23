@@ -7,15 +7,9 @@
 
 #include "Client.hpp"
 
-Client::Client(const std::string &host, const std::string &teamName, int port, bool arg)
+Client::Client(const std::string &host, const std::string &teamName, int port)
     : _host(host), _teamName(teamName), _port(port)
 {
-    // TODO: remove it
-    _arg = arg;
-    if (_arg)
-        printf("Arg is true\n");
-    else
-        printf("Arg is false\n");
     setupConnection();
 }
 
@@ -26,7 +20,7 @@ Client::~Client()
 
 void Client::run()
 {
-    printColor("Run client\n", BRIGHT_BLUE);
+    printColor("Run client\n\n", BRIGHT_BLUE);
 
     authenticate();
     loop();
@@ -119,6 +113,7 @@ void Client::initBot(const std::string identityMessage)
 
     if (!identityMessage.empty())
     {
+        std::cout << "identityMessage: " << identityMessage << std::endl;
         std::string job = "";
         std::string prefixId = "you_are_bot=";
         std::string prefixJob = "your_job=";
@@ -146,6 +141,10 @@ void Client::initBot(const std::string identityMessage)
             if (job.find("SLAVE") != std::string::npos)
                 _bot = BotFactory::createBot("Slave");
         }
+        else
+        {
+            _bot = BotFactory::createBot("SimpleBot");
+        }
     }
     else
     {
@@ -155,7 +154,7 @@ void Client::initBot(const std::string identityMessage)
     }
     if (_bot != nullptr)
     {
-        _bot->init(_sockfd, _teamName, _arg, _host, _port, id, currentMessageId);
+        _bot->init(_sockfd, _teamName, _host, _port, id, currentMessageId);
     }
     else
     {
@@ -172,7 +171,6 @@ void Client::sendMessage(const std::string &message)
 
 void Client::loop()
 {
-    std::cout << "do loop\n";
     // clear messsages of servers before start
     auto condition = [&]()
     { return _messageToReadBeforeStart > 0; };

@@ -67,7 +67,7 @@ void set(client_t *c, server_t *s)
         remove_element_from_inventory(c, FOOD);
         add_element_to_map(s, c->x, c->y, o);
         handle_response(&c->payload, "ok\n");
-        message_to_graphicals(s, "pdr %d %d\n", c->fd, o);
+        message_to_graphicals(s, "pdr %d %d\n", c->id, o);
         client_time_handler(c, SET);
         return;
     }

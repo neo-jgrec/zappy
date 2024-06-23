@@ -117,18 +117,6 @@ void print_flags(flags_t *flags)
     printf("FREQUENCY: %d\n", flags->frequency);
 }
 
-void destroy_flags(flags_t *flags)
-{
-    if (flags == NULL)
-        return;
-    if (flags->names == NULL)
-        return;
-    for (size_t i = 0; flags->names[i] != NULL; i++) {
-        secure_free(flags->names[i]);
-    }
-    free(flags->names);
-}
-
 static bool check_error_flags(flags_t *flags)
 {
     if (flags->port < 0) {

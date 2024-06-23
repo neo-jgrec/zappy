@@ -15,5 +15,17 @@ class SimpleBot : public ABotPattern
 public:
     void initChild();
     void updateStrategy() override;
+
+    // Levels
+    void handleLvl1();
+    void handleLvl2();
+    void handleLvl3();
+    void handleLvl4();
+
+    // State
+    bool handleState();
+
+    // Survive
+    bool handleSurvive();
 };
 #endif // SIMPLEBOT_HPP_

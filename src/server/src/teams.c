@@ -49,30 +49,32 @@ void destroy_teams(struct teams_tailq *teams)
     while (!TAILQ_EMPTY(teams)) {
         item = TAILQ_FIRST(teams);
         TAILQ_REMOVE(teams, item, entries);
-        free(item->team);
-        free(item);
+        secure_free((void **)&item->team->name);
+        secure_free((void **)&item->team);
     }
 }
 
 void print_teams_infos(struct teams_tailq *teams)
 {
     char **uuids;
-    unsigned char i = 0;
-    team_list_t *item;
+    unsigned char idx = 0;
     eggs_list_t *item_e;
     char *res;
 
-    TAILQ_FOREACH(item, teams, entries) {
-        uuids = item->team->client_ids;
-        i = 0;
-        res = item->team->is_complete ? "" : "not ";
-        printf("Team %s is %scomplete\n", item->team->name, res);
+    for (team_list_t *i = TAILQ_FIRST(teams); i; i = TAILQ_NEXT(i, entries)) {
+        uuids = i->team->client_ids;
+        idx = 0;
+        res = i->team->is_complete ? "" : "not ";
+        printf("Team %s is %scomplete\n", i->team->name, res);
         printf("UUIDs:\n");
-        for (; i < MAX_CAPACITY_TEAM && uuids[i] != NULL; i++)
-            printf("%u - (%s)\n", i, item->team->client_ids[i]);
+        for (; idx < MAX_CAPACITY_TEAM && uuids[idx] != NULL; idx++)
+            printf("%u - (%s)\n", idx, i->team->client_ids[idx]);
         printf("Eggs:\n");
-        TAILQ_FOREACH(item_e, &item->team->eggs, entries)
+        item_e = TAILQ_FIRST(&i->team->eggs);
+        while (item_e != NULL) {
             printf("X(%u) Y(%u)\n", item_e->egg->x, item_e->egg->y);
+            item_e = TAILQ_NEXT(item_e, entries);
+        }
     }
 }
 

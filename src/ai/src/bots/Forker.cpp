@@ -25,11 +25,12 @@ void Forker::forkNewBot()
 
     if (pid == 0)
     {
-        // without term
-        //  execl("./zappy_ai", "./zappy_ai", "-p", std::to_string(_port).c_str(), "-n", _teamName.c_str(), "-h", _host.c_str(), nullptr);
+        // TODO: use cpp function
+        //  without term
+        //   execl("./zappy_ai", "./zappy_ai", "-p", std::to_string(_port).c_str(), "-n", _teamName.c_str(), "-h", _host.c_str(), nullptr);
 
         // with term that close
-        //  execl("/usr/bin/gnome-terminal", "/usr/bin/gnome-terminal", "--", "./zappy_ai", "-p", std::to_string(_port).c_str(), "-n", _teamName.c_str(), "-h", _host.c_str(), nullptr);
+        // execl("/usr/bin/gnome-terminal", "/usr/bin/gnome-terminal", "--", "./zappy_ai", "-p", std::to_string(_port).c_str(), "-n", _teamName.c_str(), "-h", _host.c_str(), nullptr);
 
         //  with term that stay open
         execl("/usr/bin/gnome-terminal", "/usr/bin/gnome-terminal", "--", "bash", "-c",

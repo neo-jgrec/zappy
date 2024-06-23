@@ -21,14 +21,15 @@ public:
     void addRessourceByQuantity(std::string ressource, size_t quantity);
     size_t getRessource(const std::string &ressource) const;
 
-    size_t food;
-    size_t linemate;
-    size_t deraumere;
-    size_t sibur;
-    size_t mendiane;
-    size_t phiras;
-    size_t thystame;
-    size_t player;
+    // int in case there an error and bot set a ressource that he don't have
+    int food;
+    int linemate;
+    int deraumere;
+    int sibur;
+    int mendiane;
+    int phiras;
+    int thystame;
+    int player;
 
     // void setFood(int food);
     // void setLinemate(int linemate);
@@ -46,9 +47,8 @@ public:
     // int getPhiras() const;
     // int getThystame() const;
 private:
-    std::unordered_map<std::string, size_t *> ressourcesMap;
-    //hello
-    
+    std::unordered_map<std::string, int *> ressourcesMap;
+    // hello
 };
 
 #endif // RESSOURCES_HPP_

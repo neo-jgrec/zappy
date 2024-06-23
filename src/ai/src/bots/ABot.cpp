@@ -23,10 +23,9 @@ void ABot::sendMessage(const std::string &message)
     send(_sockfd, messageToSend.c_str(), messageToSend.size(), 0);
 }
 
+// TODO: decrypt parameter in a tmp to debug it easily.
 void ABot::doAction(Action action, const std::string &parameter)
 {
-    static int timeUnit = 126;
-
     try
     {
         ActionInfo actionInfo = getActionInfo(action);
@@ -34,24 +33,23 @@ void ABot::doAction(Action action, const std::string &parameter)
 
         if (parameter != "")
             actionToServer += " " + parameter;
-        printKeyValueColored("🤖🤜 Bot does: ", actionToServer);
+        printKeyValueColored("🤖🤜 Bot does", actionToServer);
         sendMessage(actionToServer);
 
         _state.lastAction.action = action;
         _state.lastAction.parameter = parameter;
-        timeUnit -= actionInfo.getTimeUnitCost();
 
-        if (timeUnit < 126 && _state.ressources.food > 0)
-        {
-            _state.ressources.food -= 1;
-            timeUnit += 126;
-        }
         saveMetrics(actionInfo);
     }
     catch (const ActionInfoException &e)
     {
         PRINT_ERROR(e.what());
     }
+    // Bots moved or took a ressource, his environment changed
+    if (action == FORWARD || action == RIGHT || action == LEFT || action == TAKE || action == INCANTATION)
+        _state.metadata["should_update_env"] = "true";
+    if (action == LOOK)
+        _state.metadata["should_update_env"] = "false";
 }
 
 void ABot::saveMetrics(ActionInfo actionInfo)

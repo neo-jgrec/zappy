@@ -40,7 +40,7 @@ public:
     ~ABot();
     virtual void run(const std::string &response) = 0;
     // TODO: remove arg
-    virtual void init(int sockfd, const std::string &teamName, bool arg, const std::string &host, int port, int id, int idMessage) = 0;
+    virtual void init(int sockfd, const std::string &teamName, const std::string &host, int port, int id, int idMessage) = 0;
 
 protected:
     // TODO: How to put it in constant without conflict ?
@@ -102,9 +102,12 @@ protected:
     void listenIncantationResponse(const std::string &response);
     void listenIncantationReturnResponse(const std::string &response);
     void listenConnectNbrResponse(const std::string &response);
+    void listenCancel(const std::string &response);
+    void listenInventoryResponse(const std::string &response);
 
     // Listeners Broadcast
     void listenGroup(const std::string &response);
+    void listenGroupJoined(const std::string &response);
 
     // Metrics
     void saveMetrics(ActionInfo actionInfo);

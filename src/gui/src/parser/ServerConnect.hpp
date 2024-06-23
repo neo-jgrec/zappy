@@ -20,9 +20,15 @@
             Select select = Select();
 
         public:
+            enum ConnectionState {
+                NOTCONNECTED,
+                CONNECTED,
+                SERVERDOWN
+            };
 
             int port = 3000;
             std::string ip = "127.0.0.1";
+            ConnectionState connectionState = NOTCONNECTED;
 
             /**
             * @brief read the message sent by the server
@@ -44,7 +50,13 @@
             * @return void
             */
             void connectToServer(int port, const char *ip);
-    
+
+            /**
+            * @brief disconect from the server
+            * @return bool true if the disconection was successful false otherwise
+            */
+            bool disconectFromServer();
+
             ServerConnect() {};
             ~ServerConnect() { if (this->fd >= 0) close(this->fd); };
     };

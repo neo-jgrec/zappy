@@ -20,10 +20,18 @@ Home::Home(Core *core, int port, std::string ip) : _core(core) {
 
     _chat = std::make_shared<Chat>(_core->getFont(), 7);
     _chat->setPosition(sf::Vector2f(50, 720 - 50));
-    _chat->addMessage("Welcome to Zappy");
+    _chat->addMessage("Welcome to Zappy 1.0");
+    initSprites();
 }
 
 void Home::draw(sf::RenderWindow &window) {
+    _sprites["background"]->draw(window);
+    _sprites["movingEarth"]->draw(window);
+    for (auto &starling : _starlings) {
+        _sprites["starling"]->setPosition(starling._pos);
+        _sprites["starling"]->setRotation(starling._rotation);
+        _sprites["starling"]->draw(window);
+    }
     _quitButton->draw(window);
     _startButton->draw(window);
     _ipButton->draw(window, _core->getDeltaTime());
@@ -32,11 +40,25 @@ void Home::draw(sf::RenderWindow &window) {
     window.draw(_title);
 }
 
+void Home::update(float fElapsedTime) {
+    _sprites["movingEarth"]->update(fElapsedTime);
+    for (auto &starling : _starlings) {
+        starling.update(fElapsedTime);
+    }
+}
+
 bool Home::update(sf::Event event, sf::RenderWindow &window) {
     if (_quitButton->update(event, window))
         window.close();
     if (_startButton->update(event, window)) {
-        if (!_core->connectToServer(std::stoi(_portButton->getInput()), _ipButton->getInput())) {
+        int port = 0;
+        try {
+            port = std::stoi(_portButton->getInput());
+        } catch (std::exception &e) {
+            _chat->addMessage("Invalid port", sf::Color::Red);
+            return false;
+        }
+        if (!_core->connectToServer(port, _ipButton->getInput())) {
             _chat->addMessage("Failed to connect to server", sf::Color::Red);
             return false;
         }
@@ -46,4 +68,20 @@ bool Home::update(sf::Event event, sf::RenderWindow &window) {
     _ipButton->update(event, window);
     _portButton->update(event, window);
     return true;
+}
+
+void Home::initSprites() {
+    _sprites["background"] = std::make_shared<Sprite>("assets/background.jpg");
+    _sprites["background"]->resetOrigin();
+    _sprites["movingEarth"] = std::make_shared<Sprite>("assets/earthPlanetMenu75.png", 100, 0.3f);
+    _sprites["movingEarth"]->setScale(10);
+    _sprites["movingEarth"]->setPosition(sf::Vector2f(1080, 720));
+    _sprites["starling"] = std::make_shared<Sprite>("assets/trantorian.png");
+    _sprites["starling"]->setScale(2);
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
+    _starlings.push_back(Starlings());
 }

@@ -13,6 +13,8 @@
 #include "utils/CommandLineParser.hpp"
 #include "utils/GuiException.hpp"
 
+#include "error/ErrorWindow.hpp"
+
 int main(int argc, char **argv) {
     int port = 0;
     std::string ip = "";
@@ -49,8 +51,19 @@ int main(int argc, char **argv) {
 
     try {
         debug_print << "Starting GUI" << std::endl;
-        Core core(port, ip);
-        core.run();
+        try {
+            Core core(port, ip);
+            try {
+                core.run();
+            } catch (const std::exception &e) {
+                ErrorWindow errorWindow(1);
+                errorWindow.run();
+            }
+        } catch (const std::exception &e) {
+            ErrorWindow errorWindow(0);
+            errorWindow.run();
+        }
+
     } catch (const guiException& e) {
         std::cerr << e.what() << std::endl;
         return 84;

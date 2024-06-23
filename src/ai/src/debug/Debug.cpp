@@ -4,7 +4,7 @@
 ** File description:
 ** Debug.cpp
 */
-#include "../bots/ABotProbabilistic.hpp"
+#include "../bots/ABotPattern.hpp"
 
 void ABot::debugInitialisation()
 {
@@ -14,20 +14,9 @@ void ABot::debugInitialisation()
     printColor("========== [!Bot initiation] ==========\n\n", BLUE);
 }
 
-void ABotProbabilistic::debugTrainedVariables()
-{
-    printColor("========== [Bot Probabilities] ==========\n", BLUE);
-
-    for (auto &TrainedVariable : _trainedVariables)
-    {
-        printKeyValueColored(TrainedVariable->name, std::to_string(TrainedVariable->value));
-    }
-    printColor("========== [!Bot Probabilities] ==========\n", BLUE);
-}
-
 void ABot::debugState()
 {
-    printColor("========== [Bot State] ==========\n", BLUE);
+    printColor("🤖📋 Bot State\n", YELLOW);
     printKeyValueColored("food", std::to_string(_state.ressources.food));
     printKeyValueColored("linemate", std::to_string(_state.ressources.linemate));
     printKeyValueColored("deraumere", std::to_string(_state.ressources.deraumere));
@@ -37,5 +26,25 @@ void ABot::debugState()
     printKeyValueColored("thystame", std::to_string(_state.ressources.thystame));
     printKeyValueColored("level", std::to_string(_state.level));
     printKeyValueColored("state", getStateName(_state.state));
+}
+
+void ABotPattern::debugResponses(const std::string &responseServer, const std::string &responseBroadcast)
+{
+    printColor("🤖👂 Bot listens\n", YELLOW);
+    printKeyValueColored("\t- server", responseServer);
+    printKeyValueColored("\t- broadcast", responseBroadcast);
+}
+
+void ABotPattern::debugBotRun()
+{
+    printColor("========== [Bot Run] ==========\n", BRIGHT_BLUE);
+    printKeyValueColored("Iteration", std::to_string(_iteration));
+    printKeyValueColored("Pattern:", _state.pattern);
+}
+
+void ABotPattern::debugMetadata()
+{
+    printColor("🤖📂 Bot metadata\n", YELLOW);
+    _state.printMetadata();
     std::cout << std::endl;
 }

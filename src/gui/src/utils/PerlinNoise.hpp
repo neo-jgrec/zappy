@@ -9,10 +9,17 @@
     #define PERLINNOISE_HPP_
 
     #include <vector>
+    #include <cmath>
+    #include <algorithm>
+    #include <numeric>
+    #include <random>
 
 class PerlinNoise {
     public:
-        PerlinNoise();
+
+        PerlinNoise(unsigned int seed = std::random_device{}()) {
+            initPermutationVector(seed);
+        }
         ~PerlinNoise() {};
 
         float noise(float x, float y);
@@ -24,6 +31,7 @@ class PerlinNoise {
     protected:
     private:
         std::vector<int> _p;
+        void initPermutationVector(unsigned int seed);
 };
 
 #endif /* !PERLINNOISE_HPP_ */

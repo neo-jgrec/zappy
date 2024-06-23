@@ -27,14 +27,19 @@ class Input {
         void setInput(std::string input) {
             _input = input;
         }
+        void setEnd(std::string end) {
+            _end = end;
+        }
 
     protected:
     private:
         bool _isFocused = false;
+        bool _hover = false;
         std::string _input = "";
         std::string _placeHolder = "";
         sf::Text _text;
         std::string _accept;
+        std::string _end = "";
 
         float _time = 0;
 };
