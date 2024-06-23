@@ -31,47 +31,49 @@ void ABotPattern::group()
 
 void ABotPattern::joinGroup()
 {
-    std::cout << _allyMessage.content << std::endl;
-    std::string level = getElementAfter(_allyMessage.content, '_');
-    std::cout << level << std::endl;
-    if (_direction == "0")
-    {
-        _message.content = "group_joined";
-        _message.vigenereEncrypt();
-        _message.generateMessage();
-        queue.push_back({[&]()
-                         { doAction(BROADCAST, _message.content); }, "BROADCAST"});
-        return;
-    }
+    for (auto &_allyMessage : _alliesMessage) {
+        std::cout << _allyMessage.content << std::endl;
+        std::string level = getElementAfter(_allyMessage.content, '_');
+        std::cout << level << std::endl;
+        if (_direction == "0")
+        {
+            _message.content = "group_joined";
+            _message.vigenereEncrypt();
+            _message.generateMessage();
+            queue.push_back({[&]()
+                            { doAction(BROADCAST, _message.content); }, "BROADCAST"});
+            return;
+        }
 
-    static const std::unordered_map<std::string, std::pair<std::string, std::function<void()>>> directionActions = {
-        {"2", {"Forward", [&]()
-               { doAction(FORWARD, ""); }}},
-        {"1", {"Forward", [&]()
-               { doAction(FORWARD, ""); }}},
-        {"8", {"Forward", [&]()
-               { doAction(FORWARD, ""); }}},
-        {"5", {"Right", [&]()
-               { doAction(RIGHT, ""); }}},
-        {"6", {"Right", [&]()
-               { doAction(RIGHT, ""); }}},
-        {"7", {"Right", [&]()
-               { doAction(RIGHT, ""); }}},
-        {"3", {"Left", [&]()
-               { doAction(LEFT, ""); }}},
-        {"4", {"Left", [&]()
-               { doAction(LEFT, ""); }}}};
+        static const std::unordered_map<std::string, std::pair<std::string, std::function<void()>>> directionActions = {
+            {"2", {"Forward", [&]()
+                { doAction(FORWARD, ""); }}},
+            {"1", {"Forward", [&]()
+                { doAction(FORWARD, ""); }}},
+            {"8", {"Forward", [&]()
+                { doAction(FORWARD, ""); }}},
+            {"5", {"Right", [&]()
+                { doAction(RIGHT, ""); }}},
+            {"6", {"Right", [&]()
+                { doAction(RIGHT, ""); }}},
+            {"7", {"Right", [&]()
+                { doAction(RIGHT, ""); }}},
+            {"3", {"Left", [&]()
+                { doAction(LEFT, ""); }}},
+            {"4", {"Left", [&]()
+                { doAction(LEFT, ""); }}}};
 
-    auto it = directionActions.find(_direction);
-    if (it != directionActions.end())
-    {
-        const auto &action = it->second;
-        printf("%s\n", action.first.c_str());
-        queue.push_back({action.second, action.first});
+        auto it = directionActions.find(_direction);
+        if (it != directionActions.end())
+        {
+            const auto &action = it->second;
+            printf("%s\n", action.first.c_str());
+            queue.push_back({action.second, action.first});
+        }
     }
 }
 
-bool ABotProbabilistic::canLvlUp(int lvl)
+/*bool ABotProbabilistic::canLvlUp(int lvl)
 {
     if (lvl < 2 || lvl > 8)
         return false;
@@ -91,7 +93,7 @@ bool ABotProbabilistic::canLvlUp(int lvl)
         return true;
     }
     return false;
-}
+}*/
 
 /*void Bot::findPath(std::pair<int, int> start, const std::pair<int, int> &end)
 {
