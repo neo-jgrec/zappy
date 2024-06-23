@@ -4,6 +4,7 @@
 #include "../scenes/Home.hpp"
 #include "../scenes/Quit.hpp"
 #include "../scenes/Menu.hpp"
+#include "../scenes/WinScene.hpp"
 #include <iostream>
 #include "../../utils/GuiException.hpp"
 
@@ -22,6 +23,7 @@ Core::Core(int port, std::string ip) {
     _scenes[GameState::END] = std::make_shared<Quit>(this);
     _scenes[GameState::GAME] = std::make_shared<World>(this);
     _scenes[GameState::MENU] = std::make_shared<Menu>(this);
+    _scenes[GameState::WIN] = std::make_shared<WinScene>(this);
     _clock.restart();
     initSounds();
     _sounds["music"].play();
