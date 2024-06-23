@@ -44,6 +44,16 @@ sleep 2
 gnome-terminal --working-directory="$current_dir" -- zsh -c "$current_dir/zappy_ai -n team1 -h 127.0.0.1 -p 4444; exec zsh" &
 AI4_PID=$!
 
+sleep 2
+
+gnome-terminal --working-directory="$current_dir" -- zsh -c "$current_dir/zappy_ai -n team1 -h 127.0.0.1 -p 4444; exec zsh" &
+AI4_PID=$!
+
+sleep 2
+
+gnome-terminal --working-directory="$current_dir" -- zsh -c "$current_dir/zappy_ai -n team1 -h 127.0.0.1 -p 4444; exec zsh" &
+AI4_PID=$!
+
 echo "Type 'leave' to close the terminals."
 while read -r input; do
     if [ "$input" = "leave" ]; then

@@ -21,9 +21,9 @@ void SimpleBot::updateStrategy()
         handleLvl1();
         return;
     }
-    if (handleSurvive())
-        return;
     if (handleState())
+        return;
+    if (handleSurvive())
         return;
     else if (_state.level == 2)
         handleLvl2();
@@ -44,7 +44,7 @@ void SimpleBot::updateStrategy()
 bool SimpleBot::handleSurvive()
 {
     static int searchFood = 0;
-    const int limitFood = 20;
+    const int limitFood = 50;
 
     if (_iteration % 40 == 0)
     {
@@ -57,7 +57,7 @@ bool SimpleBot::handleSurvive()
     if (_state.ressources.food < limitFood)
     {
         // TODO: we want differant searchFood for each level ?
-        searchFood = 175;
+        searchFood = 250;
     }
     if (searchFood > 0)
     {
