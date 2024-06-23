@@ -61,15 +61,12 @@ void ABot::debugAction(const ActionInfo actionInfo, const std::string &parameter
 
     if (actionInfo.action == BROADCAST)
     {
-        PRINT_ALERT("DEBUG BROADCAST\n");
         if (parameter.empty())
         {
-            PRINT_ALERT("BROADCAST WITH NO PARAMETER");
             exit(0);
         }
         else
         {
-            PRINT_ALERT("BROADCAST WITH PARAMETER IS: " + parameter + "\n");
             std::string tmpStr = getElementBefore(parameter, ':');
             Message tmp(tmpStr);
             tmp.vigenereDecrypt();

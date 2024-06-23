@@ -55,8 +55,6 @@ void ABot::listenGroupJoinedBroadcast(const std::string &message)
 {
     size_t underscorePos = message.find('_');
     std::string idGroup = "0";
-    std::cout << "here" << std::endl;
-    std::cout << "message = " << message << std::endl;
 
     if (underscorePos != std::string::npos)
     {
@@ -66,8 +64,6 @@ void ABot::listenGroupJoinedBroadcast(const std::string &message)
     {
         return;
     }
-    std::cout << "idGroup = " << idGroup << std::endl;
-    std::cout << "state id group = " << _state.metadata["id_group"] << std::endl;
     if (idGroup == _state.metadata["id_group"])
         _state.nbAlly++;
     if (_state.level == 2 || _state.level == 3)
@@ -76,8 +72,6 @@ void ABot::listenGroupJoinedBroadcast(const std::string &message)
         {
             _state.metadata["should_incant"] = "true";
             _state.metadata["ask_for_group"] = "false";
-            // Landmark: 2. BROADCAST that every ones that follow this group should do otherting
-            // should_group = false;
         }
     }
     else if (_state.level == 4 || _state.level == 5)
@@ -100,7 +94,6 @@ void ABot::listenGroupJoinedBroadcast(const std::string &message)
     }
 }
 
-// TODO: find somehow how to rename it in listenGroupDone
 void ABot::listenMeetingDoneBroadcast(const std::string &message)
 {
     const std::string prefix = "meeting_";
@@ -110,8 +103,11 @@ void ABot::listenMeetingDoneBroadcast(const std::string &message)
     if (messageCopy.find(prefix) == 0 && messageCopy.rfind(suffix) == (messageCopy.length() - suffix.length()))
     {
         std::string idGroup = messageCopy.substr(prefix.length(), messageCopy.length() - prefix.length() - suffix.length());
-
-        _state.metadata["should_group"] = "false";
+        if (idGroup == _state.metadata["id_group"])
+        {
+            _state.metadata["should_group"] = "false";
+            _state.state = STANDARD;
+        }
     }
 }
 

@@ -26,7 +26,6 @@ void ABot::sendMessage(const std::string &message)
 // TODO: decrypt parameter in a tmp to debug it easily.
 void ABot::doAction(Action action, const std::string parameter)
 {
-    PRINT_ALERT("doAction");
     try
     {
         ActionInfo actionInfo = getActionInfo(action);

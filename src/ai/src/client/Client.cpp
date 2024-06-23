@@ -196,6 +196,19 @@ void Client::recvMessage(std::string &buffer)
     char recvBuffer[1024] = {0};
     int valread = read(_sockfd, recvBuffer, 1024);
 
+    if (valread < 0)
+    {
+        PRINT_ERROR("Read failed");
+        close(_sockfd);
+        exit(FAILURE);
+    }
+    else if (valread == 0)
+    {
+        PRINT_ERROR("Server closed the connection");
+        close(_sockfd);
+        exit(FAILURE);
+    }
+
     buffer = std::string(recvBuffer, valread);
 }
 

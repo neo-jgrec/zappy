@@ -20,7 +20,6 @@ void Environment::clear()
     tiles.clear();
 }
 
-// to verify: optimize it
 bool Environment::contains(std::string ressource)
 {
     if (ressource == "food")
@@ -57,7 +56,7 @@ unsigned int Environment::getDistance(std::string ressource)
 std::unique_ptr<Tile> Environment::getTileByRessource(const std::string &ressource)
 {
     std::unique_ptr<Tile> minDistanceTile = nullptr;
-    int minDistance = std::numeric_limits<int>::max();
+    unsigned int minDistance = std::numeric_limits<int>::max();
 
     for (const auto &tile : tiles)
     {
