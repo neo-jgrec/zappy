@@ -126,6 +126,7 @@ void Client::initBot(const std::string identityMessage)
         size_t pos = identityMessage.find(prefixId);
         size_t posJob = identityMessage.find(prefixJob);
         size_t posCurrentMessageId = identityMessage.find(prefixCurrentMessageId);
+        std::cout << "identify message: " << identityMessage << "\n";
 
         if (pos != std::string::npos)
         {
@@ -142,11 +143,13 @@ void Client::initBot(const std::string identityMessage)
             job = identityMessage.substr(posJob + prefixJob.size());
             if (job.find("SIMPLE_BOT") != std::string::npos)
                 _bot = BotFactory::createBot("SimpleBot");
+            if (job.find("SLAVE") != std::string::npos)
+                _bot = BotFactory::createBot("Slave");
         }
     }
     else
     {
-        _bot = BotFactory::createBot("SimpleBot"); // TODO: is forker normally
+        _bot = BotFactory::createBot("Forker"); // TODO: is forker normally
         if (_bot == nullptr)
             throw ClientException("BotFactory failed");
     }
