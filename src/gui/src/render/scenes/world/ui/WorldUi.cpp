@@ -184,7 +184,12 @@ void WorldUi::drawTrantorian(sf::RenderWindow &window)
         _sprites["trantorianPanel"]->getPosition().x + + 96,
         _sprites["trantorianPanel"]->getPosition().y + 32 + 50
     ));
-    _inventoryText.setString("Facing " + orientation[trantorian._facing - 1]);
+    int facing = trantorian._facing - 1;
+    if (facing < 0)
+        facing = 3;
+    if (facing > 3)
+        facing = 0;
+    _inventoryText.setString("Facing " + orientation[facing]);
     window.draw(_inventoryText);
 }
 
