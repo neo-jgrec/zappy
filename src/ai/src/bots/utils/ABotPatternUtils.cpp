@@ -40,11 +40,13 @@ void ABotPattern::separateServerBroadcast(const std::string &response, std::stri
         }
         else
         {
+            Message _allyMessage;
             std::string temp = getElementBefore(responseBroadcast, ':');
             _allyMessage.content = getElementAfter(temp, ',');
             _direction = getElementBefore(temp, ',');
             _direction = getElementAfter(_direction, ' ');
             _allyMessage.vigenereDecrypt();
+            _alliesMessage.push_back(_allyMessage);
             responseBroadcast = _allyMessage.content;
             // printKeyValueColored("Message", _allyMessage.content);
             // printKeyValueColored("Direction", _direction);
