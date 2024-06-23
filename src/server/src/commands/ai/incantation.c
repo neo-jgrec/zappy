@@ -40,16 +40,18 @@ static bool check_requirements_met(
     size_t required_level
 )
 {
-    if (players_on_tile < required_resources[required_level - 1][0]
-        || resource_count.linemate < required_resources[required_level - 1][1]
-        || resource_count.deraumere < required_resources[required_level - 1][2]
-        || resource_count.sibur < required_resources[required_level - 1][3]
-        || resource_count.mendiane < required_resources[required_level - 1][4]
-        || resource_count.phiras < required_resources[required_level - 1][5]
-        || resource_count.thystame < required_resources[required_level - 1][6])
-        return false;
-    return true;
+    const size_t* req = required_resources[required_level - 1];
+    return (
+        players_on_tile >= req[0] &&
+        resource_count.linemate >= req[1] &&
+        resource_count.deraumere >= req[2] &&
+        resource_count.sibur >= req[3] &&
+        resource_count.mendiane >= req[4] &&
+        resource_count.phiras >= req[5] &&
+        resource_count.thystame >= req[6]
+    );
 }
+
 
 static void remove_resource_from_tile(
     tile_t *tile,
@@ -66,7 +68,7 @@ static void remove_resource_from_tile(
     }
 }
 
-static void remove_resources(tile_t *tile, info_map_t resources)
+static void remove_resources(tile_t *tile, info_map_t resources, size_t required_level)
 {
     size_t resource_count[7] = {
         resources.food,
@@ -79,7 +81,7 @@ static void remove_resources(tile_t *tile, info_map_t resources)
     };
 
     for (size_t i = 0; i < 7; i++) {
-        for (size_t j = 0; j < required_resources[0][i]; j++) {
+        for (size_t j = 0; j < required_resources[required_level - 1][i]; j++) {
             remove_resource_from_tile(tile, i, resource_count);
         }
     }
@@ -131,8 +133,8 @@ static bool are_requierment_met_encapsulation(
 {
     if (!check_requirements_met(
         resource_count,
-        required_level,
-        players_on_tile)
+        players_on_tile,
+        required_level)
     ) {
         dprintf(client->fd, "ko\n");
         return false;
@@ -144,8 +146,6 @@ void incantation(client_t *client, server_t *server)
 {
     info_map_t resource_count = get_tile(server, client->x, client->y);
     size_t players_on_tile = get_nb_players_on_tile(client, server);
-    tile_t *tile = &server
-        ->map[client->x + client->y * server->proprieties.width];
 
     if (!are_requierment_met_encapsulation(client, resource_count,
         players_on_tile, client->level))
@@ -169,7 +169,7 @@ void incantation_callback_end_of_command(client_t *c, server_t *s)
         message_to_graphicals(s, "pie %hhd %hhd %d\n", c->x, c->y, 0);
         return;
     }
-    remove_resources(tile, resource_count);
+    remove_resources(tile, resource_count, c->level);
     run_logic_on_group(c, s, c->level, callback_level_up);
     run_logic_on_group(c, s, c->level,
         callback_end_incantation_set_payload);

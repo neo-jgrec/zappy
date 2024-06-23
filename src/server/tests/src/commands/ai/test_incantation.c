@@ -1,107 +1,145 @@
 #include <criterion/criterion.h>
 #include <criterion/logging.h>
-#include <criterion/redirect.h>
 #include "client.h"
 #include "server.h"
 
-void incantation_callback_end_of_command(client_t *client, server_t *server);
-
-static void redirect_all_stdout(void)
+static server_t *create_test_server(size_t width, size_t height)
 {
-    cr_redirect_stdout();
-    cr_redirect_stderr();
-}
-
-static server_t *init_test_server(int width, int height) {
-    server_t *server = malloc(sizeof(server_t));
+    server_t *server = calloc(1, sizeof(server_t));
     server->proprieties.width = width;
     server->proprieties.height = height;
     server->map = calloc(width * height, sizeof(tile_t));
     TAILQ_INIT(&server->clients);
-    TAILQ_INIT(&server->teams);
     return server;
 }
 
-static client_t *add_test_client(server_t *server, int x, int y, int level, char *team_name)
+static void destroy_test_server(server_t *server)
 {
-    client_t *client = malloc(sizeof(client_t));
+    free(server->map);
+    free(server);
+}
+
+static client_t *create_test_client(server_t *server, size_t x, size_t y, size_t level, bool is_graphic)
+{
+    client_t *client = calloc(1, sizeof(client_t));
     client->x = x;
     client->y = y;
     client->level = level;
-    client->team_name = team_name;
-    client_list_t *client_entry = malloc(sizeof(client_list_t));
-    client_entry->client = client;
-    TAILQ_INSERT_TAIL(&server->clients, client_entry, entries);
+    client->is_graphic = is_graphic;
+    client_list_t *client_list_entry = malloc(sizeof(client_list_t));
+    client_list_entry->client = client;
+    TAILQ_INSERT_TAIL(&server->clients, client_list_entry, entries);
     return client;
 }
 
-static void add_resource_to_tile(tile_t *tile, object_t resource) {
-    tile->objects = realloc(tile->objects, (tile->num_objects + 1) * sizeof(object_t));
-    tile->objects[tile->num_objects++] = resource;
-}
+Test(incantation, test_successful_incantation)
+{
+    server_t *server = create_test_server(10, 10);
+    client_t *client = create_test_client(server, 0, 0, 1, false);
 
-Test(incantation, successful_incantation) {
-    server_t *server = init_test_server(10, 10);
-    client_t *client = add_test_client(server, 0, 0, 1, "Team1");
-    client_t *client2 = add_test_client(server, 0, 0, 1, "Team1");
-
-    add_resource_to_tile(&server->map[0], LINEMATE);
+    add_element_to_map(server, 0, 0, LINEMATE);
 
     incantation(client, server);
+
+    cr_assert(client->is_incanting, "Incantation should be in progress.");
+    cr_assert_eq(client->level, 1, "Client level should not change yet.");
+
+    client->is_incanting = false;
     incantation_callback_end_of_command(client, server);
 
-    cr_assert_eq(client->level, 2, "Client level should be 2 after successful incantation");
-    cr_assert_eq(client2->level, 2, "Client level should be 2 after successful incantation");
+    cr_assert_eq(client->level, 2, "Client should level up.");
 
-    free(server->map);
-    free(server);
+    destroy_test_server(server);
 }
 
-Test(incantation, fail_due_to_lack_of_resources, .init = redirect_all_stdout) {
-    server_t *server = init_test_server(10, 10);
-    client_t *client = add_test_client(server, 0, 0, 1, "Team1");
-    client_t *client2 = add_test_client(server, 0, 0, 1, "Team1");
+Test(incantation, test_failed_incantation_not_enough_players)
+{
+    server_t *server = create_test_server(10, 10);
+    client_t *client = create_test_client(server, 0, 0, 2, false);
+
+    add_element_to_map(server, 0, 0, LINEMATE);
+    add_element_to_map(server, 0, 0, DERAUMERE);
+    add_element_to_map(server, 0, 0, SIBUR);
 
     incantation(client, server);
-    incantation_callback_end_of_command(client, server);
 
-    cr_assert_eq(client->level, 1, "Client level should remain 1 due to lack of resources");
-    cr_assert_eq(client2->level, 1, "Client level should remain 1 due to lack of resources");
+    cr_assert_not(client->is_incanting, "Incantation should not be in progress.");
+    cr_assert_eq(client->level, 2, "Client level should remain the same.");
 
-    free(server->map);
-    free(server);
+    destroy_test_server(server);
 }
 
-Test(incantation, fail_due_to_lack_of_players, .init = redirect_all_stdout) {
-    server_t *server = init_test_server(10, 10);
-    client_t *client = add_test_client(server, 0, 0, 2, "Team1");
+Test(incantation, test_failed_incantation_not_enough_resources)
+{
+    server_t *server = create_test_server(10, 10);
+    client_t *client = create_test_client(server, 0, 0, 2, false);
+    client_t *client2 = create_test_client(server, 0, 0, 2, false);
+    (void)client2;
 
-    add_resource_to_tile(&server->map[0], LINEMATE);
+    add_element_to_map(server, 0, 0, LINEMATE);
 
     incantation(client, server);
-    incantation_callback_end_of_command(client, server);
 
-    cr_assert_eq(client->level, 2, "Client level should remain 1 due to lack of players");
+    cr_assert_not(client->is_incanting, "Incantation should not be in progress.");
+    cr_assert_eq(client->level, 2, "Client level should remain the same.");
 
-    free(server->map);
-    free(server);
+    destroy_test_server(server);
 }
 
-Test(incantation, fail_due_to_mismatched_levels, .init = redirect_all_stdout) {
-    server_t *server = init_test_server(10, 10);
-    client_t *client = add_test_client(server, 0, 0, 2, "Team1");
-    client_t *client2 = add_test_client(server, 0, 0, 1, "Team1");
+Test(incantation, test_level_up)
+{
+    server_t *server = create_test_server(10, 10);
+    client_t *client = create_test_client(server, 0, 0, 2, false);
+    client_t *client2 = create_test_client(server, 0, 0, 2, false);
 
-    add_resource_to_tile(&server->map[0], LINEMATE);
-    add_resource_to_tile(&server->map[0], DERAUMERE);
-    add_resource_to_tile(&server->map[0], SIBUR);
+    add_element_to_map(server, 0, 0, LINEMATE);
+    add_element_to_map(server, 0, 0, DERAUMERE);
+    add_element_to_map(server, 0, 0, SIBUR);
 
     incantation(client, server);
+
+    client->is_incanting = false;
     incantation_callback_end_of_command(client, server);
 
-    cr_assert_eq(client->level, 2, "Client level should remain 2 due to mismatched levels");
-    cr_assert_eq(client2->level, 1, "Client level should remain 1 due to mismatched levels");
+    cr_assert_eq(client->level, 3, "Client should level up.");
+    cr_assert_eq(client2->level, 3, "Client2 should level up.");
 
-    free(server->map);
-    free(server);
+    destroy_test_server(server);
+}
+
+Test(incantation, test_high_level_incantation)
+{
+    server_t *server = create_test_server(10, 10);
+    client_t *client = create_test_client(server, 0, 0, 7, false);
+    client_t *client2 = create_test_client(server, 0, 0, 7, false);
+    client_t *client3 = create_test_client(server, 0, 0, 7, false);
+    client_t *client4 = create_test_client(server, 0, 0, 7, false);
+    client_t *client5 = create_test_client(server, 0, 0, 7, false);
+    client_t *client6 = create_test_client(server, 0, 0, 7, false);
+
+    add_element_to_map(server, 0, 0, LINEMATE);
+    add_element_to_map(server, 0, 0, LINEMATE);
+    add_element_to_map(server, 0, 0, DERAUMERE);
+    add_element_to_map(server, 0, 0, DERAUMERE);
+    add_element_to_map(server, 0, 0, SIBUR);
+    add_element_to_map(server, 0, 0, SIBUR);
+    add_element_to_map(server, 0, 0, MENDIANE);
+    add_element_to_map(server, 0, 0, MENDIANE);
+    add_element_to_map(server, 0, 0, PHIRAS);
+    add_element_to_map(server, 0, 0, PHIRAS);
+    add_element_to_map(server, 0, 0, THYSTAME);
+
+    incantation(client, server);
+
+    client->is_incanting = false;
+    incantation_callback_end_of_command(client, server);
+
+    cr_assert_eq(client->level, 8, "Client should level up to the highest level.");
+    cr_assert_eq(client2->level, 8, "Client2 should level up to the highest level.");
+    cr_assert_eq(client3->level, 8, "Client3 should level up to the highest level.");
+    cr_assert_eq(client4->level, 8, "Client4 should level up to the highest level.");
+    cr_assert_eq(client5->level, 8, "Client5 should level up to the highest level.");
+    cr_assert_eq(client6->level, 8, "Client6 should level up to the highest level.");
+
+    destroy_test_server(server);
 }
