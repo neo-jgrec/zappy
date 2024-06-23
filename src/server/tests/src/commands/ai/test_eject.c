@@ -57,7 +57,7 @@ Test(eject, basic, .init = redirect_all_stdout)
 
     cr_assert_eq(client2.x, 5);
     cr_assert_eq(client2.y, 4);
-    cr_assert_stdout_eq_str("eject: 1\n");
+    cr_assert_stdout_eq_str("eject: 3\n");
 
     cr_assert_str_eq(client.payload, "ok\n");
 }
