@@ -39,7 +39,7 @@ public:
     ABot();
     ~ABot();
     BotState getState();
-    void setState(BotState state) { _state = state; }
+    void setState(BotState state);
     virtual void run(const std::string &response) = 0;
     // TODO: remove arg
     virtual void init(int sockfd, const std::string &teamName, const std::string &host, int port, int id, int idMessage) = 0;

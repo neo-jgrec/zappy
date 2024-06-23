@@ -99,3 +99,8 @@ BotState ABot::getState()
 {
     return _state;
 }
+
+void ABot::setState(BotState state)
+{
+    _state = state;
+}
