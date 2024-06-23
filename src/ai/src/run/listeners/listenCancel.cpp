@@ -9,9 +9,9 @@
 
 void ABot::listenCancel(const std::string &response)
 {
-    PRINT_ALERT("listenCancel\n");
     if (response == "ko")
     {
+        PRINT_ALERT("listenCancel\n");
         _state.state = STANDARD;
     }
 }

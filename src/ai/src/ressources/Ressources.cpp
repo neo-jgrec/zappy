@@ -41,7 +41,7 @@ void Ressources::addRessource(std::string ressource)
     }
 }
 
-size_t Ressources::getRessource(const std::string &ressource) const
+int Ressources::getRessource(const std::string &ressource) const
 {
     auto it = ressourcesMap.find(ressource);
     if (it != ressourcesMap.end())

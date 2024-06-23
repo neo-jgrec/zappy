@@ -27,6 +27,8 @@ void ABotPattern::run(const std::string &response)
     _allyMessage.content = "";
     _enemyMessage.content = "";
 
+    // TODO: should cancel if need food ?
+
     // separe servers and broadcast, decrypt message
     separateServerBroadcast(response, responseServer, responseBroadcast);
 
@@ -53,6 +55,9 @@ void ABotPattern::run(const std::string &response)
     }
     debugState();
     debugMetadata();
+    // debug
+    if (_iteration > 1000)
+        exit(0);
 }
 
 void ABotPattern::react(const std::string &responseServer, const std::string &responseBroadcast)
@@ -122,6 +127,7 @@ void ABotPattern::verifyServerIsRunning(const std::string &response)
     if (response.find("dead") != std::string::npos)
     {
         debugState();
+        PRINT_ALERT("END OF BOT\n");
         exit(0);
     }
 }

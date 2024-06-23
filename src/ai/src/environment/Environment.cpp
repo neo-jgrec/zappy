@@ -56,23 +56,34 @@ unsigned int Environment::getDistance(std::string ressource)
 
 std::unique_ptr<Tile> Environment::getTileByRessource(const std::string &ressource)
 {
+    std::unique_ptr<Tile> minDistanceTile = nullptr;
+    int minDistance = std::numeric_limits<int>::max();
+
     for (const auto &tile : tiles)
     {
+        bool hasResource = false;
+
         if (ressource == "food" && tile.ressources.food > 0)
-            return std::make_unique<Tile>(tile);
+            hasResource = true;
         else if (ressource == "linemate" && tile.ressources.linemate > 0)
-            return std::make_unique<Tile>(tile);
+            hasResource = true;
         else if (ressource == "deraumere" && tile.ressources.deraumere > 0)
-            return std::make_unique<Tile>(tile);
+            hasResource = true;
         else if (ressource == "sibur" && tile.ressources.sibur > 0)
-            return std::make_unique<Tile>(tile);
+            hasResource = true;
         else if (ressource == "mendiane" && tile.ressources.mendiane > 0)
-            return std::make_unique<Tile>(tile);
+            hasResource = true;
         else if (ressource == "phiras" && tile.ressources.phiras > 0)
-            return std::make_unique<Tile>(tile);
+            hasResource = true;
         else if (ressource == "thystame" && tile.ressources.thystame > 0)
-            return std::make_unique<Tile>(tile);
+            hasResource = true;
+
+        if (hasResource && tile.distance < minDistance)
+        {
+            minDistance = tile.distance;
+            minDistanceTile = std::make_unique<Tile>(tile);
+        }
     }
 
-    return nullptr;
+    return minDistanceTile;
 }

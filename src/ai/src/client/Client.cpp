@@ -138,6 +138,10 @@ void Client::initBot(const std::string identityMessage)
             if (job.find("SIMPLE_BOT") != std::string::npos)
                 _bot = BotFactory::createBot("SimpleBot");
         }
+        else
+        {
+            _bot = BotFactory::createBot("SimpleBot");
+        }
     }
     else
     {

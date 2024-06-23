@@ -15,7 +15,7 @@ void SimpleBot::initChild()
 // TODO: do bloc for lvl 1 and 2, etc...
 void SimpleBot::updateStrategy()
 {
-
+    std::cout << "🧒🔄 SimpleBot updateStrategy" << std::endl;
     if (_state.level == 1)
     {
         handleLvl1();
@@ -34,10 +34,11 @@ void SimpleBot::updateStrategy()
 bool SimpleBot::handleSurvive()
 {
     static int searchFood = 0;
-    const unsigned int limitFood = 11;
+    const unsigned int limitFood = 20;
 
     if (_iteration % 40 == 0)
     {
+        _state.state = STANDARD;
         queue.push_back({[&]()
                          { doAction(INVENTORY, ""); }, "INVENTORY"});
         return true;
@@ -46,11 +47,16 @@ bool SimpleBot::handleSurvive()
     if (_state.ressources.food < limitFood)
     {
         if (_state.level == 2)
-            searchFood = 10;
+            searchFood = 50;
     }
     if (searchFood > 0)
     {
-        survive();
+        if (searchFood == 1)
+            queue.push_back({[&]()
+                             { doAction(INVENTORY, ""); }, "INVENTORY"});
+        else
+            survive();
+        _state.state = STANDARD;
         _state.pattern = "survive";
         searchFood--;
         return true;
