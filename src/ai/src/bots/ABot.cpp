@@ -24,23 +24,17 @@ void ABot::sendMessage(const std::string &message)
 }
 
 // TODO: decrypt parameter in a tmp to debug it easily.
-void ABot::doAction(Action action, const std::string &parameter)
+void ABot::doAction(Action action, const std::string parameter)
 {
+    PRINT_ALERT("doAction");
     try
     {
         ActionInfo actionInfo = getActionInfo(action);
         std::string actionToServer = actionInfo.getName();
 
-        // TODO: remove it, it is to fix bugs
-        if (actionInfo.action == BROADCAST && parameter.empty())
-        {
-            PRINT_ALERT("BROADCAST WITH NO PARAMETER\n");
-            exit(0);
-        }
-
-        if (parameter != "")
+        if (!parameter.empty())
             actionToServer += " " + parameter;
-        printKeyValueColored("🤖🤜 Bot does", actionToServer);
+        debugAction(actionInfo, parameter);
         sendMessage(actionToServer);
 
         _state.lastAction.action = action;
@@ -91,4 +85,13 @@ void ABot::saveDataActions(const std::string &filename)
         out << ":" + std::to_string(action.count) << std::endl;
     }
     out << "\n";
+}
+
+void ABot::addBroadcastAction(const std::string message)
+{
+    Message tmp(message);
+    tmp.format(tmp.content);
+    std::string messageToSent = tmp.content;
+    queue.push_back({[this, messageToSent]()
+                     { doAction(BROADCAST, messageToSent); }, "BROADCAST"});
 }

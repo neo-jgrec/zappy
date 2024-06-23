@@ -1,21 +1,17 @@
 /*
 ** EPITECH PROJECT, 2024
-** zappy/ai
+** zappy/ai/run/listeners/broadcast
 ** File description:
-** ListenBroadcastResponse.cpp
+** ListenGroupBroadcast.cpp
 */
 
-#include "../../bots/ABot.hpp"
+#include "../../../bots/ABot.hpp"
 
 #include <iostream>
 #include <string>
 #include <sstream>
 
-#include <iostream>
-#include <string>
-#include <sstream>
-
-void ABot::listenGroup(const std::string &message)
+void ABot::listenGroupBroadcast(const std::string &message)
 {
     if (_state.metadata["should_group"] != "true") // TODO: rename it in process_group ?
     {
@@ -55,7 +51,7 @@ void ABot::listenGroup(const std::string &message)
     }
 }
 
-void ABot::listenGroupJoined(const std::string &message)
+void ABot::listenGroupJoinedBroadcast(const std::string &message)
 {
     size_t underscorePos = message.find('_');
     std::string idGroup = "0";
@@ -105,24 +101,31 @@ void ABot::listenGroupJoined(const std::string &message)
 }
 
 // TODO: find somehow how to rename it in listenGroupDone
-void ABot::listenMeetingDone(const std::string &message)
+void ABot::listenMeetingDoneBroadcast(const std::string &message)
 {
-    _state.metadata["should_group"] = "false";
+    const std::string prefix = "meeting_";
+    const std::string suffix = "_done";
+    std::string messageCopy = message;
+
+    if (messageCopy.find(prefix) == 0 && messageCopy.rfind(suffix) == (messageCopy.length() - suffix.length()))
+    {
+        std::string idGroup = messageCopy.substr(prefix.length(), messageCopy.length() - prefix.length() - suffix.length());
+
+        _state.metadata["should_group"] = "false";
+    }
 }
 
-void ABot::listenBroadcastResponse(const std::string &response)
+void ABot::listenWarnsBroadcast(const std::string &message)
 {
-    // Listeners Broadcast
-    if (_allyMessage.content.find("group") != std::string::npos)
+    const std::string prefix = "warns_will_incant_";
+
+    if (message.rfind(prefix, 0) == 0)
     {
-        listenGroup(_allyMessage.content);
-    }
-    else if (_allyMessage.content.find("joined") != std::string::npos && _state.metadata["ask_for_group"] == "true")
-    {
-        listenGroupJoined(_allyMessage.content);
-    }
-    else if (_allyMessage.content.find("meeting") != std::string::npos)
-    {
-        listenMeetingDone(_allyMessage.content);
+        std::string idGroup = message.substr(prefix.length());
+        if (idGroup == _state.metadata["id_group"])
+        {
+            _state.metadata["should_group"] = "false";
+            _state.state = STANDARD;
+        }
     }
 }

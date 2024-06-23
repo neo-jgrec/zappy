@@ -82,6 +82,7 @@ void ABotPattern::react(const std::string &responseServer, const std::string &re
 
 void ABotPattern::act()
 {
+    std::cout << "ACT\n";
     if (queue.empty())
     {
         updateStrategy();

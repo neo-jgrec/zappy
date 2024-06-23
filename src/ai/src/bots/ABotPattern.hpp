@@ -57,6 +57,11 @@ protected:
     void incantationLvl2();
     void incantationLvl3();
     void incantationLvl4();
+    void incantationLvl5();
+    void incantationLvl6();
+    void incantationLvl7();
+    void verificationInventory();
+    void warnsWillIncant();
 
     // Debug
     void debugResponses(const std::string &responseServer, const std::string &responseBroadcast);

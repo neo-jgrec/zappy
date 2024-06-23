@@ -13,33 +13,33 @@
 
 void ABotPattern::group()
 {
-    static int idGroup = 0;
+    static long long idGroup = 0;
     if (_state.metadata["ask_for_group"] == "false")
     {
-        auto seed = std::chrono::system_clock::now().time_since_epoch().count();
-        std::mt19937 generator(seed);
-        std::uniform_int_distribution<int> distribution(1, 1000);
-        idGroup = distribution(generator);
+        // auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+        // std::mt19937 generator(seed);
+        // std::uniform_int_distribution<int> distribution(1, 2000);
+        // idGroup = distribution(generator);
+        idGroup = std::chrono::system_clock::now().time_since_epoch().count();
     }
 
     _state.metadata["ask_for_group"] = "true";
+    std::string msg = "";
     if (_state.level == 2)
-        _message.content = "group_3";
+        msg = "group_3";
     else if (_state.level == 3)
-        _message.content = "group_4";
+        msg = "group_4";
     else if (_state.level == 4)
-        _message.content = "group_5";
+        msg = "group_5";
     else if (_state.level == 5)
-        _message.content = "group_6";
+        msg = "group_6";
     else if (_state.level == 6)
-        _message.content = "group_7";
+        msg = "group_7";
     else if (_state.level == 7)
-        _message.content = "group_8";
-    _message.content += "_" + std::to_string(idGroup);
+        msg = "group_8";
+    msg += "_" + std::to_string(idGroup);
     _state.metadata["id_group"] = std::to_string(idGroup);
-    _message.format(_message.content);
-    queue.push_back({[&]()
-                     { doAction(BROADCAST, _message.content); }, "BROADCAST"});
+    addBroadcastAction(msg);
 }
 
 void ABotPattern::joinGroup()
@@ -48,9 +48,7 @@ void ABotPattern::joinGroup()
     {
         std::string joinStr = std::string("joined") + "_" + _state.metadata["id_group"];
 
-        _message.format(joinStr);
-        queue.push_back({[&]()
-                         { doAction(BROADCAST, _message.content); }, "BROADCAST"});
+        addBroadcastAction(joinStr);
         _state.state = WAIT_FOR_SERVER_RESPONSE; // TODO: wait incant look response from server
         _state.metadata["wait_incant"] = "true";
         _state.metadata["should_group"] = "false";

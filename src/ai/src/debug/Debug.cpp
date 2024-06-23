@@ -30,8 +30,13 @@ void ABot::debugState()
 
 void ABotPattern::debugResponses(const std::string &responseServer, const std::string &responseBroadcast)
 {
+    PRINT_STATE state = PRINT_STATE_INFO;
+    if (responseServer.find("ok") != std::string::npos)
+        state = PRINT_STATE_SUCESS;
+    else if (responseServer.find("ko") != std::string::npos)
+        state = PRINT_STATE_WARNING;
     printColor("🤖👂 Bot listens\n", YELLOW);
-    printKeyValueColored("\t- server", responseServer);
+    printKeyValueColored("\t- server", responseServer, state);
     printKeyValueColored("\t- broadcast", responseBroadcast);
 }
 
@@ -47,4 +52,33 @@ void ABotPattern::debugMetadata()
     printColor("🤖📂 Bot metadata\n", YELLOW);
     _state.printMetadata();
     std::cout << std::endl;
+}
+
+void ABot::debugAction(const ActionInfo actionInfo, const std::string &parameter)
+{
+    ActionInfo actionToServerClean = actionInfo;
+    std::string finalParameter = parameter;
+
+    if (actionInfo.action == BROADCAST)
+    {
+        PRINT_ALERT("DEBUG BROADCAST\n");
+        if (parameter.empty())
+        {
+            PRINT_ALERT("BROADCAST WITH NO PARAMETER");
+            exit(0);
+        }
+        else
+        {
+            PRINT_ALERT("BROADCAST WITH PARAMETER IS: " + parameter + "\n");
+            std::string tmpStr = getElementBefore(parameter, ':');
+            Message tmp(tmpStr);
+            tmp.vigenereDecrypt();
+            finalParameter = tmp.content;
+        }
+    }
+    std::string actionToServer = actionToServerClean.getName();
+
+    if (!finalParameter.empty())
+        actionToServer += " " + finalParameter;
+    printKeyValueColored("🤖🤜 Bot does", actionToServer);
 }

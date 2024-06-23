@@ -83,9 +83,10 @@ bool SimpleBot::handleState()
 {
     if (_state.metadata["should_incant"] == "true")
     {
-        _message.format("meeting" + std::to_string(_state.level + 1) + "done");
-        queue.push_back({[&]()
-                         { doAction(BROADCAST, _message.content); }, "BROADCAST"});
+        std::string msgToSent = "meeting_" + _state.metadata["id_group"] + "_done";
+        // Broadcast two times to ensure if someone try to copy and modifie this message
+        addBroadcastAction(msgToSent);
+        addBroadcastAction(msgToSent);
     }
     if (_state.metadata["should_group"] == "true")
     {
@@ -109,6 +110,30 @@ bool SimpleBot::handleState()
     {
         incantationLvl4();
         _state.pattern = "incantationLvl4";
+        return true;
+    }
+    if (_state.metadata["should_incant"] == "true" && _state.level == 5)
+    {
+        incantationLvl5();
+        _state.pattern = "incantationLvl5";
+        return true;
+    }
+    if (_state.metadata["should_incant"] == "true" && _state.level == 5)
+    {
+        incantationLvl5();
+        _state.pattern = "incantationLvl5";
+        return true;
+    }
+    if (_state.metadata["should_incant"] == "true" && _state.level == 6)
+    {
+        incantationLvl6();
+        _state.pattern = "incantationLvl6";
+        return true;
+    }
+    if (_state.metadata["should_incant"] == "true" && _state.level == 7)
+    {
+        incantationLvl7();
+        _state.pattern = "incantationLvl7";
         return true;
     }
     return false;
@@ -276,7 +301,7 @@ void SimpleBot::handleLvl7()
         searchAndTakeRessource("sibur");
         _state.pattern = "searchAndTakeRessource: sibur";
     }
-    else if (_state.ressources.mendiane < 1)
+    else if (_state.ressources.mendiane < 2)
     {
         searchAndTakeRessource("mendiane");
         _state.pattern = "searchAndTakeRessource: mendiane";
