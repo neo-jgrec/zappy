@@ -19,7 +19,9 @@ public:
 
     void addRessource(std::string ressource);
     void addRessourceByQuantity(std::string ressource, size_t quantity);
-    size_t getRessource(const std::string &ressource) const;
+    int getRessource(const std::string &ressource) const;
+    void clear();
+    Ressources operator+=(const Ressources &ressources);
 
     // int in case there an error and bot set a ressource that he don't have
     int food;
