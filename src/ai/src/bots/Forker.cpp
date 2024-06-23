@@ -125,10 +125,14 @@ void Forker::updateStrategy()
             if (_allyMessage.content.find("i_have_ressources") != std::string::npos)
             {
                 std::string ID = getElementBefore(_allyMessage.content, '/');
+                ID = getElementAfter(ID, '}');
+                std::string type = getElementAfter(_allyMessage.content, '{');
+                type = getElementBefore(type, '}');
                 std::string resourcesString = _allyMessage.content.substr(_allyMessage.content.find('?') + 1);
                 Ressources ressources = parseRessources(resourcesString);
-                if (ID == "1") {
-                    _evoBot.ressources = ressources;
+                if (type == "EVOBOT") {
+                    evoBotInventory[std::stoi(ID)] = ressources;
+                    _evoBot.ressources += ressources;
                     _evoBot.level = stoi(getElementAfter(resourcesString, '&'));
                 } else {
                     sharedInventory[std::stoi(ID)] = ressources;
@@ -139,32 +143,86 @@ void Forker::updateStrategy()
         if (canProcess) {
             std::pair<bool, NeededResources> res = canLevelUp(_evoBot.level);
             bool canLevelUp = res.first;
-            NeededResources neededResources = res.second;
 
-            if (canLevelUp)
-            {
-                std::cout << "Les bots peuvent évoluer au niveau supérieur de manière efficace.\n";
-                std::vector<int> efficientBots = identifyEfficientBots(_evoBot.level, neededResources);
-
-                std::cout << "Bots efficaces pour aider : ";
-                for (int bot : efficientBots) {
-                    std::cout << bot << " ";
-                }
-                std::cout << "\n";
+            if (canLevelUp) {
+                std::string message = "group";
+                NeededResources remainingRequirements;
+                std::pair<NeededResources, std::map<int, Ressources>> deposit = calculateAndPrintBotDeposits(evoBotInventory, _evoBot.level, res.second);
+                remainingRequirements = deposit.first;
+                std::map<int, Ressources> evoBotContributions = deposit.second;
+                std::map<int, Ressources> botContributions = identifyEfficientBots(_evoBot.level, remainingRequirements);
+                std::string formattedBotContributions = formatBotContributions(botContributions, evoBotContributions);
             } else {
-                for (const auto& entry : sharedInventory) {
-                    int botId = entry.first;
-                    const Ressources& botResources = entry.second;
-                    std::cout << "Bot " << botId << " : linemate=" << botResources.linemate << " deraumere=" << botResources.deraumere << " sibur=" << botResources.sibur << " mendiane=" << botResources.mendiane << " phiras=" << botResources.phiras << " thystame=" << botResources.thystame << "\n";
-                }
                 std::cout << "Les bots ne peuvent pas évoluer au niveau supérieur de manière efficace.\n";
             }
         }
     }
     sharedInventory.clear();
+    _evoBot.ressources.clear();
     _alliesMessage.clear();
     queue.push_back(std::make_pair([&]()
                                        { doAction(FORWARD, ""); }, "FORWARD"));
+}
+
+std::string Forker::formatBotContributions(const std::map<int, Ressources>& botContributions, const std::map<int, Ressources>& botContributions2)
+{
+    std::string formattedString;
+
+    for (const auto& entry : botContributions) {
+        int botId = entry.first;
+        const Ressources& resources = entry.second;
+        formattedString += std::to_string(botId);
+        if (resources.linemate > 0) {
+            formattedString += "%linemate=" + std::to_string(resources.linemate);
+        }
+        if (resources.deraumere > 0) {
+            formattedString += "%deraumere=" + std::to_string(resources.deraumere);
+        }
+        if (resources.sibur > 0) {
+            formattedString += "%sibur=" + std::to_string(resources.sibur);
+        }
+        if (resources.mendiane > 0) {
+            formattedString += "%mendiane=" + std::to_string(resources.mendiane);
+        }
+        if (resources.phiras > 0) {
+            formattedString += "%phiras=" + std::to_string(resources.phiras);
+        }
+        if (resources.thystame > 0) {
+            formattedString += "%thystame=" + std::to_string(resources.thystame);
+        }
+        formattedString += "$";
+    }
+
+    for (const auto& entry : botContributions2) {
+        int botId = entry.first;
+        const Ressources& resources = entry.second;
+        formattedString += std::to_string(botId);
+        if (resources.linemate > 0) {
+            formattedString += "%linemate=" + std::to_string(resources.linemate);
+        }
+        if (resources.deraumere > 0) {
+            formattedString += "%deraumere=" + std::to_string(resources.deraumere);
+        }
+        if (resources.sibur > 0) {
+            formattedString += "%sibur=" + std::to_string(resources.sibur);
+        }
+        if (resources.mendiane > 0) {
+            formattedString += "%mendiane=" + std::to_string(resources.mendiane);
+        }
+        if (resources.phiras > 0) {
+            formattedString += "%phiras=" + std::to_string(resources.phiras);
+        }
+        if (resources.thystame > 0) {
+            formattedString += "%thystame=" + std::to_string(resources.thystame);
+        }
+        formattedString += "$";
+    }
+
+    // Remove the last '$' character if present
+    if (!formattedString.empty() && formattedString.back() == '$') {
+        formattedString.pop_back();
+    }
+    return formattedString;
 }
 
 std::pair<bool, NeededResources> Forker::canLevelUp(int currentLevel)
@@ -173,16 +231,10 @@ std::pair<bool, NeededResources> Forker::canLevelUp(int currentLevel)
         return {false, NeededResources()};
     }
 
+    std::map<int, Ressources> combinedInventory = combineInventories(sharedInventory, evoBotInventory);
+
     const LevelRequirements& req = levelRequirementsShared[currentLevel - 1];
     NeededResources neededResources;
-
-    neededResources.linemate = std::max(0, static_cast<int>(req.linemate) - static_cast<int>(_evoBot.ressources.linemate));
-    neededResources.deraumere = std::max(0, static_cast<int>(req.deraumere) - static_cast<int>(_evoBot.ressources.deraumere));
-    neededResources.sibur = std::max(0, static_cast<int>(req.sibur) - static_cast<int>(_evoBot.ressources.sibur));
-    neededResources.mendiane = std::max(0, static_cast<int>(req.mendiane) - static_cast<int>(_evoBot.ressources.mendiane));
-    neededResources.phiras = std::max(0, static_cast<int>(req.phiras) - static_cast<int>(_evoBot.ressources.phiras));
-    neededResources.thystame = std::max(0, static_cast<int>(req.thystame) - static_cast<int>(_evoBot.ressources.thystame));
-
     Ressources totalRessources;
 
     totalRessources.linemate = 0;
@@ -192,9 +244,7 @@ std::pair<bool, NeededResources> Forker::canLevelUp(int currentLevel)
     totalRessources.phiras = 0;
     totalRessources.thystame = 0;
 
-    int playerCount = 0;
-
-    for (const auto& entry : sharedInventory) {
+    for (const auto& entry : combinedInventory) {
         const Ressources& resources = entry.second;
         totalRessources.linemate += resources.linemate;
         totalRessources.deraumere += resources.deraumere;
@@ -202,10 +252,7 @@ std::pair<bool, NeededResources> Forker::canLevelUp(int currentLevel)
         totalRessources.mendiane += resources.mendiane;
         totalRessources.phiras += resources.phiras;
         totalRessources.thystame += resources.thystame;
-        playerCount++;
     }
-
-    bool enoughPlayers = playerCount >= req.nbPlayers;
 
     bool enoughResources =
         totalRessources.linemate >= req.linemate &&
@@ -214,78 +261,70 @@ std::pair<bool, NeededResources> Forker::canLevelUp(int currentLevel)
         totalRessources.mendiane >= req.mendiane &&
         totalRessources.phiras >= req.phiras &&
         totalRessources.thystame >= req.thystame;
-    if (enoughResources && !enoughPlayers) {
-        int bestBotId = -1;
-        int bestScore = std::numeric_limits<int>::max();
 
-        for (const auto& entry : sharedInventory) {
-            int botId = entry.first;
-            const Ressources& resources = entry.second;
-            if (!(resources.linemate >= req.linemate &&
-                  resources.deraumere >= req.deraumere &&
-                  resources.sibur >= req.sibur &&
-                  resources.mendiane >= req.mendiane &&
-                  resources.phiras >= req.phiras &&
-                  resources.thystame >= req.thystame)) {
-                int score =
-                    std::abs(static_cast<int>(resources.linemate) - static_cast<int>(req.linemate)) +
-                    std::abs(static_cast<int>(resources.deraumere) - static_cast<int>(req.deraumere)) +
-                    std::abs(static_cast<int>(resources.sibur) - static_cast<int>(req.sibur)) +
-                    std::abs(static_cast<int>(resources.mendiane) - static_cast<int>(req.mendiane)) +
-                    std::abs(static_cast<int>(resources.phiras) - static_cast<int>(req.phiras)) +
-                    std::abs(static_cast<int>(resources.thystame) - static_cast<int>(req.thystame));
-                if (score < bestScore) {
-                    bestScore = score;
-                    bestBotId = botId;
-                }
-            }
-        }
-
-        if (bestBotId != -1) {
-            return {true, neededResources};
-        }
+    if (!enoughResources) {
+        neededResources.linemate = std::max(0, static_cast<int>(req.linemate) - totalRessources.linemate);
+        neededResources.deraumere = std::max(0, static_cast<int>(req.deraumere) - totalRessources.deraumere);
+        neededResources.sibur = std::max(0, static_cast<int>(req.sibur) - totalRessources.sibur);
+        neededResources.mendiane = std::max(0, static_cast<int>(req.mendiane) - totalRessources.mendiane);
+        neededResources.phiras = std::max(0, static_cast<int>(req.phiras) - totalRessources.phiras);
+        neededResources.thystame = std::max(0, static_cast<int>(req.thystame) - totalRessources.thystame);
     }
-    return {enoughPlayers && enoughResources, neededResources};
+
+    return {enoughResources, neededResources};
 }
 
-std::vector<int> Forker::identifyEfficientBots(int currentLevel, const NeededResources& neededResources)
+std::map<int, Ressources> Forker::identifyEfficientBots(int currentLevel, NeededResources& neededResources)
 {
-    std::vector<int> efficientBots;
+    std::map<int, Ressources> botContributions;
     NeededResources remainingRequirements = neededResources;
 
-    for (const auto& entry : sharedInventory) {
+    for (auto& entry : sharedInventory) {
         int botId = entry.first;
-        const Ressources& botResources = entry.second;
+        Ressources& botResources = entry.second;
 
-        bool canContribute = false;
+        Ressources botContribution;
 
         if (remainingRequirements.linemate > 0 && botResources.linemate > 0) {
-            remainingRequirements.linemate -= std::min(remainingRequirements.linemate, botResources.linemate);
-            canContribute = true;
+            int contribution = std::min(remainingRequirements.linemate, botResources.linemate);
+            remainingRequirements.linemate -= contribution;
+            botResources.linemate -= contribution;
+            botContribution.linemate += contribution;
         }
         if (remainingRequirements.deraumere > 0 && botResources.deraumere > 0) {
-            remainingRequirements.deraumere -= std::min(remainingRequirements.deraumere, botResources.deraumere);
-            canContribute = true;
+            int contribution = std::min(remainingRequirements.deraumere, botResources.deraumere);
+            remainingRequirements.deraumere -= contribution;
+            botResources.deraumere -= contribution;
+            botContribution.deraumere += contribution;
         }
         if (remainingRequirements.sibur > 0 && botResources.sibur > 0) {
-            remainingRequirements.sibur -= std::min(remainingRequirements.sibur, botResources.sibur);
-            canContribute = true;
+            int contribution = std::min(remainingRequirements.sibur, botResources.sibur);
+            remainingRequirements.sibur -= contribution;
+            botResources.sibur -= contribution;
+            botContribution.sibur += contribution;
         }
         if (remainingRequirements.mendiane > 0 && botResources.mendiane > 0) {
-            remainingRequirements.mendiane -= std::min(remainingRequirements.mendiane, botResources.mendiane);
-            canContribute = true;
+            int contribution = std::min(remainingRequirements.mendiane, botResources.mendiane);
+            remainingRequirements.mendiane -= contribution;
+            botResources.mendiane -= contribution;
+            botContribution.mendiane += contribution;
         }
         if (remainingRequirements.phiras > 0 && botResources.phiras > 0) {
-            remainingRequirements.phiras -= std::min(remainingRequirements.phiras, botResources.phiras);
-            canContribute = true;
+            int contribution = std::min(remainingRequirements.phiras, botResources.phiras);
+            remainingRequirements.phiras -= contribution;
+            botResources.phiras -= contribution;
+            botContribution.phiras += contribution;
         }
         if (remainingRequirements.thystame > 0 && botResources.thystame > 0) {
-            remainingRequirements.thystame -= std::min(remainingRequirements.thystame, botResources.thystame);
-            canContribute = true;
+            int contribution = std::min(remainingRequirements.thystame, botResources.thystame);
+            remainingRequirements.thystame -= contribution;
+            botResources.thystame -= contribution;
+            botContribution.thystame += contribution;
         }
 
-        if (canContribute) {
-            efficientBots.push_back(botId);
+        if (botContribution.linemate > 0 || botContribution.deraumere > 0 || botContribution.sibur > 0 ||
+            botContribution.mendiane > 0 || botContribution.phiras > 0 || botContribution.thystame > 0) {
+            botContributions[botId] = botContribution;
             if (remainingRequirements.linemate <= 0 && remainingRequirements.deraumere <= 0 &&
                 remainingRequirements.sibur <= 0 && remainingRequirements.mendiane <= 0 &&
                 remainingRequirements.phiras <= 0 && remainingRequirements.thystame <= 0) {
@@ -293,42 +332,89 @@ std::vector<int> Forker::identifyEfficientBots(int currentLevel, const NeededRes
             }
         }
     }
-    int neededPlayers = levelRequirementsShared[currentLevel - 1].nbPlayers;
-    if (efficientBots.size() < neededPlayers) {
-        std::vector<int> remainingBots;
-        for (const auto& entry : sharedInventory) {
-            if (std::find(efficientBots.begin(), efficientBots.end(), entry.first) == efficientBots.end()) {
-                remainingBots.push_back(entry.first);
-            }
+    return botContributions;
+}
+
+std::pair<NeededResources, std::map<int, Ressources>>  Forker::calculateAndPrintBotDeposits(std::map<int, Ressources>& sharedInventory, int currentLevel, NeededResources& neededResources)
+{
+    std::map<int, Ressources> botContributions;
+    NeededResources remainingRequirements = neededResources;
+
+    for (auto& entry : sharedInventory) {
+        int botId = entry.first;
+        Ressources& botResources = entry.second;
+
+        Ressources botContribution;
+        botContribution.linemate = 0;
+        botContribution.deraumere = 0;
+        botContribution.sibur = 0;
+        botContribution.mendiane = 0;
+        botContribution.phiras = 0;
+        botContribution.thystame = 0;
+
+        if (remainingRequirements.linemate > 0 && botResources.linemate > 0) {
+            int contribution = std::min(remainingRequirements.linemate, botResources.linemate);
+            remainingRequirements.linemate -= contribution;
+            botResources.linemate -= contribution;
+            botContribution.linemate += contribution;
         }
-        int nextLevel = currentLevel + 1;
-        std::vector<std::pair<int, int>> botScores;
-        for (int botId : remainingBots) {
-            const Ressources& botResources = sharedInventory.at(botId);
-
-            int score =
-                std::abs(static_cast<int>(botResources.linemate) - static_cast<int>(levelRequirementsShared[nextLevel - 1].linemate)) +
-                std::abs(static_cast<int>(botResources.deraumere) - static_cast<int>(levelRequirementsShared[nextLevel - 1].deraumere)) +
-                std::abs(static_cast<int>(botResources.sibur) - static_cast<int>(levelRequirementsShared[nextLevel - 1].sibur)) +
-                std::abs(static_cast<int>(botResources.mendiane) - static_cast<int>(levelRequirementsShared[nextLevel - 1].mendiane)) +
-                std::abs(static_cast<int>(botResources.phiras) - static_cast<int>(levelRequirementsShared[nextLevel - 1].phiras)) +
-                std::abs(static_cast<int>(botResources.thystame) - static_cast<int>(levelRequirementsShared[nextLevel - 1].thystame));
-
-            botScores.push_back(std::make_pair(botId, score));
+        if (remainingRequirements.deraumere > 0 && botResources.deraumere > 0) {
+            int contribution = std::min(remainingRequirements.deraumere, botResources.deraumere);
+            remainingRequirements.deraumere -= contribution;
+            botResources.deraumere -= contribution;
+            botContribution.deraumere += contribution;
+        }
+        if (remainingRequirements.sibur > 0 && botResources.sibur > 0) {
+            int contribution = std::min(remainingRequirements.sibur, botResources.sibur);
+            remainingRequirements.sibur -= contribution;
+            botResources.sibur -= contribution;
+            botContribution.sibur += contribution;
+        }
+        if (remainingRequirements.mendiane > 0 && botResources.mendiane > 0) {
+            int contribution = std::min(remainingRequirements.mendiane, botResources.mendiane);
+            remainingRequirements.mendiane -= contribution;
+            botResources.mendiane -= contribution;
+            botContribution.mendiane += contribution;
+        }
+        if (remainingRequirements.phiras > 0 && botResources.phiras > 0) {
+            int contribution = std::min(remainingRequirements.phiras, botResources.phiras);
+            remainingRequirements.phiras -= contribution;
+            botResources.phiras -= contribution;
+            botContribution.phiras += contribution;
+        }
+        if (remainingRequirements.thystame > 0 && botResources.thystame > 0) {
+            int contribution = std::min(remainingRequirements.thystame, botResources.thystame);
+            remainingRequirements.thystame -= contribution;
+            botResources.thystame -= contribution;
+            botContribution.thystame += contribution;
         }
 
-        std::sort(botScores.begin(), botScores.end(), [](const auto& lhs, const auto& rhs) {
-            return lhs.second < rhs.second;
-        });
-
-        for (const auto& botScore : botScores) {
-            if (efficientBots.size() < neededPlayers) {
-                efficientBots.push_back(botScore.first);
-            } else {
+        if (botContribution.linemate > 0 || botContribution.deraumere > 0 || botContribution.sibur > 0 ||
+            botContribution.mendiane > 0 || botContribution.phiras > 0 || botContribution.thystame > 0) {
+            botContributions[botId] = botContribution;
+            if (remainingRequirements.linemate <= 0 && remainingRequirements.deraumere <= 0 &&
+                remainingRequirements.sibur <= 0 && remainingRequirements.mendiane <= 0 &&
+                remainingRequirements.phiras <= 0 && remainingRequirements.thystame <= 0) {
                 break;
             }
         }
     }
+    return {remainingRequirements, botContributions};
+}
 
-    return efficientBots;
+std::map<int, Ressources> Forker::combineInventories(const std::map<int, Ressources>& inventory1, const std::map<int, Ressources>& inventory2)
+{
+    std::map<int, Ressources> combinedInventory = inventory1;
+    for (const auto& entry : inventory2) {
+        int botId = entry.first;
+        const Ressources& resources = entry.second;
+        combinedInventory[botId].linemate += resources.linemate;
+        combinedInventory[botId].deraumere += resources.deraumere;
+        combinedInventory[botId].sibur += resources.sibur;
+        combinedInventory[botId].mendiane += resources.mendiane;
+        combinedInventory[botId].phiras += resources.phiras;
+        combinedInventory[botId].thystame += resources.thystame;
+        combinedInventory[botId].food += resources.food;
+    }
+    return combinedInventory;
 }
