@@ -31,7 +31,6 @@ protected:
     // Interract with server
     void verifyServerIsRunning(const std::string &response);
     virtual void listen(const std::string &response);
-    virtual void listenBroadcast(const std::string &response);
 
     // Act
     void react(const std::string &responseServer, const std::string &responseBroadcast);
@@ -52,11 +51,14 @@ protected:
     void trapMessage();
     void incantation(std::vector<std::string> objs);
     void joinGroup();
-    void forkBot(unsigned int idBot);
     void incantationLvl1();
     void incantationLvl2();
     void incantationLvl3();
     void incantationLvl4();
+    void incantationLvl5();
+    void incantationLvl6();
+    void incantationLvl7();
+    void warnsWillIncant();
 
     // Debug
     void debugResponses(const std::string &responseServer, const std::string &responseBroadcast);

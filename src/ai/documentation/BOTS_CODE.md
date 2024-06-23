@@ -155,9 +155,7 @@ We encrypt and sign message, if you want to send a message, you have to format i
 Don't use <span style="color: red;">{"ok", "ko", "dead", "[", "]", "Elevation underway", "Current level:", ",", ":"}</span> in your message
 We separate response and broadcast messages.
 ```c++
-std::string myMessage = "hello";
+std::string myMsg = "hello";
 
-_message.format(myMessage);
-    queue.push_back({[&]()
-                     { doAction(BROADCAST, _message.content); }, "BROADCAST"});
+addBroadcastAction(myMsg);
 ```

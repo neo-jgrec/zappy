@@ -30,6 +30,9 @@ class Input {
         void setEnd(std::string end) {
             _end = end;
         }
+        bool isFocused() {
+            return _isFocused;
+        }
 
     protected:
     private:

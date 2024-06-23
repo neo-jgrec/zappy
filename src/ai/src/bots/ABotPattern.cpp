@@ -27,8 +27,6 @@ void ABotPattern::run(const std::string &response)
     _allyMessage.content = "";
     _enemyMessage.content = "";
 
-    // TODO: should cancel if need food ?
-
     // separe servers and broadcast, decrypt message
     separateServerBroadcast(response, responseServer, responseBroadcast);
 
@@ -47,7 +45,7 @@ void ABotPattern::run(const std::string &response)
     }
     if (!responseBroadcast.empty() && _state.state != WAIT_FOR_SERVER_RESPONSE)
     {
-        listenBroadcast(responseBroadcast);
+        listenBroadcastResponse();
     }
     if (_state.state != WAIT_FOR_BROADCAST_RESPONSE && _state.state != WAIT_FOR_SERVER_RESPONSE)
     {
@@ -55,9 +53,6 @@ void ABotPattern::run(const std::string &response)
     }
     debugState();
     debugMetadata();
-    // debug
-    if (_iteration > 1000)
-        exit(0);
 }
 
 void ABotPattern::react(const std::string &responseServer, const std::string &responseBroadcast)
@@ -65,7 +60,7 @@ void ABotPattern::react(const std::string &responseServer, const std::string &re
     if (_canAct)
     {
         if (!responseServer.empty() && !responseBroadcast.empty())
-        { // TODO: It in this case, use ACT_ON
+        {
             PRINT_ALERT("GET RESPONSES FROM SERVER AND BROADCAST\n");
         }
         if (!responseServer.empty() && _state.state != ACT_ON_BROADCAST)
@@ -97,7 +92,7 @@ void ABotPattern::act()
         saveDataActions(saveActionsFile);
 }
 
-// Always put state listener first before listener for actions
+// Always put state listener before listener for actions
 void ABotPattern::listen(const std::string &response)
 {
     if (_state.state == WAIT_FOR_SERVER_RESPONSE)
@@ -116,12 +111,6 @@ void ABotPattern::listen(const std::string &response)
         listenConnectNbrResponse(response);
 }
 
-void ABotPattern::listenBroadcast(const std::string &response)
-{
-    // TODO: we don't use response ?
-    listenBroadcastResponse(_allyMessage.content);
-}
-
 void ABotPattern::verifyServerIsRunning(const std::string &response)
 {
     if (response.find("dead") != std::string::npos)
@@ -131,7 +120,3 @@ void ABotPattern::verifyServerIsRunning(const std::string &response)
         exit(0);
     }
 }
-
-// TODO: metrics, save proportions of state in the game, add state: searching, moving, etc...
-
-// Landmaerk: 1: CARE if they group in same time. Howevery we fork bots so we don't care.

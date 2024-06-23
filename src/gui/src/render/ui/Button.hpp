@@ -38,6 +38,10 @@ class Button {
             return _text.getString();
         }
 
+        void setPosition(sf::Vector2f pos) {
+            _text.setPosition(pos);
+        }
+
     protected:
     private:
         sf::Text _text;

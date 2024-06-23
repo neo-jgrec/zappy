@@ -1,0 +1,50 @@
+#!/bin/env python
+
+import socket
+import time
+import threading
+import argparse
+
+def send_payload(ip, port, payload, duration):
+    end_time = time.time() + duration
+    count = 0
+
+    try:
+        while time.time() < end_time:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect((ip, port))
+                s.sendall(payload.encode())
+                count += 1
+    except Exception as e:
+        print(f"Error: {e}")
+
+    return count
+
+def load_test(ip, port, payload, duration, num_threads):
+    threads = []
+    total_requests = 0
+
+    for _ in range(num_threads):
+        thread = threading.Thread(target=send_payload, args=(ip, port, payload, duration))
+        threads.append(thread)
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+    for thread in threads:
+        total_requests += thread.result()
+
+    print(f"Total requests sent: {total_requests}")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Network Load Test Script")
+    parser.add_argument("ip", help="IP address of the server")
+    parser.add_argument("port", type=int, help="Port number of the server")
+    parser.add_argument("payload", help="Payload to send to the server")
+    parser.add_argument("duration", type=int, help="Duration of the test in seconds")
+    parser.add_argument("num_threads", type=int, help="Number of threads to use for the test")
+
+    args = parser.parse_args()
+
+    load_test(args.ip, args.port, args.payload, args.duration, args.num_threads)

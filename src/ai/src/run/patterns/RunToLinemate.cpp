@@ -11,6 +11,12 @@ void ABotPattern::runToLinemate()
 {
     if (_state.metadata["should_update_env"] == "true")
     {
+        if (_iteration > 50 && _iteration < 55)
+            queue.push_back({[&]()
+                             { doAction(LEFT, ""); }, "LEFT"});
+        if (_iteration > 100 && _iteration < 105)
+            queue.push_back({[&]()
+                             { doAction(RIGHT, ""); }, "RIGHT"});
         queue.push_back({[&]()
                          { doAction(LOOK, ""); }, "LOOK"});
         return;

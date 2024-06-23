@@ -42,10 +42,9 @@ void Forker::forkNewBot()
     }
     else
     {
-        _message.format("you_are_bot=" + std::to_string(_idBot) + "your_job=" + jobMap[SIMPLE_BOT] + "currentMessageId=" + std::to_string(_currentMessageId));
+        std::string msg = "you_are_bot=" + std::to_string(_idBot) + "your_job=" + jobMap[SIMPLE_BOT] + "currentMessageId=" + std::to_string(_currentMessageId);
         // sleep(1);
-        queue.push_back(std::make_pair([&]()
-                                       { doAction(BROADCAST, _message.content); }, "FORK"));
+        addBroadcastAction(msg);
 
         wait(nullptr);
     }
@@ -53,7 +52,7 @@ void Forker::forkNewBot()
 
 void Forker::updateStrategy()
 {
-    static unsigned int limitFork = 4; // TODO: it is to debug
+    static unsigned int limitFork = 2; // TODO: it is to debug
     static bool verifySlot = true;
 
     std::cout << "🍴 Forker updateStrategy" << std::endl;
@@ -64,20 +63,52 @@ void Forker::updateStrategy()
                                        { doAction(CONNECT_NBR, ""); }, "CONNECT_NBR"));
         verifySlot = false;
     }
-    else if (_state.ressources.food < 5)
-    {
-        survive();
-    }
+    else if (handleSurvive())
+        return;
     else if ((_state.state == FORKED || _state.slot > 0) && limitFork > 0)
     {
         forkNewBot();
+        // TODO: try to put a sleep because server doesn't handle multiple fork in chain sleep(2);
         _idBot++;
         _state.slot--;
         limitFork--;
     }
-    // else if (_state.slot == 0 && limitFork == 0)
-    // {
-    //     queue.push_back(std::make_pair([&]()
-    //                                    { doAction(FORK, ""); }, "FORK"));
-    // }
+    else if (_state.slot == 0 && limitFork > 0)
+    {
+        queue.push_back(std::make_pair([&]()
+                                       { doAction(FORK, ""); }, "FORK"));
+    }
+}
+
+bool Forker::handleSurvive()
+{
+    static int searchFood = 0;
+    const int limitFood = 50;
+
+    if (_iteration % 40 == 0)
+    {
+        _state.state = STANDARD;
+        queue.push_back({[&]()
+                         { doAction(INVENTORY, ""); }, "INVENTORY"});
+        return true;
+    }
+
+    if (_state.ressources.food < limitFood)
+    {
+        // TODO: we want differant searchFood for each level ?
+        searchFood = 250;
+    }
+    if (searchFood > 0)
+    {
+        if (searchFood == 1)
+            queue.push_back({[&]()
+                             { doAction(INVENTORY, ""); }, "INVENTORY"});
+        else
+            survive();
+        _state.state = STANDARD;
+        _state.pattern = "survive";
+        searchFood--;
+        return true;
+    }
+    return false;
 }

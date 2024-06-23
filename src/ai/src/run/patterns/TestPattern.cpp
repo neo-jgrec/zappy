@@ -26,6 +26,5 @@ void ABotPattern::trapMessage()
     if (trapMessage.empty())
         trapMessage = _enemyMessage.content;
     std::cout << "trapMessage: " << trapMessage << std::endl;
-    queue.push_back({[&]()
-                     { doAction(BROADCAST, trapMessage); }, "BROADCAST"});
+    addBroadcastAction(trapMessage);
 }

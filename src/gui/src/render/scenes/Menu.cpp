@@ -11,7 +11,7 @@ Menu::Menu(Core *core) : _core(core) {
     _quitButton = std::make_shared<Button>(sf::Vector2f(100, 500), sf::Vector2f(100, 100), "Quit", _core->getFont());
     _homeButton = std::make_shared<Button>(sf::Vector2f(100, 450), sf::Vector2f(100, 100), "Home", _core->getFont());
     _homeButton->setCallBack(std::bind(&Menu::getBackHome, this));
-    _hzInput = std::make_shared<Input>(sf::Vector2f(100, 200), sf::Vector2f(100, 100), "60", _core->getFont(), "123456789");
+    _hzInput = std::make_shared<Input>(sf::Vector2f(100, 200), sf::Vector2f(100, 100), "60", _core->getFont(), "1234567890");
     _hzInput->setEnd("Hz");
     _hzInput->setInput("60");
     _funMode = std::make_shared<Button>(sf::Vector2f(100, 250), sf::Vector2f(100, 100), "Fun Mode Off", _core->getFont());
@@ -43,7 +43,27 @@ bool Menu::update(sf::Event event, sf::RenderWindow &window) {
     if (_quitButton->update(event, window))
         window.close();
     _homeButton->update(event, window);
-    _hzInput->update(event, window);
+    if (_hzInput->isFocused() == false) {
+        if (_hzInput->getInput().size() == 0)
+            _hzInput->setInput("0");
+        if (std::atoi(_hzInput->getInput().c_str()) != _core->_tickRate)
+            _hzInput->setInput(std::to_string(_core->_tickRate));
+    }
+    if (_hzInput->update(event, window)) {
+        int newTickRate = 2;
+        try {
+            newTickRate = std::stoi(_hzInput->getInput());
+        } catch (std::exception &e) {
+        }
+        if (newTickRate < 2)
+            newTickRate = 2;
+        if (newTickRate > 1000)
+            newTickRate = 1000;
+        _core->_tickRate = newTickRate;
+        _core->_data.requestNewTickRate(newTickRate, _core->_server);
+        _hzInput->setInput(std::to_string(newTickRate));
+        return true;
+    }
     return true;
 }
 

@@ -89,16 +89,18 @@ protected:
     void sendMessage(const std::string &message);
 
     // Actions
-    void doAction(Action action, const std::string &parameter);
+    void doAction(Action action, const std::string parameter);
+    void addBroadcastAction(const std::string message);
 
     // Debug
     void debugInitialisation();
     void debugState();
+    void debugAction(const ActionInfo actionInfo, const std::string &parameter);
 
     // Listeners
     void listenLookResponse(const std::string &response);
     void listenTakeResponse(const std::string &response);
-    void listenBroadcastResponse(const std::string &response);
+    void listenBroadcastResponse();
     void listenIncantationResponse(const std::string &response);
     void listenIncantationReturnResponse(const std::string &response);
     void listenConnectNbrResponse(const std::string &response);
@@ -106,8 +108,10 @@ protected:
     void listenInventoryResponse(const std::string &response);
 
     // Listeners Broadcast
-    void listenGroup(const std::string &response);
-    void listenGroupJoined(const std::string &response);
+    void listenGroupBroadcast(const std::string &response);
+    void listenGroupJoinedBroadcast(const std::string &response);
+    void listenMeetingDoneBroadcast(const std::string &response);
+    void listenWarnsBroadcast(const std::string &response);
 
     // Metrics
     void saveMetrics(ActionInfo actionInfo);

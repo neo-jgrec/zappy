@@ -37,7 +37,7 @@ int Select::select() {
     tv.tv_sec = 0;
     tv.tv_usec = 0;
     int ret = ::select(max_fd + 1, &copy_fds, nullptr, nullptr, &tv);
-    
+
     if (ret == -1)
         throw guiException("Select::select: select failed");
     return ret;
