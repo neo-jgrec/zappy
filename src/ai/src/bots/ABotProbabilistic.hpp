@@ -55,7 +55,8 @@ protected:
     void normalizeProbabilities();
 
     // Logic
-    bool canLvlUp(int lvl);
+    //bool canLvlUp(int lvl);
+
 
     // debug
     void debugTrainedVariables();
