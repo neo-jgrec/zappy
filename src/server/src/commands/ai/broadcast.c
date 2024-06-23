@@ -73,12 +73,12 @@ static void send_broadcast_to_graphicals(client_t *client, server_t *server)
 
 void broadcast(client_t *client, server_t *server)
 {
-    client_list_t *client_list_entry;
     int d;
     client_t *receiver;
 
-    TAILQ_FOREACH(client_list_entry, &server->clients, entries) {
-        receiver = client_list_entry->client;
+    for (client_list_t *tmp = TAILQ_FIRST(&server->clients); tmp != NULL;
+        tmp = TAILQ_NEXT(tmp, entries)) {
+        receiver = tmp->client;
         if (receiver == client)
             continue;
         d = get_sound_direction(

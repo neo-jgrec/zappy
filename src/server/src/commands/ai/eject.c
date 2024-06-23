@@ -7,7 +7,6 @@
 
 #include "client.h"
 #include "server.h"
-#include <stdarg.h>
 
 static void purge_eggs_from_team(team_t *team, int x, int y)
 {
@@ -62,6 +61,13 @@ static int set_dy(unsigned char orientation)
     return 0;
 }
 
+void send_data_to_graphiscs(server_t *s, client_list_t *n)
+{
+    message_to_graphicals(s, "pex %d\n", n->client->id);
+    message_to_graphicals(s, "ppo %d %d %d %d\n", n->client->id,
+        n->client->x, n->client->y, n->client->orientation);
+}
+
 void eject(client_t *c, server_t *s)
 {
     int width = s->proprieties.width;
@@ -77,9 +83,7 @@ void eject(client_t *c, server_t *s)
             n->client->y = (n->client->y + dy + height) % height;
             dprintf(n->client->fd, "eject: %d\n", get_orientation_to_tile(
                 c->x, c->y, n->client->x, n->client->y));
-            message_to_graphicals(s, "pex %d\n", n->client->id);
-            message_to_graphicals(s, "ppo %d %d %d %d\n", n->client->id,
-                n->client->x, n->client->y, n->client->orientation);
+            send_data_to_graphiscs(s, n);
         }
     }
     delete_eggs_on_tile(s, c->x, c->y);
