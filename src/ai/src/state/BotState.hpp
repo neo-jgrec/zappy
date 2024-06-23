@@ -59,6 +59,8 @@ public:
         {"should_group", "false"},
         {"should_incant", "false"},
         {"wait_incant", "false"},
+        {"ask_for_group",
+         "false"},
     };
 
     // Metrics
