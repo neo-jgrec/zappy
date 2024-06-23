@@ -22,13 +22,13 @@ enum {
 };
 
 typedef struct info_map_s {
-    uint8_t food;
-    uint8_t linemate;
-    uint8_t deraumere;
-    uint8_t sibur;
-    uint8_t mendiane;
-    uint8_t phiras;
-    uint8_t thystame;
+    int food;
+    int linemate;
+    int deraumere;
+    int sibur;
+    int mendiane;
+    int phiras;
+    int thystame;
 } info_map_t;
 
 typedef struct flags_s {
