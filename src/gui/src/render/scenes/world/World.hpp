@@ -118,6 +118,7 @@ class World : public IScene {
         void initSounds();
         bool drawBuilding(sf::RenderWindow &window, int i, int j);
         bool drawTrantorian(sf::RenderWindow &window, int i, int j);
+        void checkWinner();
 };
 
 

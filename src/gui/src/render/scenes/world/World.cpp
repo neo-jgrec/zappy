@@ -148,3 +148,16 @@ void World::lookTrantorian(int index)
     );
     _offset += offset;
 }
+
+void World::checkWinner()
+{
+    try {
+        std::optional<std::string> winner = _core->_data.getWinner();
+        if (winner.has_value()) {
+            _core->_winner = winner.value();
+            _core->_upperState = GameState::WIN;
+        }
+    } catch (std::exception &e) {
+        std::cout << e.what() << std::endl;
+    }
+}
