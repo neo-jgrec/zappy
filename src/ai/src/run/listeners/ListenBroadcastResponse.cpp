@@ -80,6 +80,8 @@ void ABot::listenGroupJoined(const std::string &message)
         {
             _state.metadata["should_incant"] = "true";
             _state.metadata["ask_for_group"] = "false";
+            // Landmark: 2. BROADCAST that every ones that follow this group should do otherting
+            // should_group = false;
         }
     }
     else if (_state.level == 4 || _state.level == 5)

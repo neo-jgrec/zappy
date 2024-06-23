@@ -31,6 +31,13 @@ void ABot::doAction(Action action, const std::string &parameter)
         ActionInfo actionInfo = getActionInfo(action);
         std::string actionToServer = actionInfo.getName();
 
+        // TODO: remove it, it is to fix bugs
+        if (actionInfo.action == BROADCAST && parameter.empty())
+        {
+            PRINT_ALERT("BROADCAST WITH NO PARAMETER\n");
+            exit(0);
+        }
+
         if (parameter != "")
             actionToServer += " " + parameter;
         printKeyValueColored("🤖🤜 Bot does", actionToServer);

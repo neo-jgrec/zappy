@@ -123,17 +123,17 @@ void SimpleBot::handleLvl1()
 // TODO: refactor handle levels
 void SimpleBot::handleLvl2()
 {
-    if (_state.ressources.linemate != 1)
+    if (_state.ressources.linemate < 1)
     {
         searchAndTakeRessource("linemate");
         _state.pattern = "searchAndTakeRessource: linemate";
     }
-    else if (_state.ressources.deraumere != 1)
+    else if (_state.ressources.deraumere < 1)
     {
         searchAndTakeRessource("deraumere");
         _state.pattern = "searchAndTakeRessource: deraumere";
     }
-    else if (_state.ressources.sibur != 1)
+    else if (_state.ressources.sibur < 1)
     {
         searchAndTakeRessource("sibur");
         _state.pattern = "searchAndTakeRessource: sibur";
@@ -147,17 +147,17 @@ void SimpleBot::handleLvl2()
 
 void SimpleBot::handleLvl3()
 {
-    if (_state.ressources.linemate != 2)
+    if (_state.ressources.linemate < 2)
     {
         searchAndTakeRessource("linemate");
         _state.pattern = "searchAndTakeRessource: linemate";
     }
-    else if (_state.ressources.sibur != 1)
+    else if (_state.ressources.sibur < 1)
     {
         searchAndTakeRessource("sibur");
         _state.pattern = "searchAndTakeRessource: sibur";
     }
-    else if (_state.ressources.phiras != 2)
+    else if (_state.ressources.phiras < 2)
     {
         searchAndTakeRessource("phiras");
         _state.pattern = "searchAndTakeRessource: phiras";
@@ -171,22 +171,22 @@ void SimpleBot::handleLvl3()
 
 void SimpleBot::handleLvl4()
 {
-    if (_state.ressources.linemate != 1)
+    if (_state.ressources.linemate < 1)
     {
         searchAndTakeRessource("linemate");
         _state.pattern = "searchAndTakeRessource: linemate";
     }
-    else if (_state.ressources.deraumere != 1)
+    else if (_state.ressources.deraumere < 1)
     {
         searchAndTakeRessource("deraumere");
         _state.pattern = "searchAndTakeRessource: deraumere";
     }
-    else if (_state.ressources.sibur != 2)
+    else if (_state.ressources.sibur < 2)
     {
         searchAndTakeRessource("sibur");
         _state.pattern = "searchAndTakeRessource: sibur";
     }
-    else if (_state.ressources.phiras != 1)
+    else if (_state.ressources.phiras < 1)
     {
         searchAndTakeRessource("phiras");
         _state.pattern = "searchAndTakeRessource: phiras";
@@ -201,22 +201,22 @@ void SimpleBot::handleLvl4()
 void SimpleBot::handleLvl5()
 {
     PRINT_ALERT("handleLvl5\n");
-    if (_state.ressources.linemate != 1)
+    if (_state.ressources.linemate < 1)
     {
         searchAndTakeRessource("linemate");
         _state.pattern = "searchAndTakeRessource: linemate";
     }
-    else if (_state.ressources.deraumere != 2)
+    else if (_state.ressources.deraumere < 2)
     {
         searchAndTakeRessource("deraumere");
         _state.pattern = "searchAndTakeRessource: deraumere";
     }
-    else if (_state.ressources.sibur != 1)
+    else if (_state.ressources.sibur < 1)
     {
         searchAndTakeRessource("sibur");
         _state.pattern = "searchAndTakeRessource: sibur";
     }
-    else if (_state.ressources.mendiane != 3)
+    else if (_state.ressources.mendiane < 3)
     {
         searchAndTakeRessource("mendiane");
         _state.pattern = "searchAndTakeRessource: mendiane";
@@ -231,22 +231,22 @@ void SimpleBot::handleLvl5()
 void SimpleBot::handleLvl6()
 {
     PRINT_ALERT("handleLvl6\n");
-    if (_state.ressources.linemate != 1)
+    if (_state.ressources.linemate < 1)
     {
         searchAndTakeRessource("linemate");
         _state.pattern = "searchAndTakeRessource: linemate";
     }
-    else if (_state.ressources.deraumere != 2)
+    else if (_state.ressources.deraumere < 2)
     {
         searchAndTakeRessource("deraumere");
         _state.pattern = "searchAndTakeRessource: deraumere";
     }
-    else if (_state.ressources.sibur != 3)
+    else if (_state.ressources.sibur < 3)
     {
         searchAndTakeRessource("sibur");
         _state.pattern = "searchAndTakeRessource: sibur";
     }
-    else if (_state.ressources.phiras != 1)
+    else if (_state.ressources.phiras < 1)
     {
         searchAndTakeRessource("phiras");
         _state.pattern = "searchAndTakeRessource: phiras";
@@ -261,32 +261,32 @@ void SimpleBot::handleLvl6()
 void SimpleBot::handleLvl7()
 {
     PRINT_ALERT("handleLvl7\n");
-    if (_state.ressources.linemate != 2)
+    if (_state.ressources.linemate < 2)
     {
         searchAndTakeRessource("linemate");
         _state.pattern = "searchAndTakeRessource: linemate";
     }
-    else if (_state.ressources.deraumere != 2)
+    else if (_state.ressources.deraumere < 2)
     {
         searchAndTakeRessource("deraumere");
         _state.pattern = "searchAndTakeRessource: deraumere";
     }
-    else if (_state.ressources.sibur != 2)
+    else if (_state.ressources.sibur < 2)
     {
         searchAndTakeRessource("sibur");
         _state.pattern = "searchAndTakeRessource: sibur";
     }
-    else if (_state.ressources.mendiane != 1)
+    else if (_state.ressources.mendiane < 1)
     {
         searchAndTakeRessource("mendiane");
         _state.pattern = "searchAndTakeRessource: mendiane";
     }
-    else if (_state.ressources.phiras != 2)
+    else if (_state.ressources.phiras < 2)
     {
         searchAndTakeRessource("phiras");
         _state.pattern = "searchAndTakeRessource: phiras";
     }
-    else if (_state.ressources.thystame != 1)
+    else if (_state.ressources.thystame < 1)
     {
         searchAndTakeRessource("thystame");
         _state.pattern = "searchAndTakeRessource: thystame";
@@ -298,4 +298,6 @@ void SimpleBot::handleLvl7()
     }
 }
 
+// Landmark: 1.
 // TODO: do slaves.
+// Fix invalid arguments: excepted 1 but go 0
