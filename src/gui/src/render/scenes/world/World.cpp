@@ -117,7 +117,8 @@ void World::getServerInit()
         _teams.push_back(team);
         _chat->addMessage(" - " + team);
     }
-
+    _core->_tickRate = _core->_data.getTickRate();
+    _chat->addMessage("Tick rate: " + std::to_string(_core->_tickRate));
     Ranking::getRanking(_rankings, _core->_data);
 }
 

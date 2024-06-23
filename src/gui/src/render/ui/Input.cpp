@@ -20,6 +20,7 @@ Input::Input(sf::Vector2f pos, [[maybe_unused]] sf::Vector2f size, std::string t
 
 bool Input::update(sf::Event event, sf::RenderWindow &window) {
     sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+    bool ret = false;
 
     if (!_isFocused)
         _hover = _text.getGlobalBounds().contains(mousePos.x, mousePos.y);
@@ -32,20 +33,18 @@ bool Input::update(sf::Event event, sf::RenderWindow &window) {
                     _input.pop_back();
             } else if (event.text.unicode == 13) {
                 _isFocused = false;
+                ret = true;
             } else {
                 if (_accept.find(event.text.unicode) != std::string::npos)
                     _input += event.text.unicode;
             }
         }
-        if (event.type == sf::Event::KeyPressed) {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace) && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+        if (event.type == sf::Event::KeyPressed &&
+            sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace) &&
+            sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
                 _input = "";
-            }
-        }
     }
-
-
-    return false;
+    return ret;
 }
 
 void Input::draw(sf::RenderWindow &window, float deltaTime) {
