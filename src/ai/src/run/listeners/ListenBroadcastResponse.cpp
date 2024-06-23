@@ -40,7 +40,10 @@ void ABot::listenGroupJoined(const std::string &message)
     static unsigned int playersPresent = 0;
 
     if (_state.level == 2 || _state.level == 3)
+    {
         _state.metadata["should_incant"] = "true";
+        _state.metadata["ask_for_group"] = "false";
+    }
     else if (_state.level == 4)
     {
         std::cout << "playersPresent: " << playersPresent << std::endl;
@@ -48,6 +51,7 @@ void ABot::listenGroupJoined(const std::string &message)
         if (playersPresent == 3)
         {
             _state.metadata["should_incant"] = "true";
+            _state.metadata["ask_for_group"] = "false";
             playersPresent = 0;
         }
     }
@@ -60,7 +64,7 @@ void ABot::listenBroadcastResponse(const std::string &response)
     {
         listenGroup(_allyMessage.content);
     }
-    else if (_allyMessage.content.find("joined") != std::string::npos)
+    else if (_allyMessage.content.find("joined") != std::string::npos && _state.metadata["ask_for_group"] == "true")
     {
         listenGroupJoined(_allyMessage.content);
     }
