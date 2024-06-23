@@ -8,9 +8,20 @@
 #include "../../bots/ABotPattern.hpp"
 #include "../../constant/Constants.hpp"
 #include <functional>
+#include <random>
+#include <chrono>
 
 void ABotPattern::group()
 {
+    static int idGroup = 0;
+    if (_state.metadata["ask_for_group"] == "false")
+    {
+        auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+        std::mt19937 generator(seed);
+        std::uniform_int_distribution<int> distribution(1, 1000);
+        idGroup = distribution(generator);
+    }
+
     _state.metadata["ask_for_group"] = "true";
     if (_state.level == 2)
         _message.content = "group_3";
@@ -24,6 +35,8 @@ void ABotPattern::group()
         _message.content = "group_7";
     else if (_state.level == 7)
         _message.content = "group_8";
+    _message.content += "_" + std::to_string(idGroup);
+    _state.metadata["id_group"] = std::to_string(idGroup);
     _message.format(_message.content);
     queue.push_back({[&]()
                      { doAction(BROADCAST, _message.content); }, "BROADCAST"});
@@ -33,7 +46,9 @@ void ABotPattern::joinGroup()
 {
     if (_direction == "0")
     {
-        _message.format("joined");
+        std::string joinStr = std::string("joined") + "_" + _state.metadata["id_group"];
+
+        _message.format(joinStr);
         queue.push_back({[&]()
                          { doAction(BROADCAST, _message.content); }, "BROADCAST"});
         _state.state = WAIT_FOR_SERVER_RESPONSE; // TODO: wait incant look response from server
@@ -42,30 +57,33 @@ void ABotPattern::joinGroup()
         return;
     }
     std::cout << "group direction = " << _direction << std::endl;
-    static const std::unordered_map<std::string, std::pair<std::string, std::function<void()>>> directionActions = {
-        {"2", {"Forward", [&]()
-               { doAction(FORWARD, ""); }}},
-        {"1", {"Forward", [&]()
-               { doAction(FORWARD, ""); }}},
-        {"8", {"Forward", [&]()
-               { doAction(FORWARD, ""); }}},
-        {"5", {"Right", [&]()
-               { doAction(RIGHT, ""); }}},
-        {"6", {"Right", [&]()
-               { doAction(RIGHT, ""); }}},
-        {"7", {"Right", [&]()
-               { doAction(RIGHT, ""); }}},
-        {"3", {"Left", [&]()
-               { doAction(LEFT, ""); }}},
-        {"4", {"Left", [&]()
-               { doAction(LEFT, ""); }}}};
-
-    auto it = directionActions.find(_direction);
-    if (it != directionActions.end())
+    if (_allyMessage.content.find(_state.metadata["id_group"]) != std::string::npos)
     {
-        const auto &action = it->second;
-        printf("%s\n", action.first.c_str());
-        queue.push_back({action.second, action.first});
+        static const std::unordered_map<std::string, std::pair<std::string, std::function<void()>>> directionActions = {
+            {"2", {"Forward", [&]()
+                   { doAction(FORWARD, ""); }}},
+            {"1", {"Forward", [&]()
+                   { doAction(FORWARD, ""); }}},
+            {"8", {"Forward", [&]()
+                   { doAction(FORWARD, ""); }}},
+            {"5", {"Right", [&]()
+                   { doAction(RIGHT, ""); }}},
+            {"6", {"Right", [&]()
+                   { doAction(RIGHT, ""); }}},
+            {"7", {"Right", [&]()
+                   { doAction(RIGHT, ""); }}},
+            {"3", {"Left", [&]()
+                   { doAction(LEFT, ""); }}},
+            {"4", {"Left", [&]()
+                   { doAction(LEFT, ""); }}}};
+
+        auto it = directionActions.find(_direction);
+        if (it != directionActions.end())
+        {
+            const auto &action = it->second;
+            printf("%s\n", action.first.c_str());
+            queue.push_back({action.second, action.first});
+        }
     }
 }
 
