@@ -24,7 +24,7 @@ void ABotPattern::run(const std::string &response)
     std::string responseServer = "";
     std::string responseBroadcast = "";
     _message.content = "";
-    _allyMessage.content = "";
+    _alliesMessage.clear();
     _enemyMessage.content = "";
 
     // TODO: should cancel if need food ?
@@ -119,7 +119,7 @@ void ABotPattern::listen(const std::string &response)
 void ABotPattern::listenBroadcast(const std::string &response)
 {
     // TODO: we don't use response ?
-    listenBroadcastResponse(_allyMessage.content);
+    listenBroadcastResponse(_alliesMessage);
 }
 
 void ABotPattern::verifyServerIsRunning(const std::string &response)
