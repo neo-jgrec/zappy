@@ -46,11 +46,8 @@ void destroy_teams(struct teams_tailq *teams)
 {
     team_list_t *item;
 
-    while (!TAILQ_EMPTY(teams)) {
-        item = TAILQ_FIRST(teams);
+    TAILQ_FOREACH(item, teams, entries) {
         TAILQ_REMOVE(teams, item, entries);
-        secure_free((void **)&item->team->name);
-        secure_free((void **)&item->team);
     }
 }
 
@@ -74,18 +71,6 @@ void print_teams_infos(struct teams_tailq *teams)
         while (item_e != NULL) {
             printf("X(%u) Y(%u)\n", item_e->egg->x, item_e->egg->y);
             item_e = TAILQ_NEXT(item_e, entries);
-        }
-    }
-}
-
-void add_client_uuid_to_team(team_t *team, char uuid[37])
-{
-    unsigned char i = 0;
-
-    for (; i < MAX_CAPACITY_TEAM; i++) {
-        if (team->client_ids[i] == NULL) {
-            team->client_ids[i] = uuid;
-            break;
         }
     }
 }
