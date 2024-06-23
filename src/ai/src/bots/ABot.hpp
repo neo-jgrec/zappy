@@ -75,7 +75,7 @@ protected:
     Message _message;
     std::string _direction;
     Message _enemyMessage;
-    Message _allyMessage;
+    std::vector<Message> _alliesMessage;
     std::string _signature = "bFNneQbXQkyJHGEQd";
 
     // State
