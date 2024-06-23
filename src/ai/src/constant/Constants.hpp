@@ -25,13 +25,13 @@
 }};*/
 
 struct LevelRequirements {
-    size_t nbPlayers;
-    size_t linemate;
-    size_t deraumere;
-    size_t sibur;
-    size_t mendiane;
-    size_t phiras;
-    size_t thystame;
+    int nbPlayers;
+    int linemate;
+    int deraumere;
+    int sibur;
+    int mendiane;
+    int phiras;
+    int thystame;
 };
 
 const std::vector<LevelRequirements> levelRequirementsShared = {

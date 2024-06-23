@@ -10,5 +10,6 @@
 void ABotPattern::forkBot(unsigned int idBot)
 {
     // TODO: add actions fork
+    (void)idBot;
     return;
 }
