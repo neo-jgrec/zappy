@@ -21,6 +21,7 @@ private:
     unsigned int _idBot = 1;
 
     void forkNewBot();
+    bool handleSurvive();
 };
 
 #endif // FORKER_HPP_
