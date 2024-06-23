@@ -142,18 +142,20 @@ void BotProbabilistic::updateProbabilities()
         }
         else if (pattern->name == "incantationLvl2")
         {
-            if (_state.ressources.linemate == 1 && _state.ressources.deraumere == 1 && _state.ressources.sibur == 1 && _state.level == 2 && _allyMessage.content == "group_joined")
+            if (_state.ressources.linemate == 1 && _state.ressources.deraumere == 1 && _state.ressources.sibur == 1 && _state.level == 2 /*&& _allyMessage.content == "group_joined"*/)
                 newProbability = getTrainedVariableValueByName("incantation_probability");
             else
                 newProbability = baseline;
         }
-        else if (pattern->name == "joinGroup")
+        /*else if (pattern->name == "joinGroup")
         {
-            if (_allyMessage.content.find("group") != std::string::npos)
-                newProbability = 1; // TODO: make trained_variables
-            else
-                newProbability = baseline;
-        }
+            for (auto &_allyMessage : _alliesMessage) {
+                if (_allyMessage.content.find("group") != std::string::npos)
+                    newProbability = 1; // TODO: make trained_variables
+                else
+                    newProbability = baseline;
+            }
+        }*/
         else if (pattern->name == "group")
         {
             // TODO: get state of all bots
