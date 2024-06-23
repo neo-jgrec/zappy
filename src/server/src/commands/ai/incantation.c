@@ -7,7 +7,7 @@
 
 #include "server.h"
 
-static const size_t required_resources[7][7] = {
+static const int required_resources[7][7] = {
     {1, 1, 0, 0, 0, 0, 0},
     {2, 1, 1, 1, 0, 0, 0},
     {2, 2, 0, 1, 0, 2, 0},
