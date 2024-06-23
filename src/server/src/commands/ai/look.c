@@ -27,8 +27,8 @@ static const struct {
     {0, NULL}
 };
 
-static const int dx[] = {0, 0, -1, 1};
-static const int dy[] = {-1, 1, 0, 0};
+static const int dx[] = {0, 1, 0, -1};
+static const int dy[] = {-1, 0, 1, 0};
 
 static tile_t *copy_map(tile_t *dest, tile_t *src, server_t *server)
 {
@@ -48,12 +48,15 @@ static tile_t *copy_map(tile_t *dest, tile_t *src, server_t *server)
 
 static void populate_map_with_players(tile_t *map, server_t *server)
 {
-    client_list_t *tmp;
     client_t *client;
+    int index;
 
-    TAILQ_FOREACH(tmp, &server->clients, entries) {
+    for (client_list_t *tmp = TAILQ_FIRST(&server->clients); tmp != NULL;
+        tmp = TAILQ_NEXT(tmp, entries)) {
         client = tmp->client;
-        int index = client->y * server->proprieties.width + client->x;
+        if (client->is_graphic)
+            continue;
+        index = client->y * server->proprieties.width + client->x;
         map[index].num_objects++;
         map[index].objects = realloc(map[index].objects,
             map[index].num_objects * sizeof(object_t));
@@ -107,8 +110,7 @@ static void handle_look(client_t *c, server_t *server, tile_t *map)
 {
     int w = server->proprieties.width;
     int h = server->proprieties.height;
-    int d = c->orientation % 4;
-    char *final_payload;
+    int d = c->orientation - 1;
     int look_y;
     int look_x;
 
@@ -118,13 +120,12 @@ static void handle_look(client_t *c, server_t *server, tile_t *map)
         return;
     for (int level = 0; level <= (int)c->level; level++) {
         for (int offset = -level; offset <= level; offset++) {
-            look_x = (c->x + dx[d] * level + dy[d] *offset + w) % w;
+            look_x = (c->x + dx[d] * level + dy[d] * offset + w) % w;
             look_y = (c->y + dy[d] * level - dx[d] * offset + h) % h;
             append_tile_to_payload(c, map, (look_y * w + look_x));
         }
     }
-    if (asprintf(&final_payload, "%s ]\n", c->payload) != -1)
-        c->payload = final_payload;
+    handle_response(&c->payload, "%s]\n", c->payload);
 }
 
 void look(client_t *c, server_t *server)
