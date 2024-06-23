@@ -30,7 +30,7 @@ def main():
 
     ai_processes = []
     for team in teams:
-        for i in range(4):
+        for i in range(2):
             ai_log_file = f'{base_log_file}_ai_{team}_{i}.out'
             ai_command = f'./zappy_ai -n {team} -h {args.host} -p {args.p}'
             ai_process = launch_process(ai_command, ai_log_file)
