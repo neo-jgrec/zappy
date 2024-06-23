@@ -44,11 +44,22 @@ void ABot::listenGroupJoined(const std::string &message)
         _state.metadata["should_incant"] = "true";
         _state.metadata["ask_for_group"] = "false";
     }
-    else if (_state.level == 4)
+    else if (_state.level == 4 || _state.level == 5)
     {
         std::cout << "playersPresent: " << playersPresent << std::endl;
         playersPresent++;
         if (playersPresent == 3)
+        {
+            _state.metadata["should_incant"] = "true";
+            _state.metadata["ask_for_group"] = "false";
+            playersPresent = 0;
+        }
+    }
+    else if (_state.level == 6 || _state.level == 7)
+    {
+        std::cout << "playersPresent: " << playersPresent << std::endl;
+        playersPresent++;
+        if (playersPresent == 5)
         {
             _state.metadata["should_incant"] = "true";
             _state.metadata["ask_for_group"] = "false";
