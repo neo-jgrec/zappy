@@ -21,6 +21,9 @@ std::unique_ptr<IBot> BotFactory::createBot(const std::string &type)
     {
         return std::make_unique<SimpleBot>();
     }
-
+    if (type == "Slave")
+    {
+        return std::make_unique<Slave>();
+    }
     return nullptr;
 }
