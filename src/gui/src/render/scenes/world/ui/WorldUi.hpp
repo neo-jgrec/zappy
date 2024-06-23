@@ -31,8 +31,9 @@ class WorldUi : public IScene {
             _layer1.push_back(std::make_shared<AdvancedButton>("./assets/flags/flagButton.png", sf::Vector2f(0, 16*4 * 1), sf::Vector2f(16, 16), 4));
             _layer1.push_back(std::make_shared<AdvancedButton>("./assets/flags/trantorianButton.png", sf::Vector2f(0, 16*4 * 2), sf::Vector2f(16, 16), 4));
             _layer2["closeButton"] = std::make_shared<AdvancedButton>("./assets/flags/closeButton.png", sf::Vector2f(16 * 4 *7, 0), sf::Vector2f(16, 16), 4);
-            _layer2["prevButton"] = std::make_shared<AdvancedButton>("./assets/flags/prevButton.png", sf::Vector2f(16 * 4 + 8, 64), sf::Vector2f(16, 16), 4);
-            _layer2["nextButton"] = std::make_shared<AdvancedButton>("./assets/flags/nextButton.png", sf::Vector2f(16 * 4 * 6 - 8, 64), sf::Vector2f(16, 16), 4);
+            _layer2["prevButton"] = std::make_shared<AdvancedButton>("./assets/flags/prevButton.png", sf::Vector2f(16 * 4 + 8, 32), sf::Vector2f(16, 16), 4);
+            _layer2["nextButton"] = std::make_shared<AdvancedButton>("./assets/flags/nextButton.png", sf::Vector2f(16 * 4 * 6 - 8, 32), sf::Vector2f(16, 16), 4);
+            _layer2["lookButton"] = std::make_shared<AdvancedButton>("./assets/flags/lookButton.png", sf::Vector2f(16 * 4 * 6 - 8, 96), sf::Vector2f(16, 16), 4);
             _sprites["inventory"] = std::make_shared<Sprite>("./assets/inventory.png");
             _sprites["food"] = std::make_shared<Sprite>("./assets/ressources/food.png");
             _sprites["trantorian"] = std::make_shared<Sprite>("./assets/trantorian.png");

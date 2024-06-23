@@ -49,6 +49,10 @@ bool WorldUi::update(sf::Event event, sf::RenderWindow &window)
                 return false;
             _idPlayer = (_idPlayer + 1) % _world->getNbTrantorian();
         }
+        if (_world->getNbTrantorian() != 0)
+            if (_layer2["lookButton"]->update(event, window)) {
+                _world->lookTrantorian(_idPlayer);
+            }
     }
     if (_panelState == FLAG) {
         if (_layer2["prevButton"]->update(event, window)) {
@@ -162,6 +166,7 @@ void WorldUi::drawTrantorian(sf::RenderWindow &window)
     _sprites["bousolle"]->draw(window);
     if (_world->getNbTrantorian() == 0)
         return;
+    _layer2["lookButton"]->draw(window);
     auto trantorian = _world->getTrantorian(_idPlayer);
     _inventoryText.setPosition(sf::Vector2f(
         _sprites["trantorianPanel"]->getPosition().x + + 96,
@@ -184,7 +189,12 @@ void WorldUi::drawTrantorian(sf::RenderWindow &window)
         _sprites["trantorianPanel"]->getPosition().x + + 96,
         _sprites["trantorianPanel"]->getPosition().y + 32 + 50
     ));
-    _inventoryText.setString("Facing " + orientation[trantorian._facing - 1]);
+    int facing = trantorian._facing - 1;
+    if (facing < 0)
+        facing = 3;
+    if (facing > 3)
+        facing = 0;
+    _inventoryText.setString("Facing " + orientation[facing]);
     window.draw(_inventoryText);
 }
 
