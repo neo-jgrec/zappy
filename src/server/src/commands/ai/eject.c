@@ -64,18 +64,19 @@ static int set_dy(unsigned char orientation)
 
 void eject(client_t *c, server_t *s)
 {
-    signed char x = set_dx(c->orientation);
-    signed char y = set_dy(c->orientation);
+    int width = s->proprieties.width;
+    int height = s->proprieties.height;
+    signed char dx = set_dx(c->orientation);
+    signed char dy = set_dy(c->orientation);
 
     for (client_list_t *n = TAILQ_FIRST(&s->clients); n != NULL;
         n = TAILQ_NEXT(n, entries)) {
         if (n->client->x == c->x && n->client->y == c->y
         && n->client->id != c->id) {
-            n->client->x += x;
-            n->client->y += y;
-            n->client->orientation = get_orientation_to_tile(n->client->x,
-                n->client->y, c->x, c->y);
-            dprintf(n->client->fd, "eject: %d\n", n->client->orientation);
+            n->client->x = (n->client->x + dx + width) % width;
+            n->client->y = (n->client->y + dy + height) % height;
+            dprintf(n->client->fd, "eject: %d\n", get_orientation_to_tile(
+                c->x, c->y, n->client->x, n->client->y));
             message_to_graphicals(s, "pex %d\n", n->client->id);
             message_to_graphicals(s, "ppo %d %d %d %d\n", n->client->id,
                 n->client->x, n->client->y, n->client->orientation);
