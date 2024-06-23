@@ -55,8 +55,8 @@ void ABotPattern::run(const std::string &response)
     }
     debugState();
     debugMetadata();
-    // debug
-    if (_iteration > 5000)
+    // TODO: remove it.
+    if (_iteration > 100000)
         exit(0);
 }
 

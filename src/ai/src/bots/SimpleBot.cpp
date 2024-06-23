@@ -31,6 +31,12 @@ void SimpleBot::updateStrategy()
         handleLvl3();
     else if (_state.level == 4)
         handleLvl4();
+    else if (_state.level == 5)
+        handleLvl5();
+    else if (_state.level == 6)
+        handleLvl6();
+    else if (_state.level == 7)
+        handleLvl7();
     else
         PRINT_ALERT("🧒❌ SimpleBot: level not handled\n");
 }
@@ -38,7 +44,7 @@ void SimpleBot::updateStrategy()
 bool SimpleBot::handleSurvive()
 {
     static int searchFood = 0;
-    const unsigned int limitFood = 20;
+    const int limitFood = 20;
 
     if (_iteration % 40 == 0)
     {
@@ -50,8 +56,13 @@ bool SimpleBot::handleSurvive()
 
     if (_state.ressources.food < limitFood)
     {
+        // TODO: we want differant searchFood for each level ?
         if (_state.level == 2)
             searchFood = 150;
+        if (_state.level == 3)
+            searchFood = 125;
+        else
+            searchFood = 115;
     }
     if (searchFood > 0)
     {
@@ -109,6 +120,7 @@ void SimpleBot::handleLvl1()
     _state.pattern = "runToLinemate";
 }
 
+// TODO: refactor handle levels
 void SimpleBot::handleLvl2()
 {
     if (_state.ressources.linemate != 1)
@@ -159,7 +171,6 @@ void SimpleBot::handleLvl3()
 
 void SimpleBot::handleLvl4()
 {
-    PRINT_ALERT("handleLvl4\n");
     if (_state.ressources.linemate != 1)
     {
         searchAndTakeRessource("linemate");
@@ -187,6 +198,104 @@ void SimpleBot::handleLvl4()
     }
 }
 
-// TODO: fix: don't use food on time unit because sometimes bot only wait so his fod don't decrease.
-//  TODO: sometimes it group but don't survive
-//  TODO (MAYBE): handle when both can group: rule bot id < bot 2 id group, the other join group
+void SimpleBot::handleLvl5()
+{
+    PRINT_ALERT("handleLvl5\n");
+    if (_state.ressources.linemate != 1)
+    {
+        searchAndTakeRessource("linemate");
+        _state.pattern = "searchAndTakeRessource: linemate";
+    }
+    else if (_state.ressources.deraumere != 2)
+    {
+        searchAndTakeRessource("deraumere");
+        _state.pattern = "searchAndTakeRessource: deraumere";
+    }
+    else if (_state.ressources.sibur != 1)
+    {
+        searchAndTakeRessource("sibur");
+        _state.pattern = "searchAndTakeRessource: sibur";
+    }
+    else if (_state.ressources.mendiane != 3)
+    {
+        searchAndTakeRessource("mendiane");
+        _state.pattern = "searchAndTakeRessource: mendiane";
+    }
+    else
+    {
+        group();
+        _state.pattern = "group";
+    }
+}
+
+void SimpleBot::handleLvl6()
+{
+    PRINT_ALERT("handleLvl6\n");
+    if (_state.ressources.linemate != 1)
+    {
+        searchAndTakeRessource("linemate");
+        _state.pattern = "searchAndTakeRessource: linemate";
+    }
+    else if (_state.ressources.deraumere != 2)
+    {
+        searchAndTakeRessource("deraumere");
+        _state.pattern = "searchAndTakeRessource: deraumere";
+    }
+    else if (_state.ressources.sibur != 3)
+    {
+        searchAndTakeRessource("sibur");
+        _state.pattern = "searchAndTakeRessource: sibur";
+    }
+    else if (_state.ressources.phiras != 1)
+    {
+        searchAndTakeRessource("phiras");
+        _state.pattern = "searchAndTakeRessource: phiras";
+    }
+    else
+    {
+        group();
+        _state.pattern = "group";
+    }
+}
+
+void SimpleBot::handleLvl7()
+{
+    PRINT_ALERT("handleLvl7\n");
+    if (_state.ressources.linemate != 2)
+    {
+        searchAndTakeRessource("linemate");
+        _state.pattern = "searchAndTakeRessource: linemate";
+    }
+    else if (_state.ressources.deraumere != 2)
+    {
+        searchAndTakeRessource("deraumere");
+        _state.pattern = "searchAndTakeRessource: deraumere";
+    }
+    else if (_state.ressources.sibur != 2)
+    {
+        searchAndTakeRessource("sibur");
+        _state.pattern = "searchAndTakeRessource: sibur";
+    }
+    else if (_state.ressources.mendiane != 1)
+    {
+        searchAndTakeRessource("mendiane");
+        _state.pattern = "searchAndTakeRessource: mendiane";
+    }
+    else if (_state.ressources.phiras != 2)
+    {
+        searchAndTakeRessource("phiras");
+        _state.pattern = "searchAndTakeRessource: phiras";
+    }
+    else if (_state.ressources.thystame != 1)
+    {
+        searchAndTakeRessource("thystame");
+        _state.pattern = "searchAndTakeRessource: thystame";
+    }
+    else
+    {
+        group();
+        _state.pattern = "group";
+    }
+}
+
+// TODO: do slaves.
