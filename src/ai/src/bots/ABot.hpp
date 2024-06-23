@@ -38,6 +38,8 @@ class ABot : public IBot
 public:
     ABot();
     ~ABot();
+    BotState getState() { return _state; }
+    void setState(BotState state) { _state = state; }
     virtual void run(const std::string &response) = 0;
     // TODO: remove arg
     virtual void init(int sockfd, const std::string &teamName, const std::string &host, int port, int id, int idMessage) = 0;

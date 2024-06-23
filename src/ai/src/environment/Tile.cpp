@@ -7,6 +7,10 @@
 
 #include "Tile.hpp"
 
+Tile::Tile()
+{
+}
+
 Tile::Tile(int x, int y, unsigned int distance, Ressources ressources)
 {
     this->x = x;
