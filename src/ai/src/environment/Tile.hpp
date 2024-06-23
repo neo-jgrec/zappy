@@ -14,6 +14,7 @@ class Tile
 {
 public:
     Tile(int x, int y, unsigned int distance, Ressources ressources);
+    Tile();
     ~Tile();
     int x;
     int y;
