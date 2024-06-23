@@ -246,7 +246,7 @@ std::string Forker::formatBotContributions(const std::map<int, Ressources>& botC
 
 std::pair<bool, NeededResources> Forker::canLevelUp(int currentLevel)
 {
-    if (currentLevel < 1 || currentLevel >= levelRequirementsShared.size() + 1) {
+    if (currentLevel < 1 || currentLevel >= static_cast<int>(levelRequirementsShared.size() + 1)) {
         return {false, NeededResources()};
     }
 
@@ -295,6 +295,7 @@ std::pair<bool, NeededResources> Forker::canLevelUp(int currentLevel)
 
 std::map<int, Ressources> Forker::identifyEfficientBots(int currentLevel, NeededResources& neededResources)
 {
+    (void)currentLevel;
     std::map<int, Ressources> botContributions;
     NeededResources remainingRequirements = neededResources;
 
@@ -356,6 +357,7 @@ std::map<int, Ressources> Forker::identifyEfficientBots(int currentLevel, Needed
 
 std::pair<NeededResources, std::map<int, Ressources>>  Forker::calculateAndPrintBotDeposits(std::map<int, Ressources>& sharedInventory, int currentLevel, NeededResources& neededResources)
 {
+    (void)currentLevel;
     std::map<int, Ressources> botContributions;
     NeededResources remainingRequirements = neededResources;
 
