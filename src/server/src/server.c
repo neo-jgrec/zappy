@@ -121,16 +121,15 @@ static bool check_response_client_time(
     return false;
 }
 
-
 static int start_server(server_t *s)
 {
-    fd_set writefds;
-    fd_set exceptfds;
+    fd_set write_sockets;
+    fd_set except_sockets;
 
     while (true) {
         s->ready_sockets = s->current_sockets;
-        FD_ZERO(&writefds);
-        FD_ZERO(&exceptfds);
+        FD_ZERO(&write_sockets);
+        FD_ZERO(&except_sockets);
         clock_gettime(CLOCK_REALTIME, &s->current_time);
         if (handle_client_life(s) == true)
             continue;
@@ -138,7 +137,7 @@ static int start_server(server_t *s)
         if (check_response_client_time(&s->clients, s, &s->current_time))
             break;
         if (select(FD_SETSIZE, &s->ready_sockets,
-                   &writefds, &exceptfds, &s->timeout) < 0)
+            &write_sockets, &except_sockets, &s->timeout) < 0)
             return ERROR_STATUS;
         if (check_connections(s) == ERROR_STATUS)
             return ERROR_STATUS;
