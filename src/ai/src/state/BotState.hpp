@@ -28,6 +28,7 @@ enum Job
 {
     FORKER,
     SIMPLE_BOT,
+    SLAVE,
 };
 
 extern std::map<State, std::string> stateMap;
