@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-with open('./src/ai/dataSaved/actionsteam10.txt', 'r') as file:
+with open('actionsteam1-0.txt', 'r') as file:
     data = file.read()
 
 sections = data.strip().split('\n\n')
@@ -27,7 +27,9 @@ plt.figure(figsize=(12, 6))
 colors = ['blue', 'green', 'red', 'purple', 'orange', 'cyan', 'magenta', 'yellow', 'brown']
 
 for i, (action, values) in enumerate(actions.items()):
-    plt.plot(iterations, values, color=colors[i % len(colors)], label=action, marker='o')
+    filtered_iterations = [iterations[j] for j in range(len(values)) if values[j] != 0]
+    filtered_values = [values[j] for j in range(len(values)) if values[j] != 0]
+    plt.plot(filtered_iterations, filtered_values, color=colors[i % len(colors)], label=action, marker='o')
 
 plt.xlabel('Iterations')
 plt.ylabel('Values')

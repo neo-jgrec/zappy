@@ -20,13 +20,17 @@ void ABotPattern::init(int sockfd, const std::string &teamName, const std::strin
     initChild();
     std::string baseFileName = teamName + "-";
     int suffix = 0;
+    std::string file = saveActionsFile;
+
     while (true)
     {
-        saveActionsFile += baseFileName + std::to_string(suffix) + ".txt";
-        if (!std::filesystem::exists(saveActionsFile))
+        file = baseFileName + std::to_string(suffix) + ".txt";
+        if (!std::filesystem::exists(file))
         {
+            saveActionsFile += baseFileName + std::to_string(suffix) + ".txt";
             break;
         }
+        file = saveActionsFile;
         ++suffix;
     }
 }
