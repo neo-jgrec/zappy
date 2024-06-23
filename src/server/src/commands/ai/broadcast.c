@@ -73,11 +73,12 @@ static void send_broadcast_to_graphicals(client_t *client, server_t *server)
 
 void broadcast(client_t *client, server_t *server)
 {
-    client_list_t *client_list_entry;
     int d;
     client_t *receiver;
 
-    TAILQ_FOREACH(client_list_entry, &server->clients, entries) {
+    for (client_list_t *client_list_entry = TAILQ_FIRST(&server->clients);
+        client_list_entry;
+        client_list_entry = TAILQ_NEXT(client_list_entry, entries)) {
         receiver = client_list_entry->client;
         if (receiver == client || receiver->is_graphic)
             continue;

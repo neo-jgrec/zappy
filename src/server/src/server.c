@@ -55,13 +55,11 @@ static double get_interval(int command, double freq)
 
 static void print_egg_graphic(client_t *client, server_t *server)
 {
-    unsigned char cmd_idx = 0;
-
     if (client->is_incanting == true)
         return;
-    if (client->tclient[cmd_idx].available_request)
-        dprintf(client->fd, "%s", client->tclient[cmd_idx].payload);
-    if (client->tclient[cmd_idx].command == FORK)
+    if (client->tclient[0].available_request)
+        dprintf(client->fd, "%s", client->tclient[0].payload);
+    if (client->tclient[0].command == FORK)
         message_to_graphicals(server, "enw %d %s %d %d\n", client->egg_id,
             client->id, client->x, client->y);
     for (unsigned char idx = 0; idx < NB_REQUESTS_HANDLEABLE; idx++) {

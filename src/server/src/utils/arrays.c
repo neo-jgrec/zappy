@@ -22,7 +22,7 @@ void free_array(void **array)
     if (!array)
         return;
     for (size_t i = 0; array[i]; i++)
-        secure_free((void**)&array[i]);
+        secure_free((void **)&array[i]);
     free(array);
     array = NULL;
 }
