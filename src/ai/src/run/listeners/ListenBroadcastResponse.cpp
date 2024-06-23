@@ -45,16 +45,21 @@ void ABot::listenBroadcastResponse(const std::string &response)
     }
     else
     {
+        queue.clear();
         std::string temp = getElementBefore(response, ':');
+        Message _allyMessage;
         _allyMessage.content = getElementAfter(temp, ',');
         _direction = getElementBefore(temp, ',');
-        _direction = getElementAfter(_direction, ' ');
+        _allyMessage.direction = getElementAfter(_direction, ' ');
         _allyMessage.vigenereDecrypt();
         printKeyValueColored("Message", _allyMessage.content);
         printKeyValueColored("Direction", _direction);
+        _alliesMessage.push_back(_allyMessage);
     }
-    if (_allyMessage.content.find("group") != std::string::npos)
-    {
-        listenGroup(response);
+    for (auto &_allyMessage : _alliesMessage) {
+        if (_allyMessage.content.find("group") != std::string::npos)
+        {
+            listenGroup(response);
+        }
     }
 }
