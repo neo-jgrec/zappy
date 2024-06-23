@@ -100,7 +100,7 @@ protected:
     // Listeners
     void listenLookResponse(const std::string &response);
     void listenTakeResponse(const std::string &response);
-    void listenBroadcastResponse(std::vector<Message> &messages);
+    void listenBroadcastResponse(std::vector<Message> &_alliesMessage_);
     void listenIncantationResponse(const std::string &response);
     void listenIncantationReturnResponse(const std::string &response);
     void listenConnectNbrResponse(const std::string &response);
