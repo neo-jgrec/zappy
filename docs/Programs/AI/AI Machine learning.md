@@ -7,7 +7,6 @@ This documentation covers various aspects of our machine learning (ML) efforts:
 - Functioning
 - Machine Learning
 - Strategies
-🤖<br/>
 
 ## Functioning 🧑‍💼
 

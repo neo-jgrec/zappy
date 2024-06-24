@@ -4,9 +4,9 @@
 If you want to develop your own bots, this is the right place.
 
 You can create your classes derived from:
-- <span style="color: yellow;">**IBot:**</span> Interface for bots. You have to code all the logic.
-- <span style="color: yellow;">**ABot:**</span>Use [Actions](#actions), [State](#state), [Listeners](#listeners) you have to code the initialisation and run logic.
-- <span style="color: green;">**ABotPattern:**</span> Use [Pattern](#patterns), you have to code only the bot logic based on patterns and actions.
+- **IBot:** Interface for bots. You have to code all the logic.
+- **ABot:** Use [Actions](#actions), [State](#state), [Listeners](#listeners) you have to code the initialisation and run logic.
+- **ABotPattern:** Use [Pattern](#patterns), you have to code only the bot logic based on patterns and actions.
 
 Hierarchy: IBot => ABot => ABotPattern
 
@@ -63,10 +63,10 @@ Bot update his strategy based on his state.
 State are updated when bot listen to the servers via listeners.
 You can add state modifications and listeners.
 
-1. Work on project<br/>
+1. Work on project 
 git clone the project, git checkout feat/ia. Do Pull Request when you want to add your work.
 
-2. Create your class deriving from ABotPattern:<br/>
+2. Create your class deriving from ABotPattern: 
 This class muse have:
     - initChild: if you need to init configuration about your bot
     - updateStrategy: contains your bot logic
@@ -80,7 +80,7 @@ public:
 };
 ```
 
-3. Init your bot<br/>
+3. Init your bot 
 It is if you use new variables for your bot.
 If not, just print that your bot is well initialized.
 
@@ -91,7 +91,7 @@ void SimpleBot::initChild()
 }
 ```
 
-4. Do your logic<br/>
+4. Do your logic 
 Based on the bot state, you can use strategies.
 It verify a condition => do pattern
 
@@ -112,8 +112,8 @@ void SimpleBot::updateStrategy()
 }
 ```
 
-[OPTIONNAL]<br/>
-5. Add pattern ./src/ai/src/run/patterns<br/>
+[OPTIONNAL] 
+5. Add pattern ./src/ai/src/run/patterns 
 To add a pattern, add actions to the queue, update the state if needed. You can add conditions in patterns too.
 For example:
 **IncantationLvl1**
@@ -128,7 +128,7 @@ void ABotPattern::incantationLvl1()
 }
 ```
 
-6. Add listeners ./src/ai/src/run/listeners<br/>
+6. Add listeners ./src/ai/src/run/listeners 
 You can add listeners for actions.
 Add it too to ABotPattern::listen
 For example:
@@ -150,9 +150,9 @@ void ABot::listenConnectNbrResponse(const std::string &response)
 }
 ```
 
-7. Use message:<br/>
-We encrypt and sign message, if you want to send a message, you have to format it first.<br/>
-Don't use <span style="color: red;">{"ok", "ko", "dead", "[", "]", "Elevation underway", "Current level:", ",", ":"}</span> in your message
+7. Use message: 
+We encrypt and sign message, if you want to send a message, you have to format it first. 
+Don't use `{"ok", "ko", "dead", "[", "]", "Elevation underway", "Current level:", ",", ":"}` in your message
 We separate response and broadcast messages.
 ```c++
 std::string myMsg = "hello";
