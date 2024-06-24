@@ -43,8 +43,6 @@ Test(incantation, test_successful_incantation)
 
     cr_assert(client->is_incanting, "Incantation should be in progress.");
     cr_assert_eq(client->level, 1, "Client level should not change yet.");
-
-    client->is_incanting = false;
     incantation_callback_end_of_command(client, server);
 
     cr_assert_eq(client->level, 2, "Client should level up.");
@@ -97,8 +95,6 @@ Test(incantation, test_level_up)
     add_element_to_map(server, 0, 0, SIBUR);
 
     incantation(client, server);
-
-    client->is_incanting = false;
     incantation_callback_end_of_command(client, server);
 
     cr_assert_eq(client->level, 3, "Client should level up.");
@@ -130,8 +126,6 @@ Test(incantation, test_high_level_incantation)
     add_element_to_map(server, 0, 0, THYSTAME);
 
     incantation(client, server);
-
-    client->is_incanting = false;
     incantation_callback_end_of_command(client, server);
 
     cr_assert_eq(client->level, 8, "Client should level up to the highest level.");

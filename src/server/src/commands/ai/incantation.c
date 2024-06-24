@@ -36,11 +36,11 @@ static info_map_t get_tile(server_t *server, size_t x, size_t y)
 
 static bool check_requirements_met(
     const info_map_t resource_count,
-    size_t players_on_tile,
+    int players_on_tile,
     size_t required_level
 )
 {
-    const size_t *req = required_resources[required_level - 1];
+    const int *req = required_resources[required_level - 1];
 
     return (
         players_on_tile >= req[0] &&
@@ -85,7 +85,7 @@ static void remove_resources(
     };
 
     for (size_t i = 0; i < 7; i++) {
-        for (size_t j = 0;
+        for (int j = 0;
             j < required_resources[required_level - 1][i]; j++) {
             remove_resource_from_tile(tile, i, resource_count);
         }
