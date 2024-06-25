@@ -180,3 +180,13 @@ bool init_flags(flags_t *flags, const char **args)
     flags->max_map.thystame = (int)(width * height * THYSTAME_DENSITY);
     return true;
 }
+
+/*
+flags->max_map.food = (int)(width * height * FOOD_DENSITY * 2);
+    flags->max_map.linemate = (int)(width * height * LINEMATE_DENSITY * 2);
+    flags->max_map.deraumere = (int)(width * height * DERAUMERE_DENSITY * 2);
+    flags->max_map.sibur = (int)(width * height * SIBUR_DENSITY * 2);
+    flags->max_map.mendiane = (int)(width * height * MENDIANE_DENSITY * 2);
+    flags->max_map.phiras = (int)(width * height * PHIRAS_DENSITY * 2);
+    flags->max_map.thystame = (int)(width * height * THYSTAME_DENSITY * 2);
+*/

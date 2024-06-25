@@ -77,5 +77,9 @@ void ABot::debugAction(const ActionInfo actionInfo, const std::string &parameter
 
     if (!finalParameter.empty())
         actionToServer += " " + finalParameter;
+    static int forward = 0;
+    if (actionInfo.action == FORWARD)
+        forward++;
+    printf("forward = %d\n", forward);
     printKeyValueColored("🤖🤜 Bot does", actionToServer);
 }

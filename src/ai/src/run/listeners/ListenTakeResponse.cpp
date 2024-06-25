@@ -52,4 +52,5 @@ void ABot::listenTakeResponse(const std::string &response)
             _state.ressources.thystame += 1;
         }
     }
+    exit(0);
 }

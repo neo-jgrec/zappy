@@ -6,6 +6,7 @@
 */
 
 #include "ABotPattern.hpp"
+#include <chrono>
 
 void ABotPattern::init(int sockfd, const std::string &teamName, const std::string &host, int port, int id, int idMessage)
 {
@@ -16,7 +17,8 @@ void ABotPattern::init(int sockfd, const std::string &teamName, const std::strin
     _id = id;
     _currentMessageId = idMessage;
     initChild();
-    saveActionsFile += teamName + std::to_string(id) + ".txt";
+    int idFile = std::chrono::system_clock::now().time_since_epoch().count();
+    saveActionsFile += "_" + teamName + "_" + std::to_string(idFile) + ".txt";
 }
 
 void ABotPattern::run(const std::string &response)
@@ -26,6 +28,7 @@ void ABotPattern::run(const std::string &response)
     _message.content = "";
     _allyMessage.content = "";
     _enemyMessage.content = "";
+    static int forward = 0;
 
     // separe servers and broadcast, decrypt message
     separateServerBroadcast(response, responseServer, responseBroadcast);
@@ -88,8 +91,8 @@ void ABotPattern::act()
         _canAct = false;
         _iteration++;
     }
-    if (_iteration % 20 == 0)
-        saveDataActions(saveActionsFile);
+    // if (_iteration % 20 == 0)
+    //     saveDataActions(saveActionsFile);
 }
 
 // Always put state listener before listener for actions

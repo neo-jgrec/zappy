@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 
-# filename
-with open('./src/ai/dataSaved/actionsteam11.txt', 'r') as file:
+with open('./src/ai/dataSaved/actions_team1_986930438.txt', 'r') as file:
     data = file.read()
 
 sections = data.strip().split('\n\n')
@@ -25,19 +24,21 @@ for section in sections:
             actions[action].append(0)
 
 plt.figure(figsize=(12, 6))
-bar_width = 0.1
 colors = ['blue', 'green', 'red', 'purple', 'orange', 'cyan', 'magenta', 'yellow', 'brown']
 
-positions = {action: [x + (i - len(actions) / 2) * bar_width for x in range(len(iterations))]
-             for i, action in enumerate(actions)}
-
 for i, (action, values) in enumerate(actions.items()):
-    plt.bar(positions[action], values, color=colors[i % len(colors)], width=bar_width, edgecolor='grey', label=action)
+    filtered_iterations = [iterations[j] for j in range(len(values)) if values[j] != 0]
+    filtered_values = [values[j] for j in range(len(values)) if values[j] != 0]
+    plt.plot(filtered_iterations, filtered_values, color=colors[i % len(colors)], label=action, marker='o')
 
 plt.xlabel('Iterations')
 plt.ylabel('Values')
-plt.title('Bar Plot of Iteration Actions')
-plt.xticks(range(len(iterations)), iterations)
+plt.title('Actions')
+
+# Adjust x-ticks to avoid overlap
+plt.xticks(ticks=iterations, labels=iterations, rotation=45, ha='right')
+
 plt.legend()
 
+plt.tight_layout()  # Adjust layout to make room for rotated x-ticks
 plt.show()

@@ -31,11 +31,10 @@ void ABot::listenGroupBroadcast(const std::string &message)
 
             unsigned int askLevel = std::stoi(levelStr);
 
-            _state.metadata["id_group"] = currentIdGroup;
-
             if (_state.level + 1 == askLevel)
             {
                 queue.clear();
+                _state.metadata["id_group"] = currentIdGroup;
                 _state.metadata["should_group"] = "true";
                 _state.state = ACT_ON_BROADCAST;
             }
@@ -106,6 +105,7 @@ void ABot::listenMeetingDoneBroadcast(const std::string &message)
         if (idGroup == _state.metadata["id_group"])
         {
             _state.metadata["should_group"] = "false";
+            _state.metadata["id_group"] = "0";
             _state.state = STANDARD;
         }
     }

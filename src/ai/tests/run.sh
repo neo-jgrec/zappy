@@ -4,7 +4,7 @@ current_dir=$(pwd)
 
 cleanup() {
     echo "Closing terminals..."
-    pkill -f "./zappy_server -x 30 -y 30 -n team1 team2 -c 10 -f 30 -p 4445"
+    pkill -f "./zappy_server -x 30 -y 30 -n team1 team2 -c 10 -f 2 -p 4445"
     pkill -f "./zappy_ai -i team1 -h 127.0.0.1 -p 4445"
     pkill -f "./zappy_gui -h 127.0.0.1 -p 4445"
     # pkill -f "./zappy_gui -n team1 -h 127.0.0.1 -p 4445"
@@ -12,7 +12,7 @@ cleanup() {
 
 trap cleanup INT
 
-gnome-terminal --working-directory="$current_dir" -- zsh -c "$current_dir/zappy_server -x 30 -y 30 -n team1 team2 -c 10 -f 10 -p 4445; exec zsh" &
+gnome-terminal --working-directory="$current_dir" -- zsh -c "$current_dir/../zappy_server -x 30 -y 30 -n team1 team2 -c 10 -f 2 -p 4445; exec zsh" &
 SERVER_PID=$!
 
 # Wait for the server to start
@@ -26,12 +26,12 @@ sleep 2
 gnome-terminal --working-directory="$current_dir" -- zsh -c "$current_dir/zappy_ai -n team1 -h 127.0.0.1 -p 4445; exec zsh" &
 AI1_PID=$!
 
-sleep 2
+# sleep 2
 
-gnome-terminal --working-directory="$current_dir" -- zsh -c "$current_dir/zappy_ai -n team1 -h 127.0.0.1 -p 4445; exec zsh" &
-AI2_PID=$!
+# gnome-terminal --working-directory="$current_dir" -- zsh -c "$current_dir/zappy_ai -n team1 -h 127.0.0.1 -p 4445; exec zsh" &
+# AI2_PID=$!
 
-sleep 2
+# sleep 2
 
 # gnome-terminal --working-directory="$current_dir" -- zsh -c "$current_dir/zappy_ai -n team1 -h 127.0.0.1 -p 4445; exec zsh" &
 # AI3_PID=$!

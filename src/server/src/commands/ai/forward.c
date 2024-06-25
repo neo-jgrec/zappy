@@ -14,6 +14,7 @@ void forward(client_t *c, server_t *server)
     int direction = c->orientation;
     int dx[] = {0, 1, 0, -1};
     int dy[] = {-1, 0, 1, 0};
+    static int forward = 0;
 
     c->x = (c->x + dx[direction - 1] + width) % width;
     c->y = (c->y + dy[direction - 1] + height) % height;
@@ -28,4 +29,9 @@ void forward(client_t *c, server_t *server)
     } else
         c->payload = strdup("ko\n");
     client_time_handler(c, FORWARD);
+    printf("forward: %d\n", forward);
+    printf("client->x: %d\n", c->x);
+    printf("client->y: %d\n", c->y);
+    printf("client->orientation: %s\n", c->orientation == NORTH ? "NORTH" : c->orientation == EAST ? "EAST" : c->orientation == SOUTH ? "SOUTH" : "WEST");
+    forward++;
 }

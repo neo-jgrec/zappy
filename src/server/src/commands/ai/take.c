@@ -74,6 +74,11 @@ void take(client_t *client, server_t *s)
         return;
     }
     object = get_object_from_string(client->commands[1]);
+    printf("map\n\n");
+    printf("client->x: %d\n", client->x);
+    printf("client->y: %d\n", client->y);
+    print_map(s);
+    printf("\n\n");
     if ((int)object == -1 || object == PLAYER || object == EMPTY) {
         dprintf(client->fd, "ko\n");
         return;

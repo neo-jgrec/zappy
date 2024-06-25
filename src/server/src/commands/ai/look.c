@@ -113,7 +113,11 @@ static void handle_look(client_t *c, server_t *server, tile_t *map)
     int d = c->orientation - 1;
     int look_y;
     int look_x;
-
+    printf("look:\n");
+    printf("client->x: %d\n", c->x);
+    printf("client->y: %d\n", c->y);
+    printf("client->orientation: %s\n", c->orientation == NORTH ? "NORTH" : c->orientation == EAST ? "EAST" : c->orientation == SOUTH ? "SOUTH" : "WEST");
+    print_map(server);
     free(c->payload);
     c->payload = strdup("[");
     if (c->payload == NULL)
