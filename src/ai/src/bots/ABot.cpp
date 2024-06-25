@@ -94,3 +94,13 @@ void ABot::addBroadcastAction(const std::string message)
     queue.push_back({[this, messageToSent]()
                      { doAction(BROADCAST, messageToSent); }, "BROADCAST"});
 }
+
+BotState ABot::getState()
+{
+    return _state;
+}
+
+void ABot::setState(BotState state)
+{
+    _state = state;
+}
